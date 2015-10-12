@@ -3,50 +3,41 @@
  */
 
 var mosca = require('mosca');
-var c=require('./clients.js');
 
 var version="0.1.0";
 
-var settings = {
-    port: 1883
-};
 
 var MQQTServer = (function () {
     var instance;
 
     function init() {
         var serverInstance = null;
-        var clients= c.getInstance();
+     //   var clients= c.getInstance();
+
+        var port=null;
 
         //listener functions
         function connect(client){
-            clients.addClient(client.id,client);
             instance.onConnect(client);
         }
 
         function publish(packet,client){
-            console.log(packet);
-           // clients.publish(client);
-            instance.onPublish(client);
+            instance.onPublish(packet,client);
         }
 
-        function subscribe(client){
-            clients.subscribe(client);
-            instance.onSubscribe(client);
+        function subscribe(topic,client){
+            instance.onSubscribe(topic,client);
         }
 
-        function unsubscribe(client){
-            //clients.unsubscribe(client);
-            instance.onUnsubscribe(client);
+        function unsubscribe(topic,client){
+            instance.onUnsubscribe(topic,client);
         }
 
         function endstream(client){
-            clients.endStream(client.id);
             instance.onDisconnecting(client);
         }
 
         function disconnect(client){
-            clients.removeClient(client.id);
             instance.onDisconnect(client);
         }
 
@@ -65,22 +56,38 @@ var MQQTServer = (function () {
 
         function setup()
         {
-            console.log("MQTT (v"+version+") started running on port "+settings.port);
+            console.log("MQTT (v"+version+") started running on port "+instance.port);
+           /* serverInstance.authenticate=authenticate;
+            serverInstance.authorizePublish=authorizePublish;
+            serverInstance.authorizeSubscribe=authorizeSubscribe;*/
+        }
+
+        function generateSettings()
+        {
+           // console.log(instance.port,port);
+            return {port:instance.port};
         }
 
         return {
             onConnect:function(client){},
-            onPublish:function(client){},
-            onSubscribe:function(client){},
-            onUnsubscribe:function(client){},
+            onPublish:function(packet,client){},
+            onSubscribe:function(topic,client){},
+            onUnsubscribe:function(topic,client){},
             onDisconnecting:function(client){},
             onDisconnect:function(client){},
 
             start:function(){
-                serverInstance=new mosca.Server(settings);
+                serverInstance=new mosca.Server(generateSettings());
 
                 serverInstance.on('ready',setup);
                 initListeners();
+            },
+            setPort:function(port){
+                this.port=port;
+                console.log("this port",this.port);
+            },
+            publish:function(message,func){
+                serverInstance.publish(message,func);
             }
 
         };

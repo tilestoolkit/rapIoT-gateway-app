@@ -6,65 +6,56 @@
  *   |_| |_____|_____|_____|_____|
  */
 
-var server=require('./model/mqServer.js');
+var server = require('./model/mqServer.js');
+var tp=require('./model/tileParse.js');
 
-var s=server.getInstance();
+var s = server.getInstance();
 
-s.onConnect=function(client){
-    console.log("connected",client.id);
+s.setPort(1883);
+
+s.onConnect = function (client) {
+    console.log("connected", client.id);
 };
 
-/*
-s.test=function(vari){
-    console.log("vari override");
-};*/
+s.onPublish = function (packet, client) {
+    if(client!==undefined&&client!==null)
+    {
+        console.log("\tclient",client.id);
+        var data=new tp(packet.payload.toString());
+
+        if(data.getId()==='12:34:56:78' && data.getEvent()==='tap')
+        {
+            s.publish(message, function () {
+                console.log("published");
+            });
+        }
+    }
+};
+
+s.onSubscribe = function (topic, client) {
+    s.publish(message, function () {
+        console.log("published");
+    });
+};
+
 
 s.start();
 
 
-/** Configurations**/
-/*var mosca = require('mosca');
-
-//{
-var settings = {
-    port: 1883
+var all={
+    id:"12:34:56:78",
+    type:"led",
+    activation:"on",
+    color:"white",
+    pattern:"blink",
+    duration:100
 };
 
-//here we start mosca
-var server = new mosca.Server(settings);
-server.on('ready', setup);
+var message = {
+    topic: 'action',
+    payload: all, // or a Buffer
+    qos: 0, // 0, 1, or 2
+    retain: false // or true
+};
 
-// fired when the mqtt server is ready
-function setup() {
-    console.log('Mosca server is up and running')
-}
 
-// fired whena  client is connected
-server.on('clientConnected', function(client) {
-    console.log('client connected', client.id);
-});
-
-// fired when a message is received
-server.on('published', function(packet, client) {
-    console.log('Published MIO: ', packet.payload,packet.topic);
-});
-
-// fired when a client subscribes to a topic
-server.on('subscribed', function(topic, client) {
-    console.log('subscribed : ', topic);
-});
-
-// fired when a client subscribes to a topic
-server.on('unsubscribed', function(topic, client) {
-    console.log('unsubscribed : ', topic);
-});
-
-// fired when a client is disconnecting
-server.on('clientDisconnecting', function(client) {
-    console.log('clientDisconnecting : ', client.id);
-});
-
-// fired when a client is disconnected
-server.on('clientDisconnected', function(client) {
-    console.log('clientDisconnected : ', client.id);
-});*/
