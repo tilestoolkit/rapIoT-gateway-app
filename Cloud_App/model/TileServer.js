@@ -60,10 +60,10 @@ TileCloud.prototype.start = function () {
         // and not a $SER packet
         if (client !== undefined && client !== null) {
             if (packet.topic === "Tiles") {//forward msg to webclient
-                self.tCloud.publish(self.generateMsg("TilesReceive", packet.payload), self.debugOutput("published msg to topic TilesReceive: " + packet.payload.toString()));
+                self.tCloud.publish(self.generateMsg("TilesReceive", packet.payload.toString()), self.debugOutput("published msg to topic TilesReceive: " + packet.payload.toString()));
             }
             else if (packet.topic === "TileSend") {//forward msg from webclient to tiles subscribers
-                self.tCloud.publish(self.generateMsg("Tiles", packet.payload), self.debugOutput("published msg to topic Tiles: " + packet.payload.toString()));
+                self.tCloud.publish(self.generateMsg("Tiles", packet.payload.toString()), self.debugOutput("published msg to topic Tiles: " + packet.payload.toString()));
             }
         }
     };
