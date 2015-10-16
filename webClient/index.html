@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Tiles - WebClient</title>
+
+
+    <!--[if lt IE 9]>
+    <link rel="stylesheet" href="asset/css/grid-old-ie.css">
+    <link rel="stylesheet" href="asset/css/app-old-ie.css">
+    <![endif]-->
+    <!--[if gt IE 8]><!-->
+    <link rel="stylesheet" href="asset/css/grid.css">
+    <link rel="stylesheet" href="asset/css/app.css">
+    <!--<![endif]-->
+
+    <link rel="stylesheet" href="build/public/css/main-grid.css">
+
+
+</head>
+<body>
+<script src="asset/js/browserMqtt.js"></script>
+<script src="asset/js/tileClient.js"></script>
+
+<script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+
+<script>
+    status = "off";
+
+    var pubSend = "TileSend";
+    var subRec = "TilesReceive";
+
+    var client = new TileClient("ws://localhost:3000");
+    //
+  //  while (!client.connect()) {
+    //}
+
+    client.connect();
+
+    if(client.isConnected())
+        console.log("CONNECTED SUCCESSFUL");
+    else
+        console.log("COULdn't CONNECT");
+
+    client.subscribe("Tiles");
+
+    client.addModule(subRec, receiveMsg);
+
+
+    //var client = mqtt.connect("ws://localhost:3000"); // you add a ws:// url here
+    //console.log(client);
+    /*
+     client.subscribe("Tiles", {qos: 0}, function (err, granted) {
+     console.log("error", err, "granted", granted);
+     });*/
+    /* client.subscribe(subRec, {qos: 0}, function (err, granted) {
+     console.log("error", err, "granted", granted);
+     });
+
+     client.on("message", function (topic, payload) {
+     //console.log("onmessage",topic,payload);
+     // alert([topic, payload].join(": "));
+     //console.log(JSON.parse(payload.payload));
+     console.log("string", payload.toString());
+
+     try {
+     var json = JSON.parse(payload);
+     console.log(json);
+
+     if(topic===subRec)
+     receiveMsg(json);
+     }
+     catch (e) {
+     return false;
+     }
+
+     console.log([topic, payload].join(": "));
+     //client.end();
+     });
+
+     client.publish(subRec, "hello world!");
+
+     */
+    function triggerClick() {
+        // var state = (status) ? "on" : "off";
+        var messageToSend = {
+            id: "CF:5C:40:82:7E:DA",
+            activation: status
+        };
+        console.log("STATUSPre", status);
+        if (status == "on")
+            status = "off";
+        else
+            status = "on";
+        //status=(!status);
+
+        console.log("STATUS", status);
+        console.log("sending", messageToSend);
+
+        if (status == "on")
+            document.getElementById("lightButton").className = "active";
+        else
+            document.getElementById("lightButton").className = "empty";
+
+
+        client.publish(pubSend, messageToSend);
+    }
+
+    function receiveMsg(data) {
+        console.log("changed");
+        //status=(!status);
+        if (status == "on")
+            status = "off";
+        else
+            status = "on";
+
+        if (status == "on")
+            document.getElementById("lightButton").className = "active";
+        else
+            document.getElementById("lightButton").className = "empty";
+
+
+        console.log("STATUS", status);
+        //document.getElementById("btnmsg").innerHTML="status changed";
+//        alert("status changed");
+
+
+    }
+
+</script>
+<h1>TILES</h1>
+
+<button id="lightButton" onclick="triggerClick()">Click me</button>
+<p id="btnmsg"></p>
+
+
+<style>
+    #lightButton.active {
+        background-color: yellow !important;
+    }
+
+    #lightButton {
+        background-color: red;
+    }
+</style>
+</body>
+</html>

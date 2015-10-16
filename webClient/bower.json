@@ -1,0 +1,24 @@
+{
+  "name": "webClient",
+  "version": "0.1.0",
+  "homepage": "https://github.com/simonem/tiles-dev-sw",
+  "authors": [
+    "Jonas Kirkemyr <jonas@fosen-utvikling.no>"
+  ],
+  "description": "tiles - browser client",
+  "main": "index.html",
+  "moduleType": [
+    "node"
+  ],
+  "license": "?",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "pure": "~0.6.0"
+  }
+}
