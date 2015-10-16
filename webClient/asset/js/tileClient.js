@@ -29,7 +29,13 @@ TileClient.prototype.connect = function (dom) {
     var self=this;
     this.client.on("connect",function(){
        self.connected=true;
-        $(dom).trigger("connected");
+        console.log("DOM",dom,$(dom));
+      //  $(dom).trigger("connected");
+        $.event.trigger({
+            type:    "connected",
+            message: "Tile Client connected",
+            time:    new Date()
+        });
     });
 };
 
