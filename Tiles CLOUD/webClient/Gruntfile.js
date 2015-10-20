@@ -8,14 +8,38 @@ module.exports = function (grunt) {
             options: {
                 banner: '/*! <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> */\n'
             },
-            build: {
-                src: 'asset/js/<%= pkg.name %>.js',
-                dest: 'build/dist/js/<%= pkg.name %>.min.js'
+            asset_js: {
+                files: [{
+                    expand: true,
+                    flatten:true,
+                    src: 'asset/js/*.js',
+                    dest: 'build/public/js/'
+                }]
+            },
+            modules_js: {
+                files: [{
+                    expand: true,
+                    src: 'modules/*/*.js',
+                    dest: 'build/public/js/'
+                }]
+            }
+        },
+        cssmin: {
+            target: {
+                files: [{
+                    expand: true,
+                    cwd: 'asset/css',
+                    src: ['*.css', '!*.min.css'],
+                    dest: 'build/public/css',
+                    ext: '.min.css'
+                },
+                    {'build/public/css/pure.min.css': ['bower_components/pure/pure.css']}
+                ]
             }
         },
         pure_grids: {
             responsive: {
-                dest: 'build/public/css/main-grid.css',
+                dest: 'asset/css/main-grid.css',
 
                 options: {
                     units: 12, // 12-column grid
@@ -38,7 +62,8 @@ module.exports = function (grunt) {
             all: {
                 files: {
                     // Takes the input file `grid.css`, and generates `grid-old-ie.css`.
-                    'bower_components/pure/grids-responsive-old-ie.css':['build/css/grids-responsive.css'],
+                    'build/public/css/pure/grids-responsive-old-ie.css':['bower_components/pure/grids-responsive.css'],
+                    'build/public/css/pure/pure-old-ie.css':['bower_components/pure/pure.css']
 
                     // Takes the input file `app.css`, and generates `app-old-ie.css`.
                     //'asset/css/app-old-ie.css': ['asset/css/app.css']
@@ -51,7 +76,8 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-pure-grids');
     grunt.loadNpmTasks('grunt-stripmq');
+    grunt.loadNpmTasks('grunt-contrib-cssmin');
     // Default task(s).
-    grunt.registerTask('default', ['pure_grids','uglify']);
+    grunt.registerTask('default', ['pure_grids','stripmq','uglify','cssmin']);
 
 };
