@@ -33,6 +33,8 @@ module.exports = function (grunt) {
                     dest: 'build/public/css',
                     ext: '.min.css'
                 },
+                    {'build/public/css/theme/main.min.css': ['build/public/css/theme/main.css']},
+                    {'build/public/css/theme/old/main.min.css': ['build/public/css/theme/old/main.css']},
                     {'build/public/css/pure.min.css': ['bower_components/pure/pure.css']}
                 ]
             }
@@ -63,10 +65,19 @@ module.exports = function (grunt) {
                 files: {
                     // Takes the input file `grid.css`, and generates `grid-old-ie.css`.
                     'build/public/css/pure/grids-responsive-old-ie.css':['bower_components/pure/grids-responsive.css'],
-                    'build/public/css/pure/pure-old-ie.css':['bower_components/pure/pure.css']
+                    'build/public/css/pure/pure-old-ie.css':['bower_components/pure/pure.css'],
+                    'build/public/css/pure/side-menu-old-ie.css':['asset/css/pure/side-menu-old-ie.css']
 
                     // Takes the input file `app.css`, and generates `app-old-ie.css`.
                     //'asset/css/app-old-ie.css': ['asset/css/app.css']
+                }
+            }
+        },
+        sass: {
+            dist: {
+                files: {
+                    'build/public/css/theme/main.css': 'asset/scss/main.scss',
+                    'build/public/css/theme/old/main.css': 'asset/scss/old/main.scss'
                 }
             }
         }
@@ -77,7 +88,8 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-pure-grids');
     grunt.loadNpmTasks('grunt-stripmq');
     grunt.loadNpmTasks('grunt-contrib-cssmin');
+    grunt.loadNpmTasks('grunt-contrib-sass');
     // Default task(s).
-    grunt.registerTask('default', ['pure_grids','stripmq','uglify','cssmin']);
+    grunt.registerTask('default', ['pure_grids','stripmq','uglify','sass','cssmin']);
 
 };

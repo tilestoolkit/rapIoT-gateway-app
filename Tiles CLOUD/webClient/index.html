@@ -8,19 +8,16 @@
     <!--[if lt IE 9]>
     <link rel="stylesheet" href="build/public/css/pure/grids-responsive-old-ie.css">
     <link rel="stylesheet" href="build/public/css/pure/pure-old-ie.css">
+    <link rel="stylesheet" href="build/public/css/pure/side-menu-old-ie.css">
+    <link rel="stylesheet" href="build/public/css/theme/old/main.min.css">
     <![endif]-->
     <!--[if gt IE 8]><!-->
-   <!-- <link rel="stylesheet" href="build/public/css/main-grid.min.css">-->
-    <!--<link rel="stylesheet" href="build/public/css/pure.min.css">-->
-    <link rel="stylesheet" href="asset/grid.css">
-    <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/pure-min.css">
+    <link rel="stylesheet" href="build/public/css/pure.min.css">
+    <link rel="stylesheet" href="build/public/css/main-grid.min.css">
+    <link rel="stylesheet" href="build/public/css/theme/main.min.css">
     <!--<![endif]-->
 
 
-    <link rel="stylesheet" href="asset/grid.css">
-    <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/pure-min.css">
-    <!--<link rel="stylesheet" href="build/public/css/main-grid.min.css">-->
-    <!--<link rel="stylesheet" href="build/public/css/pure.min.css">-->
 
 </head>
 <body>
@@ -54,32 +51,96 @@
     });
 
 </script>
-<h1>TILES</h1>
 
-<div class="pure-g">
-    <div class="pure-u-1">.pure-u-1</div>
-    <div class="pure-u-1 pure-u-md-1-2 pure-u-lg-1-4">
-        .pure-u-1<br>.pure-u-md-1-2<br>.pure-u-lg-1-4
+
+
+
+
+<div id="layout">
+
+    <!-- toggle menu-->
+    <a href="#menu" id="menuLink" class="menu-link"><span></span></a>
+
+
+    <div id="menu">
+        <div class="pure-menu">
+            <a class="pure-menu-heading hline" href="#">Tiles Cloud v0.1.0</a>
+
+           <!-- <div class="pure-g pure-menu-heading">
+                <div class="pure-u-3-12"><p>My Tiles</p></div>
+                <div class="pure-u-5-12"><p>Debug Console</p></div>
+                <div class="pure-u-2-12"><p>Online</p></div>
+                <div class="pure-u-2-12"><p>In Use</p></div>
+            </div>
+
+            <div class="pure-g ">
+                <div class="pure-u-3-12"><p>Tile Alpha</p></div>
+                <div class="pure-u-5-12"><p>icon</p></div>
+                <div class="pure-u-2-12"><p>x</p></div>
+                <div class="pure-u-2-12"><p>y</p></div>
+            </div>-->
+
+            <div>
+
+            <table class="sidebar-table">
+                <thead >
+                    <tr>
+                        <th>My Tiles</th>
+                        <th>Debug Console</th>
+                        <th>Online</th>
+                        <th>In use</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr>
+                        <td>Tile alpha</td>
+                        <td>debug</td>
+                        <td>j</td>
+                        <td>x</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            </div>
+
+
+
+
+
+
+            <ul class="pure-menu-list">
+                <li class="pure-menu-item"><a href="#" class="pure-menu-link">Home</a></li>
+            </ul>
+        </div>
     </div>
-    <div class="pure-u-1 pure-u-md-1-2 pure-u-lg-1-4">
-        .pure-u-1<br>.pure-u-md-1-2<br>.pure-u-lg-1-4
+
+
+    <div id="main">
+
+        <div class="header">
+            <h3>Recipes Editor</h3>
+        </div>
+
+
+
+        <div class="content">
+            <h2 class="content-subhead">How to use this layout</h2>
+
+
+            <a class="pure-button" href="#">A Pure Button</a>
+
+
+            <button id="lightButton" onclick="led.changeStatus('CF:5C:40:82:7E:DA',client)">Click me</button>
+            <p id="btnmsg"></p>
+
+            <button id="connectStatus">connect status</button>
+
+        </div>
     </div>
-    <div class="pure-u-1 pure-u-md-1-2 pure-u-lg-1-4">
-        .pure-u-1<br>.pure-u-md-1-2<br>.pure-u-lg-1-4
-    </div>
-    <div class="pure-u-1 pure-u-md-1-2 pure-u-lg-1-4">
-        .pure-u-1<br>.pure-u-md-1-2<br>.pure-u-lg-1-4
-    </div>
-    <div class="pure-u-1 pure-u-md-3-4">.pure-u-1<br>.pure-u-md-3-4</div>
-    <div class="pure-u-1 pure-u-md-1-4">.pure-u-1<br>.pure-u-md-1-4</div>
+
+
 </div>
-<a class="pure-button" href="#">A Pure Button</a>
-
-
-<button id="lightButton" onclick="led.changeStatus('CF:5C:40:82:7E:DA',client)">Click me</button>
-<p id="btnmsg"></p>
-
-<button id="connectStatus">connect status</button>
 
 
 <style>
