@@ -83,7 +83,7 @@ angular.module('tiles.controllers', [])
     var app = {
         onDiscoverDevice: function(device) {
             device.connected = false;
-            if (isNewDevice()) {
+            if (isNewDevice(device)) {
                 $scope.devices.push(device);
             }
         },
