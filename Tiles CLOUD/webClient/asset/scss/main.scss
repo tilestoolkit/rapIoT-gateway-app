@@ -1,3 +1,15 @@
+@import "../../bower_components/bootstrap-sass/assets/stylesheets/bootstrap/variables";
+@import "../../bower_components/bootstrap-sass/assets/stylesheets/bootstrap/mixins";
+@import "../../bower_components/font-awesome/scss/variables";
+
+@import "../../bower_components/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox";
+
 @import 'side-menu';
 @import 'sidebar-table';
 
+
+/** override awesome var*/
+.radio label::after{
+  left: 4px !important;
+  top: 4px !important;
+}

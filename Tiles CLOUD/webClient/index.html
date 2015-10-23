@@ -17,12 +17,15 @@
     <link rel="stylesheet" href="build/public/css/theme/main.min.css">
     <!--<![endif]-->
 
+    <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.min.css">
+
 
 
 </head>
 <body>
 <script src="build/public/js/browserMqtt.js"></script>
 <script src="build/public/js/tileClient.js"></script>
+<script src="asset/js/sidebar.js"></script><!--TODO: change to build-->
 <script src="build/public/js/modules/ledOn/LedOn.js"></script>
 
 <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
@@ -32,6 +35,8 @@
     var led=null;
     var client=null;
     $( document ).ready(function() {
+
+        sidebarToggle.init();
         led=new LedOn("lightButton");
 
         var subRec = "TilesReceive";
@@ -95,9 +100,17 @@
                 <tbody>
                     <tr>
                         <td>Tile alpha</td>
-                        <td>debug</td>
-                        <td>j</td>
-                        <td>x</td>
+                        <td><span class="fa-stack">
+  <i class="fa fa-square fa-stack-2x" style="color:#282828;"></i>
+  <i class="fa fa-terminal fa-stack-1x "></i>
+</span></td>
+                        <td>
+                            <div class="radio radio-success">
+                                <input type="radio" name="radio10" id="radio10" value="option1" checked>
+                                <label for="radio10">&nbsp;</label>
+                            </div>
+                        </td>
+                        <td><i class="fa fa-circle"></i></td>
                     </tr>
                 </tbody>
             </table>
@@ -122,6 +135,33 @@
             <h3>Recipes Editor</h3>
         </div>
 
+        <div class="radio radio-danger">
+            <input type="radio" name="radio3" id="radio3" value="option1" checked>
+            <label for="radio3">
+                Next
+            </label>
+        </div>
+
+        <div class="radio radio-warning">
+            <input type="radio" name="radio2" id="radio2" value="option1" checked>
+            <label for="radio2">
+                Next
+            </label>
+        </div>
+
+        <div class="radio radio-success">
+            <input type="radio" name="radio1" id="radio1" value="option1" checked>
+            <label for="radio1">
+                Next
+            </label>
+        </div>
+
+        <div class="radio radio-info">
+            <input type="radio" name="radio0" id="radio0" value="option1" checked>
+            <label for="radio0">
+                Next
+            </label>
+        </div>
 
 
         <div class="content">

@@ -9,16 +9,18 @@
  * @src http://purecss.io/layouts/ - Responsive Side Menu example
  */
 "use strict";
-(function (window, document) {
+var sidebarToggle={
+    layout:null,
+    menu:null,
+    menuLink:null,
 
-    var layout = document.getElemenyById('layout');
-    var menu = document.getElementById('menu');
-    var menuLink = document.getElemenyById('menuLink');
+    toggleClass:function(element,className){
 
-    function toggleClass(element, className) {
+        console.log(":::CLASSNAME:::",className,"element",element);
         var classes = element.className.split(/\s+/);
+        var length = classes.length;
 
-        for (var i = 0; i < classes.length; ++i) {
+        for (var i = 0; i < length; ++i) {
             if (classes[i] === className) {
                 classes.splice(i, 1);
                 break;
@@ -29,15 +31,22 @@
             classes.push(className);
 
         element.className=classes.join(' ');
+    },
+
+    init:function(){
+        this.layout = document.getElementById('layout');
+        this.menu = document.getElementById('menu');
+        this.menuLink = document.getElementById('menuLink');
+
+
+        this.menuLink.onclick = function (e) {
+            var active = 'active';
+
+            e.preventDefault();
+            sidebarToggle.toggleClass(sidebarToggle.layout, active);
+            sidebarToggle.toggleClass(sidebarToggle.menu, active);
+            sidebarToggle.toggleClass(sidebarToggle.menuLink, active);
+        };
     }
+};
 
-    menuLink.onclick = function (e) {
-        var active = 'active';
-
-        e.preventDefault();
-        toggleClass(layout, active);
-        toggleClass(menu, active);
-        toggleClass(menuLink, active);
-    };
-
-}(this, this.document));

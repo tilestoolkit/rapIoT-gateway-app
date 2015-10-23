@@ -1,6 +1,7 @@
 
 $bcolor:#777;
 $sidebarWidth:30em;
+$sidebarMenuLink:48em;
 
 //$sidebarColor:#191818;
 $sidebarColor:#1f8dd6;
@@ -44,7 +45,7 @@ This is the parent `<div>` that contains the menu and the content area.
 }
 
 #layout.active .menu-link {
-  left: $sidebarWidth;
+  left: $sidebarMenuLink;
 }
 /*
 The content `<div>` is where all your content goes.
@@ -102,6 +103,11 @@ appears on the left side of the page.
   -webkit-overflow-scrolling: touch;
 
 
+}
+
+#menu .radio, #menu .checkbox
+{
+  padding-left: 0;
 }
 
 /*
@@ -244,7 +250,7 @@ Hides the menu at `48em`, but modify this based on your app's needs.
   }
 
   #layout.active .menu-link {
-    left: $sidebarWidth;
+    left: $sidebarMenuLink;
   }
 }
 

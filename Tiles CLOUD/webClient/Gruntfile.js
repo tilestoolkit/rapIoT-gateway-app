@@ -80,6 +80,17 @@ module.exports = function (grunt) {
                     'build/public/css/theme/old/main.css': 'asset/scss/old/main.scss'
                 }
             }
+        },
+        handlebars: {
+            compile: {
+                options: {
+                    namespace: "JST"
+                },
+                files: {
+                    "path/to/result.js": "path/to/source.hbs",
+                    "path/to/another.js": ["path/to/sources/*.hbs", "path/to/more/*.hbs"]
+                }
+            }
         }
     });
 
@@ -89,6 +100,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-stripmq');
     grunt.loadNpmTasks('grunt-contrib-cssmin');
     grunt.loadNpmTasks('grunt-contrib-sass');
+    grunt.loadNpmTasks('grunt-contrib-handlebars');
     // Default task(s).
     grunt.registerTask('default', ['pure_grids','stripmq','uglify','sass','cssmin']);
 

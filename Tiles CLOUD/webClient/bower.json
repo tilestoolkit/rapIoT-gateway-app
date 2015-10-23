@@ -19,6 +19,12 @@
     "tests"
   ],
   "dependencies": {
-    "pure": "~0.6.0"
+    "pure": "~0.6.0",
+    "font-awesome": "fontawesome#~4.4.0",
+    "metro": "~3.0.12"
+  },
+  "devDependencies": {
+    "bootstrap-sass": "bootstrap-sass-official#~3.3.5",
+    "awesome-bootstrap-checkbox": "~0.3.5"
   }
 }
