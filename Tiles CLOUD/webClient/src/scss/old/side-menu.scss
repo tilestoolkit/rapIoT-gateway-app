@@ -2,12 +2,12 @@
 * @src http://purecss.io/layouts/ - Responsive Side Menu
 **/
 body {
-    color: #777;
+  color: $bcolor;
 }
 
 .pure-img-responsive {
-    max-width: 100%;
-    height: auto;
+  max-width: 100%;
+  height: auto;
 }
 
 /*
@@ -17,11 +17,11 @@ Add transition to containers so they can push in and out.
 #layout,
 #menu,
 .menu-link {
-    -webkit-transition: all 0.2s ease-out;
-    -moz-transition: all 0.2s ease-out;
-    -ms-transition: all 0.2s ease-out;
-    -o-transition: all 0.2s ease-out;
-    transition: all 0.2s ease-out;
+  -webkit-transition: all 0.2s ease-out;
+  -moz-transition: all 0.2s ease-out;
+  -ms-transition: all 0.2s ease-out;
+  -o-transition: all 0.2s ease-out;
+  transition: all 0.2s ease-out;
 }
 
 /*
@@ -29,17 +29,17 @@ This is the parent `<div>` that contains the menu and the content area.
 */
 
 #layout {
-    position: relative;
-    padding-left: 0;
+  position: relative;
+  padding-left: 0;
 }
 
 #layout.active #menu {
-    left: 150px;
-    width: 150px;
+  left: $sidebarWidth;
+  width: $sidebarWidth;
 }
 
 #layout.active .menu-link {
-    left: 150px;
+  left: $sidebarWidth;
 }
 
 /*
@@ -47,38 +47,38 @@ The content `<div>` is where all your content goes.
 */
 
 .content {
-    margin: 0 auto;
-    padding: 0 2em;
-    max-width: 800px;
-    margin-bottom: 50px;
-    line-height: 1.6em;
+  margin: 0 auto;
+  padding: 0 2em;
+  max-width: 800px;
+  margin-bottom: 50px;
+  line-height: 1.6em;
 }
 
 .header {
-    margin: 0;
-    color: #333;
-    text-align: center;
-    padding: 2.5em 2em 0;
-    border-bottom: 1px solid #eee;
+  margin: 0;
+  color: #333;
+  text-align: center;
+  padding: 2.5em 2em 0;
+  border-bottom: 1px solid #eee;
 }
 
 .header h1 {
-    margin: 0.2em 0;
-    font-size: 3em;
-    font-weight: 300;
+  margin: 0.2em 0;
+  font-size: 3em;
+  font-weight: 300;
 }
 
 .header h2 {
-    font-weight: 300;
-    color: #ccc;
-    padding: 0;
-    margin-top: 0;
+  font-weight: 300;
+  color: #ccc;
+  padding: 0;
+  margin-top: 0;
 }
 
 .content-subhead {
-    margin: 50px 0 20px 0;
-    font-weight: 300;
-    color: #888;
+  margin: 50px 0 20px 0;
+  font-weight: 300;
+  color: #888;
 }
 
 /*
@@ -87,18 +87,18 @@ appears on the left side of the page.
 */
 
 #menu {
-    margin-left: -150px;
-    /* "#menu" width */
-    width: 150px;
-    position: fixed;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    z-index: 1000;
-    /* so the menu or its navicon stays above all content */
-    background: #191818;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
+  margin-left: -$sidebarWidth;
+  /* "#menu" width */
+  width: $sidebarWidth;
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 1000;
+  /* so the menu or its navicon stays above all content */
+  background: $sidebarColor;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 /*
@@ -106,9 +106,9 @@ appears on the left side of the page.
     */
 
 #menu a {
-    color: #999;
-    border: none;
-    padding: 0.6em 0 0.6em 0.6em;
+  color: #999;
+  border: none;
+  padding: 0.6em 0 0.6em 0.6em;
 }
 
 /*
@@ -117,8 +117,8 @@ appears on the left side of the page.
 
 #menu .pure-menu,
 #menu .pure-menu ul {
-    border: none;
-    background: transparent;
+  border: none;
+  background: transparent;
 }
 
 /*
@@ -127,7 +127,7 @@ appears on the left side of the page.
 
 #menu .pure-menu ul,
 #menu .pure-menu .menu-item-divided {
-    border-top: 1px solid #333;
+  border-top: 1px solid #333;
 }
 
 /*
@@ -136,7 +136,7 @@ appears on the left side of the page.
 
 #menu .pure-menu li a:hover,
 #menu .pure-menu li a:focus {
-    background: #333;
+  background: #333;
 }
 
 /*
@@ -145,7 +145,7 @@ appears on the left side of the page.
 
 #menu .pure-menu-selected,
 #menu .pure-menu-heading {
-    background: #1f8dd6;
+  background: #1f8dd6;
 }
 
 /*
@@ -153,7 +153,7 @@ appears on the left side of the page.
         */
 
 #menu .pure-menu-selected a {
-    color: #fff;
+  color: #fff;
 }
 
 /*
@@ -161,9 +161,9 @@ appears on the left side of the page.
     */
 
 #menu .pure-menu-heading {
-    font-size: 110%;
-    color: #fff;
-    margin: 0;
+  font-size: 110%;
+  color: #fff;
+  margin: 0;
 }
 
 /* -- Dynamic Button For Responsive Menu -------------------------------------*/
@@ -179,49 +179,49 @@ small screens.
 */
 
 .menu-link {
-    position: fixed;
-    display: block;
-    /* show this only on small screens */
-    top: 0;
-    left: 0;
-    /* "#menu width" */
-    background: #000;
-    background: rgba(0,0,0,0.7);
-    font-size: 10px;
-    /* change this value to increase/decrease button size */
-    z-index: 10;
-    width: 2em;
-    height: auto;
-    padding: 2.1em 1.6em;
+  position: fixed;
+  display: block;
+  /* show this only on small screens */
+  top: 0;
+  left: 0;
+  /* "#menu width" */
+  background: #000;
+  background: rgba(0,0,0,0.7);
+  font-size: 10px;
+  /* change this value to increase/decrease button size */
+  z-index: 10;
+  width: 2em;
+  height: auto;
+  padding: 2.1em 1.6em;
 }
 
 .menu-link:hover,
 .menu-link:focus {
-    background: #000;
+  background: #000;
 }
 
 .menu-link span {
-    position: relative;
-    display: block;
+  position: relative;
+  display: block;
 }
 
 .menu-link span,
 .menu-link span:before,
 .menu-link span:after {
-    background-color: #fff;
-    width: 100%;
-    height: 0.2em;
+  background-color: #fff;
+  width: 100%;
+  height: 0.2em;
 }
 
 .menu-link span:before,
 .menu-link span:after {
-    position: absolute;
-    margin-top: -0.6em;
-    content: " ";
+  position: absolute;
+  margin-top: -0.6em;
+  content: " ";
 }
 
 .menu-link span:after {
-    margin-top: 0.6em;
+  margin-top: 0.6em;
 }
 
 /* -- Responsive Styles (Media Queries) ------------------------------------- */
@@ -232,26 +232,26 @@ Hides the menu at `48em`, but modify this based on your app's needs.
 
 .header,
 .content {
-    padding-left: 2em;
-    padding-right: 2em;
+  padding-left: 2em;
+  padding-right: 2em;
 }
 
 #layout {
-    padding-left: 150px;
-    /* left col width "#menu" */
-    left: 0;
+  padding-left: $sidebarWidth;
+  /* left col width "#menu" */
+  left: 0;
 }
 
 #menu {
-    left: 150px;
+  left: $sidebarWidth;
 }
 
 .menu-link {
-    position: fixed;
-    left: 150px;
-    display: none;
+  position: fixed;
+  left: $sidebarWidth;
+  display: none;
 }
 
 #layout.active .menu-link {
-    left: 150px;
+  left: $sidebarWidth;
 }

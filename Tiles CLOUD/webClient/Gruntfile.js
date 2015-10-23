@@ -12,15 +12,16 @@ module.exports = function (grunt) {
                 files: [{
                     expand: true,
                     flatten:true,
-                    src: 'asset/js/*.js',
-                    dest: 'build/public/js/'
+                    src: 'src/js/*.js',
+                    dest: 'dist/asset/js/'
                 }]
             },
             modules_js: {
                 files: [{
                     expand: true,
-                    src: 'modules/*/*.js',
-                    dest: 'build/public/js/'
+                    flatten:true,
+                    src: 'src/js/modules/*/*.js',
+                    dest: 'dist/asset/js/modules/'
                 }]
             }
         },
@@ -28,20 +29,20 @@ module.exports = function (grunt) {
             target: {
                 files: [{
                     expand: true,
-                    cwd: 'asset/css',
-                    src: ['*.css', '!*.min.css'],
-                    dest: 'build/public/css',
+                    cwd: 'src/css',
+                    src: ['**/*.css', '!*.min.css'],
+                    dest: 'dist/asset/css',
                     ext: '.min.css'
                 },
-                    {'build/public/css/theme/main.min.css': ['build/public/css/theme/main.css']},
-                    {'build/public/css/theme/old/main.min.css': ['build/public/css/theme/old/main.css']},
-                    {'build/public/css/pure.min.css': ['bower_components/pure/pure.css']}
+                    {'dist/asset/css/theme/main.min.css': ['src/css/theme/main.css']},
+                    {'dist/asset/css/theme/old/main.min.css': ['src/css/theme/old/main.css']},
+                    {'dist/asset/css/pure/pure.min.css': ['bower_components/pure/pure.css']}
                 ]
             }
         },
         pure_grids: {
             responsive: {
-                dest: 'asset/css/main-grid.css',
+                dest: 'src/css/main-grid.css',
 
                 options: {
                     units: 12, // 12-column grid
@@ -64,20 +65,16 @@ module.exports = function (grunt) {
             all: {
                 files: {
                     // Takes the input file `grid.css`, and generates `grid-old-ie.css`.
-                    'build/public/css/pure/grids-responsive-old-ie.css':['bower_components/pure/grids-responsive.css'],
-                    'build/public/css/pure/pure-old-ie.css':['bower_components/pure/pure.css'],
-                    'build/public/css/pure/side-menu-old-ie.css':['asset/css/pure/side-menu-old-ie.css']
-
-                    // Takes the input file `app.css`, and generates `app-old-ie.css`.
-                    //'asset/css/app-old-ie.css': ['asset/css/app.css']
+                    'src/css/pure/old/grids-responsive-old-ie.css':['bower_components/pure/grids-responsive.css'],
+                    'src/css/pure/old/pure-old-ie.css':['bower_components/pure/pure.css']
                 }
             }
         },
         sass: {
             dist: {
                 files: {
-                    'build/public/css/theme/main.css': 'asset/scss/main.scss',
-                    'build/public/css/theme/old/main.css': 'asset/scss/old/main.scss'
+                    'src/css/theme/main.css': 'src/scss/main.scss',
+                    'src/css/theme/old/main.css': 'src/scss/old/main.scss'
                 }
             }
         },
@@ -87,10 +84,39 @@ module.exports = function (grunt) {
                     namespace: "JST"
                 },
                 files: {
-                    "path/to/result.js": "path/to/source.hbs",
-                    "path/to/another.js": ["path/to/sources/*.hbs", "path/to/more/*.hbs"]
+                    "src/js/templates.js": "src/views/templates/**/*.hbs"
                 }
             }
+        },
+        assemble:{
+            options:{
+              layout:'page.hbs',
+                layoutdir:'./src/views/layouts',
+                partials:'./src/views/partials/**/*.hbs'
+            },
+            pages:{
+                files:[{
+                    cwd:'./src/views/pages/',
+                    dest:'./dist/',
+                    expand:true,
+                    src:'**/*.hbs'
+                }]
+            }
+        },
+        watch: {
+            css: {
+                files: ['src/scss/**/*.scss'],
+                tasks: ['sass','cssmin']
+            },
+            js: {
+                files: ['src/js/**/*.js'],
+                tasks: ['stripmq','uglify']
+            },
+            hs: {
+                files: ['src/views/**/*.hbs'],
+                tasks: ['handlebars']
+            }
+
         }
     });
 
@@ -101,7 +127,9 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-cssmin');
     grunt.loadNpmTasks('grunt-contrib-sass');
     grunt.loadNpmTasks('grunt-contrib-handlebars');
+    grunt.loadNpmTasks('grunt-contrib-watch');
+    grunt.loadNpmTasks('assemble');
     // Default task(s).
-    grunt.registerTask('default', ['pure_grids','stripmq','uglify','sass','cssmin']);
+    grunt.registerTask('default', ['assemble','pure_grids','handlebars','stripmq','uglify','sass','cssmin']);
 
 };
