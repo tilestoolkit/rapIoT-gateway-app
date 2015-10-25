@@ -15,8 +15,6 @@ var sidebarToggle={
     menuLink:null,
 
     toggleClass:function(element,className){
-
-        console.log(":::CLASSNAME:::",className,"element",element);
         var classes = element.className.split(/\s+/);
         var length = classes.length;
 

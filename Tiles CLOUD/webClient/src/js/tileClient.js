@@ -16,7 +16,7 @@ var TileClient = function (url) {
     this.url = url;
     this.client = null;//client handling mqtt connecting
     this.modules = [];
-    this.connected=false;
+    this.connected = false;
 };
 
 /**
@@ -26,15 +26,15 @@ var TileClient = function (url) {
 TileClient.prototype.connect = function (dom) {
     this.client = mqtt.connect(this.url);
 
-    var self=this;
-    this.client.on("connect",function(){
-       self.connected=true;
-        console.log("DOM",dom,$(dom));
-      //  $(dom).trigger("connected");
+    var self = this;
+    this.client.on("connect", function () {
+        self.connected = true;
+        console.log("DOM", dom, $(dom));
+        //  $(dom).trigger("connected");
         $.event.trigger({
-            type:    "connected",
+            type: "connected",
             message: "Tile Client connected",
-            time:    new Date()
+            time: new Date()
         });
     });
 };
@@ -66,15 +66,13 @@ TileClient.prototype.listen = function () {
 
     var self = this;
     this.client.on("message", function (topic, payload) {
-        try {//try parsing payload to json
-            var json = JSON.parse(payload);
 
+        var json = self.parseMsg(payload);
+        if (json !== false) {
             if (self.modules[topic] !== undefined)
                 self.modules[topic](json);//pass json to function
         }
-        catch (e) {//received data not on json format
-            return false;
-        }
+
     });
 };
 
@@ -84,4 +82,63 @@ TileClient.prototype.listen = function () {
 TileClient.prototype.addModule = function (topic, func) {
     if (this.modules[topic] === undefined)
         this.modules[topic] = func;
+};
+
+TileClient.prototype.parseMsg = function (str) {
+
+    try {
+        var json = JSON.parse(str);
+
+        if (json.fromID === undefined || json.type === undefined || json.Event === undefined)
+            return false;
+
+        switch (json.type) {
+            case 'touch_event':
+            case 'motion_event':
+                break;
+
+            default:
+                return false;
+        }
+
+        switch (json.Event) {
+            case 'tap':
+            case 'doubletap':
+            case 'forcetap':
+            case 'swipeleft':
+            case 'swiperight':
+            case 'shaken':
+            case 'tilted':
+                break;
+
+            default:
+                return false;
+        }
+
+        return true;
+
+    }
+    catch (e) {
+        return false;
+    }
+
+};
+
+TileClient.prototype.generateMsg = function (Tile, type, activation, color, pattern, duration) {
+    var object = {
+        ID: Tile.id
+    };
+
+    if (type)
+        object.Type = type;
+    if (activation)
+        object.Activation = activation;
+    if (color)
+        object.Color = color;
+    if (pattern)
+        object.Pattern = pattern;
+    if (duration)
+        object.Duration = duration;
+
+    return JSON.stringify(object);
 };
