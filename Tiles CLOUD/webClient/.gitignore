@@ -4,3 +4,7 @@ node_modules
 build
 .sass-cache
 dist
+
+src/css/pure
+src/css/main-grid.css
+src/js/browserMqtt.js

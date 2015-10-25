@@ -81,7 +81,20 @@ module.exports = function (grunt) {
         handlebars: {
             compile: {
                 options: {
-                    namespace: "JST"
+                    namespace: "JST",
+                    partialsUseNamespace: true,
+                    partialsPathRegex: /\/partials\//,
+                    partialRegex: /.*\.hbs/,
+
+                    processName: function(fileName) {
+                        var bits = fileName.split('/');
+                        return bits[bits.length - 1].replace('.hbs', '');
+                    },
+
+                    processPartialName: function(fileName) {
+                        var bits = fileName.split('/');
+                        return bits[bits.length - 1].replace('.hbs', '');
+                    }
                 },
                 files: {
                     "src/js/templates.js": "src/views/templates/**/*.hbs"

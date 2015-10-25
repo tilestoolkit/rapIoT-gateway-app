@@ -11,7 +11,7 @@
         <div class="tile">
             <div class="pure-u-1-4">{{name}}</div>
             <div class="pure-u-1-4"><a href="#{{id}}" >Debug</a></div>
-            <div class="pure-u-1-4">{{online}}{{> awsmRadio type="success" name="{{name}}" id="{{id}}" value="radio{{id}}" isChecked=true label="" }}</div>
+            <div class="pure-u-1-4">{{> awsmRadio type="success" name=name id=id value=id isChecked=online }}</div>
             <div class="pure-u-1-4">{{inUse}}</div>
         </div>
     {{/each}}

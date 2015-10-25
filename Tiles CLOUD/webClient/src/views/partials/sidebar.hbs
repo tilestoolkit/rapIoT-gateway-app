@@ -3,14 +3,12 @@
 
     <script>
         $( document ).ready(function() {
-            console.log( "ready!" );
-
         var data={
             tiles:[
                 {
                     name:"first",
                     id:"123",
-                    online:true,
+                    online:false,
                     inUse:false
                 },
                 {
@@ -20,13 +18,10 @@
                     inUse:false
                 }
             ]
-
-
         };
-        var template=JST["src/views/templates/tiles_sidebar.hbs"];
-        var html=template(data);
+        var template=JST["tiles_sidebar"];
 
-        document.getElementById('tileSide').innerHTML=html;
+        document.getElementById('tileSide').innerHTML=template(data);
         });
 
     </script>

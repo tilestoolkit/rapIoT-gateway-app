@@ -290,7 +290,10 @@ appears on the left side of the page.
   -webkit-overflow-scrolling: touch; }
 
 #menu .radio, #menu .checkbox {
-  padding-left: 0; }
+  /*padding-left: 0;*/
+  padding-top: 0;
+  position: relative;
+  top: -8px; }
 
 /*
 All anchors inside the menu should be styled like this.

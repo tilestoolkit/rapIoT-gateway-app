@@ -98,7 +98,10 @@ appears on the left side of the page.
 
 #menu .radio, #menu .checkbox
 {
-  padding-left: 0;
+  /*padding-left: 0;*/
+    padding-top: 0;
+    position: relative;
+    top: -8px;
 }
 
 /*
