@@ -112,8 +112,12 @@ module.exports = function (grunt) {
                 files: ['src/js/**/*.js'],
                 tasks: ['stripmq','uglify']
             },
+            assemble: {
+                files: ['src/views/layouts/*.hbs','src/views/pages/*.hbs','src/views/partials/*.hbs'],
+                tasks: ['assemble']
+            },
             hs: {
-                files: ['src/views/**/*.hbs'],
+                files: ['src/views/templates/*.hbs'],
                 tasks: ['handlebars']
             }
 

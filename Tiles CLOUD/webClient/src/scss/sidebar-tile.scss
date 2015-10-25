@@ -1,0 +1,30 @@
+.tiles {
+  color: #fff;
+
+  #tiles-header {
+    font-weight: bold;
+    border-bottom:1px solid #c4e3f3;
+    padding:0.4em 0;
+  }
+
+  .tile{
+    padding:0.2em 0 0.2em 1em;
+  }
+}
+
+.sidebar-table {
+  width: 100%;
+  text-align: center;
+
+  color: #fff;
+
+}
+
+.sidebar-table thead {
+  text-align: left;
+  border-bottom: 1px solid #006600;
+}
+
+.sidebar-table td, .sidebar-table th {
+  padding: 8px;
+}

@@ -1,0 +1,18 @@
+<div class="pure-g" id="tiles-header">
+    <div class="pure-u-1-4">My Tiles</div>
+    <div class="pure-u-1-4">Debug</div>
+    <div class="pure-u-1-4">Online</div>
+    <div class="pure-u-1-4">In use</div>
+</div>
+
+
+<div id="tiles" class="pure-g">
+    {{#each tiles}}
+        <div class="tile">
+            <div class="pure-u-1-4">{{name}}</div>
+            <div class="pure-u-1-4"><a href="#{{id}}" >Debug</a></div>
+            <div class="pure-u-1-4">{{online}}{{> awsmRadio type="success" name="{{name}}" id="{{id}}" value="radio{{id}}" isChecked=true label="" }}</div>
+            <div class="pure-u-1-4">{{inUse}}</div>
+        </div>
+    {{/each}}
+</div>

@@ -210,4 +210,25 @@ Hides the menu at `48em`, but modify this based on your app's needs.
 #layout.active .menu-link {
   left: 30em; }
 
+.tiles {
+  color: #fff; }
+  .tiles #tiles-header {
+    font-weight: bold;
+    border-bottom: 1px solid #c4e3f3;
+    padding: 0.4em 0; }
+  .tiles .tile {
+    padding: 0.2em 0 0.2em 1em; }
+
+.sidebar-table {
+  width: 100%;
+  text-align: center;
+  color: #fff; }
+
+.sidebar-table thead {
+  text-align: left;
+  border-bottom: 1px solid #006600; }
+
+.sidebar-table td, .sidebar-table th {
+  padding: 8px; }
+
 /*# sourceMappingURL=main.css.map */
