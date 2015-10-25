@@ -2,3 +2,9 @@ bower_components
 node_modules
 .idea/
 build
+.sass-cache
+dist
+
+src/css/pure
+src/css/main-grid.css
+src/js/browserMqtt.js

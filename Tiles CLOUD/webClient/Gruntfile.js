@@ -8,14 +8,41 @@ module.exports = function (grunt) {
             options: {
                 banner: '/*! <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> */\n'
             },
-            build: {
-                src: 'asset/js/<%= pkg.name %>.js',
-                dest: 'build/dist/js/<%= pkg.name %>.min.js'
+            asset_js: {
+                files: [{
+                    expand: true,
+                    flatten:true,
+                    src: 'src/js/*.js',
+                    dest: 'dist/asset/js/'
+                }]
+            },
+            modules_js: {
+                files: [{
+                    expand: true,
+                    flatten:true,
+                    src: 'src/js/modules/*/*.js',
+                    dest: 'dist/asset/js/modules/'
+                }]
+            }
+        },
+        cssmin: {
+            target: {
+                files: [{
+                    expand: true,
+                    cwd: 'src/css',
+                    src: ['**/*.css', '!*.min.css'],
+                    dest: 'dist/asset/css',
+                    ext: '.min.css'
+                },
+                    {'dist/asset/css/theme/main.min.css': ['src/css/theme/main.css']},
+                    {'dist/asset/css/theme/old/main.min.css': ['src/css/theme/old/main.css']},
+                    {'dist/asset/css/pure/pure.min.css': ['bower_components/pure/pure.css']}
+                ]
             }
         },
         pure_grids: {
             responsive: {
-                dest: 'build/public/css/main-grid.css',
+                dest: 'src/css/main-grid.css',
 
                 options: {
                     units: 12, // 12-column grid
@@ -38,12 +65,75 @@ module.exports = function (grunt) {
             all: {
                 files: {
                     // Takes the input file `grid.css`, and generates `grid-old-ie.css`.
-                    'bower_components/pure/grids-responsive-old-ie.css':['build/css/grids-responsive.css'],
-
-                    // Takes the input file `app.css`, and generates `app-old-ie.css`.
-                    //'asset/css/app-old-ie.css': ['asset/css/app.css']
+                    'src/css/pure/old/grids-responsive-old-ie.css':['bower_components/pure/grids-responsive.css'],
+                    'src/css/pure/old/pure-old-ie.css':['bower_components/pure/pure.css']
                 }
             }
+        },
+        sass: {
+            dist: {
+                files: {
+                    'src/css/theme/main.css': 'src/scss/main.scss',
+                    'src/css/theme/old/main.css': 'src/scss/old/main.scss'
+                }
+            }
+        },
+        handlebars: {
+            compile: {
+                options: {
+                    namespace: "JST",
+                    partialsUseNamespace: true,
+                    partialsPathRegex: /\/partials\//,
+                    partialRegex: /.*\.hbs/,
+
+                    processName: function(fileName) {
+                        var bits = fileName.split('/');
+                        return bits[bits.length - 1].replace('.hbs', '');
+                    },
+
+                    processPartialName: function(fileName) {
+                        var bits = fileName.split('/');
+                        return bits[bits.length - 1].replace('.hbs', '');
+                    }
+                },
+                files: {
+                    "src/js/templates.js": "src/views/templates/**/*.hbs"
+                }
+            }
+        },
+        assemble:{
+            options:{
+              layout:'page.hbs',
+                layoutdir:'./src/views/layouts',
+                partials:'./src/views/partials/**/*.hbs'
+            },
+            pages:{
+                files:[{
+                    cwd:'./src/views/pages/',
+                    dest:'./dist/',
+                    expand:true,
+                    src:'**/*.hbs'
+                }]
+            }
+        },
+        watch: {
+            css: {
+                files: ['src/scss/**/*.scss'],
+                tasks: ['sass','cssmin']
+            },
+            js: {
+                files: ['src/js/**/*.js'],
+                tasks: ['stripmq','uglify']
+            },
+            assemble: {
+                files: ['src/views/layouts/*.hbs','src/views/pages/*.hbs','src/views/partials/*.hbs'],
+                tasks: ['assemble']
+            },
+            hs: {
+                files: ['src/views/templates/*.hbs'],
+                tasks: ['handlebars']
+            }
+
         }
     });
 
@@ -51,7 +141,12 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-pure-grids');
     grunt.loadNpmTasks('grunt-stripmq');
+    grunt.loadNpmTasks('grunt-contrib-cssmin');
+    grunt.loadNpmTasks('grunt-contrib-sass');
+    grunt.loadNpmTasks('grunt-contrib-handlebars');
+    grunt.loadNpmTasks('grunt-contrib-watch');
+    grunt.loadNpmTasks('assemble');
     // Default task(s).
-    grunt.registerTask('default', ['pure_grids','uglify']);
+    grunt.registerTask('default', ['assemble','pure_grids','handlebars','stripmq','uglify','sass','cssmin']);
 
 };
