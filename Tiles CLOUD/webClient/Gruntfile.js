@@ -116,7 +116,27 @@ module.exports = function (grunt) {
                 }]
             }
         },
+        connect: {
+            dev: {
+                options: {
+                    port: 8000,
+                    base: {
+                        path: './dist',
+                        options: {
+                            index: 'index.html',
+                            maxAge: 300000
+                        }
+                    },
+                    livereload: true,
+                    open: true,
+                    keepalive:true
+                }
+            }
+        },
         watch: {
+            options: {
+                livereload: true
+            },
             css: {
                 files: ['src/scss/**/*.scss'],
                 tasks: ['sass','cssmin']
@@ -146,6 +166,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-handlebars');
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('assemble');
+    grunt.loadNpmTasks('grunt-contrib-connect');
     // Default task(s).
     grunt.registerTask('default', ['assemble','pure_grids','handlebars','stripmq','uglify','sass','cssmin']);
 
