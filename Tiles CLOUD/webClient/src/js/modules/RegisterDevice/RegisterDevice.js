@@ -21,6 +21,7 @@ var RegisterDevice = (function () {
 
         return {
             connect: function (json) {
+                console.log('New tile connected');
                 if (tiles[json.fromID] === undefined)
                     tiles[json.fromID] = new Tile(json.fromID);
                 else
@@ -29,6 +30,7 @@ var RegisterDevice = (function () {
                 Func.triggerEvent(Variables.onTileChange, "new tile connected");
             },
             disconnect: function (json) {
+                console.log('Tile disconnect');
                 if (tiles[json.fromID] !== undefined) {
                     tiles[json.fromID] = {};
                     delete tiles[json.fromID];

@@ -19,11 +19,12 @@
     <link rel="stylesheet" href="../bower_components/font-awesome/css/font-awesome.min.css">
 
     <script src="../node_modules/handlebars/dist/handlebars.runtime.min.js"></script>
-    <script>
+        <script>
 
     </script>
 </head>
 <body>
+<script src="../bower_components/console-log-div/console-log-div.js"></script>
 
 <script src="asset/js/browserMqtt.js"></script>
 <script src="asset/js/Func.js"></script>
@@ -38,6 +39,7 @@
 <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
 
 <script>
+    console.log("meh");
     Handlebars.partials = JST;
     var led=null;
     var client=TileClient.getInstance();
@@ -84,7 +86,6 @@
         {{>body}}
     </div>
 
-
 </div>
 
 
@@ -99,6 +100,23 @@
 
     #connectStatus.active{
         background-color:green;
+    }
+
+    #console-log-div {
+        padding: 5px 10px;
+        border-radius: 5px;
+        width: 95% !important;
+        background-color: #efefef;
+
+        font-family: monospace;
+        white-space: pre;
+        border: 1px solid black;
+        position: fixed;
+        bottom: 0;
+        z-index: 10004;
+
+        height: 200px;
+
     }
 </style>
 </body>
