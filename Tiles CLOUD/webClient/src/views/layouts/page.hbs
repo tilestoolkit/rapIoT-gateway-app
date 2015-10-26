@@ -27,6 +27,7 @@
 
 <script src="asset/js/browserMqtt.js"></script>
 <script src="asset/js/Func.js"></script>
+<script src="asset/js/Variables.js"></script>
 <script src="asset/js/tileClient.js"></script>
 <script src="asset/js/Tile.js"></script>
 <script src="asset/js/sidebar.js"></script>
@@ -47,25 +48,22 @@
 
         sidebarToggle.init();
         led=new LedOn("lightButton");
-
-        var subRec = "TilesReceive";
-
         client.connect("ws://localhost:3000","#connectStatus");
 
         //client.subscribe("Tiles");
 
-        client.addModule(subRec, led.changeDomStatus);
 
-        registeredDevices=new RegisterDevice();
-
-
-        client.addModule("activate",registeredDevices.connect);
-        client.addModule("deactivate",registeredDevices.disconnect);
 
     });
 
-    $(document).on('connected',function(e){
+    $(document).on(Variables.onConnect,function(e){
+        var subRec = "TilesReceive";
         document.getElementById("connectStatus").className="active";
+        registeredDevices=RegisterDevice.getInstance();
+        client.addModule(subRec, led.changeDomStatus);
+
+        client.addModule("activate",registeredDevices.connect);
+        client.addModule("deactivate",registeredDevices.disconnect);
     });
 
 </script>

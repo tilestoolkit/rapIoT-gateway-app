@@ -7,6 +7,7 @@
  * 14.10.2015
  * First created in in v0.1.0
  */
+"use strict";
 var LedOn = function (domId) {
     this.status = false;
     this.domElement = document.getElementById(domId);

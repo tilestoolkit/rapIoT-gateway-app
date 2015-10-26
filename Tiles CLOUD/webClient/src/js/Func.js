@@ -1,6 +1,7 @@
 /**
  * Created by Jonas on 26.10.2015.
  */
+"use strict";
 var Func = {
     triggerEvent: function (topic, msg) {
         $.event.trigger({

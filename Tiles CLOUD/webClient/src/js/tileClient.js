@@ -7,11 +7,7 @@
  * 14.10.2015
  * First created in in v0.1.0
  */
-
-/**
- * @param url string url and port to connect to. format: hostname/ip:port
- * @constructor
- */
+"use strict";
 var TileClient = (function () {
     var instance;
 
@@ -22,39 +18,31 @@ var TileClient = (function () {
         var modules = {};
         var connected = false;
 
-
         function listen() {
-
-            var self=instance;
-
-            client.on("message", function (topic, payload) {
-                console.log("SELF",self);
+            client.on(Variables.mqttMsg, function (topic, payload) {
                 var json = Func.parseMsg(payload);
-                console.log("JSON", json);
                 if (json !== false) {
-                    var func=TileClient.getInstance().getModule(topic);
-                    console.log("func",func);
-                    if (func!==false)
+                    var func = TileClient.getInstance().getModule(topic);
+                    if (func !== false)
                         func(json);//pass json to function
                 }
-
             });
         }
-
 
         return {
             /**
              * Connects to server
+             * @param url string url and port to connect to. format: hostname/ip:port
              * @returns {boolean} whether connected to server successfully
              */
-            connect: function (url, dom) {
+            connect: function (url) {
                 this.url = url;
                 client = mqtt.connect(this.url);
                 var self = instance;
                 console.log(self, instance);
-                client.on("connect", function () {
+                client.on(Variables.mqttConnect, function () {
                     self.connected = true;
-                    Func.triggerEvent("connected", "Tile web-client connected");
+                    Func.triggerEvent(Variables.onConnect, "Tile web-client connected");
                 });
 
                 listen();
@@ -83,13 +71,13 @@ var TileClient = (function () {
                 if (modules[topic] === undefined)
                     modules[topic] = func;
             },
-            hasModule:function(topic){
-                if(modules[topic]!==undefined)
+            hasModule: function (topic) {
+                if (modules[topic] !== undefined)
                     return true;
                 return false;
             },
-            getModule:function(topic){
-                if(this.hasModule(topic))
+            getModule: function (topic) {
+                if (this.hasModule(topic))
                     return modules[topic];
                 return false;
             }

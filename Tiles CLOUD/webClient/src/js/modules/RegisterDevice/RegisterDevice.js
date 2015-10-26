@@ -7,34 +7,61 @@
  * 14.10.2015
  * First created in in v0.1.0
  */
-var RegisterDevice=function(){
-    var client=TileClient.getInstance();
-    client.subscribe('activate');
-    client.subscribe('deactivate');
+"use strict";
+var RegisterDevice = (function () {
 
-    this.tiles={};
-};
+    var instance;
 
+    function init() {
+        var tiles = {};
 
-RegisterDevice.prototype.connect=function(json){
-    console.log("connected",json);
-    console.log("tiles",this.tiles);
+        var client = TileClient.getInstance();
+        client.subscribe(Variables.tileActivate);
+        client.subscribe(Variables.tileDeactivate);
 
-    if(this.tiles===undefined)
-        this.tiles={};
+        return {
+            connect: function (json) {
+                if (tiles[json.fromID] === undefined)
+                    tiles[json.fromID] = new Tile(json.fromID);
+                else
+                    console.log("tile already registered");
 
-    if(this.tiles[json.fromID]===undefined)
-        this.tiles[json.fromID]=new Tile(json.fromID);
-    else
-        console.log("tile already registered");
-};
+                Func.triggerEvent(Variables.onTileChange, "new tile connected");
+            },
+            disconnect: function (json) {
+                if (tiles[json.fromID] !== undefined) {
+                    tiles[json.fromID] = {};
+                    delete tiles[json.fromID];
+                    Func.triggerEvent(Variables.onTileChange, "tile disconnected");
+                }
+            },
+            getTiles: function () {
+                var tempTiles = {
+                    tiles: []
+                };
 
-RegisterDevice.prototype.disconnect=function(json){
-    console.log("disconneted",json);
+                for (var key in tiles)
+                    tempTiles.tiles.push({
+                        name: key,
+                        id: tiles[key].id,
+                        online: true,
+                        inUse: false
+                    });
 
-    if(this.tiles[json.fromID]!==undefined)
-    {
-        this.tiles[json.fromID]={};
-        delete this.tiles[json.fromID];
+                return tempTiles;
+            }
+        };
     }
-};
+
+    return {
+        /**
+         * Get current instance of TileClient making sure only one instance is created
+         * @returns {*}
+         */
+        getInstance: function () {
+            if (!instance)//if instance doesn't exists..
+                instance = init();//..initialize it
+            return instance;
+        }
+    };
+})();

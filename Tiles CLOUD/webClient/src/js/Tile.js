@@ -7,7 +7,7 @@
  * 14.10.2015
  * First created in in v0.1.0
  */
-
+"use strict";
 var Tile = function (id) {
     this.id = id;
 };
