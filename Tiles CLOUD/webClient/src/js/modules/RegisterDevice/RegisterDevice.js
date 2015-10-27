@@ -22,12 +22,14 @@ var RegisterDevice = (function () {
         return {
             connect: function (json) {
                 console.log('New tile connected');
-                if (tiles[json.fromID] === undefined)
+                if (tiles[json.fromID] === undefined) {
                     tiles[json.fromID] = new Tile(json.fromID);
+                }
                 else
                     console.log("tile already registered");
 
                 Func.triggerEvent(Variables.onTileChange, "new tile connected");
+
             },
             disconnect: function (json) {
                 console.log('Tile disconnect');
@@ -44,13 +46,17 @@ var RegisterDevice = (function () {
 
                 for (var key in tiles)
                     tempTiles.tiles.push({
-                        name: key,
+                        name: tiles[key].name,
                         id: tiles[key].id,
                         online: true,
                         inUse: false
                     });
 
                 return tempTiles;
+            },
+            getTile: function (id) {
+                if (tiles[id] !== undefined)
+                    return tiles[id];
             }
         };
     }

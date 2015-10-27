@@ -23,6 +23,11 @@ module.exports = function (grunt) {
                     src: 'src/js/modules/*/*.js',
                     dest: 'dist/asset/js/modules/'
                 }]
+            },
+            bootstrap:{
+                files:{
+                    'dist/asset/js/bootstrap/bootstrap.js':['bower_components/bootstrap-sass/assets/javascripts/bootstrap/modal.js']
+                }
             }
         },
         cssmin: {

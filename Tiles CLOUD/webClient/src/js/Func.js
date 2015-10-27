@@ -66,5 +66,19 @@ var Func = {
             object.Duration = duration;
 
         return JSON.stringify(object);
+    },
+    onDebugTile: function () {
+        $(".tile-terminal").on("click", function (e) {
+            Func.appendTemplateModal(JST['debugModal'](RegisterDevice.getInstance().getTile($(this).data('id'))));
+        });
+    },
+    appendTemplateModal: function (html) {
+        var element = $("#" + Variables.modalId);
+        element.html(html);
+
+        element.modal('show');
+    },
+    toggleClass: function (id, toggleClass) {
+        document.getElementById(id).classList.toggle(toggleClass);
     }
 };

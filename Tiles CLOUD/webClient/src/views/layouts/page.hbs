@@ -24,8 +24,6 @@
     </script>
 </head>
 <body>
-<script src="../bower_components/console-log-div/console-log-div.js"></script>
-
 <script src="asset/js/browserMqtt.js"></script>
 <script src="asset/js/Func.js"></script>
 <script src="asset/js/Variables.js"></script>
@@ -36,10 +34,11 @@
 <script src="asset/js/modules/RegisterDevice.js"></script>
 <script src="asset/js/templates.js"></script>
 
+
 <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+<script src="asset/js/bootstrap/bootstrap.js"></script>
 
 <script>
-    console.log("meh");
     Handlebars.partials = JST;
     var led=null;
     var client=TileClient.getInstance();
@@ -47,14 +46,9 @@
     var registeredDevices=null;
 
     $( document ).ready(function() {
-
         sidebarToggle.init();
         led=new LedOn("lightButton");
         client.connect("ws://localhost:3000","#connectStatus");
-
-        //client.subscribe("Tiles");
-
-
 
     });
 
@@ -86,6 +80,7 @@
         {{>body}}
     </div>
 
+    <div class="modal" id="globalModal" tabindex="-1" role="dialog" aria-labelledby="globalModalLabel"></div>
 </div>
 
 

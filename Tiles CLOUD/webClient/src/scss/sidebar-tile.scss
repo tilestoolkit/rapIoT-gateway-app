@@ -3,12 +3,18 @@
 
   #tiles-header {
     font-weight: bold;
-    border-bottom:1px solid #c4e3f3;
-    padding:0.4em 0;
+    border-bottom: 1px solid #c4e3f3;
+    padding: 0.4em 0;
   }
 
-  .tile{
-    padding:0.2em 0 0.2em 1em;
+  .tile {
+    padding: 0.2em 0 0.2em 1em;
+    height: 2em;
+    line-height: 2em;
+  }
+
+  .tile.active {
+    background-color: #c4e3f3;
   }
 }
 

@@ -68,6 +68,7 @@ var TileClient = (function () {
                 client.publish(topic, sendStr);
             },
             addModule: function (topic, func) {
+                console.log(topic,func);
                 if (modules[topic] === undefined)
                     modules[topic] = func;
             },

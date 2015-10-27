@@ -1,4 +1,122 @@
 @charset "UTF-8";
+.modal-open {
+  overflow: hidden; }
+
+.modal {
+  display: none;
+  overflow: hidden;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1050;
+  -webkit-overflow-scrolling: touch;
+  outline: 0; }
+  .modal.fade .modal-dialog {
+    -webkit-transform: translate(0, -25%);
+    -ms-transform: translate(0, -25%);
+    -o-transform: translate(0, -25%);
+    transform: translate(0, -25%);
+    -webkit-transition: -webkit-transform 0.3s ease-out;
+    -moz-transition: -moz-transform 0.3s ease-out;
+    -o-transition: -o-transform 0.3s ease-out;
+    transition: transform 0.3s ease-out; }
+  .modal.in .modal-dialog {
+    -webkit-transform: translate(0, 0);
+    -ms-transform: translate(0, 0);
+    -o-transform: translate(0, 0);
+    transform: translate(0, 0); }
+
+.modal-open .modal {
+  overflow-x: hidden;
+  overflow-y: auto; }
+
+.modal-dialog {
+  position: relative;
+  width: auto;
+  margin: 10px; }
+
+.modal-content {
+  position: relative;
+  background-color: #fff;
+  border: 1px solid #999;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 6px;
+  -webkit-box-shadow: 0 3px 9px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 3px 9px rgba(0, 0, 0, 0.5);
+  background-clip: padding-box;
+  outline: 0; }
+
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1040;
+  background-color: #000; }
+  .modal-backdrop.fade {
+    opacity: 0;
+    filter: alpha(opacity=0); }
+  .modal-backdrop.in {
+    opacity: 0.5;
+    filter: alpha(opacity=50); }
+
+.modal-header {
+  padding: 15px;
+  border-bottom: 1px solid #e5e5e5;
+  min-height: 16.42857px; }
+
+.modal-header .close {
+  margin-top: -2px; }
+
+.modal-title {
+  margin: 0;
+  line-height: 1.42857; }
+
+.modal-body {
+  position: relative;
+  padding: 15px; }
+
+.modal-footer {
+  padding: 15px;
+  text-align: right;
+  border-top: 1px solid #e5e5e5; }
+  .modal-footer:before, .modal-footer:after {
+    content: " ";
+    display: table; }
+  .modal-footer:after {
+    clear: both; }
+  .modal-footer .btn + .btn {
+    margin-left: 5px;
+    margin-bottom: 0; }
+  .modal-footer .btn-group .btn + .btn {
+    margin-left: -1px; }
+  .modal-footer .btn-block + .btn-block {
+    margin-left: 0; }
+
+.modal-scrollbar-measure {
+  position: absolute;
+  top: -9999px;
+  width: 50px;
+  height: 50px;
+  overflow: scroll; }
+
+@media (min-width: 768px) {
+  .modal-dialog {
+    width: 600px;
+    margin: 30px auto; }
+
+  .modal-content {
+    -webkit-box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5); }
+
+  .modal-sm {
+    width: 300px; } }
+@media (min-width: 992px) {
+  .modal-lg {
+    width: 900px; } }
 .checkbox {
   padding-left: 20px; }
   .checkbox label {
@@ -438,7 +556,11 @@ Hides the menu at `48em`, but modify this based on your app's needs.
     border-bottom: 1px solid #c4e3f3;
     padding: 0.4em 0; }
   .tiles .tile {
-    padding: 0.2em 0 0.2em 1em; }
+    padding: 0.2em 0 0.2em 1em;
+    height: 2em;
+    line-height: 2em; }
+  .tiles .tile.active {
+    background-color: #c4e3f3; }
 
 .sidebar-table {
   width: 100%;
@@ -452,9 +574,56 @@ Hides the menu at `48em`, but modify this based on your app's needs.
 .sidebar-table td, .sidebar-table th {
   padding: 8px; }
 
+.fa-box {
+  background-color: #232323;
+  color: #eaeaea;
+  padding: 5px;
+  border-radius: 3px; }
+
+.button-success,
+.button-error,
+.button-warning,
+.button-secondary {
+  color: white;
+  border-radius: 4px;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2); }
+
+.button-success {
+  background: #1cb841;
+  /* this is a green */ }
+
+.button-error {
+  background: #ca3c3c;
+  /* this is a maroon */ }
+
+.button-warning {
+  background: #df7514;
+  /* this is an orange */ }
+
+.button-secondary {
+  background: #42b8dd;
+  /* this is a light blue */ }
+
+.button-xsmall {
+  font-size: 70%; }
+
+.button-small {
+  font-size: 85%; }
+
+.button-large {
+  font-size: 110%; }
+
+.button-xlarge {
+  font-size: 125%; }
+
 /** override awesome var*/
 .radio label::after {
   left: 4px !important;
   top: 4px !important; }
+
+.modal-header .close {
+  right: 0;
+  position: absolute;
+  margin-right: 5px; }
 
 /*# sourceMappingURL=main.css.map */

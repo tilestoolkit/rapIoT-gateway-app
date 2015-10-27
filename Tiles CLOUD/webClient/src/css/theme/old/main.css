@@ -217,7 +217,11 @@ Hides the menu at `48em`, but modify this based on your app's needs.
     border-bottom: 1px solid #c4e3f3;
     padding: 0.4em 0; }
   .tiles .tile {
-    padding: 0.2em 0 0.2em 1em; }
+    padding: 0.2em 0 0.2em 1em;
+    height: 2em;
+    line-height: 2em; }
+  .tiles .tile.active {
+    background-color: #c4e3f3; }
 
 .sidebar-table {
   width: 100%;
@@ -230,5 +234,47 @@ Hides the menu at `48em`, but modify this based on your app's needs.
 
 .sidebar-table td, .sidebar-table th {
   padding: 8px; }
+
+.fa-box {
+  background-color: #232323;
+  color: #eaeaea;
+  padding: 5px;
+  border-radius: 3px; }
+
+.button-success,
+.button-error,
+.button-warning,
+.button-secondary {
+  color: white;
+  border-radius: 4px;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2); }
+
+.button-success {
+  background: #1cb841;
+  /* this is a green */ }
+
+.button-error {
+  background: #ca3c3c;
+  /* this is a maroon */ }
+
+.button-warning {
+  background: #df7514;
+  /* this is an orange */ }
+
+.button-secondary {
+  background: #42b8dd;
+  /* this is a light blue */ }
+
+.button-xsmall {
+  font-size: 70%; }
+
+.button-small {
+  font-size: 85%; }
+
+.button-large {
+  font-size: 110%; }
+
+.button-xlarge {
+  font-size: 125%; }
 
 /*# sourceMappingURL=main.css.map */

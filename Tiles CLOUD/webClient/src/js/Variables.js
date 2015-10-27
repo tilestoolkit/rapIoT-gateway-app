@@ -17,5 +17,8 @@ var Variables = {
     tileDeactivate: "deactivate",
 
     mqttConnect: "connect",
-    mqttMsg: "message"
+    mqttMsg: "message",
+
+    modalId:"globalModal",
+    tileDevicePrefix:"tile-"
 };
