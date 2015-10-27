@@ -43,7 +43,7 @@ this["JST"]["tiles_sidebar"] = Handlebars.template({"1":function(container,depth
     + alias4(((helper = (helper = helpers.id || (depth0 != null ? depth0.id : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"id","hash":{},"data":data}) : helper)))
     + "\" class=\"tile-terminal\" data-id=\""
     + alias4(((helper = (helper = helpers.id || (depth0 != null ? depth0.id : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"id","hash":{},"data":data}) : helper)))
-    + "\"><i class=\"fa fa-terminal fa-box\"></i></a></div>\r\n            <div class=\"pure-u-1-4\">"
+    + "\"><i\r\n                    class=\"fa fa-terminal fa-box\"></i></a></div>\r\n            <div class=\"pure-u-1-4\">"
     + ((stack1 = container.invokePartial(partials.awsmRadio,depth0,{"name":"awsmRadio","hash":{"isChecked":(depth0 != null ? depth0.online : depth0),"value":(depth0 != null ? depth0.id : depth0),"id":(depth0 != null ? depth0.id : depth0),"name":(depth0 != null ? depth0.name : depth0),"type":"success"},"data":data,"helpers":helpers,"partials":partials,"decorators":container.decorators})) != null ? stack1 : "")
     + "</div>\r\n            <div class=\"pure-u-1-4\">"
     + ((stack1 = container.invokePartial(partials.awsmRadio,depth0,{"name":"awsmRadio","hash":{"isChecked":(depth0 != null ? depth0.inUse : depth0),"value":(depth0 != null ? depth0.id : depth0),"id":(depth0 != null ? depth0.id : depth0),"name":(depth0 != null ? depth0.name : depth0),"type":"success"},"data":data,"helpers":helpers,"partials":partials,"decorators":container.decorators})) != null ? stack1 : "")

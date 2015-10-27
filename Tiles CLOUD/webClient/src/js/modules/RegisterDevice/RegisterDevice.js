@@ -22,22 +22,34 @@ var RegisterDevice = (function () {
         return {
             connect: function (json) {
                 console.log('New tile connected');
-                if (tiles[json.fromID] === undefined) {
+                /*if (tiles[json.fromID] === undefined) {
                     tiles[json.fromID] = new Tile(json.fromID);
+                }
+                else
+                    console.log("tile already registered");*/
+                if (tiles[json] === undefined) {
+                    tiles[json] = new Tile(json);
+                    Func.triggerEvent(Variables.onTileChange, "new tile connected");
                 }
                 else
                     console.log("tile already registered");
 
-                Func.triggerEvent(Variables.onTileChange, "new tile connected");
+
 
             },
             disconnect: function (json) {
                 console.log('Tile disconnect');
-                if (tiles[json.fromID] !== undefined) {
+               /* if (tiles[json.fromID] !== undefined) {
                     tiles[json.fromID] = {};
                     delete tiles[json.fromID];
                     Func.triggerEvent(Variables.onTileChange, "tile disconnected");
+                }*/
+                if(tiles[json]!==undefined){
+                    tiles[json] = {};
+                    delete tiles[json];
+                    Func.triggerEvent(Variables.onTileChange, "tile disconnected");
                 }
+
             },
             getTiles: function () {
                 var tempTiles = {

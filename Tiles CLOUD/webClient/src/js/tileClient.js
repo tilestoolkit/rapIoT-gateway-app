@@ -20,12 +20,22 @@ var TileClient = (function () {
 
         function listen() {
             client.on(Variables.mqttMsg, function (topic, payload) {
+                console.log("topic-payload",topic,payload);
                 var json = Func.parseMsg(payload);
-                if (json !== false) {
+             /*   if (json !== false) {
                     var func = TileClient.getInstance().getModule(topic);
                     if (func !== false)
                         func(json);//pass json to function
                 }
+                else
+                    Func.triggerEvent("tile-error","wrong format on data received");
+                    */
+                if(json===false)
+                json=payload.toString();
+                console.log("json",json);
+                var func = TileClient.getInstance().getModule(topic);
+                if (func !== false)
+                    func(json);//pass json to function
             });
         }
 
@@ -39,7 +49,7 @@ var TileClient = (function () {
                 this.url = url;
                 client = mqtt.connect(this.url);
                 var self = instance;
-                console.log(self, instance);
+
                 client.on(Variables.mqttConnect, function () {
                     self.connected = true;
                     Func.triggerEvent(Variables.onConnect, "Tile web-client connected");
@@ -68,7 +78,6 @@ var TileClient = (function () {
                 client.publish(topic, sendStr);
             },
             addModule: function (topic, func) {
-                console.log(topic,func);
                 if (modules[topic] === undefined)
                     modules[topic] = func;
             },
