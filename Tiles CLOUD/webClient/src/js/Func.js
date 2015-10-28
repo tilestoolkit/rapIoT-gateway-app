@@ -80,7 +80,10 @@ var Func = {
         element.modal('show');
     },
     toggleClass: function (id, toggleClass) {
-        document.getElementById(id).classList.toggle(toggleClass);
+        this.toggleClassElement(document.getElementById(id),toggleClass);
+    },
+    toggleClassElement:function(el,toggleClass){
+        el.classList.toggle(toggleClass);
     },
     /**
      * Stores tile to local storage in browser

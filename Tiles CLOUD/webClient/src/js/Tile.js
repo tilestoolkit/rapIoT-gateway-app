@@ -22,7 +22,7 @@ var Tile = function (id) {
     var client = TileClient.getInstance();
     client.subscribe(this.id);
     client.addModule(this.id, this.onAction);
-    Func.storeTile(this);
+   /* Func.storeTile(this);*/
 };
 
 Tile.prototype.onAction = function (data,topic) {
