@@ -11,8 +11,7 @@ angular.module('tiles.controllers', [])
  
     // called when the client has connected to a broker
     client.on('connect', function () {
-        client.subscribe('Tiles');
-        client.publish('Tiles', 'Hello MQTT!');
+        console.log('Successfully connected to MQTT broker.');
     });
  
     // called when a message arrives
@@ -21,16 +20,16 @@ angular.module('tiles.controllers', [])
         console.log('MQTT: ['+topic+'] '+msgString);
         try {
             var json = JSON.parse(msgString);
-            if (json) handleReceivedJson(json);
+            if (json) handleReceivedJson(topic, json);
         } catch (exception) {
             console.log('JSON Parse Error: '+exception);
         }
     });
 
-    function handleReceivedJson(json) {
+    function handleReceivedJson(deviceId, json) {
         for (var i=0; i<$scope.devices.length; i++) {
             var device = $scope.devices[i];
-            if (device.id == json.id) {
+            if (device.id == deviceId) {
                 device.ledOn = (json.activation == 'on');
                 $scope.$apply();
                 $scope.sendData(device);
@@ -58,7 +57,6 @@ angular.module('tiles.controllers', [])
         this.onData = function(data) { // Data received from RFduino
             var buttonValue = arrayBufferToString(data);
             var message = {
-                from_id: device.id,
                 type: 'button_event'
             };
             if (buttonValue === 'btnON') {
@@ -69,7 +67,7 @@ angular.module('tiles.controllers', [])
                 message.event = 'released';
             }
             $scope.$apply();
-            client.publish('Tiles', JSON.stringify(message));
+            client.publish(device.id, JSON.stringify(message));
         }
     }
 
@@ -119,6 +117,8 @@ angular.module('tiles.controllers', [])
                 device.connected = true;
                 var receiver = new DataReceiver(device);
                 ble.startNotification(device.id, rfduino.serviceUUID, rfduino.receiveCharacteristic, receiver.onData, app.onError);
+                client.publish('activate', device.id);
+                client.subscribe(device.id);
                 $scope.$apply();
             },
             function() {
@@ -130,6 +130,8 @@ angular.module('tiles.controllers', [])
         ble.disconnect(device.id,
             function() {
                 device.connected = false;
+                client.publish('deactivate', device.id);
+                client.unsubscribe(device.id);
                 $scope.$apply();
             },
             function() {
