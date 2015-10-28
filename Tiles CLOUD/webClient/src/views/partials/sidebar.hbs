@@ -2,28 +2,12 @@
     <a class="pure-menu-heading hline" href="#">Tiles Cloud v0.1.0</a>
 
     <script>
-        $( document ).ready(function() {
-        var data={
-            tiles:[
-                {
-                    name:"first",
-                    id:"123",
-                    online:false,
-                    inUse:false
-                },
-                {
-                    name:"second",
-                    id:"124",
-                    online:true,
-                    inUse:false
-                }
-            ]
-        };
-        var template=JST["tiles_sidebar"];
+        $(document).on(Variables.onTileChange, function (e) {
+            var template = JST["tiles_sidebar"];
 
-        document.getElementById('tileSide').innerHTML=template(data);
+            document.getElementById('tileSide').innerHTML = template(registeredDevices.getTiles());
+            Func.onDebugTile();
         });
-
     </script>
 
 
