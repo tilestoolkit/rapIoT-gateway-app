@@ -14,7 +14,7 @@ var Func = {
         try {
             var json = JSON.parse(str);
 
-            if (json.fromID === undefined || json.type === undefined || json.Event === undefined)
+            if (json.type === undefined || json.Event === undefined)
                 return false;
 
             switch (json.type) {
@@ -70,6 +70,7 @@ var Func = {
     onDebugTile: function () {
         $(".tile-terminal").on("click", function (e) {
             Func.appendTemplateModal(JST['debugModal'](RegisterDevice.getInstance().getTile($(this).data('id'))));
+
         });
     },
     appendTemplateModal: function (html) {
@@ -80,5 +81,28 @@ var Func = {
     },
     toggleClass: function (id, toggleClass) {
         document.getElementById(id).classList.toggle(toggleClass);
+    },
+    /**
+     * Stores tile to local storage in browser
+     * @param tile Tile object
+     */
+    storeTile:function(tile){
+        var tiles=store.get(Variables.storeTileKey);
+
+        tiles[tile.id]=tile;
+        store.set(Variables.storeTileKey,tiles);
+    },
+    /**
+     * Removes stored tile from local storage
+     * @param tile Tile object
+     */
+    removeStoreTile:function(tile){
+        var tiles=store.get(Variables.storeTileKey);
+
+        if(tiles[tile.id]!==undefined)
+        {
+            tiles[tile.id]={};
+            delete tiles[tile.id];
+        }
     }
 };

@@ -20,22 +20,24 @@ var TileClient = (function () {
 
         function listen() {
             client.on(Variables.mqttMsg, function (topic, payload) {
-                console.log("topic-payload",topic,payload);
+                console.log("topic-payload", topic, payload);
                 var json = Func.parseMsg(payload);
-             /*   if (json !== false) {
-                    var func = TileClient.getInstance().getModule(topic);
-                    if (func !== false)
-                        func(json);//pass json to function
-                }
-                else
-                    Func.triggerEvent("tile-error","wrong format on data received");
-                    */
-                if(json===false)
-                json=payload.toString();
-                console.log("json",json);
+                /*   if (json !== false) {
+                 var func = TileClient.getInstance().getModule(topic);
+                 if (func !== false)
+                 func(json);//pass json to function
+                 }
+                 else
+                 Func.triggerEvent("tile-error","wrong format on data received");
+                 */
+                if (json === false)
+                    json = payload.toString();
+
                 var func = TileClient.getInstance().getModule(topic);
                 if (func !== false)
-                    func(json);//pass json to function
+                    func(json, topic);//pass json to function
+                else
+                    Func.triggerEvent(Variables.triggerError, "topic not registered: " + topic);
             });
         }
 

@@ -15,10 +15,17 @@ var Variables = {
 
     tileActivate: "activate",
     tileDeactivate: "deactivate",
+    tileAction:"",
 
     mqttConnect: "connect",
     mqttMsg: "message",
+    triggerError:"tile-error",
 
     modalId:"globalModal",
-    tileDevicePrefix:"tile-"
+    tileDevicePrefix:"tile-",
+
+
+    //::store keys::
+    storeTileKey:"tiles"
+
 };

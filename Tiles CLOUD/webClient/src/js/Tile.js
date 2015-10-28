@@ -14,24 +14,25 @@ var size = 0;
 
 
 var Tile = function (id) {
-    console.log("new tile..");
     this.id = id;
     this.name = TileNames[size++];
+    this.online=true;
+    this.inUse=false;
 
     var client = TileClient.getInstance();
-    console.log(this);
     client.subscribe(this.id);
-
     client.addModule(this.id, this.onAction);
+    Func.storeTile(this);
 };
 
-Tile.prototype.onAction = function (data) {
-    Func.toggleClass(Variables.tileDevicePrefix + data.fromID, 'active');
+Tile.prototype.onAction = function (data,topic) {
+    Func.toggleClass(Variables.tileDevicePrefix + topic, 'active');
     setTimeout(function () {
-        Func.toggleClass(Variables.tileDevicePrefix + data.fromID, 'active');
+        Func.toggleClass(Variables.tileDevicePrefix + topic, 'active');
     }, 100);
-};
 
+   //Func.triggerEvent();
+};
 
 
 

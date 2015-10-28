@@ -60,8 +60,8 @@ var RegisterDevice = (function () {
                     tempTiles.tiles.push({
                         name: tiles[key].name,
                         id: tiles[key].id,
-                        online: true,
-                        inUse: false
+                        online: tiles[key].online,
+                        inUse: tiles[key].inUse
                     });
 
                 return tempTiles;
@@ -69,6 +69,10 @@ var RegisterDevice = (function () {
             getTile: function (id) {
                 if (tiles[id] !== undefined)
                     return tiles[id];
+            },
+            addTile:function(tile){
+                if(tiles[tile.id]!==undefined)
+                    tiles[tile.id]=tile;
             }
         };
     }

@@ -21,7 +21,8 @@
   "dependencies": {
     "pure": "~0.6.0",
     "font-awesome": "fontawesome#~4.4.0",
-    "metro": "~3.0.12"
+    "metro": "~3.0.12",
+    "store": "https://github.com/marcuswestin/store.js.git#~1.3.17"
   },
   "devDependencies": {
     "bootstrap-sass": "bootstrap-sass-official#~3.3.5",
