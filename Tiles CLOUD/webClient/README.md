@@ -10,19 +10,20 @@ Install it globally using Nodejs by running `npm install bower -g`.
 
 Install the dependencies by running `bower install` and `npm install`.
 
+##Ruby
+Ruby is needed for using the `Sass` package, for compiling `.scss` files to `.css` files.
+For installing Ruby follow the link [here](http://rubyinstaller.org/). 
+When Ruby is installed, install sass by running `gem install sass` in the terminal. 
+More information can be found [here](http://sass-lang.com/install)
 
 ##Grunt
 The project also needs to have [grunt](http://gruntjs.com/) installed for running the `Gruntfile.js`.
 Install grunt by running `npm install -g grunt-cli`. Run grunt by using the `grunt` command run from the project directory.
 
-
-
 ##Installing
 All compiled files will be put in the folder `dist`. To start compiling, run the `grunt` command within the terminal. 
 The `dist` folder should now be created. To auto-compile the project when changes are made within the project files
 run `grunt watch`.
-
-
 
 #Source Code
 All source code is located under the `src/` folder. 
