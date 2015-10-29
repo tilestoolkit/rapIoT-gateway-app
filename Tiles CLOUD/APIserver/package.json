@@ -20,5 +20,13 @@
   "bugs": {
     "url": "https://github.com/simonem/tiles-dev-sw/issues"
   },
-  "homepage": "https://github.com/simonem/tiles-dev-sw#readme"
+  "homepage": "https://github.com/simonem/tiles-dev-sw#readme",
+  "dependencies": {
+    "bcrypt": "^0.8.5",
+    "body-parser": "^1.14.1",
+    "express": "^4.13.3",
+    "jsonwebtoken": "^5.4.1",
+    "mongoose": "^4.2.3",
+    "morgan": "^1.6.1"
+  }
 }
