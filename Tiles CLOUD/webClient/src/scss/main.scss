@@ -1,5 +1,6 @@
 @import "../../bower_components/bootstrap-sass/assets/stylesheets/bootstrap/_variables";
 @import "../../bower_components/bootstrap-sass/assets/stylesheets/bootstrap/_mixins";
+@import "../../bower_components/bootstrap-sass/assets/stylesheets/bootstrap/_modals";
 @import "../../bower_components/font-awesome/scss/_variables";
 
 @import "../../bower_components/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox";
@@ -8,10 +9,18 @@
 @import "variables";
 @import 'side-menu';
 @import 'sidebar-tile';
+@import 'fa';
+@import 'buttons';
 
 
 /** override awesome var*/
 .radio label::after{
   left: 4px !important;
   top: 4px !important;
+}
+
+.modal-header .close{
+  right: 0;
+  position: absolute;
+  margin-right: 5px;
 }

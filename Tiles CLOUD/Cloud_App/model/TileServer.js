@@ -58,13 +58,21 @@ TileCloud.prototype.start = function () {
     this.tCloud.onPublish = function (packet, client) {
         //check if publish is in fact from a connected client
         // and not a $SER packet
+        self.debugOutput("publish:" +packet.topic+packet.payload.toString());
         if (client !== undefined && client !== null) {
+            self.debugOutput("publish:" +packet.topic);
             if (packet.topic === "Tiles") {//forward msg to webclient
                 self.tCloud.publish(self.generateMsg("TilesReceive", packet.payload.toString()), self.debugOutput("published msg to topic TilesReceive: " + packet.payload.toString()));
             }
             else if (packet.topic === "TileSend") {//forward msg from webclient to tiles subscribers
                 self.tCloud.publish(self.generateMsg("Tiles", packet.payload.toString()), self.debugOutput("published msg to topic Tiles: " + packet.payload.toString()));
             }
+            /*else if(packet.topic==="activate"){
+                self.tCloud.publish(self.generateMsg("activate", packet.payload.toString()), self.debugOutput("published msg to topic Activate: " + packet.payload.toString()));
+            }
+            else if(packet.topic==="deactivate"){
+                self.tCloud.publish(self.generateMsg("deactivate", packet.payload.toString()), self.debugOutput("published msg to topic Deactivate: " + packet.payload.toString()));
+            }*/
         }
     };
 

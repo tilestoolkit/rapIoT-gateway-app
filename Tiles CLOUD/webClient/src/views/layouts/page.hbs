@@ -19,44 +19,48 @@
     <link rel="stylesheet" href="../bower_components/font-awesome/css/font-awesome.min.css">
 
     <script src="../node_modules/handlebars/dist/handlebars.runtime.min.js"></script>
-
-    <script>
+    <script src="../bower_components/store/store.min.js"></script>
+        <script>
 
     </script>
 </head>
 <body>
-
 <script src="asset/js/browserMqtt.js"></script>
+<script src="asset/js/Func.js"></script>
+<script src="asset/js/Variables.js"></script>
 <script src="asset/js/tileClient.js"></script>
+<script src="asset/js/Tile.js"></script>
 <script src="asset/js/sidebar.js"></script>
 <script src="asset/js/modules/LedOn.js"></script>
+<script src="asset/js/modules/RegisterDevice.js"></script>
 <script src="asset/js/templates.js"></script>
 
+
 <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+<script src="asset/js/bootstrap/bootstrap.js"></script>
 
 <script>
     Handlebars.partials = JST;
     var led=null;
-    var client=null;
-    $( document ).ready(function() {
+    var client=TileClient.getInstance();
 
+    var registeredDevices=null;
+
+    $( document ).ready(function() {
         sidebarToggle.init();
         led=new LedOn("lightButton");
-
-        var subRec = "TilesReceive";
-
-        client = new TileClient("ws://localhost:3000");
-
-        client.connect("#connectStatus");
-
-        client.subscribe("Tiles");
-
-        client.addModule(subRec, led.changeDomStatus);
+        client.connect("ws://localhost:3000","#connectStatus");
 
     });
 
-    $(document).on('connected',function(e){
+    $(document).on(Variables.onConnect,function(e){
+        var subRec = "TilesReceive";
         document.getElementById("connectStatus").className="active";
+        registeredDevices=RegisterDevice.getInstance();
+        client.addModule(subRec, led.changeDomStatus);
+
+        client.addModule("activate",registeredDevices.connect);
+        client.addModule("deactivate",registeredDevices.disconnect);
     });
 
 </script>
@@ -77,7 +81,7 @@
         {{>body}}
     </div>
 
-
+    <div class="modal" id="globalModal" tabindex="-1" role="dialog" aria-labelledby="globalModalLabel"></div>
 </div>
 
 
@@ -92,6 +96,23 @@
 
     #connectStatus.active{
         background-color:green;
+    }
+
+    #console-log-div {
+        padding: 5px 10px;
+        border-radius: 5px;
+        width: 95% !important;
+        background-color: #efefef;
+
+        font-family: monospace;
+        white-space: pre;
+        border: 1px solid black;
+        position: fixed;
+        bottom: 0;
+        z-index: 10004;
+
+        height: 200px;
+
     }
 </style>
 </body>
