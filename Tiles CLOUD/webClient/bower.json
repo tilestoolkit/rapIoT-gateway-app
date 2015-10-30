@@ -22,7 +22,10 @@
     "pure": "~0.6.0",
     "font-awesome": "fontawesome#~4.4.0",
     "metro": "~3.0.12",
-    "store": "https://github.com/marcuswestin/store.js.git#~1.3.17"
+    "store": "https://github.com/marcuswestin/store.js.git#~1.3.17",
+    "ace": "https://github.com/ajaxorg/ace.git#~1.2.2",
+    "ace-builds": "https://github.com/ajaxorg/ace-builds.git#~1.2.2",
+    "alertify.js": "https://github.com/fabien-d/alertify.js.git#~0.3.11"
   },
   "devDependencies": {
     "bootstrap-sass": "bootstrap-sass-official#~3.3.5",
