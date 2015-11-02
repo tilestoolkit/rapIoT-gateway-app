@@ -21,7 +21,7 @@ angular.module('tiles.controllers', [])
         $scope.data = {}
 
         var serverConnectionPopup = $ionicPopup.show({
-            template: 'Host:<input type="text" ng-model="mqttBroker.host">Port:<input type="number" ng-model="mqttBroker.port"></div>',
+            template: 'Host:<input type="text" ng-model="mqttBroker.host">Port:<input type="number" ng-model="mqttBroker.port">',
             title: 'Connect to MQTT broker',
             subTitle: 'Enter host address and port number',
             scope: $scope,
@@ -158,7 +158,23 @@ angular.module('tiles.controllers', [])
     };
 
     $scope.doRefresh = function() {
-        ble.scan([rfduino.serviceUUID], 5, app.onDiscoverDevice, app.onError);
+        // Scan for devices if Bluetooth is enabled.
+        // Otherwise, prompt the user to enable Bluetooth.
+        ble.isEnabled(
+            function() {
+                console.log("Bluetooth is enabled");
+                ble.scan([rfduino.serviceUUID], 5, app.onDiscoverDevice, app.onError); // Scan for devices
+            },
+            function() {
+                console.log("Bluetooth is NOT enabled");
+                ble.enable(function() {
+                    console.log("Bluetooth has been enabled");
+                }, function() {
+                    console.log("Bluetooth is still NOT enabled");
+                });
+            }
+        );
+
         $scope.$broadcast('scroll.refreshComplete');
     };
 
@@ -169,9 +185,9 @@ angular.module('tiles.controllers', [])
                 device.connected = true;
                 var receiver = new DataReceiver(device);
                 ble.startNotification(device.id, rfduino.serviceUUID, rfduino.receiveCharacteristic, receiver.onData, app.onError);
+                $scope.$apply();
                 client.publish('activate', device.id);
                 client.subscribe(device.id);
-                $scope.$apply();
             },
             function() {
                 alert('Failure!')
@@ -182,9 +198,9 @@ angular.module('tiles.controllers', [])
         ble.disconnect(device.id,
             function() {
                 device.connected = false;
+                $scope.$apply();
                 client.publish('deactivate', device.id);
                 client.unsubscribe(device.id);
-                $scope.$apply();
             },
             function() {
                 alert('Failure!')
