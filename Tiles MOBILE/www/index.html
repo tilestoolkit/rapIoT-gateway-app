@@ -30,7 +30,10 @@
       <ion-header-bar class="bar-stable">
         <h1 class="title">Tiles</h1>
       </ion-header-bar>
-      <div class="bar bar-subheader bar-stable">
+      <div class="button bar bar-subheader" ng-class="connectedToServer ? 'bar-balanced' : 'bar-stable'" ng-click="showConnectMQTTPopup()">
+        <h1 class="title">{{serverConnectStatusMsg}}</h1>
+      </div>
+      <div class="bar bar-footer bar-stable">
         <h1 class="title">{{devices.length}} devices found.</h1>
         <button class="button button-positive" ng-click="doRefresh()">Refresh</button>
       </div>

@@ -4,30 +4,82 @@
 
 angular.module('tiles.controllers', [])
 
-.controller('TilesCtrl', ['$scope', function($scope) {
-    
-    // connect to MQTT server/broker
-    var client = mqtt.connect({host: 'test.mosquitto.org', port: 8080});
- 
-    // called when the client has connected to a broker
-    client.on('connect', function () {
-        console.log('Successfully connected to MQTT broker.');
-    });
- 
-    // called when a message arrives
-    client.on('message', function (topic, message) {
-        var msgString = message.toString();
-        console.log('MQTT: ['+topic+'] '+msgString);
-        try {
-            var json = JSON.parse(msgString);
-            if (json) handleReceivedJson(topic, json);
-        } catch (exception) {
-            console.log('JSON Parse Error: '+exception);
-        }
-    });
+.controller('TilesCtrl', ['$scope', '$ionicPopup', function($scope, $ionicPopup) {
+
+    var client;
+    var serverConnectionTimeout = 10000; // 10 seconds
+
+    $scope.mqttBroker = {
+        host: 'test.mosquitto.org',
+        port: 8080
+    }
+
+    $scope.connectedToServer = false;
+    $scope.serverConnectStatusMsg = "Click to connect to server";
+
+    $scope.showConnectMQTTPopup = function() {
+        $scope.data = {}
+
+        var serverConnectionPopup = $ionicPopup.show({
+            template: 'Host:<input type="text" ng-model="mqttBroker.host">Port:<input type="number" ng-model="mqttBroker.port"></div>',
+            title: 'Connect to MQTT broker',
+            subTitle: 'Enter host address and port number',
+            scope: $scope,
+            buttons: [{
+                text: 'Cancel'
+            }, {
+                text: '<b>Connect</b>',
+                type: 'button-positive',
+                onTap: function(e) {
+                    if (client) {
+                        // End previous server connection
+                        client.end();
+                        $scope.connectedToServer = false;
+                    }
+                    
+                    // Connect to MQTT server/broker
+                    client = mqtt.connect({
+                        host: $scope.mqttBroker.host,
+                        port: $scope.mqttBroker.port
+                    });
+
+                    $scope.serverConnectStatusMsg = "Connecting...";
+
+                    setTimeout(function() {
+                        if (!$scope.connectedToServer) {
+                            $scope.serverConnectStatusMsg = "Failed to connect to server";
+                            $scope.$apply();
+                        }
+                    }, serverConnectionTimeout)
+
+                    // Called when the client has connected to a broker
+                    client.on('connect', function() {
+                        console.log('Successfully connected to MQTT broker.');
+                        $scope.serverConnectStatusMsg = "Connected to " + $scope.mqttBroker.host + ":" + $scope.mqttBroker.port;
+                        $scope.connectedToServer = true;
+                        $scope.$apply();
+                        if (typeof device !== 'undefined') client.publish('client', 'Device: ' + device.model + ' (' + device.uuid + ')');
+                        else client.publish('client', 'Unknown device');
+                    });
+
+                    // Called when a message arrives
+                    client.on('message', function(topic, message) {
+                        var msgString = message.toString();
+                        console.log('MQTT: [' + topic + '] ' + msgString);
+                        try {
+                            var json = JSON.parse(msgString);
+                            if (json) handleReceivedJson(topic, json);
+                        } catch (exception) {
+                            console.log('JSON Parse Error: ' + exception);
+                        }
+                    });
+                }
+            }]
+        });
+    };
 
     function handleReceivedJson(deviceId, json) {
-        for (var i=0; i<$scope.devices.length; i++) {
+        for (var i = 0; i < $scope.devices.length; i++) {
             var device = $scope.devices[i];
             if (device.id == deviceId) {
                 device.ledOn = (json.activation == 'on');
@@ -36,7 +88,7 @@ angular.module('tiles.controllers', [])
             }
         }
     }
-    
+
     $scope.devices = [
         /*{'name': 'TI SensorTag','id': '01:23:45:67:89:AB', 'rssi': -79, 'advertising': null},
         {'name': 'Some OtherDevice', 'id': 'A1:B2:5C:87:2D:36', 'rssi': -52, 'advertising': null}*/
@@ -71,8 +123,8 @@ angular.module('tiles.controllers', [])
         }
     }
 
-    var isNewDevice = function(discoveredDevice){
-        for (var i=0; i<$scope.devices.length; i++) {
+    var isNewDevice = function(discoveredDevice) {
+        for (var i = 0; i < $scope.devices.length; i++) {
             if ($scope.devices[i].id == discoveredDevice.id) return false;
         }
         return true;
