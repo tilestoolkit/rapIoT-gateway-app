@@ -18,8 +18,6 @@ angular.module('tiles.controllers', [])
     $scope.serverConnectStatusMsg = "Click to connect to server";
 
     $scope.showConnectMQTTPopup = function() {
-        $scope.data = {}
-
         var serverConnectionPopup = $ionicPopup.show({
             template: 'Host:<input type="text" ng-model="mqttBroker.host">Port:<input type="number" ng-model="mqttBroker.port">',
             title: 'Connect to MQTT broker',
@@ -119,7 +117,7 @@ angular.module('tiles.controllers', [])
                 message.event = 'released';
             }
             $scope.$apply();
-            client.publish(device.id, JSON.stringify(message));
+            if (client) client.publish(device.id, JSON.stringify(message));
         }
     }
 
@@ -132,6 +130,7 @@ angular.module('tiles.controllers', [])
 
     var app = {
         onDiscoverDevice: function(device) {
+            console.log('Device discovered: '+device);
             device.connected = false;
             if (isNewDevice(device)) {
                 $scope.devices.push(device);
@@ -186,8 +185,10 @@ angular.module('tiles.controllers', [])
                 var receiver = new DataReceiver(device);
                 ble.startNotification(device.id, rfduino.serviceUUID, rfduino.receiveCharacteristic, receiver.onData, app.onError);
                 $scope.$apply();
-                client.publish('activate', device.id);
-                client.subscribe(device.id);
+                if (client) {
+                    client.publish('activate', device.id);
+                    client.subscribe(device.id);
+                }
             },
             function() {
                 alert('Failure!')
@@ -199,8 +200,10 @@ angular.module('tiles.controllers', [])
             function() {
                 device.connected = false;
                 $scope.$apply();
-                client.publish('deactivate', device.id);
-                client.unsubscribe(device.id);
+                if (client) {
+                    client.publish('deactivate', device.id);
+                    client.unsubscribe(device.id);
+                }
             },
             function() {
                 alert('Failure!')
