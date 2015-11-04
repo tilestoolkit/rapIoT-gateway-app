@@ -162,7 +162,7 @@ angular.module('tiles.controllers', [])
         ble.isEnabled(
             function() {
                 console.log("Bluetooth is enabled");
-                ble.scan([rfduino.serviceUUID], 5, app.onDiscoverDevice, app.onError); // Scan for devices
+                ble.scan([], 5, app.onDiscoverDevice, app.onError); // Scan for devices
             },
             function() {
                 console.log("Bluetooth is NOT enabled");
