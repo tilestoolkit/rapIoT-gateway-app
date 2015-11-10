@@ -4,13 +4,13 @@ var opts = {
     level: 'info'
   },
   http: {
-    port: 3001 // tcp
+    port: 8080 // tcp
   },
   mqtt: {
     port: 1883 // tcp
   },
   coap: {
-    port: 3001 // udp
+    port: 5683 // udp
   },
   persistence: {
     type: 'mongo',
@@ -29,3 +29,5 @@ server.on("updated", function(resource, buffer) {
     console.log("server stopped");
   });
 }, 60 * 1000);*/
+
+module.exports = server;
