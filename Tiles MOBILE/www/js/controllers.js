@@ -8,6 +8,7 @@ angular.module('tiles.controllers', [])
 
     var client;
     var serverConnectionTimeout = 10000; // 10 seconds
+    var publishOpts = {retain: true};
 
     $scope.mqttBroker = {
         host: 'test.mosquitto.org',
@@ -56,8 +57,8 @@ angular.module('tiles.controllers', [])
                         $scope.serverConnectStatusMsg = "Connected to " + $scope.mqttBroker.host + ":" + $scope.mqttBroker.port;
                         $scope.connectedToServer = true;
                         $scope.$apply();
-                        if (typeof device !== 'undefined') client.publish('client', 'Device: ' + device.model + ' (' + device.uuid + ')');
-                        else client.publish('client', 'Unknown device');
+                        if (typeof device !== 'undefined') client.publish('client', 'Device: ' + device.model + ' (' + device.uuid + ')', publishOpts);
+                        else client.publish('client', 'Unknown device', publishOpts);
                     });
 
                     // Called when a message arrives
@@ -117,7 +118,7 @@ angular.module('tiles.controllers', [])
                 message.event = 'released';
             }
             $scope.$apply();
-            if (client) client.publish(device.id, JSON.stringify(message));
+            if (client) client.publish(device.id, JSON.stringify(message), publishOpts);
         }
     }
 
@@ -186,7 +187,7 @@ angular.module('tiles.controllers', [])
                 ble.startNotification(device.id, rfduino.serviceUUID, rfduino.receiveCharacteristic, receiver.onData, app.onError);
                 $scope.$apply();
                 if (client) {
-                    client.publish('activate', device.id);
+                    client.publish('activate', device.id, publishOpts);
                     client.subscribe(device.id);
                 }
             },
@@ -201,7 +202,7 @@ angular.module('tiles.controllers', [])
                 device.connected = false;
                 $scope.$apply();
                 if (client) {
-                    client.publish('deactivate', device.id);
+                    client.publish('deactivate', device.id, publishOpts);
                     client.unsubscribe(device.id);
                 }
             },
