@@ -1,7 +1,13 @@
 var ponte = require("ponte");
+
+var tilesAscoltatore = require("./tiles_ascoltatore");
+
 var opts = {
   logger: {
     level: 'info'
+  },
+  broker: {
+    type: tilesAscoltatore
   },
   http: {
     port: 8080 // tcp
