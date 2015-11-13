@@ -19,15 +19,15 @@ angular.module('tilesApi.services', [])
   		});
 	}
 
-	o.create = function(user) {
-  		return $http.post('/users', user).success(function(data){
+	o.create = function(username) {
+  		return $http.post('/users', {_id: username}).success(function(data){
 	    	o.users.push(data);
   		});
 	}
 
 	o.addTile = function(user, tileDeviceId) {
-  		return $http.post('/users/'+user._id + '/tiles', {deviceId: tileDeviceId}).success(function(){
-	    	user.tiles.push(tileDeviceId)
+		return $http.post('/tiles', {tileId: tileDeviceId, userId: user._id}).success(function(data){
+	    	user.tiles.push(data)
   		});
 	}
 

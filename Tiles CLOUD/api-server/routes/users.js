@@ -21,7 +21,7 @@ router.post('/', function(req, res, next) {
 });
 
 router.param('user', function(req, res, next, id) {
-  var query = User.findById(id);
+  var query = User.findById(id).populate('tiles');
 
   query.exec(function (err, user){
     if (err) { return next(err); }

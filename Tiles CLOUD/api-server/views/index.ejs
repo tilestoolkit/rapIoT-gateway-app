@@ -23,7 +23,7 @@
 				<h1>Users</h1>
 			</div>
 			<div ng-repeat="user in users">
-				<a href="#/users/{{user._id}}"><span class="glyphicon glyphicon-user"></span>&nbsp;{{user.username}}</a>
+				<a href="#/users/{{user._id}}"><span class="glyphicon glyphicon-user"></span>&nbsp;{{user._id}}</a>
 			</div>
 			<form ng-submit="addUser()" style="margin-top:30px;">
 				<h3>Add a new user</h3>
@@ -35,13 +35,26 @@
 		</script>
 		<script type="text/ng-template" id="/user.html">
 			<div class="page-header">
-				<h1>{{user.username}}</h1>
+				<h1>{{user._id}}</h1>
 			</div>
 			<h3>Tiles</h3>
 			<div ng-hide="tiles.length">No Tiles registered for this user.</div>
-			<ul>
-				<li ng-repeat="tile in tiles">{{tile}}</li>
-			</ul>
+			<table ng-show="tiles.length" class="table">
+				<thead>
+					<tr>
+						<th>ID</th>
+						<th>Active</th>
+						<th>State</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="tile in tiles">
+						<td>{{tile._id}}</td>
+						<td>{{tile.active}}</td>
+						<td>{{tile.state}}</td>
+					</tr>
+				</tbody>
+			</table>
 			<form ng-submit="addTile()" style="margin-top:30px;">
 				<h4>Register a new Tile</h4>
 				<div class="form-group">

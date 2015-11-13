@@ -7,7 +7,7 @@ angular.module('tilesApi.controllers', [])
 
 	$scope.addUser = function(){
 		if(!$scope.username || $scope.username === '') return;
-		users.create({username: $scope.username});
+		users.create($scope.username);
 		$scope.title = '';
 		$scope.link = '';
 	}

@@ -1,12 +1,12 @@
 var mongoose = require('mongoose');
 
 var UserSchema = new mongoose.Schema({
-  username: String,
-  tiles: [String]
+  _id: String,
+  tiles: [{ type: String, ref: 'Tile' }]
 });
 
-UserSchema.methods.addTile = function(tileDeviceId, cb) {
-	this.tiles.addToSet(tileDeviceId);
+UserSchema.methods.addTile = function(tile, cb) {
+	this.tiles.addToSet(tile);
 	this.save(cb);
 }
 
