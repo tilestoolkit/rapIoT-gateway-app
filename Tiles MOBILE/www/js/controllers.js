@@ -11,12 +11,13 @@ angular.module('tiles.controllers', [])
     var publishOpts = {retain: true};
 
     $scope.mqttBroker = {
-        host: 'test.mosquitto.org',
+        host: '192.168.1.2',
         port: 8080
     }
 
     $scope.connectedToServer = false;
     $scope.serverConnectStatusMsg = "Click to connect to server";
+    $scope.username = 'TestUser';
 
     $scope.showConnectMQTTPopup = function() {
         var serverConnectionPopup = $ionicPopup.show({
@@ -46,17 +47,13 @@ angular.module('tiles.controllers', [])
 
                     setTimeout(function() {
                         if (!$scope.connectedToServer) {
-                            $scope.serverConnectStatusMsg = "Failed to connect to server";
-                            $scope.$apply();
+                            setServerConnectionStatus('Failed to connect to server', false);
                         }
                     }, serverConnectionTimeout)
 
                     // Called when the client has connected to a broker
                     client.on('connect', function() {
-                        console.log('Successfully connected to MQTT broker.');
-                        $scope.serverConnectStatusMsg = "Connected to " + $scope.mqttBroker.host + ":" + $scope.mqttBroker.port;
-                        $scope.connectedToServer = true;
-                        $scope.$apply();
+                        setServerConnectionStatus('Connected to ' + $scope.mqttBroker.host + ':' + $scope.mqttBroker.port, true);
                         if (typeof device !== 'undefined') client.publish('client', 'Device: ' + device.model + ' (' + device.uuid + ')', publishOpts);
                         else client.publish('client', 'Unknown device', publishOpts);
                     });
@@ -67,15 +64,42 @@ angular.module('tiles.controllers', [])
                         console.log('MQTT: [' + topic + '] ' + msgString);
                         try {
                             var json = JSON.parse(msgString);
-                            if (json) handleReceivedJson(topic, json);
+                            if (json) handleReceivedJson(topic.split('/')[2], json);
                         } catch (exception) {
                             console.log('JSON Parse Error: ' + exception);
                         }
+                    });
+
+                    client.on('offline', function() {
+                        setServerConnectionStatus('Client gone offline', false);
+                    });
+
+                    client.on('close', function() {
+                        setServerConnectionStatus('Disconnected from server', false);
+                    });
+
+                    client.on('reconnect', function() {
+                        setServerConnectionStatus('A reconnect is started', false);
+                    });
+
+                    client.on('error', function(error) {
+                        console.log('Error: '+error);
                     });
                 }
             }]
         });
     };
+
+    function getDeviceSpecificTopic(deviceId){
+        return 'tiles/'+$scope.username+'/'+deviceId
+    }
+
+    function setServerConnectionStatus(msg, connected){
+        console.log(msg);
+        $scope.serverConnectStatusMsg = msg;
+        $scope.connectedToServer = connected;
+        $scope.$apply();
+    }
 
     function handleReceivedJson(deviceId, json) {
         for (var i = 0; i < $scope.devices.length; i++) {
@@ -118,7 +142,7 @@ angular.module('tiles.controllers', [])
                 message.event = 'released';
             }
             $scope.$apply();
-            if (client) client.publish(device.id, JSON.stringify(message), publishOpts);
+            if (client) client.publish(getDeviceSpecificTopic(device.id), JSON.stringify(message), publishOpts);
         }
     }
 
@@ -187,8 +211,8 @@ angular.module('tiles.controllers', [])
                 ble.startNotification(device.id, rfduino.serviceUUID, rfduino.receiveCharacteristic, receiver.onData, app.onError);
                 $scope.$apply();
                 if (client) {
-                    client.publish('activate', device.id, publishOpts);
-                    client.subscribe(device.id);
+                    client.publish(getDeviceSpecificTopic(device.id)+'/active', 'true', publishOpts);
+                    client.subscribe(getDeviceSpecificTopic(device.id));
                 }
             },
             function() {
@@ -202,8 +226,8 @@ angular.module('tiles.controllers', [])
                 device.connected = false;
                 $scope.$apply();
                 if (client) {
-                    client.publish('deactivate', device.id, publishOpts);
-                    client.unsubscribe(device.id);
+                    client.publish(getDeviceSpecificTopic(device.id)+'/active', 'false', publishOpts);
+                    client.unsubscribe(getDeviceSpecificTopic(device.id));
                 }
             },
             function() {
