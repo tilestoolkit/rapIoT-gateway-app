@@ -17,13 +17,16 @@ angular.module('tiles.controllers', [])
 
     $scope.connectedToServer = false;
     $scope.serverConnectStatusMsg = "Click to connect to server";
-    $scope.username = 'TestUser';
+    
+    $scope.tilesApi = {
+        username: 'TestUser'
+    }
 
     $scope.showConnectMQTTPopup = function() {
         var serverConnectionPopup = $ionicPopup.show({
-            template: 'Host:<input type="text" ng-model="mqttBroker.host">Port:<input type="number" ng-model="mqttBroker.port">',
+            template: 'Username:<input type="text" ng-model="tilesApi.username">Host:<input type="text" ng-model="mqttBroker.host">Port:<input type="number" ng-model="mqttBroker.port">',
             title: 'Connect to MQTT broker',
-            subTitle: 'Enter host address and port number',
+            subTitle: 'Enter username, host address and port number',
             scope: $scope,
             buttons: [{
                 text: 'Cancel'
@@ -91,7 +94,7 @@ angular.module('tiles.controllers', [])
     };
 
     function getDeviceSpecificTopic(deviceId){
-        return 'tiles/'+$scope.username+'/'+deviceId
+        return 'tiles/'+$scope.tilesApi.username+'/'+deviceId
     }
 
     function setServerConnectionStatus(msg, connected){
