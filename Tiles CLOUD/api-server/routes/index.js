@@ -30,7 +30,7 @@ router.post('/tiles', function(req, res, next) {
   Tile.findByIdAndUpdate(tileId, fieldsToUpdate, {upsert: true, new: true}, function(err, tile){
     if (err) return next(err);
     if (userId) {
-      User.findById(userId, function(err, user){
+      User.findByIdAndUpdate(userId, {}, {upsert: true, new: true}, function(err, user){
         user.addTile(tile, null);
       });
     }
