@@ -29,6 +29,7 @@ TilesClient.prototype.connect = function(username) {
   this.mqttClient.on('connect', function(){
     that.setServerConnectionStatus('Successfully connected to server', true);
     that.mqttClient.subscribe('tiles/' + that.username + '/+');
+    that.mqttClient.subscribe('tiles/' + that.username + '/+/active');
     that.emit('connect');
   });
 
@@ -50,16 +51,21 @@ TilesClient.prototype.connect = function(username) {
 
   this.mqttClient.on('message', function(topic, message) {
     var splitTopic = topic.split('/');
-    var deviceId = splitTopic[2];
-    that.emit('receive', deviceId, message);
+    var tileId = splitTopic[2];
+    if (splitTopic[3] === 'active'){
+      var tileChange = (message.toString() === 'true') ? 'tileRegistered' : 'tileUnregistered';
+      that.emit(tileChange, tileId);
+    } else {
+      that.emit('receive', tileId, message);
+    }
   });
 
   return this;
 }
 
-TilesClient.prototype.send = function(deviceId, msg){
+TilesClient.prototype.send = function(tileId, msg){
   if (this.isConnected){
-    this.mqttClient.publish('tiles/'+this.username+'/'+deviceId, msg);
+    this.mqttClient.publish('tiles/' + this.username + '/' + tileId, msg);
   } else {
     console.log(tag, 'Client is not connected!');
   }
