@@ -1,3 +1,6 @@
+/*
+* Hello World Example
+*/
 var TilesClient = require('./');
 
 var client = new TilesClient('TestUser').connect();
