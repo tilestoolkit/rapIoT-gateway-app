@@ -5,8 +5,10 @@
   "main": "tiles-client.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "bundle-js": "browserify tiles-client.js -s TilesClient > browserTilesClient.js",
-    "bundle-min-js": "browserify tiles-client.js -s TilesClient | uglifyjs -mc > browserTilesClient.min.js"
+    "prebundle-js": "if not exist dist mkdir dist",
+    "prebundle-min-js": "if not exist dist mkdir dist",
+    "bundle-js": "browserify tiles-client.js -s TilesClient > dist/browserTilesClient.js",
+    "bundle-min-js": "browserify tiles-client.js -s TilesClient | uglifyjs -mc > dist/browserTilesClient.min.js"
   },
   "author": "",
   "license": "ISC",

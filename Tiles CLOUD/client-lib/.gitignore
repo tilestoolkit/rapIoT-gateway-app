@@ -33,7 +33,6 @@ node_modules
 # Optional REPL history
 .node_repl_history
 
-examples/assets
+dist
 
-browserTilesClient.js
-browserTilesClient.min.js
+examples/browser/assets

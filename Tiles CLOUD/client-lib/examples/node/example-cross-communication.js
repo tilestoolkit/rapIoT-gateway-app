@@ -3,7 +3,7 @@
 * Requires minimum two Tiles connected to 'TestUser'.
 * When the button on one of the Tiles is being pressed, all the other connected Tiles' lights will be activated.
 */
-var TilesClient = require('./');
+var TilesClient = require('../../');
 
 var client = new TilesClient('TestUser').connect();
 
