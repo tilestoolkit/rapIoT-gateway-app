@@ -1,0 +1,40 @@
+<!--
+Loads an audio track and connects to the server.
+When a message is received, it's parsed as JSON and evaluated to determine if play() or pause() should be triggered.
+
+The page has no visual representation of the music player.
+
+Use developer console to control the music by sending a message to the server:
+tilesClient.send('', '{"type":"button_event", "event":"pressed"}')
+-->
+<head>
+	<script src="../../browserTilesClient.js"></script>
+</head>
+<body>
+	<h1>TILES Music Player</h1>
+	<script>
+		var audio = new Audio('../assets/music.mp3');
+		
+		var tilesClient = new TilesClient('TestUser').connect();
+		
+		tilesClient.on('receive', function(tileId, msg){
+			console.log('Received message from ' + tileId + ': ' + msg);
+			try {
+				var json = JSON.parse(msg);
+				if (json && json.type === 'button_event') {
+					if (json.event === 'pressed'){
+						audio.play();
+					} else {
+						audio.pause();
+					}
+				}
+			} catch (error) {
+				console.log('Error: ' + error);
+			}
+		});
+		
+		tilesClient.on('connect', function(){
+			console.log('Connected!');
+		});
+	</script>
+</body>
