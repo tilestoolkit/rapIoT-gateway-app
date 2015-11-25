@@ -1,4 +1,4 @@
-#TileClient
+# TileClient
 
 TileClient is packed as a python package. To install the package globally, and its required dependencies run:
 
@@ -11,30 +11,30 @@ The TileClient package will now be made available in other python scripts by imp
 	import tileclient
 
 
-##Modules
+## Modules
 The tileclient module package comes with 3 packages. For module usage see `Examples/` folder. Available methods stated in each module `.py` file.
 
-###TileApi
+### TileApi
 Accessing API route on remote server through `HTTP`
 
-###TileClient
+### TileClient
 Accessing real-time events from server through `MQTT`
 
-###TileListener
+### TileListener
 Topic Listener for triggering actions on certain topic matches. 
 
 
 
 
 
-#Examples
+# Examples
 
-##APItest
+## APItest
 `apitest.py` testing TileCloud API and triggering event on a Tile connected by adding a listener to the topic pattern `/+/active`
 
 The example pushed a message to topic `foo` with data `bar`
 
-##MusicPlay
+## MusicPlay
 `musicplay.py` relies on mp3play library. Install dependency library by running in terminal: 
 
 	pip install mp3play
