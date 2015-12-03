@@ -9,6 +9,7 @@ var mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost/tiles-api');
 require('./models/Users');
 require('./models/Tiles');
+require('./models/Webhooks');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');

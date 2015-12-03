@@ -1,4 +1,8 @@
 var http = require('http');
+var request = require('request');
+
+var mongoose = require('mongoose');
+var Webhook = mongoose.model('Webhook');
 
 var tilesApi = {};
 
@@ -36,6 +40,28 @@ tilesApi.setDeviceState = function(tileId, userId, state, active){
 
 	req.write(data);
 	req.end();
+}
+
+tilesApi.triggerMatchingWebhooks = function(username, deviceId, event){
+	console.log("Trigger matching webhooks called!")
+	Webhook.find({user: username, tile: deviceId}, function(err, docs) {
+		if (!err){ 
+	        console.log(docs);
+	        for (var i = 0;i<docs.length;i++){
+	        	console.log(docs[i].postUrl);
+	        	tilesApi.triggerWebhook(docs[i].postUrl, event);
+			}
+	    } else { console.log(err);}
+	});
+}
+
+tilesApi.triggerWebhook = function(url, event){
+	request.post({
+		url: url,
+		json: event
+	}, function(err, result, event){
+		console.log("Sent " + event + " to " + url);
+	});
 }
 
 module.exports = tilesApi;

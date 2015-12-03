@@ -16,6 +16,7 @@
     "morgan": "~1.6.1",
     "ponte": "0.0.14",
     "qlobber": "^0.5.3",
+    "request": "^2.67.0",
     "serve-favicon": "~2.3.0"
   }
 }
