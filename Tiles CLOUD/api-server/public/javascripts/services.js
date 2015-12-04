@@ -32,4 +32,31 @@ angular.module('tilesApi.services', [])
 	}
 
 	return o;
+}])
+
+.factory('webhooks', ['$http', function($http){
+	var o = {
+		webhooks: []
+	};
+
+	o.getRegistered = function(userId, tileId) {
+		return $http.get('/webhooks/' + userId + '/' + tileId).then(function(res){
+    		angular.copy(res.data, o.webhooks);
+  		});
+	}
+
+	o.add = function(userId, tileId, postUrl) {
+		return $http.post('/webhooks/' + userId + '/' + tileId, '{"postUrl": "' + postUrl + '"}').then(function(res){
+	    	o.webhooks.push(res.data);
+  		});
+	}
+
+	o.delete = function(webhook) {
+		return $http.delete('/webhooks/' + webhook.user + '/' + webhook.tile + '/' + webhook._id).then(function(res){
+			var index = o.webhooks.indexOf(webhook);
+			o.webhooks.splice(index, 1);
+		});
+	}
+
+	return o;
 }]);

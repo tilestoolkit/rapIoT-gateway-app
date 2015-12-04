@@ -49,7 +49,7 @@
 				</thead>
 				<tbody>
 					<tr ng-repeat="tile in tiles">
-						<td>{{tile._id}}</td>
+						<td><a href="#/users/{{user._id}}/{{tile._id}}">{{tile._id}}</td>
 						<td>{{tile.active}}</td>
 						<td>{{tile.state}}</td>
 					</tr>
@@ -61,6 +61,37 @@
 					<input type="text" placeholder="Tile Device ID" ng-model="tileDeviceId">
 				</div>
 				<button type="submit" class="btn btn-primary">Post</button>
+			</form>
+		</script>
+		<script type="text/ng-template" id="/tile.html">
+			<div class="page-header">
+				<h1>{{userId}}</h1>
+				<h2>{{tileId}}</h2>
+			</div>
+			<h3>Webhooks</h3>
+			<div ng-hide="webhooks.length">No Webhooks registered for this Tile and user.</div>
+			<table ng-show="webhooks.length" class="table">
+				<thead>
+					<tr>
+						<th>ID</th>
+						<th>Callback URL</th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="webhook in webhooks">
+						<td>{{webhook._id}}</td>
+						<td>{{webhook.postUrl}}</td>
+						<td><button type="button" class="btn btn-sm btn-danger" ng-click="deleteWebhook(webhook)"><span class="glyphicon glyphicon-trash"></span>&nbsp;Delete</button></td>
+					</tr>
+				</tbody>
+			</table>
+			<form ng-submit="addWebhook()" style="margin-top:30px;">
+				<h4>Register a new webhook</h4>
+				<div class="form-group">
+					<input type="text" placeholder="URL" ng-model="webhookUrl">
+				</div>
+				<button type="submit" class="btn btn-primary">Register</button>
 			</form>
 		</script>
 	</body>
