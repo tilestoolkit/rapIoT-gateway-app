@@ -15,8 +15,17 @@ tilesApi.setDeviceState = function(tileId, userId, state, active){
 	var fieldsToSend = {}; // Only send fields that are defined and not null
 	fieldsToSend.tileId = tileId;
   	if (userId != null) fieldsToSend.userId = userId;
-  	if (state != null) fieldsToSend.state = state;
+  	if (state != null) {
+  		try {
+  			fieldsToSend.state = JSON.parse(state);
+		} catch (e) {
+			console.log('JSON Parse Error: ' + e);
+			fieldsToSend.state = state;
+		}
+  	}
   	if (active != null) fieldsToSend.active = active;
+
+  	tilesApi.triggerMatchingWebhooks(userId, tileId, fieldsToSend);
 
 	var data = JSON.stringify(fieldsToSend);
 	console.log('POST: Sending device data: '+data);
@@ -51,16 +60,17 @@ tilesApi.triggerMatchingWebhooks = function(username, deviceId, event){
 	        	console.log(docs[i].postUrl);
 	        	tilesApi.triggerWebhook(docs[i].postUrl, event);
 			}
-	    } else { console.log(err);}
+	    } else { console.log(err); }
 	});
 }
 
-tilesApi.triggerWebhook = function(url, event){
+tilesApi.triggerWebhook = function(url, data){
 	request.post({
 		url: url,
-		json: event
-	}, function(err, result, event){
-		console.log("Sent " + event + " to " + url);
+		json: data
+	}, function(err, httpResponse, body){
+		console.log("Sent " + JSON.stringify(data) + " to " + url);
+		console.log("Response Body: " + body);
 	});
 }
 

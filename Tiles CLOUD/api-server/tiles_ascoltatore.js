@@ -42,7 +42,6 @@ function TilesAscoltatore(settings) {
     var state = arrayBufferToString(message);
     console.log(tag + "Set event state for " + deviceId + ": " + state);
     TilesApi.setDeviceState(deviceId, username, state, null);
-    TilesApi.triggerMatchingWebhooks(username, deviceId, message);
   });
 
   this.emit("ready");
