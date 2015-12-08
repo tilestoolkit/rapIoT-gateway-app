@@ -34,6 +34,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', routes);
 app.use('/users', users);
 app.use('/webhooks', webhooks);
+app.use('/state/*', function (req, res, next) {
+  var resourceUrl = 'http://' + req.hostname + ':8080/resources/tiles/' + req.params[0];
+  console.log('Redirect to ' + resourceUrl);
+  return res.redirect(resourceUrl);
+});
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
