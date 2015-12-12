@@ -36,3 +36,5 @@ node_modules
 dist
 
 examples/browser/assets
+
+slack-auth-token.js
