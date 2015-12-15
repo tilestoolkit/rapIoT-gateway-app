@@ -93,8 +93,9 @@ angular.module('tiles.controllers', [])
         });
     };
 
-    function getDeviceSpecificTopic(deviceId){
-        return 'tiles/'+$scope.tilesApi.username+'/'+deviceId
+    function getDeviceSpecificTopic(deviceId, isEvent){
+        var type = isEvent ? 'evt' : 'cmd';
+        return 'tiles/' + type + '/' + $scope.tilesApi.username + '/' + deviceId;
     }
 
     function setServerConnectionStatus(msg, connected){
@@ -145,7 +146,7 @@ angular.module('tiles.controllers', [])
                 message.event = 'released';
             }
             $scope.$apply();
-            if (client) client.publish(getDeviceSpecificTopic(device.id), JSON.stringify(message), publishOpts);
+            if (client) client.publish(getDeviceSpecificTopic(device.id, true), JSON.stringify(message), publishOpts);
         }
     }
 
@@ -214,8 +215,8 @@ angular.module('tiles.controllers', [])
                 ble.startNotification(device.id, rfduino.serviceUUID, rfduino.receiveCharacteristic, receiver.onData, app.onError);
                 $scope.$apply();
                 if (client) {
-                    client.publish(getDeviceSpecificTopic(device.id)+'/active', 'true', publishOpts);
-                    client.subscribe(getDeviceSpecificTopic(device.id));
+                    client.publish(getDeviceSpecificTopic(device.id, true)+'/active', 'true', publishOpts);
+                    client.subscribe(getDeviceSpecificTopic(device.id, false));
                 }
             },
             function() {
@@ -229,8 +230,8 @@ angular.module('tiles.controllers', [])
                 device.connected = false;
                 $scope.$apply();
                 if (client) {
-                    client.publish(getDeviceSpecificTopic(device.id)+'/active', 'false', publishOpts);
-                    client.unsubscribe(getDeviceSpecificTopic(device.id));
+                    client.publish(getDeviceSpecificTopic(device.id, true)+'/active', 'false', publishOpts);
+                    client.unsubscribe(getDeviceSpecificTopic(device.id, false));
                 }
             },
             function() {

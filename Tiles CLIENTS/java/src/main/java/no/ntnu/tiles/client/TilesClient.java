@@ -65,7 +65,7 @@ public class TilesClient {
 	 */
 	public void send(String tileId, byte[] bytes){
 		try {
-			mqttClient.publish("tiles/"+this.username+"/"+tileId, new MqttMessage(bytes));
+			mqttClient.publish("tiles/cmd/"+this.username+"/"+tileId, new MqttMessage(bytes));
 		} catch (MqttPersistenceException e) {
 			e.printStackTrace();
 		} catch (MqttException e) {
@@ -76,8 +76,8 @@ public class TilesClient {
 	private class MqttCallbackHandler implements MqttCallback, IMqttActionListener {
 		public void messageArrived(String topic, MqttMessage message) throws Exception {
 			String[] splitTopic = topic.split("/");
-			String deviceId = splitTopic[2];
-			if (splitTopic.length > 3 && splitTopic[3].equals("active")){
+			String deviceId = splitTopic[3];
+			if (splitTopic.length > 4 && splitTopic[4].equals("active")){
 				if (new String(message.getPayload()).equals("true")){
 					tilesCallback.tileRegistered(deviceId);
 				} else {
@@ -90,7 +90,7 @@ public class TilesClient {
 		
 		public void onSuccess(IMqttToken asyncActionToken) {
 	    	try {
-				mqttClient.subscribe(new String[]{"tiles/" + username + "/+", "tiles/" + username + "/+/active"}, new int[] {0, 0});
+				mqttClient.subscribe(new String[]{"tiles/evt/" + username + "/+", "tiles/evt/" + username + "/+/active"}, new int[] {0, 0});
 				tilesCallback.connected();
 			} catch (MqttException e) {
 				e.printStackTrace();

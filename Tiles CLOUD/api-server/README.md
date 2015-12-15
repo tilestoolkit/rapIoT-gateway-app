@@ -23,16 +23,18 @@
    This will run [Ponte](https://github.com/eclipse/ponte) with three servers: one for MQTT, one for HTTP, and one for CoAP, listening on ports 1883, 8080, and 5683, respectively.
 
 ## HTTP
-The REST API can be used to list the Tiles registered to a user, and also be used to send real-time events to the Tiles. To receive events from the Tiles devices to your server see the [Webhooks](#Webhooks) section.
+The REST API can be used to list the Tiles registered to a user, and also be used to send real-time commands to the Tiles. To receive real-time events from the Tiles devices to your server see the [Webhooks](#Webhooks) section.
 
-**Example message:**<br>
+**Example command:**<br>
 Activating the LED light: `{"activation": "on"}`
 
 Method | Route | Description
 --- | --- | ---
 `GET` | /users/[userId]/tiles | List Tiles registered with this user
-`GET` | /state/[userId]/[tileId] | Get the most recent event sent to/from a Tile
-`PUT` | /state/[userId]/[tileId] | Send an event to a Tile
+`GET` | /evt/[userId]/[tileId] | Get the most recent event sent from the Tile
+`PUT` | /evt/[userId]/[tileId] | Simulate an event being sent from the Tile
+`GET` | /cmd/[userId]/[tileId] | Get the most recent command sent to the Tile
+`PUT` | /cmd/[userId]/[tileId] | Send a command to the Tile
 
 <a name="Webhooks"></a>
 ## Webhooks
