@@ -1,4 +1,8 @@
 var http = require('http');
+var request = require('request');
+
+var mongoose = require('mongoose');
+var Webhook = mongoose.model('Webhook');
 
 var tilesApi = {};
 
@@ -11,8 +15,17 @@ tilesApi.setDeviceState = function(tileId, userId, state, active){
 	var fieldsToSend = {}; // Only send fields that are defined and not null
 	fieldsToSend.tileId = tileId;
   	if (userId != null) fieldsToSend.userId = userId;
-  	if (state != null) fieldsToSend.state = state;
+  	if (state != null) {
+  		try {
+  			fieldsToSend.state = JSON.parse(state);
+		} catch (e) {
+			console.log('JSON Parse Error: ' + e);
+			fieldsToSend.state = state;
+		}
+  	}
   	if (active != null) fieldsToSend.active = active;
+
+  	tilesApi.triggerMatchingWebhooks(userId, tileId, fieldsToSend);
 
 	var data = JSON.stringify(fieldsToSend);
 	console.log('POST: Sending device data: '+data);
@@ -36,6 +49,29 @@ tilesApi.setDeviceState = function(tileId, userId, state, active){
 
 	req.write(data);
 	req.end();
+}
+
+tilesApi.triggerMatchingWebhooks = function(username, deviceId, event){
+	console.log("Trigger matching webhooks called!")
+	Webhook.find({user: username, tile: deviceId}, function(err, docs) {
+		if (!err){ 
+	        console.log(docs);
+	        for (var i = 0;i<docs.length;i++){
+	        	console.log(docs[i].postUrl);
+	        	tilesApi.triggerWebhook(docs[i].postUrl, event);
+			}
+	    } else { console.log(err); }
+	});
+}
+
+tilesApi.triggerWebhook = function(url, data){
+	request.post({
+		url: url,
+		json: data
+	}, function(err, httpResponse, body){
+		console.log("Sent " + JSON.stringify(data) + " to " + url);
+		console.log("Response Body: " + body);
+	});
 }
 
 module.exports = tilesApi;

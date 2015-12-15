@@ -24,6 +24,22 @@ angular.module('tilesApi', ['ui.router', 'tilesApi.controllers', 'tilesApi.servi
 				}]
 			}
 		})
+		.state('tiles', {
+			url: '/users/{userId}/{tileId}',
+			templateUrl: '/tile.html',
+			controller: 'TileCtrl',
+			resolve: {
+				userId: ['$stateParams', function($stateParams) {
+  					return $stateParams.userId;
+				}],
+				tileId: ['$stateParams', function($stateParams) {
+  					return $stateParams.tileId;
+				}],
+				registeredWebhooksPromise: ['$stateParams', 'webhooks', function($stateParams, webhooks) {
+  					return webhooks.getRegistered($stateParams.userId, $stateParams.tileId);
+				}]
+			}
+		});
 
 	$urlRouterProvider.otherwise('users');
 }]);

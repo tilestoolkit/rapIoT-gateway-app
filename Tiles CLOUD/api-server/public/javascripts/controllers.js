@@ -22,4 +22,20 @@ angular.module('tilesApi.controllers', [])
 		users.addTile(user, $scope.tileDeviceId);
 		$scope.tileDeviceId = '';
 	}
+}])
+
+.controller('TileCtrl', ['$scope', 'userId', 'tileId', 'webhooks', function($scope, userId, tileId, webhooks){
+	$scope.userId = userId;
+	$scope.tileId = tileId;
+	$scope.webhooks = webhooks.webhooks;
+
+	$scope.addWebhook = function(){
+		if(!$scope.webhookUrl || $scope.webhookUrl === '') return;
+		webhooks.add(userId, tileId, $scope.webhookUrl);
+		$scope.webhookUrl = '';
+	}
+
+	$scope.deleteWebhook = function(webhook){
+		webhooks.delete(webhook);
+	}
 }]);

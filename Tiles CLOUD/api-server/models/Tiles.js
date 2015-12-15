@@ -3,7 +3,7 @@ var mongoose = require('mongoose');
 var TileSchema = new mongoose.Schema({
   _id: String,
   active: Boolean,
-  state: String,
+  state: Object,
   user: { type: String, ref: 'User' }
 });
 
