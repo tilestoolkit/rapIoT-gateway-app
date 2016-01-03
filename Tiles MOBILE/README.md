@@ -40,6 +40,10 @@ To build native project for the target platform. Projects will be compiled in th
 $ ionic build [android|ios]
 ```
 
+#### iOS Only
+- Run the XCODE project from the /platform dir. You will need a valid provisioning profile. Since 2015 you can get a free, limited provisioning profile see [Free provisining profile](https://developer.xamarin.com/guides/ios/getting_started/installation/device_provisioning/free-provisioning/)
+- Once the App in installed, in case you get an "Untrusted developer" warning, go to Settings - General - Device Management, tap on your Profile then tap on Trust button.
+
 #### Tiles Connection
 - Turn on Bluetooth.
 - In the app, use pull-to-refresh or the 'Refresh'-button to refresh the list of nearby Bluetooth devices
