@@ -35,6 +35,10 @@ Deploy the Ionic app on specified platform devices. If a device is not found it'
 ```sh
 $ ionic run [android|ios]
 ```
+To build native project for the target platform. Projects will be compiled in the /platform dir
+```sh
+$ ionic build [android|ios]
+```
 
 #### Tiles Connection
 - Turn on Bluetooth.
