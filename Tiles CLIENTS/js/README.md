@@ -10,7 +10,7 @@ Tiles Client Library is an event-driven API for the Tiles project written in Jav
 <a name="Installation"></a>
 ## Installation
 
-Install dependencies:
+Install dependencies:  TO BE DONE
 ```sh
 cd "Tiles CLOUD/client-lib"
 npm install
