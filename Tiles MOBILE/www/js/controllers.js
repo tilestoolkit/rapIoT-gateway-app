@@ -67,7 +67,7 @@ angular.module('tiles.controllers', [])
                         console.log('MQTT: [' + topic + '] ' + msgString);
                         try {
                             var json = JSON.parse(msgString);
-                            if (json) handleReceivedJson(topic.split('/')[2], json);
+                            if (json) handleReceivedJson(topic.split('/')[3], json);
                         } catch (exception) {
                             console.log('JSON Parse Error: ' + exception);
                         }
