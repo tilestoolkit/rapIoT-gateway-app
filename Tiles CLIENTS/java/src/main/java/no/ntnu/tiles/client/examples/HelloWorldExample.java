@@ -4,16 +4,16 @@ import no.ntnu.tiles.client.TilesCallback;
 import no.ntnu.tiles.client.TilesClient;
 
 public class HelloWorldExample implements TilesCallback {
-	
+
 	private TilesClient client;
-	
+
 	public static void main(String[] args) {
 		HelloWorldExample helloWorld = new HelloWorldExample();
 		helloWorld.connect();
 	}
-	
+
 	public void connect(){
-		client = new TilesClient(this, "TestUser");
+		client = new TilesClient(this, "TestUser","tcp://test.mosquitto.org:1883");
 		client.connect();
 	}
 

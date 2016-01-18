@@ -5,7 +5,7 @@
 */
 var TilesClient = require('../../');
 
-var client = new TilesClient('TestUser').connect();
+var client = new TilesClient('TestUser','test.mosquitto.org','1883').connect();
 
 var registeredTiles = [];
 

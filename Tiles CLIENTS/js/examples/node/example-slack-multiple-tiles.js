@@ -12,7 +12,7 @@ var WebSocketClient = require('websocket').client;
 var wsClient = new WebSocketClient();
 
 var TilesClient = require('../../');
-var tilesClient = new TilesClient('TestUser').connect();
+var tilesClient = new TilesClient('TestUser','test.mosquitto.org','1883').connect();
 var registeredTiles = [];
 
 var slackAuthToken = require('./slack-auth-token');

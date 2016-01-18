@@ -12,7 +12,7 @@ Use developer console to send messages to the server using tilesClient.send([dev
 	<h1>TILES</h1>
 	<div id="messageContainer"></div>
 	<script>
-		var tilesClient = new TilesClient('TestUser').connect();
+		var tilesClient = new TilesClient('TestUser','test.mosquitto.org','8080').connect();
 		tilesClient.on('receive', function(tileId, msg){
 			console.log('Received message from ' + tileId + ': ' + msg);
 			var paragraph = document.createElement('p');

@@ -4,18 +4,14 @@ var mqtt = require('mqtt');
 var util = require('util');
 var EventEmitter = require('events').EventEmitter;
 
-var host = 'test.mosquitto.org';
-var port = 1883;
 var tag = '[TILES Client]';
 
-function TilesClient(username){
-  if (typeof window !== 'undefined'){
-    // Running in a browser -> Use WebSocket port
-    port = 8080;
-  }
+function TilesClient(username,host,port){
   this.mqttClient = null;
   this.isConnected = false;
   this.username = username;
+  this.host=host;
+  this.port=port;
 }
 
 TilesClient.prototype.__proto__ = EventEmitter.prototype;
@@ -26,7 +22,7 @@ TilesClient.prototype.setServerConnectionStatus = function(msg, isConnected){
 }
 
 TilesClient.prototype.connect = function(username) {
-  this.mqttClient = mqtt.connect({host: host, port: port});
+  this.mqttClient = mqtt.connect({host: this.host, port: this.port});
   this.setServerConnectionStatus('Connecting...', false);
 
   var that = this;
