@@ -10,10 +10,12 @@ mongoose.connect('mongodb://localhost/tiles-api');
 require('./models/Users');
 require('./models/Tiles');
 require('./models/Webhooks');
+require('./models/EventMappings');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
 var webhooks = require('./routes/webhooks');
+var eventMappings = require('./routes/eventMappings');
 
 var ponteServer = require('./ponteServer');
 
@@ -34,6 +36,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', routes);
 app.use('/users', users);
 app.use('/webhooks', webhooks);
+app.use('/eventmappings', eventMappings);
 app.use('/cmd/*', function (req, res, next) {
   var resourceUrl = 'http://' + req.hostname + ':8080/resources/tiles/cmd/' + req.params[0];
   console.log('Redirect to ' + resourceUrl);
