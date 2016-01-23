@@ -62,6 +62,14 @@ angular.module('tiles.controllers', [])
                         setServerConnectionStatus('Connected to ' + tilesApi.host.address + ':' + tilesApi.host.mqttPort, true);
                         if (typeof device !== 'undefined') client.publish('client', 'Device: ' + device.model + ' (' + device.uuid + ')', publishOpts);
                         else client.publish('client', 'Unknown device', publishOpts);
+
+                        for (var i = 0; i < $scope.devices.length; i++) {
+                            var device = $scope.devices[i];
+                            if (device.connected) {
+                                client.publish(getDeviceSpecificTopic(device.id, true)+'/active', 'true', publishOpts);
+                                client.subscribe(getDeviceSpecificTopic(device.id, false));
+                            }
+                        }
                     });
 
                     // Called when a message arrives
