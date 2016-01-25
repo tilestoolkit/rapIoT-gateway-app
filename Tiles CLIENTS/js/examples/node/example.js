@@ -3,11 +3,11 @@
 */
 var TilesClient = require('../../');
 
-var client = new TilesClient('TestUser','test.mosquitto.org','1883').connect();
+var client = new TilesClient('Simone','localhost','1883').connect();
 
 client.on('connect', function(){
 	console.log('Connected!');
-	client.send('AB:CD:12:34:56', 'Hello World!');
+	client.send('8ED58908-9DD1-0501-81D0-F69A7E16BD68', '{"activation":"on"}');
 });
 
 client.on('receive', function(tileId, data){
