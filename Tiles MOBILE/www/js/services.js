@@ -25,6 +25,105 @@ angular.module('tiles.services', [])
   }
 }])
 
+.factory('mqttClient', ['$rootScope', 'tilesApi', function($rootScope, tilesApi){
+	var o = {};
+
+	var client;
+	var publishOpts = {retain: true};
+
+	function getDeviceSpecificTopic(deviceId, isEvent){
+        var type = isEvent ? 'evt' : 'cmd';
+        return 'tiles/' + type + '/' + tilesApi.username + '/' + deviceId;
+    }
+
+	o.connect = function(host, port){
+		if (client) {
+			// End previous server connection
+			client.end();
+		}
+
+		client = mqtt.connect({
+			host: host,
+            port: port
+        });
+
+        client.on('connect', function() {
+			$rootScope.$broadcast('connect');
+			$rootScope.$apply();
+		});
+
+		client.on('message', function(topic, message) {
+	        try {
+	        	var msgString = message.toString();
+	            var command = JSON.parse(msgString);
+	            if (command) {
+	            	var deviceId = topic.split('/')[3];
+	            	$rootScope.$broadcast('command', deviceId, command);
+	            	$rootScope.$apply();
+	            }
+	        } catch (exception) {
+	            console.log('JSON Parse Error: ' + exception);
+	        }
+		});
+
+	    client.on('offline', function() {
+	    	$rootScope.$broadcast('offline');
+	    	$rootScope.$apply();
+	    });
+
+	    client.on('close', function() {
+	    	$rootScope.$broadcast('close');
+	    	$rootScope.$apply();
+	    });
+
+	    client.on('reconnect', function() {
+	    	$rootScope.$broadcast('reconnect');
+	    	$rootScope.$apply();
+	    });
+
+	    client.on('error', function(error) {
+	    	$rootScope.$broadcast('error', error);
+	    	$rootScope.$apply();
+	    });
+	}
+
+	/*o.publish = function(topic, payload, options){
+		if (client) client.publish(topic, payload, options);
+	}
+
+	o.subscribe = function(topic){
+		if (client) client.subscribe(topic);
+	}
+
+	o.unsubscribe = function(topic){
+		if (client) client.unsubscribe(topic);
+	}*/
+
+	o.registerDevice = function(deviceId){
+		if (client) {
+            client.publish(getDeviceSpecificTopic(deviceId, true) + '/active', 'true', publishOpts);
+            client.subscribe(getDeviceSpecificTopic(deviceId, false));
+        }
+	}
+
+	o.unregisterDevice = function(deviceId){
+		if (client) {
+            client.publish(getDeviceSpecificTopic(deviceId, true) + '/active', 'false', publishOpts);
+            client.unsubscribe(getDeviceSpecificTopic(deviceId, false));
+        }
+	}
+
+	o.sendEvent = function(deviceId, event){
+		if (client) client.publish(getDeviceSpecificTopic(deviceId, true), JSON.stringify(event), publishOpts);
+	}
+
+	o.endConnection = function(deviceId, event){
+		if (client) client.end();
+	}
+
+	return o;
+}])
+
 .factory('tilesApi', ['$http', '$localstorage', function($http, $localstorage){
 	var o = {
 		username: $localstorage.get('username', 'TestUser'),

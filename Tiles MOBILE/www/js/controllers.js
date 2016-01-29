@@ -4,14 +4,12 @@
 
 angular.module('tiles.controllers', [])
 
-.controller('TilesCtrl', ['$scope', '$ionicPopup', 'tilesApi', function($scope, $ionicPopup, tilesApi) {
+.controller('TilesCtrl', ['$scope', '$ionicPopup', '$timeout', 'mqttClient', 'tilesApi', function($scope, $ionicPopup, $timeout, mqttClient, tilesApi) {
 
-    var client;
     var serverConnectionTimeout = 10000; // 10 seconds
-    var publishOpts = {retain: true};
 
     $scope.connectedToServer = false;
-    $scope.serverConnectStatusMsg = "Click to connect to server";
+    $scope.serverConnectStatusMsg = 'Click to connect to server';
     
     $scope.mqttConnectionData = {
         username: tilesApi.username,
@@ -19,7 +17,44 @@ angular.module('tiles.controllers', [])
         port: tilesApi.host.mqttPort
     }
 
-    $scope.tilesApi = tilesApi;
+    // Called when the client has connected to a broker
+    $scope.$on('connect', function(){
+        setServerConnectionStatus('Connected to ' + tilesApi.host.address + ':' + tilesApi.host.mqttPort, true);
+        for (var i = 0; i < $scope.devices.length; i++) {
+            var device = $scope.devices[i];
+            if (device.connected) {
+                mqttClient.registerDevice(device.id);
+            }
+        }
+    });
+
+    // Called when a command is received from the broker
+    $scope.$on('command', function(event, deviceId, command){
+        for (var i = 0; i < $scope.devices.length; i++) {
+            var device = $scope.devices[i];
+            if (device.id == deviceId) {
+                device.ledOn = (command.activation == 'on');
+                $scope.$apply();
+                $scope.sendData(device);
+            }
+        }
+    });
+
+    $scope.$on('offline', function() {
+        setServerConnectionStatus('Client gone offline', false);
+    });
+
+    $scope.$on('close', function() {
+        setServerConnectionStatus('Disconnected from server', false);
+    });
+
+    $scope.$on('reconnect', function(){
+        setServerConnectionStatus('A reconnect is started', false);
+    });
+
+    $scope.$on('error', function(event, error){
+        setServerConnectionStatus('Error: ' + error, false);
+    });
 
     $scope.showConnectMQTTPopup = function() {
         var serverConnectionPopup = $ionicPopup.show({
@@ -33,72 +68,19 @@ angular.module('tiles.controllers', [])
                 text: '<b>Connect</b>',
                 type: 'button-positive',
                 onTap: function(e) {
-                    if (client) {
-                        // End previous server connection
-                        client.end();
-                        $scope.connectedToServer = false;
-                    }
-
                     tilesApi.setUsername($scope.mqttConnectionData.username);
                     tilesApi.setHostAddress($scope.mqttConnectionData.host);
                     tilesApi.setHostMqttPort($scope.mqttConnectionData.port);
                     
                     // Connect to MQTT server/broker
-                    client = mqtt.connect({
-                        host: tilesApi.host.address,
-                        port: tilesApi.host.mqttPort
-                    });
-
-                    $scope.serverConnectStatusMsg = "Connecting...";
-
-                    setTimeout(function() {
+                    mqttClient.connect($scope.mqttConnectionData.host, $scope.mqttConnectionData.port);
+                    setServerConnectionStatus('Connecting...', false);
+                    $timeout(function() {
                         if (!$scope.connectedToServer) {
                             setServerConnectionStatus('Failed to connect to server', false);
+                            mqttClient.endConnection();
                         }
-                    }, serverConnectionTimeout)
-
-                    // Called when the client has connected to a broker
-                    client.on('connect', function() {
-                        setServerConnectionStatus('Connected to ' + tilesApi.host.address + ':' + tilesApi.host.mqttPort, true);
-                        if (typeof device !== 'undefined') client.publish('client', 'Device: ' + device.model + ' (' + device.uuid + ')', publishOpts);
-                        else client.publish('client', 'Unknown device', publishOpts);
-
-                        for (var i = 0; i < $scope.devices.length; i++) {
-                            var device = $scope.devices[i];
-                            if (device.connected) {
-                                client.publish(getDeviceSpecificTopic(device.id, true)+'/active', 'true', publishOpts);
-                                client.subscribe(getDeviceSpecificTopic(device.id, false));
-                            }
-                        }
-                    });
-
-                    // Called when a message arrives
-                    client.on('message', function(topic, message) {
-                        var msgString = message.toString();
-                        console.log('MQTT: [' + topic + '] ' + msgString);
-                        try {
-                            var json = JSON.parse(msgString);
-                            if (json) handleReceivedJson(topic.split('/')[3], json);
-                        } catch (exception) {
-                            console.log('JSON Parse Error: ' + exception);
-                        }
-                    });
-
-                    client.on('offline', function() {
-                        setServerConnectionStatus('Client gone offline', false);
-                    });
-
-                    client.on('close', function() {
-                        setServerConnectionStatus('Disconnected from server', false);
-                    });
-
-                    client.on('reconnect', function() {
-                        setServerConnectionStatus('A reconnect is started', false);
-                    });
-
-                    client.on('error', function(error) {
-                        console.log('Error: '+error);
-                    });
+                    }, serverConnectionTimeout);
                 }
             }]
         });
@@ -113,18 +95,6 @@ angular.module('tiles.controllers', [])
         console.log(msg);
         $scope.serverConnectStatusMsg = msg;
         $scope.connectedToServer = connected;
-        $scope.$apply();
-    }
-
-    function handleReceivedJson(deviceId, json) {
-        for (var i = 0; i < $scope.devices.length; i++) {
-            var device = $scope.devices[i];
-            if (device.id == deviceId) {
-                device.ledOn = (json.activation == 'on');
-                $scope.$apply();
-                $scope.sendData(device);
-            }
-        }
     }
 
     $scope.devices = [
@@ -161,7 +131,7 @@ angular.module('tiles.controllers', [])
                 console.log('No mapping found for event: ' + receivedEventAsString + ' from ' + device.id);
             } else {
                 console.log('JSON Message to be sent: ' + JSON.stringify(message));
-                if (client) client.publish(getDeviceSpecificTopic(device.id, true), JSON.stringify(message), publishOpts);
+                mqttClient.sendEvent(device.id, message);
             }
             
         }
@@ -232,10 +202,7 @@ angular.module('tiles.controllers', [])
                 var receiver = new DataReceiver(device);
                 ble.startNotification(device.id, rfduino.serviceUUID, rfduino.receiveCharacteristic, receiver.onData, app.onError);
                 $scope.$apply();
-                if (client) {
-                    client.publish(getDeviceSpecificTopic(device.id, true)+'/active', 'true', publishOpts);
-                    client.subscribe(getDeviceSpecificTopic(device.id, false));
-                }
+                mqttClient.registerDevice(device.id);
             },
             function() {
                 alert('Failure!')
@@ -247,10 +214,7 @@ angular.module('tiles.controllers', [])
             function() {
                 device.connected = false;
                 $scope.$apply();
-                if (client) {
-                    client.publish(getDeviceSpecificTopic(device.id, true)+'/active', 'false', publishOpts);
-                    client.unsubscribe(getDeviceSpecificTopic(device.id, false));
-                }
+                mqttClient.unregisterDevice(device.id);
             },
             function() {
                 alert('Failure!')
