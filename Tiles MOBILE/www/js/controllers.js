@@ -4,9 +4,7 @@
 
 angular.module('tiles.controllers', [])
 
-.controller('TilesCtrl', ['$scope', '$ionicPopup', '$timeout', 'mqttClient', 'tilesApi', function($scope, $ionicPopup, $timeout, mqttClient, tilesApi) {
-
-    var serverConnectionTimeout = 10000; // 10 seconds
+.controller('TilesCtrl', ['$scope', '$ionicPopup', 'mqttClient', 'tilesApi', function($scope, $ionicPopup, mqttClient, tilesApi) {
 
     $scope.connectedToServer = false;
     $scope.serverConnectStatusMsg = 'Click to connect to server';
@@ -16,17 +14,6 @@ angular.module('tiles.controllers', [])
         host: tilesApi.host.address,
         port: tilesApi.host.mqttPort
     }
-
-    // Called when the client has connected to a broker
-    $scope.$on('connect', function(){
-        setServerConnectionStatus('Connected to ' + tilesApi.host.address + ':' + tilesApi.host.mqttPort, true);
-        for (var i = 0; i < $scope.devices.length; i++) {
-            var device = $scope.devices[i];
-            if (device.connected) {
-                mqttClient.registerDevice(device.id);
-            }
-        }
-    });
 
     // Called when a command is received from the broker
     $scope.$on('command', function(event, deviceId, command){
@@ -73,14 +60,18 @@ angular.module('tiles.controllers', [])
                     tilesApi.setHostMqttPort($scope.mqttConnectionData.port);
                     
                     // Connect to MQTT server/broker
-                    mqttClient.connect($scope.mqttConnectionData.host, $scope.mqttConnectionData.port);
-                    setServerConnectionStatus('Connecting...', false);
-                    $timeout(function() {
-                        if (!$scope.connectedToServer) {
-                            setServerConnectionStatus('Failed to connect to server', false);
-                            mqttClient.endConnection();
+                    mqttClient.connect($scope.mqttConnectionData.host, $scope.mqttConnectionData.port).then(function(){
+                        setServerConnectionStatus('Connected to ' + tilesApi.host.address + ':' + tilesApi.host.mqttPort, true);
+                        for (var i = 0; i < $scope.devices.length; i++) {
+                            var device = $scope.devices[i];
+                            if (device.connected) {
+                                mqttClient.registerDevice(device.id);
+                            }
                         }
-                    }, serverConnectionTimeout);
+                    }, function() {
+                        setServerConnectionStatus('Failed to connect to server', false);
+                    });
+                    setServerConnectionStatus('Connecting...', false);
                 }
             }]
         });

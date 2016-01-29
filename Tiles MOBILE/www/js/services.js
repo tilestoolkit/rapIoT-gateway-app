@@ -25,11 +25,12 @@ angular.module('tiles.services', [])
   }
 }])
 
-.factory('mqttClient', ['$rootScope', 'tilesApi', function($rootScope, tilesApi){
+.factory('mqttClient', ['$rootScope', '$q', 'tilesApi', function($rootScope, $q, tilesApi){
 	var o = {};
 
 	var client;
 	var publishOpts = {retain: true};
+	var serverConnectionTimeout = 10000; // 10 seconds
 
 	function getDeviceSpecificTopic(deviceId, isEvent){
         var type = isEvent ? 'evt' : 'cmd';
@@ -37,6 +38,9 @@ angular.module('tiles.services', [])
     }
 
 	o.connect = function(host, port){
+		var deferred = $q.defer();
+		var failedConnectionTimeout;
+
 		if (client) {
 			// End previous server connection
 			client.end();
@@ -48,8 +52,8 @@ angular.module('tiles.services', [])
         });
 
         client.on('connect', function() {
-			$rootScope.$broadcast('connect');
-			$rootScope.$apply();
+        	clearTimeout(failedConnectionTimeout);
+        	deferred.resolve();
 		});
 
 		client.on('message', function(topic, message) {
@@ -85,6 +89,13 @@ angular.module('tiles.services', [])
 	    	$rootScope.$broadcast('error', error);
 	    	$rootScope.$apply();
 	    });
+
+	    failedConnectionTimeout = setTimeout(function(){
+    		client.end();
+    		deferred.reject();
+	    }, serverConnectionTimeout);
+
+	    return deferred.promise;
 	}
 
 	/*o.publish = function(topic, payload, options){
