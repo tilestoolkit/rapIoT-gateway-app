@@ -48,7 +48,8 @@ angular.module('tiles.services', [])
 
 		client = mqtt.connect({
 			host: host,
-            port: port
+            port: port,
+            keepalive: 0
         });
 
         client.on('connect', function() {
