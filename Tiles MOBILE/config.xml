@@ -11,6 +11,7 @@
   <access origin="*"/>
   <allow-navigation href="*"/>
   <allow-intent href="*"/>
+  <plugin name="de.appplant.cordova.plugin.background-mode" spec="0.6.4" source="pgb"/>
   <preference name="webviewbounce" value="false"/>
   <preference name="UIWebViewBounce" value="false"/>
   <preference name="DisallowOverscroll" value="true"/>

@@ -15,5 +15,12 @@ angular.module('tiles', ['ionic', 'tiles.controllers', 'tiles.services'])
     if(window.StatusBar) {
       StatusBar.styleDefault();
     }
+    
+    cordova.plugins.backgroundMode.setDefaults({
+      title:  'Tiles Mobile',
+      ticker: 'Tiles Mobile',
+      text:   'Running in background'
+    });
+
   });
 })
