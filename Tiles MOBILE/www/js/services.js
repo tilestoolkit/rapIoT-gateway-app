@@ -148,11 +148,11 @@ angular.module('tiles.services', [])
 
 	var defaultEventMappings = {
 		btnON: {
-		    type: 'buttonEvent',
+		    type: 'button_event',
 		    event: 'pressed'
 	    },
 	    btnOFF: {
-		    type: 'buttonEvent',
+		    type: 'button_event',
 		    event: 'released'
 	    }
 	}
