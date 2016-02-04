@@ -6,17 +6,22 @@ var EventEmitter = require('events').EventEmitter;
 
 var tag = '[TILES Client]';
 
-function TilesClient(username,host,port){
+var defaults = {
+  host: 'test.mosquitto.org',
+  port: 8080
+}
+
+function TilesClient(username, host, port) {
   this.mqttClient = null;
   this.isConnected = false;
   this.username = username;
-  this.host=host;
-  this.port=port;
+  this.host = host || defaults.host;
+  this.port = port || defaults.port;
 }
 
 TilesClient.prototype.__proto__ = EventEmitter.prototype;
 
-TilesClient.prototype.setServerConnectionStatus = function(msg, isConnected){
+TilesClient.prototype.setServerConnectionStatus = function(msg, isConnected) {
   console.log(tag, msg);
   this.isConnected = isConnected;
 }
@@ -27,7 +32,7 @@ TilesClient.prototype.connect = function(username) {
 
   var that = this;
 
-  this.mqttClient.on('connect', function(){
+  this.mqttClient.on('connect', function() {
     that.setServerConnectionStatus('Successfully connected to server', true);
     that.mqttClient.subscribe('tiles/evt/' + that.username + '/+');
     that.mqttClient.subscribe('tiles/evt/' + that.username + '/+/active');
@@ -57,14 +62,19 @@ TilesClient.prototype.connect = function(username) {
       var tileChange = (message.toString() === 'true') ? 'tileRegistered' : 'tileUnregistered';
       that.emit(tileChange, tileId);
     } else {
-      that.emit('receive', tileId, message);
+      try {
+        var eventObj = JSON.parse(message);
+        that.emit('receive', tileId, eventObj);
+      } catch (error) {
+        console.log('Error: ' + error);
+      }
     }
   });
 
   return this;
 }
 
-TilesClient.prototype.send = function(tileId, msg){
+TilesClient.prototype.send = function(tileId, msg) {
   if (this.isConnected){
     this.mqttClient.publish('tiles/cmd/' + this.username + '/' + tileId, msg);
   } else {

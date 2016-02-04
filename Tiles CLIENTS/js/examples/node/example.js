@@ -10,8 +10,8 @@ client.on('connect', function(){
 	client.send('AB:CD:12:34:56', 'Hello World!');
 });
 
-client.on('receive', function(tileId, data){
-	console.log('Message received from ' + tileId + ': ' + data);
+client.on('receive', function(tileId, event){
+	console.log('Message received from ' + tileId + ': ' + JSON.stringify(event));
 });
 
 client.on('tileRegistered', function(tileId){
