@@ -111,17 +111,18 @@ angular.module('tiles.services', [])
 		if (client) client.unsubscribe(topic);
 	}*/
 
-	o.registerDevice = function(deviceId){
+	o.registerDevice = function(device){
 		if (client) {
-            client.publish(getDeviceSpecificTopic(deviceId, true) + '/active', 'true', publishOpts);
-            client.subscribe(getDeviceSpecificTopic(deviceId, false));
+            client.publish(getDeviceSpecificTopic(device.id, true) + '/active', 'true', publishOpts);
+            client.publish(getDeviceSpecificTopic(device.id, true) + '/name', device.name, publishOpts);
+            client.subscribe(getDeviceSpecificTopic(device.id, false));
         }
 	}
 
-	o.unregisterDevice = function(deviceId){
+	o.unregisterDevice = function(device){
 		if (client) {
-            client.publish(getDeviceSpecificTopic(deviceId, true) + '/active', 'false', publishOpts);
-            client.unsubscribe(getDeviceSpecificTopic(deviceId, false));
+            client.publish(getDeviceSpecificTopic(device.id, true) + '/active', 'false', publishOpts);
+            client.unsubscribe(getDeviceSpecificTopic(device.id, false));
         }
 	}
 

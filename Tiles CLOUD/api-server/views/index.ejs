@@ -43,6 +43,7 @@
 				<thead>
 					<tr>
 						<th>ID</th>
+						<th>Name</th>
 						<th>Active</th>
 						<th>State</th>
 					</tr>
@@ -50,6 +51,7 @@
 				<tbody>
 					<tr ng-repeat="tile in tiles">
 						<td><a href="#/users/{{user._id}}/{{tile._id}}">{{tile._id}}</td>
+						<td>{{tile.name}}</td>
 						<td>{{tile.active}}</td>
 						<td>{{tile.state}}</td>
 					</tr>
@@ -66,7 +68,7 @@
 		<script type="text/ng-template" id="/tile.html">
 			<div class="page-header">
 				<h1>{{userId}}</h1>
-				<h2>{{tileId}}</h2>
+				<h2>{{tileName}} ({{tileId}})</h2>
 			</div>
 			<h3>Webhooks</h3>
 			<div ng-hide="webhooks.length">No Webhooks registered for this Tile and user.</div>

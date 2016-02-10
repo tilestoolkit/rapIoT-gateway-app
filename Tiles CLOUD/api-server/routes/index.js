@@ -21,11 +21,13 @@ router.post('/tiles', function(req, res, next) {
   var userId = req.body.userId;
   var active = req.body.active;
   var state = req.body.state;
+  var name = req.body.name;
 
   var fieldsToUpdate = {}; // Only update fields that are defined and not null
   if (userId != null) fieldsToUpdate.user = userId;
   if (active != null) fieldsToUpdate.active = active;
   if (state != null) fieldsToUpdate.state = state;
+  if (name != null) fieldsToUpdate.name = name;
 
   Tile.findByIdAndUpdate(tileId, fieldsToUpdate, {upsert: true, new: true}, function(err, tile){
     if (err) return next(err);

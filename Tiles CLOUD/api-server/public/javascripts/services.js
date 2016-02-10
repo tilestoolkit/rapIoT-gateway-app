@@ -34,6 +34,18 @@ angular.module('tilesApi.services', [])
 	return o;
 }])
 
+.factory('tiles', ['$http', function($http){
+	var o = { };
+
+	o.get = function(userId, tileId) {
+  		return $http.get('/users/' + userId + '/tiles/' + tileId).then(function(res){
+    		return res.data;
+  		});
+	}
+
+	return o;
+}])
+
 .factory('webhooks', ['$http', function($http){
 	var o = {
 		webhooks: []

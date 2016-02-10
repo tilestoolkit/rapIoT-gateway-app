@@ -194,7 +194,7 @@ angular.module('tiles.controllers', [])
                 var receiver = new DataReceiver(device);
                 ble.startNotification(device.id, rfduino.serviceUUID, rfduino.receiveCharacteristic, receiver.onData, app.onError);
                 $scope.$apply();
-                mqttClient.registerDevice(device.id);
+                mqttClient.registerDevice(device);
             },
             function() {
                 alert('Failure!')
@@ -206,7 +206,7 @@ angular.module('tiles.controllers', [])
             function() {
                 device.connected = false;
                 $scope.$apply();
-                mqttClient.unregisterDevice(device.id);
+                mqttClient.unregisterDevice(device);
             },
             function() {
                 alert('Failure!')

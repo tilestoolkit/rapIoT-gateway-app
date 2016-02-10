@@ -2,6 +2,7 @@
 
 var mqtt = require('mqtt');
 var util = require('util');
+var http = require('http');
 var EventEmitter = require('events').EventEmitter;
 
 var tag = '[TILES Client]';
@@ -17,6 +18,7 @@ function TilesClient(username, host, port) {
   this.username = username;
   this.host = host || defaults.host;
   this.port = port || defaults.port;
+  this.tiles = {};
 }
 
 TilesClient.prototype.__proto__ = EventEmitter.prototype;
@@ -36,6 +38,7 @@ TilesClient.prototype.connect = function(username) {
     that.setServerConnectionStatus('Successfully connected to server', true);
     that.mqttClient.subscribe('tiles/evt/' + that.username + '/+');
     that.mqttClient.subscribe('tiles/evt/' + that.username + '/+/active');
+    that.mqttClient.subscribe('tiles/evt/' + that.username + '/+/name');
     that.emit('connect');
   });
 
@@ -61,6 +64,8 @@ TilesClient.prototype.connect = function(username) {
     if (splitTopic[4] === 'active'){
       var tileChange = (message.toString() === 'true') ? 'tileRegistered' : 'tileUnregistered';
       that.emit(tileChange, tileId);
+    } else if (splitTopic[4] === 'name'){
+      that.tiles[message.toString()] = tileId;
     } else {
       try {
         var eventObj = JSON.parse(message);
@@ -75,11 +80,34 @@ TilesClient.prototype.connect = function(username) {
 }
 
 TilesClient.prototype.send = function(tileId, msg) {
+  if (tileId === undefined || msg === undefined) console.log('Can\'t send command. Reason: Invalid parameter(s).');
   if (this.isConnected){
     this.mqttClient.publish('tiles/cmd/' + this.username + '/' + tileId, msg);
   } else {
     console.log(tag, 'Client is not connected!');
   }
+}
+
+TilesClient.prototype.retrieveTileIdByName = function(name, callback) {
+  http.get('http://'+this.host+':3000/users/'+this.username+'/tiles/name/'+name, function(res) {
+    console.log('Got response: ${res.statusCode}');
+
+    // Continuously update stream with data
+    var body = '';
+    res.on('data', function(d) {
+        body += d;
+    });
+
+    res.on('end', function() {
+        // Data reception is done
+        var tile = JSON.parse(body);
+        console.log('Retrieved tile: '+JSON.stringify(tile));
+        callback(tile._id);
+    });
+
+  }).on('error', function(e) {
+    console.log('Got error: ${e.message}');
+  });
 }
 
 module.exports = TilesClient;

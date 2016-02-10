@@ -35,6 +35,15 @@ function TilesAscoltatore(settings) {
     TilesApi.setDeviceState(deviceId, username, null, active);
   });
 
+  this._matcher.add('tiles/evt/+/+/name', function(topic, message, options){
+    var splitTopic = topic.split('/');
+    var username = splitTopic[2];
+    var deviceId = splitTopic[3];
+    var name = arrayBufferToString(message);
+    console.log(tag + "Register device with ID: " + deviceId + " and name: " + name);
+    TilesApi.setDeviceState(deviceId, username, null, null, name);
+  });
+
   this._matcher.add('tiles/evt/+/+', function(topic, message, options){
     var splitTopic = topic.split('/');
     var username = splitTopic[2];
