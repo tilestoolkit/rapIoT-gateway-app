@@ -42,6 +42,19 @@ angular.module('tilesApi', ['ui.router', 'tilesApi.controllers', 'tilesApi.servi
   					return webhooks.getRegistered($stateParams.userId, $stateParams.tileId);
 				}]
 			}
+		})
+		.state('appRecipes', {
+			url: '/appRecipes/{userId}',
+			templateUrl: '/templates/appRecipes.html',
+			controller: 'AppRecipeCtrl',
+			resolve: {
+				userId: ['$stateParams', function($stateParams) {
+  					return $stateParams.userId;
+				}],
+				storedAppRecipesPromise: ['$stateParams', 'appRecipes', function($stateParams, appRecipes) {
+  					return appRecipes.getAll($stateParams.userId);
+				}]
+			}
 		});
 
 	$urlRouterProvider.otherwise('users');
