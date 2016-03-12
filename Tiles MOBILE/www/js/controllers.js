@@ -20,9 +20,11 @@ angular.module('tiles.controllers', [])
         for (var i = 0; i < $scope.devices.length; i++) {
             var device = $scope.devices[i];
             if (device.id == deviceId) {
-                device.ledOn = (command.activation == 'on');
+                device.ledOn = (command.name === 'led' && command.properties[0] === 'on');
+                console.log('Device led on: '+device.ledOn);
                 $scope.$apply();
-                $scope.sendData(device);
+                var commandString = tilesApi.getCommandObjectAsString(command);
+                $scope.sendData(device, commandString);
             }
         }
     });
@@ -66,7 +68,7 @@ angular.module('tiles.controllers', [])
                         for (var i = 0; i < $scope.devices.length; i++) {
                             var device = $scope.devices[i];
                             if (device.connected) {
-                                mqttClient.registerDevice(device.id);
+                                mqttClient.registerDevice(device);
                             }
                         }
                     }, function() {
@@ -111,14 +113,16 @@ angular.module('tiles.controllers', [])
             console.log('Received event: ' + receivedEventAsString);
             
             if (receivedEventAsString === 'btnON') {
+                receivedEventAsString = 'btn,ON,a,b,c';
                 device.buttonPressed = true;
                 $scope.$apply();
             } else if (receivedEventAsString === 'btnOFF') {
+                receivedEventAsString = 'btn,OFF,d,e,f';
                 device.buttonPressed = false;
                 $scope.$apply();
             }
 
-            var message = tilesApi.getEventMapping(device.id, receivedEventAsString);
+            var message = tilesApi.getEventStringAsObject(receivedEventAsString);
             if (message == null) {
                 console.log('No mapping found for event: ' + receivedEventAsString + ' from ' + device.id);
             } else {
@@ -149,7 +153,7 @@ angular.module('tiles.controllers', [])
         }
     };
 
-    $scope.sendData = function(device) { // Send data to RFduino
+    $scope.sendData = function(device, dataString) { // Send data to RFduino
         var success = function() {
             console.log('Data sent successfully.');
         };
@@ -158,8 +162,21 @@ angular.module('tiles.controllers', [])
             alert('Failed writing data to the RFduino');
         };
 
-        var data = new Uint8Array(1);
-        data[0] = device.ledOn ? 0x1 : 0x0;
+        /*var data = new Uint8Array(1);
+        data[0] = device.ledOn ? 0x1 : 0x0;*/
+
+        // For sending command from UI (debugging purposes)
+        if (dataString === undefined) {
+            dataString = device.ledOn ? 'led,on' : 'led,off';
+        }
+
+        console.log('Sending to device: '+dataString);
+
+        // Transform string to bytes
+        var data = new Uint8Array(dataString.length);
+        for (var i = 0, l = dataString.length; i < l; i++) {
+            data[i] = dataString.charCodeAt(i);
+        }
 
         ble.writeWithoutResponse(device.id, rfduino.serviceUUID, rfduino.sendCharacteristic, data.buffer, success, failure);
     };

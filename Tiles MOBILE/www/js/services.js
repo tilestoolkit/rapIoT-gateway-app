@@ -58,16 +58,16 @@ angular.module('tiles.services', [])
 		});
 
 		client.on('message', function(topic, message) {
+			console.log('Received message from server: ' + message);
 	        try {
-	        	var msgString = message.toString();
-	            var command = JSON.parse(msgString);
+	            var command = JSON.parse(message);
 	            if (command) {
 	            	var deviceId = topic.split('/')[3];
 	            	$rootScope.$broadcast('command', deviceId, command);
 	            	$rootScope.$apply();
 	            }
 	        } catch (exception) {
-	            console.log('JSON Parse Error: ' + exception);
+	            console.log('Error: ' + exception);
 	        }
 		});
 
@@ -116,6 +116,7 @@ angular.module('tiles.services', [])
             client.publish(getDeviceSpecificTopic(device.id, true) + '/active', 'true', publishOpts);
             client.publish(getDeviceSpecificTopic(device.id, true) + '/name', device.name, publishOpts);
             client.subscribe(getDeviceSpecificTopic(device.id, false));
+            console.log('Registered device: ' + device.name + ' (' + device.id + ')');
         }
 	}
 
@@ -146,6 +147,20 @@ angular.module('tiles.services', [])
 			apiPort: 3000
 		}
 	};
+
+	o.getEventStringAsObject = function(evtString) {
+		var params = evtString.split(',');
+		var evt = {
+			name: params[0],
+			properties: Array.prototype.slice.call(params, 1)
+		}
+		return evt;
+	}
+
+	o.getCommandObjectAsString = function(cmdObj){
+  		var cmdString = cmdObj.name + ',' + cmdObj.properties.toString();
+    	return cmdString;
+    }
 
 	var defaultEventMappings = {
 		btnON: {
