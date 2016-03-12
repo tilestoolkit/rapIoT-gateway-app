@@ -79,10 +79,19 @@ TilesClient.prototype.connect = function(username) {
   return this;
 }
 
-TilesClient.prototype.send = function(tileId, msg) {
-  if (tileId === undefined || msg === undefined) console.log('Can\'t send command. Reason: Invalid parameter(s).');
+TilesClient.prototype.send = function(tileId, propertyName) {
+  if (tileId === undefined || propertyName === undefined) {
+    console.log(tag, 'Can\'t send command. Reason: Invalid parameter(s).');
+    return;
+  }
+
+  var msg = {
+    name: propertyName,
+    properties: Array.prototype.slice.call(arguments, 2)
+  }
+
   if (this.isConnected){
-    this.mqttClient.publish('tiles/cmd/' + this.username + '/' + tileId, msg);
+    this.mqttClient.publish('tiles/cmd/' + this.username + '/' + tileId, JSON.stringify(msg));
   } else {
     console.log(tag, 'Client is not connected!');
   }
