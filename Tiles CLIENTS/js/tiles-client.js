@@ -9,7 +9,7 @@ var tag = '[TILES Client]';
 
 var defaults = {
   host: 'test.mosquitto.org',
-  port: 8080
+  port: typeof window === 'undefined' ? 1883 : 8080 // If running in a browser -> Use standard WebSocket port
 }
 
 function TilesClient(username, host, port) {
@@ -71,7 +71,7 @@ TilesClient.prototype.connect = function(username) {
         var eventObj = JSON.parse(message);
         that.emit('receive', tileId, eventObj);
       } catch (error) {
-        console.log('Error: ' + error);
+        console.log(tag, 'Error: ' + error);
       }
     }
   });
@@ -80,8 +80,11 @@ TilesClient.prototype.connect = function(username) {
 }
 
 TilesClient.prototype.send = function(tileId, propertyName) {
-  if (tileId === undefined || propertyName === undefined) {
-    console.log(tag, 'Can\'t send command. Reason: Invalid parameter(s).');
+  if (tileId === undefined) {
+    console.log(tag, 'Can\'t send command. Tile ID is undefined.');
+    return;
+  } else if (propertyName === undefined) {
+    console.log(tag, 'Can\'t send command. Property name is undefined.');
     return;
   }
 
