@@ -111,21 +111,18 @@ angular.module('tiles.controllers', [])
         this.onData = function(data) { // Data received from RFduino
             var receivedEventAsString = arrayBufferToString(data);
             console.log('Received event: ' + receivedEventAsString);
-            
-            if (receivedEventAsString === 'btnON') {
-                receivedEventAsString = 'btn,ON,a,b,c';
-                device.buttonPressed = true;
-                $scope.$apply();
-            } else if (receivedEventAsString === 'btnOFF') {
-                receivedEventAsString = 'btn,OFF,d,e,f';
-                device.buttonPressed = false;
-                $scope.$apply();
-            }
 
             var message = tilesApi.getEventStringAsObject(receivedEventAsString);
             if (message == null) {
                 console.log('No mapping found for event: ' + receivedEventAsString + ' from ' + device.id);
             } else {
+                if (message.properties[0] === 'touch') {
+                    device.buttonPressed = !device.buttonPressed; // Toggle (temporary solution until 'release' event is implemented in TD)
+                    $scope.$apply();
+                } /*else if (receivedEventAsString === 'btnOFF') {
+                    device.buttonPressed = false;
+                    $scope.$apply();
+                }*/
                 console.log('JSON Message to be sent: ' + JSON.stringify(message));
                 mqttClient.sendEvent(device.id, message);
             }
@@ -167,16 +164,17 @@ angular.module('tiles.controllers', [])
 
         // For sending command from UI (debugging purposes)
         if (dataString === undefined) {
-            dataString = device.ledOn ? 'led,on' : 'led,off';
+            dataString = device.ledOn ? 'led,on,red' : 'led,off';
         }
 
-        console.log('Sending to device: '+dataString);
+        console.log('Sending to device: ' + dataString);
 
         // Transform string to bytes
         var data = new Uint8Array(dataString.length);
         for (var i = 0, l = dataString.length; i < l; i++) {
             data[i] = dataString.charCodeAt(i);
         }
+        console.log('Bytes: ' + data.length);
 
         ble.writeWithoutResponse(device.id, rfduino.serviceUUID, rfduino.sendCharacteristic, data.buffer, success, failure);
     };
