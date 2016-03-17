@@ -137,11 +137,15 @@ angular.module('tiles.controllers', [])
         return true;
     }
 
+    var isTilesDevice = function(discoveredDevice) {
+        return discoveredDevice.name != null && discoveredDevice.name.substring(0, 4) === 'TILE';
+    }
+
     var app = {
         onDiscoverDevice: function(device) {
             console.log('Device discovered: '+device);
             device.connected = false;
-            if (isNewDevice(device)) {
+            if (isTilesDevice(device) && isNewDevice(device)) {
                 $scope.devices.push(device);
             }
         },
