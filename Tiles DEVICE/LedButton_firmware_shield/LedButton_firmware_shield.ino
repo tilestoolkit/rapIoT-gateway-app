@@ -79,13 +79,13 @@ void loop() {
   if (RFduino_pinWoke(BUTTON_A_PIN))
   {
     Serial.println("Button A pressed!");
-    RFduinoBLE.send(btnA, 15);
+    RFduinoBLE.send(btnA, 13);
     RFduino_resetPinWake(BUTTON_A_PIN);
   }
   if (RFduino_pinWoke(BUTTON_B_PIN))
   {
     Serial.println("Button B pressed!");
-    RFduinoBLE.send(btnB, 15);
+    RFduinoBLE.send(btnB, 13);
     RFduino_resetPinWake(BUTTON_B_PIN);
   }
  if(blinking)
