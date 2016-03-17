@@ -6,7 +6,7 @@ var User = mongoose.model('User')
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
+  res.render('index', { appVersion: req.app.get('appVersion'), buildDate: req.app.get('buildDate') });
 });
 
 router.get('/tiles', function(req, res, next) {

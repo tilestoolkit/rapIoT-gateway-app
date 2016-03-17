@@ -23,6 +23,9 @@ var ponteServer = require('./ponteServer');
 
 var app = express();
 
+app.set('appVersion', require('./package.json').version);
+app.set('buildDate', new Date().toUTCString());
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
