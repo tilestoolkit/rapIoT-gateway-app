@@ -22,6 +22,10 @@ angular.module('tilesApi.controllers', [])
 		users.addTile(user, $scope.tileDeviceId);
 		$scope.tileDeviceId = '';
 	}
+
+	$scope.removeTile = function(tile){
+		users.removeTile(user, tile);
+	}
 }])
 
 .controller('AppRecipeCtrl', ['$scope', 'userId', 'appRecipes', function($scope, userId, appRecipes){

@@ -47,6 +47,7 @@
 						<th>Name</th>
 						<th>Active</th>
 						<th>State</th>
+						<th></th>
 					</tr>
 				</thead>
 				<tbody>
@@ -55,6 +56,7 @@
 						<td>{{tile.name}}</td>
 						<td>{{tile.active}}</td>
 						<td>{{tile.state}}</td>
+						<td><button type="button" class="btn btn-default" ng-click="removeTile(tile)"><span class="glyphicon glyphicon-trash"></span></button</td>
 					</tr>
 				</tbody>
 			</table>

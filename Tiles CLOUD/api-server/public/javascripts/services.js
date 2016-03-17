@@ -31,6 +31,13 @@ angular.module('tilesApi.services', [])
   		});
 	}
 
+	o.removeTile = function(user, tile) {
+  		return $http.delete('/users/' + user._id + '/tiles/' + tile._id).then(function(res){
+			var index = user.tiles.indexOf(tile);
+			user.tiles.splice(index, 1);
+		});
+	}
+
 	return o;
 }])
 
