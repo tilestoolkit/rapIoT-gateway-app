@@ -29,47 +29,61 @@
   </head>
   <body ng-app="tiles">
     <ion-pane ng-controller="TilesCtrl">
-      <ion-header-bar class="bar-stable">
-        <h1 class="title">Tiles</h1>
-      </ion-header-bar>
-      <div class="button bar bar-subheader" ng-class="connectedToServer ? 'bar-balanced' : 'bar-stable'" ng-click="showConnectMQTTPopup()">
-        <h1 class="title">{{serverConnectStatusMsg}}</h1>
-      </div>
-      <div class="bar bar-footer bar-stable">
-        <h1 class="title">
-          <ng-pluralize count="devices.length"
-            when="{'0': 'No devices found.',
-            '1': '1 device found.',
-            'other': '{} devices found.'}">
-          </ng-pluralize>
-        </h1>
-        <button class="button button-positive" ng-click="doRefresh()">Refresh</button>
-      </div>
-      <ion-content class="has-header has-subheader">
-        <ion-refresher pulling-text="Pull to refresh..." on-refresh="doRefresh()">
-        </ion-refresher>
-        <ion-list>
-          <ion-item ng-repeat="device in devices">
-          <div class="row row-center">
-            <div class="col col-75">
-              <b>{{device.name}}</b><br/>RSSI:{{device.rssi}}<br/>{{device.id}}
-            </div>
-            <div class="col">
-              <button class="button button-small button-positive" style="float: right;" ng-click="connect(device)" ng-hide="device.connected">Connect</button>
-              <button id="disconnectButton" class="button button-small" style="float: right;" ng-click="disconnect(device)" ng-show="device.connected">Disconnect</button>
-              <button id="fetchEventMappingsButton" class="button button-small icon ion-code-download" style="float: right;" ng-click="fetchEventMappings(device)" ng-show="device.connected"></button>
-            </div>
-            </div>
-            <div class="list" ng-show="device.connected">
-              <div class="item item-icon-right">Button
-              <span class="badge badge-stable" style="right: 16px;" ng-hide="device.buttonPressed">Released</span>
-              <span class="badge badge-balanced" style="right: 16px;" ng-show="device.buttonPressed">Pressed</span>
-              </div>
-              <ion-toggle ng-model="device.ledOn" ng-change="sendData(device)" toggle-class="toggle-calm">LED Light</ion-toggle>
-            </div>
-          </ion-item>
-        </ion-list>
-      </ion-content>
+      <ion-side-menus>
+        <!-- Left menu -->
+        <ion-side-menu side="left">
+          <ul class="list">
+            <li class="item" style="text-align:center;border:0px;">{{appVersion}}</li>
+          </ul>
+        </ion-side-menu>
+
+        <ion-side-menu-content>
+          <ion-nav-bar align-title="center">
+            <ion-nav-buttons side="left">
+             <!-- Toggle left side menu -->
+             <button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
+            </ion-nav-buttons>
+            <ion-nav-title>Tiles</ion-nav-title>
+          </ion-nav-bar>
+          <div class="button bar bar-subheader" ng-class="connectedToServer ? 'bar-balanced' : 'bar-stable'" ng-click="showConnectMQTTPopup()">
+            <h1 class="title">{{serverConnectStatusMsg}}</h1>
+          </div>
+          <div class="bar bar-footer bar-stable">
+            <h1 class="title">
+              <ng-pluralize count="devices.length"
+                when="{'0': 'No devices found.',
+                '1': '1 device found.',
+                'other': '{} devices found.'}">
+              </ng-pluralize>
+            </h1>
+            <button class="button button-positive" ng-click="doRefresh()">Refresh</button>
+          </div>
+          <ion-content class="has-header has-subheader">
+            <ion-refresher pulling-text="Pull to refresh..." on-refresh="doRefresh()">
+            </ion-refresher>
+            <ion-list>
+              <ion-item ng-repeat="device in devices">
+              <div class="row row-center">
+                <div class="col col-75">
+                  <b>{{device.name}}</b><br/>RSSI:{{device.rssi}}<br/>{{device.id}}
+                </div>
+                <div class="col">
+                  <button class="button button-small button-positive" style="float: right;" ng-click="connect(device)" ng-hide="device.connected">Connect</button>
+                  <button id="disconnectButton" class="button button-small" style="float: right;" ng-click="disconnect(device)" ng-show="device.connected">Disconnect</button>
+                  <button id="fetchEventMappingsButton" class="button button-small icon ion-code-download" style="float: right;" ng-click="fetchEventMappings(device)" ng-show="device.connected"></button>
+                </div>
+                </div>
+                <div class="list" ng-show="device.connected">
+                  <div class="item item-icon-right">Button
+                  <span class="badge badge-stable" style="right: 16px;" ng-hide="device.buttonPressed">Released</span>
+                  <span class="badge badge-balanced" style="right: 16px;" ng-show="device.buttonPressed">Pressed</span>
+                  </div>
+                  <ion-toggle ng-model="device.ledOn" ng-change="sendData(device)" toggle-class="toggle-calm">LED Light</ion-toggle>
+                </div>
+              </ion-item>
+            </ion-list>
+          </ion-content>
+        </ion-side-menu-content>
     </ion-pane>
   </body>
 </html>

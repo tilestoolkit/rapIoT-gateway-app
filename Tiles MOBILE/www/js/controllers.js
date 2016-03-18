@@ -5,7 +5,15 @@
 angular.module('tiles.controllers', [])
 
 .controller('TilesCtrl', ['$scope', '$ionicPopup', 'mqttClient', 'tilesApi', function($scope, $ionicPopup, mqttClient, tilesApi) {
+    
+    $scope.appVersion = '';
 
+    document.addEventListener('deviceready', function () {
+        cordova.getAppVersion.getVersionNumber().then(function (version) {
+            $scope.appVersion = 'Version ' + version;
+        });
+    }, false);
+    
     $scope.connectedToServer = false;
     $scope.serverConnectStatusMsg = 'Click to connect to server';
     
