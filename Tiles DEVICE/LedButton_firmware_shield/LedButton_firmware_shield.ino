@@ -58,7 +58,7 @@ void setup() {
   //set the device name
   RFduinoBLE.deviceName = "TILES2";
   //set the data we want to appear in the advertisement (max 31bytes)
-  RFduinoBLE.advertisementData = "Tiles2_BTtest";
+  RFduinoBLE.advertisementData = "TILES2";
   //set advertising interval in ms (low-longer battery life)
   RFduinoBLE.advertisementInterval = 200;
   //set tx signal strenght (value between -30 and +4dDm in 4dBm increments)
