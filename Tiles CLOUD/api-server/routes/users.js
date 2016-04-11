@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var mongoose = require('mongoose');
 var User = mongoose.model('User');
+var Tile = mongoose.model('Tile');
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
@@ -66,6 +67,16 @@ router.delete('/:user/tiles/:id', function(req, res, next) {
         else
             res.json({"error":true,"message":"Couldn't find Tile to remove"});
     });
+});
+
+router.get('/:user/tiles/name/:name', function(req, res, next) {
+  for (var i = 0; i < req.user.tiles.length; i++) { 
+    if (req.user.tiles[i]['name'] === req.params.name) {
+      res.json(req.user.tiles[i]);
+      return;
+    }
+  }
+  return next(err);
 });
 
 module.exports = router;

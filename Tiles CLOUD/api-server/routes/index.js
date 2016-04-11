@@ -6,7 +6,7 @@ var User = mongoose.model('User')
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
+  res.render('index', { appVersion: req.app.get('appVersion'), buildDate: req.app.get('buildDate') });
 });
 
 router.get('/tiles', function(req, res, next) {
@@ -21,11 +21,13 @@ router.post('/tiles', function(req, res, next) {
   var userId = req.body.userId;
   var active = req.body.active;
   var state = req.body.state;
+  var name = req.body.name;
 
   var fieldsToUpdate = {}; // Only update fields that are defined and not null
   if (userId != null) fieldsToUpdate.user = userId;
   if (active != null) fieldsToUpdate.active = active;
   if (state != null) fieldsToUpdate.state = state;
+  if (name != null) fieldsToUpdate.name = name;
 
   Tile.findByIdAndUpdate(tileId, fieldsToUpdate, {upsert: true, new: true}, function(err, tile){
     if (err) return next(err);

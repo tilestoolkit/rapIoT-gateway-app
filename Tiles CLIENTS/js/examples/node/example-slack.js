@@ -60,13 +60,8 @@ var setTileActivation = function(activation){
     tilesClient.send(tileId, '{"activation": "' + activation + '"}');
 }
 
-tilesClient.on('receive', function(tileId, data){
-	try {
-		var json = JSON.parse(data);
-		if (json && json.type === 'button_event' && json.event === 'pressed') {
-			setTileActivation(false);
-		}
-	} catch (error) {
-		console.log('Error: ' + error);
+tilesClient.on('receive', function(tileId, event){
+	if (event.type === 'button_event' && event.event === 'pressed') {
+		setTileActivation(false);
 	}
 });

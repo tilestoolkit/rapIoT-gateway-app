@@ -35,8 +35,24 @@ angular.module('tilesApi', ['ui.router', 'tilesApi.controllers', 'tilesApi.servi
 				tileId: ['$stateParams', function($stateParams) {
   					return $stateParams.tileId;
 				}],
+				tile: ['$stateParams', 'tiles', function($stateParams, tiles) {
+  					return tiles.get($stateParams.userId, $stateParams.tileId);
+				}],
 				registeredWebhooksPromise: ['$stateParams', 'webhooks', function($stateParams, webhooks) {
   					return webhooks.getRegistered($stateParams.userId, $stateParams.tileId);
+				}]
+			}
+		})
+		.state('appRecipes', {
+			url: '/appRecipes/{userId}',
+			templateUrl: '/templates/appRecipes.html',
+			controller: 'AppRecipeCtrl',
+			resolve: {
+				userId: ['$stateParams', function($stateParams) {
+  					return $stateParams.userId;
+				}],
+				storedAppRecipesPromise: ['$stateParams', 'appRecipes', function($stateParams, appRecipes) {
+  					return appRecipes.getAll($stateParams.userId);
 				}]
 			}
 		});

@@ -10,9 +10,8 @@ Tiles Client Library is an event-driven API for the Tiles project written in Jav
 <a name="Installation"></a>
 ## Installation
 
-Install dependencies:  TO BE DONE
+Install dependencies:
 ```sh
-cd "Tiles CLOUD/client-lib"
 npm install
 ```
 
@@ -21,27 +20,21 @@ To use this client library in the browser see the [Browser](#Browser) section.
 <a name="Example"></a>
 ## Example
 
-This example code connects to the server and then sends a message using a fake Tile ID.
-The server will send it back to the client as the message is sent to all clients of the user.
+This example code connects to the server as `TestUser`. Whenever an event is received, the event will be printed to the console. If a touch event originates from button A, a command to turn on red blinking light will be sent back. If a touch event originates from button B, a command to turn off the light will be sent back.
 
 ```js
 var TilesClient = require('tiles-client.js');
 
-var client = new TilesClient('TestUser').connect();
+var client = new TilesClient('TestUser', 'localhost', 1883).connect();
 
-client.on('connect', function(){
-	console.log('Connected!');
-	client.send('AB:CD:12:34:56', 'Hello World!');
+client.on('receive', function(tileId, event){
+	console.log('Event received from ' + tileId + ': ' + JSON.stringify(event));
+    if (event.name === 'buttonA' && event.properties[0] === 'touch'){
+    	client.send(tileId, 'led', 'blink', 'red');
+    } else if (event.name === 'buttonB' && event.properties[0] === 'touch'){
+    	client.send(tileId, 'led', 'off');
+    }
 });
-
-client.on('receive', function(tileId, data){
-	console.log('Message received from ' + tileId + ': ' + data);
-});
-```
-
-Output:
-```
-Message received from AB:CD:12:34:56: Hello World!
 ```
 
 <a name="API"></a>
@@ -50,7 +43,14 @@ Message received from AB:CD:12:34:56: Hello World!
 ### Create client
 Create a client by providing your username and connecting the the server.
 ```javascript
-var tilesClient = new TilesClient([username]).connect();
+var tilesClient = new TilesClient([username], [host], [port]).connect();
+```
+If `[host]` and/or `[port]` is omitted the client will fall back to use defaults.
+
+### Commands
+Send a command to a Tile with a property name and an arbitrary number of property values. Currently, the total number of characters in the property name and values is limited to maximum `20 - [Number of property values]` characters.
+```javascript
+tilesClient.send([tileId], [propertyName], [propertyValue1], [propertyValue2], [...]);
 ```
 
 ### Events
@@ -68,11 +68,11 @@ Emitted on successful (re)connection to the server.
 
 #### Event `'receive'`
 
-`function(tileId, message) {}`
+`function(tileId, event) {}`
 
 Emitted when a message sent from/to a Tile is received.
 * `tileId` The ID of the Tile the message was sent to/from.
-* `message` payload of the received packet
+* `event` An event object (Parsed JSON payload of the received packet)
 
 #### Event `'tileRegistered'`
 
@@ -88,6 +88,13 @@ Emitted when a Tile is registered/connected.
 Emitted when a Tile is unregistered/disconnected.
 * `tileId` The ID of the unregistered Tile
 
+<a name="GetTileByName"></a>
+### Get Tile by name
+Get the ID of a Tile by looking it up by name.
+```javascript
+tilesClient.tiles['TILES1']
+```
+
 <a name="Browser"></a>
 ## Browser
 
@@ -96,7 +103,6 @@ Emitted when a Tile is unregistered/disconnected.
 In order to use this client library in a browser, [Browserify](https://github.com/substack/node-browserify) can be used to create a stand-alone build.
 
 ```sh
-cd "Tiles CLOUD/client-lib"
 npm install // Install dependencies
 npm install -g browserify // Install Browserify globally
 browserify tiles-client.js -s TilesClient > browserTilesClient.js
