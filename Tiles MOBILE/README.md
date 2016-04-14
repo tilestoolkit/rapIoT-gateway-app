@@ -1,8 +1,17 @@
 # Tiles Mobile Application
 
+### Suggested step for Mac OS X
+
+Install [Homebrew](http://brew.sh), a package manager for OS X.
+
 ### Installation
 
 First, install [Node.js](http://nodejs.org/). Then, install the latest Cordova and Ionic [command-line tools](https://www.npmjs.com/package/ionic):
+
+Homebrew:
+```sh
+$ brew install node
+```
 
 ```sh
 $ npm install -g cordova
@@ -31,9 +40,11 @@ $ ionic state restore --plugins
 ```
 
 ### Run application
-Deploy the Ionic app on specified platform devices. If a device is not found it'll then deploy to an emulator/simulator:
+Deploy the Ionic app on specified platform devices. If a device is not hooked up to the USB port, it'll then deploy to an emulator/simulator.
+To deploy and test the app on Android devices you need to enable USB debugging from device's settings: ``Settings -> Developer Options -> Android debugging``.
+
 ```sh
-$ ionic run [android|ios]
+$ ionic run [android|ios] # -l enables live reload, -c enables console log
 ```
 To build native project for the target platform. Projects will be compiled in the /platform dir
 ```sh
