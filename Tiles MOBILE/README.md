@@ -62,7 +62,16 @@ $ ionic build [android|ios]
 - You'll now be presented with a switch to control the LED Light on the Tile, and an indicator showing whether the physical button on the Tile is pressed or not.
 
 #### Server Connection
-- The app automatically connects to Mosquitto's test server/broker if an internet connection is available on the device.
+From the app you can connect to the server using:
+
+```
+Username: your_username_of_choice
+Host: cloud.tilestoolkit.io
+Port: 8080
+```
+
+#### Mosquitto test server
+- The app can connect to Mosquitto's test server/broker if an internet connection is available on the device.
 - When a Tile is successfully connected to the phone, it will be able to send and receive messages to/from the server, using the phone as a gateway.
 - This functionality can be tested using a tool such as [MQTTlens](https://chrome.google.com/webstore/detail/mqttlens/hemojaaeigabkbcookmlgmdigohjobjm):
   - Set up a connection to Mosquitto's test server (Hostname: tcp://test.mosquitto.org, Port: 1883).
