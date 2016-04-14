@@ -21,7 +21,7 @@ To use this client library in the browser see the [Browser](#Browser) section.
 
 Tiles applications are based on Tiles modules exchanging *events* and *commands*, encapsulating interaction primitives, between each other and with third-party clients. 
 
-![GitHub Logo](/images/logo.png)
+![GitHub Logo](/imgs/events-commands.png)
 
 An *event* describes and input primitive, like a tile being tapped, shaken or rotated. 
 
