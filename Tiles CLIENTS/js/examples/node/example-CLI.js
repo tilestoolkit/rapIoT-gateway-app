@@ -2,7 +2,7 @@
 * Example: Message format supporting extensibility
 */
 var TilesClient = require('../../');
-var client = new TilesClient('simone', 'localhost', 1883).connect();
+var client = new TilesClient('simone', '129.241.110.164', 1883).connect();
 
 var readline = require('readline');
 var rl = readline.createInterface(process.stdin, process.stdout);
