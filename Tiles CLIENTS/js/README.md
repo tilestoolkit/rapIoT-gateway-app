@@ -1,14 +1,9 @@
-# Tiles Client Library
+# TilesJS Library
 
 Tiles Client Library is an event-driven API for the Tiles project written in JavaScript for Node.js and the browser. It's built on top of [MQTT.js](https://github.com/mqttjs/MQTT.js) and Node.js' [EventEmitter](https://github.com/Gozala/events).
 
-* [Installation](#Installation)
-* [Example](#Example)
-* [API](#API)
-* [Browser](#Browser)
-
 <a name="Installation"></a>
-## JS Library Installation
+## Library Installation
 
 Install dependencies:
 ```sh
