@@ -34,7 +34,7 @@ Update Ionic library files:
 $ ionic lib update
 ```
 
-Load plugins:
+Restore and/or reinstall cordova plugins to versions defined in ``package.json``:
 ```sh
 $ ionic state restore --plugins
 ```
