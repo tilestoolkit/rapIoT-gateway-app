@@ -142,7 +142,7 @@ angular.module('tiles.services', [])
 	var o = {
 		username: $localstorage.get('username', 'TestUser'),
 		host: {
-			address: $localstorage.get('hostAddress', '192.168.1.2'),
+			address: $localstorage.get('hostAddress', 'cloud.tilestoolkit.io'),
 			mqttPort: $localstorage.get('mqttPort', 8080),
 			apiPort: 3000
 		}
