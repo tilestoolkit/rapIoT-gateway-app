@@ -28,7 +28,7 @@
     },
     "cordova-plugin-compat",
     {
-      "locator": "https://github.com/don/cordova-plugin-ble-central.git",
+      "locator": "cordova-plugin-ble-central@1.0.5",
       "id": "cordova-plugin-ble-central"
     }
   ],
