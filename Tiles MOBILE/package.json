@@ -23,16 +23,22 @@
     "cordova-plugin-app-version",
     "ionic-plugin-keyboard",
     {
+      "locator": "https://github.com/katzer/cordova-plugin-background-mode.git",
+      "id": "cordova-plugin-background-mode"
+    },
+    "cordova-plugin-compat",
+    {
       "locator": "https://github.com/don/cordova-plugin-ble-central.git",
       "id": "cordova-plugin-ble-central"
-    },
-    {
-      "locator": "https://github.com/katzer/cordova-plugin-background-mode.git",
-      "id": "de.appplant.cordova.plugin.background-mode"
     }
   ],
   "cordovaPlatforms": [
     "android",
-    "ios"
+    "ios",
+    {
+      "platform": "android",
+      "version": "",
+      "locator": "android"
+    }
   ]
 }
