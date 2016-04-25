@@ -56,9 +56,9 @@ void setup() {
 
   //Setup Bluetooth Connectivity
   //set the device name
-  RFduinoBLE.deviceName = "TILES3";
+  RFduinoBLE.deviceName = "RFduino";
   //set the data we want to appear in the advertisement (max 31bytes)
-  RFduinoBLE.advertisementData = "TILES3";
+  RFduinoBLE.advertisementData = "RFduino";
   //set advertising interval in ms (low-longer battery life)
   RFduinoBLE.advertisementInterval = 200;
   //set tx signal strenght (value between -30 and +4dDm in 4dBm increments)
