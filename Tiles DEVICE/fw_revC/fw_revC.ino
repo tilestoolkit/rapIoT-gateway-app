@@ -13,6 +13,23 @@
 
 #include <RFduinoBLE.h>
 #include <LEDFader.h>
+#include <Wire.h>
+#include <WInterrupts.h>
+
+#include "libs/TS/TokenSoloEvent.h"
+// Variables for Token Solo Event
+volatile uint8_t intSource = 0; // byte with interrupt informations
+int tab[] = {'0', '0'};
+int single_tap = 0;
+int double_tap = 0;
+int shake = 0;
+int inactivity = 0;
+#define ACC_INT1_PIN 4 // Pin where the acceleromter interrupt1 is connected
+TokenSoloEvent tokenSolo = TokenSoloEvent(ACC_INT1_PIN); // Connected on pin 4
+String event_name;
+String payload;
+char c_payload[19];
+
 #define FADE_TIME 2000
 #define DIR_UP 1
 #define DIR_DOWN -1
@@ -28,6 +45,7 @@ uint8_t *deviceADDR0 = (uint8_t *)0x100000a4; // location of MAC address last by
 char adv_name_c[8];
 
 
+
 #define RED_LED_PIN 0
 #define GREEN_LED_PIN 1
 #define BLUE_LED_PIN 2
@@ -40,6 +58,13 @@ bool blinking = 0;
 String blinkingColor;
 
 void setup() {
+  //SERIAL INTERFACE FOR DEBUGGING PURPOSES
+  //Serial.begin(9600);
+  // Enable interrupts :
+  interrupts();
+  // Config of the accelerometer
+  tokenSolo.accelConfig();
+ 
   //Define adv name
   mac = String(*deviceADDR0,HEX);
   adv_name = "Tile_" + mac;
@@ -62,9 +87,6 @@ void setup() {
   digitalWrite(RED_LED_PIN, LOW);
   digitalWrite(BLUE_LED_PIN, LOW);
 
-  //Start serial interface (over USB) for debugging purposes
-  //Serial.begin(9600);
-
   //Setup Bluetooth Connectivity
   //set the device name
   RFduinoBLE.deviceName = adv_name_c;
@@ -79,15 +101,57 @@ void setup() {
 
   fade_green = LEDFader(GREEN_LED_PIN);
   fade_red = LEDFader(RED_LED_PIN);
-  fade_blue = LEDFader(BLUE_LED_PIN);
-
-  
+  fade_blue = LEDFader(BLUE_LED_PIN);  
 }
 
 
 void loop() {
+/************************************************************/
+  // Token solo event detection
+  if (digitalRead(ACC_INT1_PIN))
+  {
+    intSource = tokenSolo.accel.readRegister(ADXL345_REG_INT_SOURCE);
+    // Computation of data from the accelerometer to detect events
+    tokenSolo.accelComputation(tab, bitRead(intSource, 3), bitRead(intSource, 4), bitRead(intSource, 5), bitRead(intSource, 6), &inactivity, &single_tap, &double_tap, &shake);
+  }
+  // Sends the events detected to the game engine
+  if (single_tap)
+  {
+    payload = adv_name + ",tap,single";
+    payload.toCharArray(c_payload,19);
+    RFduinoBLE.send((char*) c_payload,19);
+    Serial.println(c_payload);
+    single_tap = 0;
+  }
+  else if (double_tap)
+  {
+    payload = adv_name + ",tap,double";
+    payload.toCharArray(c_payload,19);
+    RFduinoBLE.send((char*) c_payload,19);
+    Serial.println(c_payload);
+    double_tap = 0;
+  }
+  else if (shake)
+  {
+    //sendData[0] = SHAKE;
+    //RFduinoBLE.send((char*) sendData, 1);
+    //shake = 0;
+  }
+  if (tokenSolo.tiltComputation())
+  {
+    payload = adv_name + ",tilt      ";
+    payload.toCharArray(c_payload,19);
+    RFduinoBLE.send((char*) c_payload,19);
+    Serial.println(c_payload);   
+  }
+  if (inactivity)
+  {
+     //tokenConstraint.rgb_sensor.getData();
+   }
+  
  if(blinking)
   blink(blinkingColor);
+  
   if(fading){
   fade_blue.update();
   // LED no longer fading, switch direction
@@ -104,6 +168,8 @@ void loop() {
     }
   }
   } 
+
+  delay(500); // Important delay, do not delete it !
 }
 
 void RFduinoBLE_onConnect()
