@@ -146,7 +146,7 @@ angular.module('tiles.controllers', [])
     }
 
     var isTilesDevice = function(discoveredDevice) {
-        return discoveredDevice.name != null && discoveredDevice.name.substring(0, 4) === 'TILE';
+        return discoveredDevice.name != null && discoveredDevice.name.substring(0, 4) === 'Tile';
     }
 
     var app = {
