@@ -26,11 +26,10 @@ tilesClient.send('', '{"type":"button_event", "event":"pressed"}')
 		
 		var tilesClient = new TilesClient('TestUser').connect();
 		
-		tilesClient.on('receive', function(tileId, msg){
-			console.log('Received message from ' + tileId + ': ' + msg);
-			var json = JSON.parse(msg);
-			if (json && json.type === 'button_event') {
-				if (json.event === 'pressed'){
+		tilesClient.on('receive', function(tileId, event){
+			console.log('Received message from ' + tileId + ': ' + JSON.stringify(event));
+			if (event.type === 'button_event') {
+				if (event.event === 'pressed'){
 					audio.play();
 					playBtn.classList.remove('paused');
 				} else {

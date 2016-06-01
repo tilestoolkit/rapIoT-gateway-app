@@ -6,7 +6,7 @@ var Webhook = mongoose.model('Webhook');
 
 var tilesApi = {};
 
-tilesApi.setDeviceState = function(tileId, userId, state, active){
+tilesApi.setDeviceState = function(tileId, userId, state, active, name){
 	if (tileId == null) {
 		console.log("Tile ID can't be undefined or null");
 		return;	
@@ -24,6 +24,7 @@ tilesApi.setDeviceState = function(tileId, userId, state, active){
 		}
   	}
   	if (active != null) fieldsToSend.active = active;
+  	if (name != null) fieldsToSend.name = name;
 
   	tilesApi.triggerMatchingWebhooks(userId, tileId, fieldsToSend);
 

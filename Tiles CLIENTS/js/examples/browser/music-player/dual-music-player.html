@@ -37,32 +37,27 @@ tilesClient.send('', '{"type":"button_event", "event":"pressed"}')
 		
 		var tilesClient = new TilesClient('TestUser').connect();
 		
-		tilesClient.on('receive', function(tileId, msg){
-			console.log('Received message from ' + tileId + ': ' + msg);
-			try {
-				var json = JSON.parse(msg);
-				if (json && json.type === 'button_event') {
-					var audio, playBtn;
-					if (tileId === registeredTiles[0]){
-						audio = audio1;
-						playBtn = playBtn1;
-					} else if (tileId === registeredTiles[1]){
-						audio = audio2;
-						playBtn = playBtn2;
-					} else {
-						console.log('Unknown device');
-						return;
-					}
-					if (json.event === 'pressed'){
-						audio.play();
-						playBtn.classList.remove('paused');
-					} else {
-						audio.pause();
-						playBtn.classList.add('paused');
-					}
+		tilesClient.on('receive', function(tileId, event){
+			console.log('Received message from ' + tileId + ': ' + JSON.stringify(event));
+			if (event.type === 'button_event') {
+				var audio, playBtn;
+				if (tileId === registeredTiles[0]){
+					audio = audio1;
+					playBtn = playBtn1;
+				} else if (tileId === registeredTiles[1]){
+					audio = audio2;
+					playBtn = playBtn2;
+				} else {
+					console.log('Unknown device');
+					return;
 				}
-			} catch(error) {
-				console.log('Error: ' + error);
+				if (event.event === 'pressed'){
+					audio.play();
+					playBtn.classList.remove('paused');
+				} else {
+					audio.pause();
+					playBtn.classList.add('paused');
+				}
 			}
 		});
 		

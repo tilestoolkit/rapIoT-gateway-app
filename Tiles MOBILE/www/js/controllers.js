@@ -4,27 +4,58 @@
 
 angular.module('tiles.controllers', [])
 
-.controller('TilesCtrl', ['$scope', '$ionicPopup', function($scope, $ionicPopup) {
-
-    var client;
-    var serverConnectionTimeout = 10000; // 10 seconds
-    var publishOpts = {retain: true};
-
-    $scope.mqttBroker = {
-        host: '192.168.1.2',
-        port: 8080
-    }
-
-    $scope.connectedToServer = false;
-    $scope.serverConnectStatusMsg = "Click to connect to server";
+.controller('TilesCtrl', ['$scope', '$ionicPopup', 'mqttClient', 'tilesApi', function($scope, $ionicPopup, mqttClient, tilesApi) {
     
-    $scope.tilesApi = {
-        username: 'TestUser'
+    $scope.appVersion = '';
+
+    document.addEventListener('deviceready', function () {
+        cordova.getAppVersion.getVersionNumber().then(function (version) {
+            $scope.appVersion = 'Version ' + version;
+        });
+    }, false);
+    
+    $scope.connectedToServer = false;
+    $scope.serverConnectStatusMsg = 'Click to connect to server';
+    
+    $scope.mqttConnectionData = {
+        username: tilesApi.username,
+        host: tilesApi.host.address,
+        port: tilesApi.host.mqttPort
     }
+
+    // Called when a command is received from the broker
+    $scope.$on('command', function(event, deviceId, command){
+        for (var i = 0; i < $scope.devices.length; i++) {
+            var device = $scope.devices[i];
+            if (device.id == deviceId) {
+                device.ledOn = (command.name === 'led' && command.properties[0] === 'on');
+                console.log('Device led on: '+device.ledOn);
+                $scope.$apply();
+                var commandString = tilesApi.getCommandObjectAsString(command);
+                $scope.sendData(device, commandString);
+            }
+        }
+    });
+
+    $scope.$on('offline', function() {
+        setServerConnectionStatus('Client gone offline', false);
+    });
+
+    $scope.$on('close', function() {
+        setServerConnectionStatus('Disconnected from server', false);
+    });
+
+    $scope.$on('reconnect', function(){
+        setServerConnectionStatus('A reconnect is started', false);
+    });
+
+    $scope.$on('error', function(event, error){
+        setServerConnectionStatus('Error: ' + error, false);
+    });
 
     $scope.showConnectMQTTPopup = function() {
         var serverConnectionPopup = $ionicPopup.show({
-            template: 'Username:<input type="text" ng-model="tilesApi.username">Host:<input type="text" ng-model="mqttBroker.host">Port:<input type="number" ng-model="mqttBroker.port">',
+            template: 'Username:<input type="text" ng-model="mqttConnectionData.username">Host:<input type="text" ng-model="mqttConnectionData.host">Port:<input type="number" ng-model="mqttConnectionData.port">',
             title: 'Connect to MQTT broker',
             subTitle: 'Enter username, host address and port number',
             scope: $scope,
@@ -34,60 +65,24 @@ angular.module('tiles.controllers', [])
                 text: '<b>Connect</b>',
                 type: 'button-positive',
                 onTap: function(e) {
-                    if (client) {
-                        // End previous server connection
-                        client.end();
-                        $scope.connectedToServer = false;
-                    }
+                    tilesApi.setUsername($scope.mqttConnectionData.username);
+                    tilesApi.setHostAddress($scope.mqttConnectionData.host);
+                    tilesApi.setHostMqttPort($scope.mqttConnectionData.port);
                     
                     // Connect to MQTT server/broker
-                    client = mqtt.connect({
-                        host: $scope.mqttBroker.host,
-                        port: $scope.mqttBroker.port
-                    });
-
-                    $scope.serverConnectStatusMsg = "Connecting...";
-
-                    setTimeout(function() {
-                        if (!$scope.connectedToServer) {
-                            setServerConnectionStatus('Failed to connect to server', false);
+                    mqttClient.connect($scope.mqttConnectionData.host, $scope.mqttConnectionData.port).then(function(){
+                        cordova.plugins.backgroundMode.enable();
+                        setServerConnectionStatus('Connected to ' + tilesApi.host.address + ':' + tilesApi.host.mqttPort, true);
+                        for (var i = 0; i < $scope.devices.length; i++) {
+                            var device = $scope.devices[i];
+                            if (device.connected) {
+                                mqttClient.registerDevice(device);
+                            }
                         }
-                    }, serverConnectionTimeout)
-
-                    // Called when the client has connected to a broker
-                    client.on('connect', function() {
-                        setServerConnectionStatus('Connected to ' + $scope.mqttBroker.host + ':' + $scope.mqttBroker.port, true);
-                        if (typeof device !== 'undefined') client.publish('client', 'Device: ' + device.model + ' (' + device.uuid + ')', publishOpts);
-                        else client.publish('client', 'Unknown device', publishOpts);
+                    }, function() {
+                        setServerConnectionStatus('Failed to connect to server', false);
                     });
-
-                    // Called when a message arrives
-                    client.on('message', function(topic, message) {
-                        var msgString = message.toString();
-                        console.log('MQTT: [' + topic + '] ' + msgString);
-                        try {
-                            var json = JSON.parse(msgString);
-                            if (json) handleReceivedJson(topic.split('/')[2], json);
-                        } catch (exception) {
-                            console.log('JSON Parse Error: ' + exception);
-                        }
-                    });
-
-                    client.on('offline', function() {
-                        setServerConnectionStatus('Client gone offline', false);
-                    });
-
-                    client.on('close', function() {
-                        setServerConnectionStatus('Disconnected from server', false);
-                    });
-
-                    client.on('reconnect', function() {
-                        setServerConnectionStatus('A reconnect is started', false);
-                    });
-
-                    client.on('error', function(error) {
-                        console.log('Error: '+error);
-                    });
+                    setServerConnectionStatus('Connecting...', false);
                 }
             }]
         });
@@ -95,25 +90,13 @@ angular.module('tiles.controllers', [])
 
     function getDeviceSpecificTopic(deviceId, isEvent){
         var type = isEvent ? 'evt' : 'cmd';
-        return 'tiles/' + type + '/' + $scope.tilesApi.username + '/' + deviceId;
+        return 'tiles/' + type + '/' + tilesApi.username + '/' + deviceId;
     }
 
     function setServerConnectionStatus(msg, connected){
         console.log(msg);
         $scope.serverConnectStatusMsg = msg;
         $scope.connectedToServer = connected;
-        $scope.$apply();
-    }
-
-    function handleReceivedJson(deviceId, json) {
-        for (var i = 0; i < $scope.devices.length; i++) {
-            var device = $scope.devices[i];
-            if (device.id == deviceId) {
-                device.ledOn = (json.activation == 'on');
-                $scope.$apply();
-                $scope.sendData(device);
-            }
-        }
     }
 
     $scope.devices = [
@@ -134,19 +117,24 @@ angular.module('tiles.controllers', [])
 
     var DataReceiver = function DataReceiver(device) {
         this.onData = function(data) { // Data received from RFduino
-            var buttonValue = arrayBufferToString(data);
-            var message = {
-                type: 'button_event'
-            };
-            if (buttonValue === 'btnON') {
-                device.buttonPressed = true;
-                message.event = 'pressed';
-            } else if (buttonValue === 'btnOFF') {
-                device.buttonPressed = false;
-                message.event = 'released';
+            var receivedEventAsString = arrayBufferToString(data);
+            console.log('Received event: ' + receivedEventAsString);
+
+            var message = tilesApi.getEventStringAsObject(receivedEventAsString);
+            if (message == null) {
+                console.log('No mapping found for event: ' + receivedEventAsString + ' from ' + device.id);
+            } else {
+                if (message.properties[0] === 'touch') {
+                    device.buttonPressed = !device.buttonPressed; // Toggle (temporary solution until 'release' event is implemented in TD)
+                    $scope.$apply();
+                } /*else if (receivedEventAsString === 'btnOFF') {
+                    device.buttonPressed = false;
+                    $scope.$apply();
+                }*/
+                console.log('JSON Message to be sent: ' + JSON.stringify(message));
+                mqttClient.sendEvent(device.id, message);
             }
-            $scope.$apply();
-            if (client) client.publish(getDeviceSpecificTopic(device.id, true), JSON.stringify(message), publishOpts);
+            
         }
     }
 
@@ -157,11 +145,15 @@ angular.module('tiles.controllers', [])
         return true;
     }
 
+    var isTilesDevice = function(discoveredDevice) {
+        return discoveredDevice.name != null && discoveredDevice.name.substring(0, 4) === 'TILE';
+    }
+
     var app = {
         onDiscoverDevice: function(device) {
             console.log('Device discovered: '+device);
             device.connected = false;
-            if (isNewDevice(device)) {
+            if (isTilesDevice(device) && isNewDevice(device)) {
                 $scope.devices.push(device);
             }
         },
@@ -170,7 +162,7 @@ angular.module('tiles.controllers', [])
         }
     };
 
-    $scope.sendData = function(device) { // Send data to RFduino
+    $scope.sendData = function(device, dataString) { // Send data to RFduino
         var success = function() {
             console.log('Data sent successfully.');
         };
@@ -179,8 +171,22 @@ angular.module('tiles.controllers', [])
             alert('Failed writing data to the RFduino');
         };
 
-        var data = new Uint8Array(1);
-        data[0] = device.ledOn ? 0x1 : 0x0;
+        /*var data = new Uint8Array(1);
+        data[0] = device.ledOn ? 0x1 : 0x0;*/
+
+        // For sending command from UI (debugging purposes)
+        if (dataString === undefined) {
+            dataString = device.ledOn ? 'led,on,red' : 'led,off';
+        }
+
+        console.log('Sending to device: ' + dataString);
+
+        // Transform string to bytes
+        var data = new Uint8Array(dataString.length);
+        for (var i = 0, l = dataString.length; i < l; i++) {
+            data[i] = dataString.charCodeAt(i);
+        }
+        console.log('Bytes: ' + data.length);
 
         ble.writeWithoutResponse(device.id, rfduino.serviceUUID, rfduino.sendCharacteristic, data.buffer, success, failure);
     };
@@ -211,13 +217,11 @@ angular.module('tiles.controllers', [])
             function() {
                 device.ledOn = false;
                 device.connected = true;
+                tilesApi.loadEventMappings(device.id);
                 var receiver = new DataReceiver(device);
                 ble.startNotification(device.id, rfduino.serviceUUID, rfduino.receiveCharacteristic, receiver.onData, app.onError);
                 $scope.$apply();
-                if (client) {
-                    client.publish(getDeviceSpecificTopic(device.id, true)+'/active', 'true', publishOpts);
-                    client.subscribe(getDeviceSpecificTopic(device.id, false));
-                }
+                mqttClient.registerDevice(device);
             },
             function() {
                 alert('Failure!')
@@ -229,14 +233,17 @@ angular.module('tiles.controllers', [])
             function() {
                 device.connected = false;
                 $scope.$apply();
-                if (client) {
-                    client.publish(getDeviceSpecificTopic(device.id, true)+'/active', 'false', publishOpts);
-                    client.unsubscribe(getDeviceSpecificTopic(device.id, false));
-                }
+                mqttClient.unregisterDevice(device);
             },
             function() {
                 alert('Failure!')
             });
     };
+
+    $scope.fetchEventMappings = function(device) {
+        tilesApi.fetchEventMappings(device.id, function(fetchedEventMappings){
+            alert(JSON.stringify(fetchedEventMappings));
+        });
+    }
 
 }]);

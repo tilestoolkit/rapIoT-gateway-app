@@ -3,7 +3,7 @@
 // angular.module is a global place for creating, registering and retrieving Angular modules
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
-angular.module('tiles', ['ionic', 'tiles.controllers'])
+angular.module('tiles', ['ionic', 'tiles.controllers', 'tiles.services'])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
@@ -15,5 +15,12 @@ angular.module('tiles', ['ionic', 'tiles.controllers'])
     if(window.StatusBar) {
       StatusBar.styleDefault();
     }
+    
+    cordova.plugins.backgroundMode.setDefaults({
+      title:  'Tiles Mobile',
+      ticker: 'Tiles Mobile',
+      text:   'Running in background'
+    });
+
   });
 })

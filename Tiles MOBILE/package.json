@@ -20,13 +20,25 @@
     "cordova-plugin-console",
     "cordova-plugin-whitelist",
     "cordova-plugin-splashscreen",
-    "com.ionic.keyboard",
+    "cordova-plugin-app-version",
+    "ionic-plugin-keyboard",
     {
-      "locator": "https://github.com/don/cordova-plugin-ble-central.git",
+      "locator": "https://github.com/katzer/cordova-plugin-background-mode.git",
+      "id": "cordova-plugin-background-mode"
+    },
+    "cordova-plugin-compat",
+    {
+      "locator": "cordova-plugin-ble-central@1.0.5",
       "id": "cordova-plugin-ble-central"
     }
   ],
   "cordovaPlatforms": [
-    "android"
+    "android",
+    "ios",
+    {
+      "platform": "android",
+      "version": "",
+      "locator": "android"
+    }
   ]
 }

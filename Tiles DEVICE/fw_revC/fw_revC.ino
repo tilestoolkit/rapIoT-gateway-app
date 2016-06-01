@@ -12,53 +12,86 @@
 */
 
 #include <RFduinoBLE.h>
+#include <LEDFader.h>
+#include <Wire.h>
+#include <WInterrupts.h>
+
+#include "libs/TS/TokenSoloEvent.h"
+// Variables for Token Solo Event
+volatile uint8_t intSource = 0; // byte with interrupt informations
+int tab[] = {'0', '0'};
+int single_tap = 0;
+int double_tap = 0;
+int shake = 0;
+int inactivity = 0;
+#define ACC_INT1_PIN 4 // Pin where the acceleromter interrupt1 is connected
+TokenSoloEvent tokenSolo = TokenSoloEvent(ACC_INT1_PIN); // Connected on pin 4
+String event_name;
+String payload;
+char c_payload[19];
+
+#define FADE_TIME 2000
+#define DIR_UP 1
+#define DIR_DOWN -1
+LEDFader fade_green;
+LEDFader fade_red;
+LEDFader fade_blue;
+int direction = DIR_UP;
+bool fading = 0;
+
+String adv_name;
+String mac;
+uint8_t *deviceADDR0 = (uint8_t *)0x100000a4; // location of MAC address last byte
+char adv_name_c[8];
+
+
 
 #define RED_LED_PIN 0
 #define GREEN_LED_PIN 1
 #define BLUE_LED_PIN 2
-#define BUTTON_A_PIN 4
-#define BUTTON_B_PIN 5
-
-//EVENTS
-//debounce time (in ms)
-int debounce_time = 10;
-//maximum debounce timeout (in ms)
-int debounce_timeout = 100;
-//setup text messages to be sent out
-const char btnA[] = "buttonA,touch";
-const char btnB[] = "buttonB,touch";
+#define VIBRO_PIN 3
 
 //COMMANDS
-int ledState = LOW;             // ledState used to set the LED
+int ledState = LOW;                       // ledState used to set the LED
 unsigned long previousMillis = 0;        // will store last time LED was updated
 bool blinking = 0; 
 String blinkingColor;
 
 void setup() {
+  //SERIAL INTERFACE FOR DEBUGGING PURPOSES
+  //Serial.begin(9600);
+  // Enable interrupts :
+  interrupts();
+  // Config of the accelerometer
+  tokenSolo.accelConfig();
+ 
+  //Define adv name
+  mac = String(*deviceADDR0,HEX);
+  adv_name = "Tile_" + mac;
+  adv_name.toCharArray(adv_name_c,8);
+
   //Setup IO PINs
   pinMode(GREEN_LED_PIN, OUTPUT);
   pinMode(RED_LED_PIN, OUTPUT);
   pinMode(BLUE_LED_PIN, OUTPUT);
-  pinMode(BUTTON_A_PIN, INPUT);
-  pinMode(BUTTON_B_PIN, INPUT);
+  pinMode(VIBRO_PIN, OUTPUT);
 
   //blink the LEDS to test they are actually working
   digitalWrite(GREEN_LED_PIN, HIGH);
+  delay(250);
   digitalWrite(RED_LED_PIN, HIGH);
+  delay(250);
   digitalWrite(BLUE_LED_PIN, HIGH);
   delay(500);
   digitalWrite(GREEN_LED_PIN, LOW);
   digitalWrite(RED_LED_PIN, LOW);
   digitalWrite(BLUE_LED_PIN, LOW);
 
-  //Start serial interface (over USB) for debugging purposes
-  //Serial.begin(9600);
-
   //Setup Bluetooth Connectivity
   //set the device name
-  RFduinoBLE.deviceName = "Tiles_001A";
+  RFduinoBLE.deviceName = adv_name_c;
   //set the data we want to appear in the advertisement (max 31bytes)
-  RFduinoBLE.advertisementData = "Tiles_001A";
+  RFduinoBLE.advertisementData = adv_name_c;
   //set advertising interval in ms (low-longer battery life)
   RFduinoBLE.advertisementInterval = 200;
   //set tx signal strenght (value between -30 and +4dDm in 4dBm increments)
@@ -66,40 +99,93 @@ void setup() {
   //start the BLE stack
   RFduinoBLE.begin();
 
-  RFduino_pinWake(BUTTON_A_PIN, HIGH);
-  RFduino_pinWake(BUTTON_B_PIN, HIGH);
+  fade_green = LEDFader(GREEN_LED_PIN);
+  fade_red = LEDFader(RED_LED_PIN);
+  fade_blue = LEDFader(BLUE_LED_PIN);  
 }
 
 
 void loop() {
-  //do
-    // switch to lower power mode until a button edge wakes us up
-  //  RFduino_ULPDelay(INFINITE);
-  //while (! debounce());
-  if (RFduino_pinWoke(BUTTON_A_PIN))
+/************************************************************/
+  // Token solo event detection
+  if (digitalRead(ACC_INT1_PIN))
   {
-    Serial.println("Button A pressed!");
-    RFduinoBLE.send(btnA, 13);
-    RFduino_resetPinWake(BUTTON_A_PIN);
+    intSource = tokenSolo.accel.readRegister(ADXL345_REG_INT_SOURCE);
+    // Computation of data from the accelerometer to detect events
+    tokenSolo.accelComputation(tab, bitRead(intSource, 3), bitRead(intSource, 4), bitRead(intSource, 5), bitRead(intSource, 6), &inactivity, &single_tap, &double_tap, &shake);
   }
-  if (RFduino_pinWoke(BUTTON_B_PIN))
+  // Sends the events detected to the game engine
+  if (single_tap)
   {
-    Serial.println("Button B pressed!");
-    RFduinoBLE.send(btnB, 13);
-    RFduino_resetPinWake(BUTTON_B_PIN);
+    payload = adv_name + ",tap,single";
+    payload.toCharArray(c_payload,19);
+    RFduinoBLE.send((char*) c_payload,19);
+    Serial.println(c_payload);
+    single_tap = 0;
   }
+  else if (double_tap)
+  {
+    payload = adv_name + ",tap,double";
+    payload.toCharArray(c_payload,19);
+    RFduinoBLE.send((char*) c_payload,19);
+    Serial.println(c_payload);
+    double_tap = 0;
+  }
+  else if (shake)
+  {
+    //sendData[0] = SHAKE;
+    //RFduinoBLE.send((char*) sendData, 1);
+    //shake = 0;
+  }
+  if (tokenSolo.tiltComputation())
+  {
+    payload = adv_name + ",tilt      ";
+    payload.toCharArray(c_payload,19);
+    RFduinoBLE.send((char*) c_payload,19);
+    Serial.println(c_payload);   
+  }
+  if (inactivity)
+  {
+     //tokenConstraint.rgb_sensor.getData();
+   }
+  
  if(blinking)
   blink(blinkingColor);
+  
+  if(fading){
+  fade_blue.update();
+  // LED no longer fading, switch direction
+  if (!fade_blue.is_fading()) {
+    // Fade down
+    if (direction == DIR_UP) {
+      fade_blue.fade(0, FADE_TIME);
+      direction = DIR_DOWN;
+    }
+    // Fade up
+    else {
+      fade_blue.fade(255, FADE_TIME);
+      direction = DIR_UP;
+    }
+  }
+  } 
+
+  delay(500); // Important delay, do not delete it !
 }
 
 void RFduinoBLE_onConnect()
 {
   digitalWrite(GREEN_LED_PIN, HIGH);
+  delay(500);
+  digitalWrite(GREEN_LED_PIN, LOW);
 }
 
 void RFduinoBLE_onDisconnect()
 {
   digitalWrite(GREEN_LED_PIN, LOW);
+}
+
+void RFduinoBLE_onAdvertisement(){
+  digitalWrite(RED_LED_PIN, HIGH);  
 }
 
 //Callback when a data chunk is received. OBS! Data chunks must be 20KB (=20 ASCII characters) maximum!
@@ -135,6 +221,7 @@ void RFduinoBLE_onReceive(char *data, int len)
     if (secondValue == "off"){
       setColor("off");
       blinking = 0;
+      fading = 0;
     }
     else if (secondValue == "on")
     {
@@ -146,24 +233,20 @@ void RFduinoBLE_onReceive(char *data, int len)
       blinking = 1;
       blinkingColor = thirdValue;
     }
-  }
-
-}
-
-int debounce()
-{
-  int start = millis();
-  int debounce_start = start;
-  while (millis() - start < debounce_timeout)
-    if (digitalRead(BUTTON_A_PIN) || digitalRead(BUTTON_B_PIN))
-    {
-      if (millis() - debounce_start >= debounce_time)
-        return 1;
+    else if (secondValue == "fade"){
+      fading = 1;
     }
-    else
-      debounce_start = millis();
-  return 0;
+    } 
+  else if(firstValue == "haptic"){
+    if (secondValue == "long"){
+      haptic("long");
+    } else if(secondValue == "burst"){
+      haptic("burst");
+    }
+  }
 }
+
+
 
 
 // LED Functions
@@ -213,3 +296,28 @@ void blink(String color)
       setColor(color);
   }
 }
+
+void haptic(String pattern)
+{
+  if(pattern == "long")
+  {
+    digitalWrite(VIBRO_PIN,HIGH);
+    delay(1500);
+    digitalWrite(VIBRO_PIN,LOW);
+  }
+  else if(pattern == "burst"){
+    for(int i = 0; i<4; i++)
+    {
+    digitalWrite(VIBRO_PIN,HIGH);
+    delay(150);
+    digitalWrite(VIBRO_PIN,LOW);
+    delay(150);
+    }
+  }  
+}
+
+void fade(String color){
+}
+
+
+

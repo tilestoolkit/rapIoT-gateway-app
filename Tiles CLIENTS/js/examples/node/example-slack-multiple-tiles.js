@@ -63,14 +63,9 @@ var setTilesActivation = function(activation){
 	}
 }
 
-tilesClient.on('receive', function(tileId, data){
-	try {
-		var json = JSON.parse(data);
-		if (json && json.type === 'button_event' && json.event === 'pressed') {
-			setTilesActivation(false);
-		}
-	} catch (error) {
-		console.log('Error: ' + error);
+tilesClient.on('receive', function(tileId, event){
+	if (event.type === 'button_event' && event.event === 'pressed') {
+		setTilesActivation(false);
 	}
 });
 
