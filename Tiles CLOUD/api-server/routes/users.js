@@ -4,6 +4,10 @@ var mongoose = require('mongoose');
 var User = mongoose.model('User');
 var Tile = mongoose.model('Tile');
 
+var spawn = require('child_process').spawn;
+var processes = {};
+var fs = require('fs');
+
 /* GET users listing. */
 router.get('/', function(req, res, next) {
   User.find(function(err, users){
@@ -78,5 +82,54 @@ router.get('/:user/tiles/name/:name', function(req, res, next) {
   }
   return next(err);
 });
+
+
+router.post('/:user/application/:name', function (req, res, next) {
+    var name = req.params.name;
+    var code = req.body.code;
+    
+    console.log(code);
+   // console.log("NAME",name);
+   // console.log("CODE",code);
+    
+    var userid=req.user._id
+    
+    if(processes.userid==undefined)
+      processes.userid={};
+
+    if (processes.userid.name == null && code != null) {
+      var path="C:\\gitProjects\\NTNU\\TileDSL\\example\\"+userid+name+".dsl";
+      fs.writeFileSync(path, code);
+      
+        processes.userid.name = spawn('cmd.exe', ['/c', 'test.bat', userid+name]);
+
+        processes.userid.name.stdout.on('data', (data) => {
+            console.log(data.toString());
+        });
+
+        processes.userid.name.stderr.on('data', (data) => {
+            console.log(data.toString());
+        });
+
+        processes.userid.name.on('exit', (code) => {
+            console.log(`Child exited with code ${code}`);
+            processes.userid.name = null;
+        });
+
+        res.json({ "success": true, "message": "Started service successfully" });
+    }
+    else res.json({ "success": false, "message": "Application already running, or no code provided" });
+});
+
+router.delete('/:user/application/:name', function (req, res, next) {
+    var name = req.params.name;
+    if (processes.userid!=undefined && processes.userid.name != null) {
+        spawn("taskkill", ["/pid", processes.userid.name.pid, '/f', '/t']);
+        processes.userid.name = null;
+        return res.json({ "success": true, "message": "Stopped service successfully" });
+    }
+    return res.json({ "success": false, "message": "Process not found. Please check application name" });
+});
+
 
 module.exports = router;
