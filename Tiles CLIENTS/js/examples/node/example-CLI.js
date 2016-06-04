@@ -2,7 +2,7 @@
 * Example: Message format supporting extensibility
 */
 var TilesClient = require('../../');
-var client = new TilesClient('simone', '129.241.110.164', 1883).connect();
+var client = new TilesClient('Simone', 'localhost', 1883).connect();
 
 var readline = require('readline');
 var rl = readline.createInterface(process.stdin, process.stdout);
@@ -13,20 +13,19 @@ rl.prompt();
 rl.on('line', function(line) {
 	if (line === "led")
 		{
-			client.send(client.tiles['TILES3'], 'led', 'blink', 'red');
+			client.send(client.tiles['Tile_e7'], 'led', 'blink', 'red');
 			console.log("Sent command to TILES2 led blink red");
 			rl.prompt();
 		}
 		if (line === "led2")
 			{
-				client.send(client.tiles['TILES1'], 'led', 'blink', 'red');
+				client.send(client.tiles['Tile_e7'], 'led', 'blink', 'blue');
 				console.log("Sent command to TILES1 led blink red");
 				rl.prompt();
 			}
 			if (line === "off")
 				{
-					client.send(client.tiles['TILES3'], 'led', 'off');
-					client.send(client.tiles['TILES1'], 'led', 'off');
+					client.send(client.tiles['Tile_e7'], 'led', 'off');
 					console.log("Sent command to both tiles to turn off");
 					rl.prompt();
 				}
