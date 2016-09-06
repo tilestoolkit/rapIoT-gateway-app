@@ -5,6 +5,7 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
+var cors=require('cors');
 
 mongoose.connect('mongodb://localhost/tiles-api');
 require('./models/Users');
@@ -20,7 +21,9 @@ var eventMappings = require('./routes/eventMappings');
 var ponteServer = require('./ponteServer');
 
 var app = express();
+app.use(cors());
 
+app.set('env','development');
 app.set('appVersion', require('./package.json').version);
 app.set('buildDate', new Date().toUTCString());
 
@@ -35,6 +38,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
+
 
 app.use('/', routes);
 app.use('/users', users);
@@ -76,6 +81,7 @@ if (app.get('env') === 'development') {
 // production error handler
 // no stacktraces leaked to user
 app.use(function(err, req, res, next) {
+  console.log("ERROR?");
   res.status(err.status || 500);
   res.render('error', {
     message: err.message,
