@@ -113,7 +113,8 @@ angular.module('tiles.controllers', [])
     };
 
     var arrayBufferToString = function(buf) {
-        return String.fromCharCode.apply(null, new Uint8Array(buf));
+        var data = String.fromCharCode.apply(null, new Uint8Array(buf));
+        return data.slice(0, -1);   // Removing terminating null character to remove '\u0000' at end of stringified object
     };
 
     var DataReceiver = function DataReceiver(device) {
