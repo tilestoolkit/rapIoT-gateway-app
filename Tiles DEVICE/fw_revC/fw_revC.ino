@@ -45,7 +45,7 @@ String mac;
 uint8_t *deviceADDR0 = (uint8_t *)0x100000a4; // location of MAC address last byte
 char adv_name_c[8];
 
-#define is_shield true  // Used to define pins for RFduino shield or TILES Square
+#define is_shield false  // Used to define pins for RFduino shield or TILES Square
 
 #if is_shield
 #define RED_LED_PIN 2
