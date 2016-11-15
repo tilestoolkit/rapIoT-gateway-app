@@ -15,6 +15,7 @@
 #include <LEDFader.h>
 #include <Wire.h>
 #include <WInterrupts.h>
+#include <stdlib.h>
 
 #include "libs/TS/TokenSoloEvent.h"
 // Variables for Token Solo Event
@@ -33,8 +34,8 @@ char c_payload[19];
 #define FADE_TIME 2000
 #define DIR_UP 1
 #define DIR_DOWN -1
-LEDFader fade_green;
 LEDFader fade_red;
+LEDFader fade_green;
 LEDFader fade_blue;
 int direction = DIR_UP;
 bool fading = 0;
@@ -44,18 +45,26 @@ String mac;
 uint8_t *deviceADDR0 = (uint8_t *)0x100000a4; // location of MAC address last byte
 char adv_name_c[8];
 
+#define is_shield false  // Used to define pins for RFduino shield or TILES Square
 
-
+#if is_shield
+#define RED_LED_PIN 2
+#define GREEN_LED_PIN 3
+#define BLUE_LED_PIN 4
+#define VIBRO_PIN 0
+#else
 #define RED_LED_PIN 0
 #define GREEN_LED_PIN 1
 #define BLUE_LED_PIN 2
 #define VIBRO_PIN 3
+#endif
 
 //COMMANDS
 int ledState = LOW;                       // ledState used to set the LED
 unsigned long previousMillis = 0;        // will store last time LED was updated
-bool blinking = 0; 
+bool blinking = 0;
 String blinkingColor;
+String fadingColor;
 
 void setup() {
   //SERIAL INTERFACE FOR DEBUGGING PURPOSES
@@ -64,11 +73,11 @@ void setup() {
   interrupts();
   // Config of the accelerometer
   tokenSolo.accelConfig();
- 
+
   //Define adv name
-  mac = String(*deviceADDR0,HEX);
+  mac = String(*deviceADDR0, HEX);
   adv_name = "Tile_" + mac;
-  adv_name.toCharArray(adv_name_c,8);
+  adv_name.toCharArray(adv_name_c, 8);
 
   //Setup IO PINs
   pinMode(GREEN_LED_PIN, OUTPUT);
@@ -99,14 +108,14 @@ void setup() {
   //start the BLE stack
   RFduinoBLE.begin();
 
-  fade_green = LEDFader(GREEN_LED_PIN);
   fade_red = LEDFader(RED_LED_PIN);
-  fade_blue = LEDFader(BLUE_LED_PIN);  
+  fade_green = LEDFader(GREEN_LED_PIN);
+  fade_blue = LEDFader(BLUE_LED_PIN);
 }
 
 
 void loop() {
-/************************************************************/
+  /************************************************************/
   // Token solo event detection
   if (digitalRead(ACC_INT1_PIN))
   {
@@ -118,16 +127,16 @@ void loop() {
   if (single_tap)
   {
     payload = adv_name + ",tap,single";
-    payload.toCharArray(c_payload,19);
-    RFduinoBLE.send((char*) c_payload,19);
+    payload.toCharArray(c_payload, 19);
+    RFduinoBLE.send((char*) c_payload, 19);
     Serial.println(c_payload);
     single_tap = 0;
   }
   else if (double_tap)
   {
     payload = adv_name + ",tap,double";
-    payload.toCharArray(c_payload,19);
-    RFduinoBLE.send((char*) c_payload,19);
+    payload.toCharArray(c_payload, 19);
+    RFduinoBLE.send((char*) c_payload, 19);
     Serial.println(c_payload);
     double_tap = 0;
   }
@@ -140,34 +149,21 @@ void loop() {
   if (tokenSolo.tiltComputation())
   {
     payload = adv_name + ",tilt      ";
-    payload.toCharArray(c_payload,19);
-    RFduinoBLE.send((char*) c_payload,19);
-    Serial.println(c_payload);   
+    payload.toCharArray(c_payload, 19);
+    RFduinoBLE.send((char*) c_payload, 19);
+    Serial.println(c_payload);
   }
   if (inactivity)
   {
-     //tokenConstraint.rgb_sensor.getData();
-   }
-  
- if(blinking)
-  blink(blinkingColor);
-  
-  if(fading){
-  fade_blue.update();
-  // LED no longer fading, switch direction
-  if (!fade_blue.is_fading()) {
-    // Fade down
-    if (direction == DIR_UP) {
-      fade_blue.fade(0, FADE_TIME);
-      direction = DIR_DOWN;
-    }
-    // Fade up
-    else {
-      fade_blue.fade(255, FADE_TIME);
-      direction = DIR_UP;
-    }
+    //tokenConstraint.rgb_sensor.getData();
   }
-  } 
+
+  if (blinking)
+    blink(blinkingColor);
+
+  if (fading) {
+    fade(fadingColor);
+  }
 
   delay(500); // Important delay, do not delete it !
 }
@@ -184,8 +180,8 @@ void RFduinoBLE_onDisconnect()
   digitalWrite(GREEN_LED_PIN, LOW);
 }
 
-void RFduinoBLE_onAdvertisement(){
-  digitalWrite(RED_LED_PIN, HIGH);  
+void RFduinoBLE_onAdvertisement() {
+  digitalWrite(RED_LED_PIN, HIGH);
 }
 
 //Callback when a data chunk is received. OBS! Data chunks must be 20KB (=20 ASCII characters) maximum!
@@ -218,29 +214,33 @@ void RFduinoBLE_onReceive(char *data, int len)
   Serial.print("ThirdValue: "); Serial.println(thirdValue);
 
   if (firstValue == "led") {
-    if (secondValue == "off"){
-      setColor("off");
+    if (secondValue == "off") {
       blinking = 0;
       fading = 0;
+      setColor("off");
     }
     else if (secondValue == "on")
     {
-      setColor(thirdValue);
       blinking = 0;
+      fading = 0;
+      setColor(thirdValue);
     }
     else if (secondValue == "blink")
     {
+      fading = 0;
       blinking = 1;
       blinkingColor = thirdValue;
     }
-    else if (secondValue == "fade"){
+    else if (secondValue == "fade") {
+      blinking = 0;
       fading = 1;
+      fadingColor = thirdValue;
     }
-    } 
-  else if(firstValue == "haptic"){
-    if (secondValue == "long"){
+  }
+  else if (firstValue == "haptic") {
+    if (secondValue == "long") {
       haptic("long");
-    } else if(secondValue == "burst"){
+    } else if (secondValue == "burst") {
       haptic("burst");
     }
   }
@@ -262,6 +262,18 @@ void setColor(String color)
     setColorRGB(0, 0, 255);
   else if (color == "white")
     setColorRGB(255, 255, 255);
+  else if (color.length() == 6) {
+    int red, green, blue;
+    parseColorString(color, red, green, blue);
+    setColorRGB(red, green, blue);
+  }
+}
+
+void parseColorString(String color, int& red, int& green, int& blue) {
+  unsigned int colorHex = strtol(&color[0], NULL, 16);
+  red = (int)((colorHex >> 16) & 0xFF);  // Extract the RR byte
+  green = (int)((colorHex >> 8) & 0xFF); // Extract the GG byte
+  blue = (int)((colorHex) & 0xFF);       // Extract the BB byte
 }
 
 
@@ -299,25 +311,36 @@ void blink(String color)
 
 void haptic(String pattern)
 {
-  if(pattern == "long")
+  if (pattern == "long")
   {
-    digitalWrite(VIBRO_PIN,HIGH);
+    digitalWrite(VIBRO_PIN, HIGH);
     delay(1500);
-    digitalWrite(VIBRO_PIN,LOW);
+    digitalWrite(VIBRO_PIN, LOW);
   }
-  else if(pattern == "burst"){
-    for(int i = 0; i<4; i++)
+  else if (pattern == "burst") {
+    for (int i = 0; i < 4; i++)
     {
-    digitalWrite(VIBRO_PIN,HIGH);
-    delay(150);
-    digitalWrite(VIBRO_PIN,LOW);
-    delay(150);
+      digitalWrite(VIBRO_PIN, HIGH);
+      delay(150);
+      digitalWrite(VIBRO_PIN, LOW);
+      delay(150);
     }
-  }  
+  }
 }
 
-void fade(String color){
+void fade(String color) {
+  fade_blue.update();
+  // LED no longer fading, switch direction
+  if (!fade_blue.is_fading()) {
+    // Fade down
+    if (direction == DIR_UP) {
+      fade_blue.fade(0, FADE_TIME);
+      direction = DIR_DOWN;
+    }
+    // Fade up
+    else {
+      fade_blue.fade(255, FADE_TIME);
+      direction = DIR_UP;
+    }
+  }
 }
-
-
-
