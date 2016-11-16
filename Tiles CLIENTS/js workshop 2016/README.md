@@ -1,6 +1,10 @@
 # Tiles WORKSHOP JS 2016
 This directory contains the workshop client APIs and scenarios created for the two workshops organized in autumn, 2016.
 
+In order to use the WorkshopClient, run 'npm install' from your console in the workshop-client directory. This will install the necessary node packages for the client to run properly.
+
+Navigate into the node-examples for example scenarios and template-api.
+
 ## WorkshopClient
 The WorkshopClient will contain references to several helper client APIs that can be used in the client code to extend the IoT scenarios and facilitate development.
 
