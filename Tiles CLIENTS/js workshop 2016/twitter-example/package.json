@@ -1,0 +1,11 @@
+{
+  "name": "twitter-example",
+  "version": "0.1.0",
+  "description": "Showcase scenario for workshop-client using twitter",
+  "scripts": {
+    "start": "node scenario2.js"
+  },
+  "dependencies": {
+    "twit": "^2.2.5"
+  }
+}
