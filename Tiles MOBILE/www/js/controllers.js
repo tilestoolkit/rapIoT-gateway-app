@@ -7,6 +7,7 @@ angular.module('tiles.controllers', [])
 .controller('TilesCtrl', ['$scope', '$ionicPopup', 'mqttClient', 'tilesApi', function($scope, $ionicPopup, mqttClient, tilesApi) {
     
     $scope.appVersion = '';
+    $scope.newName = "";
 
     document.addEventListener('deviceready', function () {
         cordova.getAppVersion.getVersionNumber().then(function (version) {
@@ -112,7 +113,8 @@ angular.module('tiles.controllers', [])
     };
 
     var arrayBufferToString = function(buf) {
-        return String.fromCharCode.apply(null, new Uint8Array(buf));
+        var data = String.fromCharCode.apply(null, new Uint8Array(buf));
+        return data.slice(0, -1);   // Removing terminating null character to remove '\u0000' at end of stringified object
     };
 
     var DataReceiver = function DataReceiver(device) {
@@ -124,6 +126,7 @@ angular.module('tiles.controllers', [])
             if (message == null) {
                 console.log('No mapping found for event: ' + receivedEventAsString + ' from ' + device.id);
             } else {
+                message.name = device.name;
                 if (message.properties[0] === 'touch') {
                     device.buttonPressed = !device.buttonPressed; // Toggle (temporary solution until 'release' event is implemented in TD)
                     $scope.$apply();
@@ -211,6 +214,12 @@ angular.module('tiles.controllers', [])
 
         $scope.$broadcast('scroll.refreshComplete');
     };
+
+    $scope.updateName = function (device) {
+        device.name = this.newName + "";
+        $scope.connect(device);
+        $scope.newName = "";
+    }
 
     $scope.connect = function(device) {
         ble.connect(device.id,
