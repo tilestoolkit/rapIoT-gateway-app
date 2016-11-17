@@ -216,9 +216,23 @@ angular.module('tiles.controllers', [])
     };
 
     $scope.updateName = function (device) {
-        device.name = this.newName + "";
-        $scope.connect(device);
-        $scope.newName = "";
+        var nameToUpdate = this.newName + "";
+
+        // Unregister device and connect with new name
+        ble.disconnect(device.id,
+            function () {
+                device.connected = false;
+                mqttClient.unregisterDevice(device);
+
+                device.name = nameToUpdate;
+                $scope.connect(device);
+                $scope.newName = "";
+                $scope.$apply();
+            },
+            function () {
+                alert('Failure!')
+            });
+        
     }
 
     $scope.connect = function(device) {
