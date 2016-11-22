@@ -17,13 +17,16 @@ PostmanClient.prototype.get = function (subUrl) {
   });
 }
 
-PostmanClient.prototype.post = function (subUrl) {
+PostmanClient.prototype.post = function (subUrl, callback) {
   var url = 'http://' + self.ip + ':' + self.port + '/' + subUrl;
   request.post(
     { url: url },
     function (error, response, body) {
       if (error) {
         console.log('PostmanClient: error occured in post');
+      }
+      else if(callback){
+        callback(response);
       }
     });
 }
