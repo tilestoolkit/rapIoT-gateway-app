@@ -17,7 +17,8 @@
 #include <WInterrupts.h>
 #include <stdlib.h>
 
-#include "libs/TS/TokenSoloEvent.h"
+ #include <TokenSoloEvent.h>
+//#include "libs/TS/TokenSoloEvent.h"
 // Variables for Token Solo Event
 volatile uint8_t intSource = 0; // byte with interrupt informations
 int tab[] = {'0', '0'};
@@ -25,7 +26,23 @@ int single_tap = 0;
 int double_tap = 0;
 int shake = 0;
 int inactivity = 0;
+
+#define is_shield true  // Used to define pins for RFduino shield or TILES Square
+
+#if is_shield
+#define RED_LED_PIN 2
+#define GREEN_LED_PIN 3
+#define BLUE_LED_PIN 4
+#define VIBRO_PIN 0
+#define ACC_INT1_PIN 1 // Pin where the acceleromter interrupt1 is connected
+#else
+#define RED_LED_PIN 0
+#define GREEN_LED_PIN 1
+#define BLUE_LED_PIN 2
+#define VIBRO_PIN 3
 #define ACC_INT1_PIN 4 // Pin where the acceleromter interrupt1 is connected
+#endif
+
 TokenSoloEvent tokenSolo = TokenSoloEvent(ACC_INT1_PIN); // Connected on pin 4
 String event_name;
 String payload;
@@ -45,19 +62,7 @@ String mac;
 uint8_t *deviceADDR0 = (uint8_t *)0x100000a4; // location of MAC address last byte
 char adv_name_c[8];
 
-#define is_shield false  // Used to define pins for RFduino shield or TILES Square
 
-#if is_shield
-#define RED_LED_PIN 2
-#define GREEN_LED_PIN 3
-#define BLUE_LED_PIN 4
-#define VIBRO_PIN 0
-#else
-#define RED_LED_PIN 0
-#define GREEN_LED_PIN 1
-#define BLUE_LED_PIN 2
-#define VIBRO_PIN 3
-#endif
 
 //COMMANDS
 int ledState = LOW;                       // ledState used to set the LED
@@ -132,7 +137,7 @@ void loop() {
     Serial.println(c_payload);
     single_tap = 0;
   }
-  else if (double_tap)
+  if (double_tap)
   {
     payload = adv_name + ",tap,double";
     payload.toCharArray(c_payload, 19);
