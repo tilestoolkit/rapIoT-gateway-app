@@ -31,6 +31,8 @@ String event_name;
 String payload;
 char c_payload[19];
 
+#define COMMON_ANODE
+
 #define FADE_TIME 2000
 #define DIR_UP 1
 #define DIR_DOWN -1
@@ -86,15 +88,15 @@ void setup() {
   pinMode(VIBRO_PIN, OUTPUT);
 
   //blink the LEDS to test they are actually working
-  digitalWrite(GREEN_LED_PIN, HIGH);
-  delay(250);
-  digitalWrite(RED_LED_PIN, HIGH);
-  delay(250);
-  digitalWrite(BLUE_LED_PIN, HIGH);
-  delay(500);
   digitalWrite(GREEN_LED_PIN, LOW);
+  delay(250);
   digitalWrite(RED_LED_PIN, LOW);
+  delay(250);
   digitalWrite(BLUE_LED_PIN, LOW);
+  delay(500);
+  digitalWrite(GREEN_LED_PIN, HIGH);
+  digitalWrite(RED_LED_PIN, HIGH);
+  digitalWrite(BLUE_LED_PIN, HIGH);
 
   //Setup Bluetooth Connectivity
   //set the device name
