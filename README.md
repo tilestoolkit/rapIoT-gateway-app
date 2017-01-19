@@ -33,12 +33,13 @@ Example of data primitives are:
 
 ## Architecture 
 
-![RapIoT Framework](imgs/framework.png)
-
 RapIoT composed by:
 * *RapEmbedded:* an Arduino library to support definition and implementation of input and output primitives on embedded hardware devices;
 * *RapMobile:* a cross-platform mobile app that acts as internet gateway and allows to discover and configure IoT devices;
 * *RapCloud:* a cloud service, real-time APIs and javascript library that support the development of applications that interact with IoT devices.
+
+![RapIoT Framework](imgs/framework.png)
+
 
 ### RapEmbedded
 
