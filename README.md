@@ -40,14 +40,7 @@ RapIoT composed by:
 * *RapMobile:* a cross-platform mobile app that acts as internet gateway and allows to discover and configure IoT devices;
 * *RapCloud:* a cloud service, real-time APIs and javascript library that support the development of applications that interact with IoT devices.
 
-### RapCloud
-
-RapCloud provides a centralized, software interface to interact with ecologies Arduino-based IoT devices. It allows developers that are not specialized in writing code for embedded devices to create applications using simple javascript instructions. Functionalities provided by multiple devices can be programmed from routines running in a centralized cloud environment; without requiring physical access to the hardware modules. 
-
-A RapIoT test server is provided at http://138.68.144.206 with administrator interface at http://admin.tilestoolkit.io
-If you want to setup your own Tiles Cloud server follow [these instructions](./CLOUD)
-
-#### Javascript library and APIs
+### RapEmbedded
 
 TBD
 
@@ -57,7 +50,14 @@ RapMobile is a software application for smartphones that wirelessly connects IoT
 
 To setup RapMobile on your smartphone (Android or iPhone) follow [these instructions](./MOBILE). 
 
-### RapEmbedded
+### RapCloud
+
+RapCloud provides a centralized, software interface to interact with ecologies Arduino-based IoT devices. It allows developers that are not specialized in writing code for embedded devices to create applications using simple javascript instructions. Functionalities provided by multiple devices can be programmed from routines running in a centralized cloud environment; without requiring physical access to the hardware modules. 
+
+A RapIoT test server is provided at http://138.68.144.206 with administrator interface at http://admin.tilestoolkit.io
+If you want to setup your own Tiles Cloud server follow [these instructions](./CLOUD)
+
+#### Javascript library and APIs
 
 TBD
 
