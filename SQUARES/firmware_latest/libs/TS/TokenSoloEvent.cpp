@@ -38,6 +38,7 @@ void TokenSoloEvent::accelConfig()
 
 	  /* Set the range to whatever is appropriate for your project */
     accel.setRange(ADXL345_RANGE_2_G);
+    accel.setDataRate(ADXL345_DATARATE_6_25HZ);
 
     // enable single and double tap interrupt + activity/inactivity interrupts
     accel.writeRegister(ADXL345_REG_INT_ENABLE, 0b01111000);
@@ -46,10 +47,10 @@ void TokenSoloEvent::accelConfig()
     accel.writeRegister(ADXL345_REG_INT_MAP, 0b00000000);
 
     /************************** Activity and Inactivity configuration **************************/
-    accel.writeRegister(ADXL345_REG_THRESH_ACT, 8);
-    accel.writeRegister(ADXL345_REG_THRESH_INACT, 3);
-    accel.writeRegister(ADXL345_REG_TIME_INACT, 0b00000001);
-    accel.writeRegister(ADXL345_REG_ACT_INACT_CTL, 0b11111111);
+    // accel.writeRegister(ADXL345_REG_THRESH_ACT, 8);
+    // accel.writeRegister(ADXL345_REG_THRESH_INACT, 3);
+    // accel.writeRegister(ADXL345_REG_TIME_INACT, 0b00000001);
+    // accel.writeRegister(ADXL345_REG_ACT_INACT_CTL, 0b11111111);
 
     /*********************** Tap and double tap configuration ************************/
     // single tap configuration

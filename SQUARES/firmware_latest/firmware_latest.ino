@@ -14,18 +14,20 @@
 #include <RFduinoBLE.h>
 #include <LEDFader.h>
 #include <Wire.h>
-#include <WInterrupts.h>
+//#include <WInterrupts.h>
 #include <stdlib.h>
 
  #include <TokenSoloEvent.h>
 //#include "libs/TS/TokenSoloEvent.h"
 // Variables for Token Solo Event
 volatile uint8_t intSource = 0; // byte with interrupt informations
+adxl345_activity_t event;
 int tab[] = {'0', '0'};
 int single_tap = 0;
 int double_tap = 0;
 int shake = 0;
 int inactivity = 0;
+bool tilt = false;
 
 #define is_shield true  // Used to define pins for RFduino shield or TILES Square
 
@@ -62,7 +64,7 @@ String mac;
 uint8_t *deviceADDR0 = (uint8_t *)0x100000a4; // location of MAC address last byte
 char adv_name_c[8];
 
-
+int interrupt_count = 0;
 
 //COMMANDS
 int ledState = LOW;                       // ledState used to set the LED
@@ -71,11 +73,34 @@ bool blinking = 0;
 String blinkingColor;
 String fadingColor;
 
+
+int acc_event(uint32_t ulPin){
+  uint8_t data = tokenSolo.accel.readRegister(ADXL345_REG_INT_SOURCE);
+   
+  if((data >> ADXL345_FREE_FALL) & 1){
+    payload = adv_name + ",drop";
+    payload.toCharArray(c_payload, 19);
+    RFduinoBLE.send((char*) c_payload, 19);
+    return 0;
+  }
+
+  if((data >> ADXL345_DOUBLE_TAP) & 1){
+    payload = adv_name + ",tap,double";
+    payload.toCharArray(c_payload, 19);
+    RFduinoBLE.send((char*) c_payload, 19);
+    return 0;
+  }
+
+  if((data >> ADXL345_SINGLE_TAP) & 1){
+    payload = adv_name + ",tap,single";
+    payload.toCharArray(c_payload, 19);
+    RFduinoBLE.send((char*) c_payload, 19);
+    return 0;
+  }
+  
+}
+
 void setup() {
-  //SERIAL INTERFACE FOR DEBUGGING PURPOSES
-  //Serial.begin(9600);
-  // Enable interrupts :
-  interrupts();
   // Config of the accelerometer
   tokenSolo.accelConfig();
 
@@ -89,6 +114,8 @@ void setup() {
   pinMode(RED_LED_PIN, OUTPUT);
   pinMode(BLUE_LED_PIN, OUTPUT);
   pinMode(VIBRO_PIN, OUTPUT);
+
+  RFduino_pinWakeCallback(ACC_INT1_PIN, HIGH, acc_event);
 
   //blink the LEDS to test they are actually working
   digitalWrite(GREEN_LED_PIN, HIGH);
@@ -121,43 +148,13 @@ void setup() {
 
 void loop() {
   /************************************************************/
-  // Token solo event detection
-  if (digitalRead(ACC_INT1_PIN))
-  {
-    intSource = tokenSolo.accel.readRegister(ADXL345_REG_INT_SOURCE);
-    // Computation of data from the accelerometer to detect events
-    tokenSolo.accelComputation(tab, bitRead(intSource, 3), bitRead(intSource, 4), bitRead(intSource, 5), bitRead(intSource, 6), &inactivity, &single_tap, &double_tap, &shake);
-  }
-  // Sends the events detected to the game engine
-  if (single_tap)
-  {
-    payload = adv_name + ",tap,single";
+ 
+  if (abs(tokenSolo.accelGetX()) > 7 || abs(tokenSolo.accelGetY()) > 7){
+    payload = adv_name + ",tilt";
     payload.toCharArray(c_payload, 19);
     RFduinoBLE.send((char*) c_payload, 19);
-    Serial.println(c_payload);
-    single_tap = 0;
   }
-  if (double_tap)
-  {
-    payload = adv_name + ",tap,double";
-    payload.toCharArray(c_payload, 19);
-    RFduinoBLE.send((char*) c_payload, 19);
-    Serial.println(c_payload);
-    double_tap = 0;
-  }
-  else if (shake)
-  {
-    //sendData[0] = SHAKE;
-    //RFduinoBLE.send((char*) sendData, 1);
-    //shake = 0;
-  }
-  if (tokenSolo.tiltComputation())
-  {
-    payload = adv_name + ",tilt      ";
-    payload.toCharArray(c_payload, 19);
-    RFduinoBLE.send((char*) c_payload, 19);
-    Serial.println(c_payload);
-  }
+  
   if (inactivity)
   {
     //tokenConstraint.rgb_sensor.getData();
@@ -170,7 +167,8 @@ void loop() {
     fade(fadingColor);
   }
 
-  delay(500); // Important delay, do not delete it !
+//  delay(500); // Important delay, do not delete it !
+  RFduino_ULPDelay(1000);
 }
 
 void RFduinoBLE_onConnect()
@@ -197,9 +195,9 @@ void RFduinoBLE_onReceive(char *data, int len)
   // strncpy(payload,data,len);
 
   //debugging data packet received
-  Serial.println("Data received");
-  Serial.print("Packet lenght: "); Serial.println(len);
-  Serial.print("Payload: "); Serial.println(data);
+//  Serial.println("Data received");
+//  Serial.print("Packet lenght: "); Serial.println(len);
+//  Serial.print("Payload: "); Serial.println(data);
 
   String command;
   command = data;
@@ -213,10 +211,10 @@ void RFduinoBLE_onReceive(char *data, int len)
   String secondValue = command.substring(commaIndex + 1, secondCommaIndex);
   String thirdValue = command.substring(secondCommaIndex + 1);
 
-  Serial.print("Command: "); Serial.println(command);
-  Serial.print("FirstValue: "); Serial.println(firstValue);
-  Serial.print("SecondValue: "); Serial.println(secondValue);
-  Serial.print("ThirdValue: "); Serial.println(thirdValue);
+//  Serial.print("Command: "); Serial.println(command);
+//  Serial.print("FirstValue: "); Serial.println(firstValue);
+//  Serial.print("SecondValue: "); Serial.println(secondValue);
+//  Serial.print("ThirdValue: "); Serial.println(thirdValue);
 
   if (firstValue == "led") {
     if (secondValue == "off") {
