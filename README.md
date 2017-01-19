@@ -7,7 +7,7 @@ RapIoT is part of *Tiles*, an inventor toolbox to support the design and making 
 For furter references and details please read:
 S.Mora, F. Gianni and M.Divitini. “RapIoT Toolkit: Rapid Prototyping of Collaborative Internet of Things Applications”. In proceedings of the International Conference on Collaboration Technologies and Systems (CTS), 2016. [preprint](https://dl.dropboxusercontent.com/u/4495822/Papers/Papers/2016_RapIoT.pdf)
 
-RapIoT is released under the [Apache 2.0 license terms](https://tldrlegal.com/license/apache-license-2.0-(apache-2.0)).
+RapIoT is released under [Apache 2.0 license](https://tldrlegal.com/license/apache-license-2.0-(apache-2.0)).
 
 # RapIoT Fundamentals
 
