@@ -1,80 +1,82 @@
-# Tiles Toolkit 
+# RapIoT Toolkit (Partial description)
 
-Tiles is a inventor toolbox to support the design and making of interactive objects for learning and play. Tiles allows non-experts to create complex and distributed physical interfaces. For more information [tilestoolkit.io](http://tilestoolkit.io)
+RapIoT is a software platform for simple programming of ecologies of IoT devices and services. It builds on top of IoT-enabling technologies such as MQTT, CoAP and BTLE.
 
-Tiles allows rapid development of technology-augmented everyday objects (the so-called Internet of Things).
+RapIoT is part of *Tiles*, an inventor toolbox to support the design and making of interactive objects for learning and play. For more information [tilestoolkit.io](http://tilestoolkit.io)
 
-## Fundamentals
+For furter references and details please read:
+S.Mora, F. Gianni and M.Divitini. “RapIoT Toolkit: Rapid Prototyping of Collaborative Internet of Things Applications”. In proceedings of the International Conference on Collaboration Technologies and Systems (CTS), 2016. (preprint)[https://dl.dropboxusercontent.com/u/4495822/Papers/Papers/2016_RapIoT.pdf]
 
-Tiles is centered on the concept of 
+RapIoT is released under the [Apache 2.0 license terms](https://tldrlegal.com/license/apache-license-2.0-(apache-2.0)).
 
-*Interaction Primitives*, a set of simple interaction events between technology-augmented objects and humans. 
+# Fundamentals
 
-*Input primitives* consist in physical objects manipulation like tapping, rotate or shake. 
+RapIoT enables the definition, implementation and manipulation of *data type primitives*. RapIoT's primitives allow to abstract low-level implemenetation details and provide a loosely-coupled interface between different achitectural layers. Data types primitives facilitate the development of IoT architectures in mulpliple ways:
 
-*Output primitves* are a set of feedbacks such as LED lights, haptic and sound.
+- Act as a loosely coupled interface between devices and applications, allowing devices to serve different applications without need for reprogramming their firmware
+
+- Allow for centralising the application login in the cloud layer, offering a platform as a service and simplifying the development of systems that make use of ecologies of devices distribuited to multiple users/environments
+
+- Facilitate collaboration among developers working on different IoT layers by providing simple constructs to be used to describe the data exchanged between embedded devices and applications
+
+- Allow non-experts to think in terms of high- level abstractions without dealing with hardware complexities e.g. “shake, clockwise rotation, free fall” for physical manipulations recognised by accelerometer data
+
+Example of data primitives are:
+
+*Input primitives* a discrete information sensed by an IoT device; for example a data-point captured by a sensor or a manipulation performed via a user interface
+
+*Output primitves* an action that can be performed by the IoT device via output features such as actuators or displays, for example a motor spinning or a LED (Light Emitting Diode) blinking
 
 ![Interaction Primitive](imgs/primitives.png)
+![Interaction Primitive](imgs/primitives2.png)
 
-### Squares Modules
+# Architecture 
 
-In order to enable everyday objects to become interactive and support interaction primitives we developed *Squares* tiny computers that can be easily sticked anywhere. Square capture input primitives and produce output primitives. They can be recharged using a standard microUSB cable. ON/OFF switch is located on the left side.
+![RapIoT Framework](imgs/framework.png)
 
-![Squares modules](imgs/squares.png)
+RapIoT composed by:
+* *RapEmbedded:* an Arduino library to support definition and implementation of input and output primitives on embedded hardware devices;
+* *RapMobile:* a cross-platform mobile app that acts as internet gateway and allows to discover and configure IoT devices;
+* *RapCloud:* a cloud service, real-time APIs and javascript library that support the development of applications that interact with IoT devices.
 
-In order to build applications that make use of interaction primitives captured/produced by square modules within your application we developed a set of software tools called TDT.
+##RapCloud
 
-### Tiles Development Tools (TDT) v.01
+RapCloud provides a centralized, software interface to interact with ecologies Arduino-based IoT devices. It allows developers that are not specialized in writing code for embedded devices to create applications using simple javascript instructions. Functionalities provided by multiple devices can be programmed from routines running in a centralized cloud environment; without requiring physical access to the hardware modules. 
 
-TDT provides a development environment to facilitate the development of software that make use of sequences of interaction events to implement specific application logic. TDT is composed by 
-- **Tiles Cloud** is a cloud infrastructure, real-time APIs and software libraries to enable development and integration of Tile-based interfaces with software applications
-- **Tiles Connect** a smartphone app for discovery and administration of quare modules 
-- **Tiles Libraries** to write tiles application within your favourite development environment.
+A RapIoT test server is provided at http://138.68.144.206 with administrator interface at http://admin.tilestoolkit.io
+If you want to setup your own Tiles Cloud server follow [these instructions](./CLOUD)
 
-![alt text](imgs/TDT.png)
+###Javascript library and APIs
 
-#### Tiles Cloud (TC)
+TBD
 
-Tiles Cloud (TC) provides a centralized, language-agnostic software interface to interact with ecologies of Square modules. It allows developers that are not specialized in writing code for embedded devices to create applications using commonly known languages and tools. Functionalities provided by multiple Square modules attached to several objects, and thus the behaviour of the augmented objects, can be programmed from routines running in a centralized cloud environment; without requiring physical access to the hardware modules. 
+##RapMobile
 
-A TC server is provided at http://cloud.tilestoolkit.io with administrator interface at http://cloud.tilestoolkit.io:3000
-If you want to setup your own Tiles Cloud server follow [these instructions](https://github.com/simonem/tiles-dev-sw/tree/master/Tiles%20CLOUD/api-server)
+RapMobile is a software application for smartphones that wirelessly connects IoT devices to your application via RapCloud. This is required for the interaction primitives to be captured and exchanged between the Square modules and your application. 
 
-#### Tiles Connect (TCON)
+To setup RapMobile on your smartphone (Android or iPhone) follow [these instructions](./MOBILE). 
 
-Tiles connect (TCON) is a software application for smartphones that wirelessly connects Square modules to your application via the TAPI. This is required for the interaction primitives to be captured and exchanged between the Square modules and your application. 
+##RapEmbedded
 
-To setup TCON on your smartphone (Android or iPhone) follow [these instructions](https://github.com/simonem/tiles-dev-sw/tree/master/Tiles%20MOBILE). TCON will be soon distributed for beta testing.
+TBD
 
-#### Tiles Libraries (TL)
-
-Tiles libraries (TL)enable development of Tiles application. It provides functionalities to connect to TC, send output primitive commands to specific square modules as well as handling input primitives events from the modules.
-
-TL are provided for python(v00), C++(v00), Java(v00) and Javascript(v01)
-
-## Build your first Tiles Application
-
-![Tiles Development process](imgs/dev_process.png)
-
-This guides assumes you have installed the Tiles Connect App on your smartphone and you have one or more Square modules (Ask Simone simonem@ntnu.no about how to get them).
+## Build your first Rap Application (Work-in-progress)
 
 ### STEP 1
 
-Turn one or more squares on and attach them to objects
+Build your IoT device with Arduino and RapEmbedded. As an alternative you can use RapIoT-ready IoT devices called Tiles Squares.
 
 ### STEP 2 
 
-Open the Tiles Connect app on your smartphone. This is how it looks like.
+Open the RapMobile app on your smartphone. This is how it looks like.
 
 ![Tiles Connect App](imgs/tiles_connect.png)
 
 1. Tap on “Click to connect to server” 
-2. Type in your Tiles username. If you don’t have one it will be automatically created. OPTIONAL: If you have a custom Tiles server type the address here, otherwise leave the default server.
+2. Type in your  username. If you don’t have one it will be automatically created. OPTIONAL: If you have a custom RapIoT server type the address here, otherwise leave the default server.
 3. Connect to one or more square modules
 4. Leave the Tiles connect app open on your phone
 
 ### STEP 3
 
-Write some code in your favourite language, refer to the readme files in the libraries pages (Tiles Client) for installation and use. 
-
-We reccomend to write your code in javascript following [these instructions](https://github.com/simonem/tiles-dev-sw/tree/master/Tiles%20CLIENTS/js)
+Write some code in javascript usint the provided libray TBD.
