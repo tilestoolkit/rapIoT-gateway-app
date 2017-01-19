@@ -9,7 +9,9 @@ S.Mora, F. Gianni and M.Divitini. “RapIoT Toolkit: Rapid Prototyping of Collab
 
 RapIoT is released under the [Apache 2.0 license terms](https://tldrlegal.com/license/apache-license-2.0-(apache-2.0)).
 
-# Fundamentals
+# RapIoT Fundamentals
+
+## Data Primitives
 
 RapIoT enables the definition, implementation and manipulation of *data type primitives*. RapIoT's primitives allow to abstract low-level implemenetation details and provide a loosely-coupled interface between different achitectural layers. Data types primitives facilitate the development of IoT architectures in mulpliple ways:
 
@@ -30,7 +32,7 @@ Example of data primitives are:
 ![Interaction Primitive](imgs/primitives.png)
 ![Interaction Primitive](imgs/primitives2.png)
 
-# Architecture 
+## Architecture 
 
 ![RapIoT Framework](imgs/framework.png)
 
@@ -39,28 +41,28 @@ RapIoT composed by:
 * *RapMobile:* a cross-platform mobile app that acts as internet gateway and allows to discover and configure IoT devices;
 * *RapCloud:* a cloud service, real-time APIs and javascript library that support the development of applications that interact with IoT devices.
 
-##RapCloud
+### RapCloud
 
 RapCloud provides a centralized, software interface to interact with ecologies Arduino-based IoT devices. It allows developers that are not specialized in writing code for embedded devices to create applications using simple javascript instructions. Functionalities provided by multiple devices can be programmed from routines running in a centralized cloud environment; without requiring physical access to the hardware modules. 
 
 A RapIoT test server is provided at http://138.68.144.206 with administrator interface at http://admin.tilestoolkit.io
 If you want to setup your own Tiles Cloud server follow [these instructions](./CLOUD)
 
-###Javascript library and APIs
+#### Javascript library and APIs
 
 TBD
 
-##RapMobile
+### RapMobile
 
 RapMobile is a software application for smartphones that wirelessly connects IoT devices to your application via RapCloud. This is required for the interaction primitives to be captured and exchanged between the Square modules and your application. 
 
 To setup RapMobile on your smartphone (Android or iPhone) follow [these instructions](./MOBILE). 
 
-##RapEmbedded
+### RapEmbedded
 
 TBD
 
-## Build your first Rap Application (Work-in-progress)
+# Build your first Rap Application (TBD)
 
 ### STEP 1
 
