@@ -6,7 +6,7 @@
 
 2. Install project dependencies
    ```sh
-   cd "Tiles CLOUD/api-server"
+   cd "CLOUD"
    npm install
    ```
 
@@ -16,7 +16,7 @@
 
 2. Open a new console and navigate to the project directory and start the API server:
    ```sh
-   cd "Tiles CLOUD/api-server"
+   cd "CLOUD"
    npm start
    ```
 
