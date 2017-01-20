@@ -21,7 +21,7 @@ RapIoT enables the definition, implementation and manipulation of *data type pri
 
 - Facilitate collaboration among developers working on different IoT layers by providing simple constructs to be used to describe the data exchanged between embedded devices and applications
 
-- Allow non-experts to think in terms of high- level abstractions without dealing with hardware complexities e.g. “shake, clockwise rotation, free fall” for physical manipulations recognised by accelerometer data
+- Allow non-experts to think in terms of high-level abstractions without dealing with hardware complexities. For example data from an accelerometer describing an object's manipulation can be provided as “isShaken, isRotatedClockwise, isTouched” programming primitives rather than raw accelerometer data.
 
 Example of data primitives are:
 
@@ -40,7 +40,6 @@ RapIoT composed by:
 
 ![RapIoT Framework](imgs/framework.png)
 
-
 ### RapEmbedded
 
 TBD
@@ -56,7 +55,7 @@ To setup RapMobile on your smartphone (Android or iPhone) follow [these instruct
 RapCloud provides a centralized, software interface to interact with ecologies Arduino-based IoT devices. It allows developers that are not specialized in writing code for embedded devices to create applications using simple javascript instructions. Functionalities provided by multiple devices can be programmed from routines running in a centralized cloud environment; without requiring physical access to the hardware modules. 
 
 A RapIoT test server is provided at http://138.68.144.206 with administrator interface at http://admin.tilestoolkit.io
-If you want to setup your own Tiles Cloud server follow [these instructions](./CLOUD)
+If you want to setup your own RapCloud server follow [these instructions](./CLOUD)
 
 #### Javascript library and APIs
 
