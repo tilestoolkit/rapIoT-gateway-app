@@ -1,60 +1,76 @@
 import { Injectable } from '@angular/core';
-import 'mqtt';
+import { Observable } from 'rxjs/Observable';
+import mqtt from 'mqtt';
+/*
+interface MqttClientInterface {
 
+	connect: (host: string, port: string) => Observable((observer: any) => void);
+	registerDevice: (device: any) => void;
+	unregisterDevice: (device: any) => void;
+	sendEvent: (deviceId: string, event: any) => void;
+	endConnection: (deviceId: string, event: any) => void;
+}*/
 
 @Injectable()
 export class mqttClient {
-  o = {};
+
+
+  constructor() {
+  	let client;
+  };
   publishOpts = { retain: true };
   serverConnectionTimeout = 10000; // 10 seconds
+  
+  client;
 
-  constructor() {}
+
 
   /* Returns a url for the specific device
 	 * @param deviceId: String
 	 * @param isEvent: Boolean
    */
-  getDeviceSpecificTopic(deviceId, isEvent): String {
-  	type = isEvent ? 'evt' : 'cmd';
+  getDeviceSpecificTopic(deviceId: string, isEvent: boolean): string {
+  	// TODO: NB! temporary, remove when tilesApi class is up!!
+  	const tilesApi = {username: 'user'}
+  	const type = isEvent ? 'evt' : 'cmd';
   	return 'tiles/' + type + '/' + tilesApi.username + '/' + deviceId;
-  }
+  };
 
 
   /* Create a connection to the server and
    * return a javascript promise 
    */
-  o.connect = (host, port) => {
+  connect = (host: string, port: string) => {
   	return new Observable( observer => {
 
   		// Check if a previous server connection exists
   		// and end it if it does
-  		if (client) {
-  			client.end();
-  		}
+  		if (this.client) {
+  			this.client.end();
+  		};
 
   		
   		// Instantiate a mqtt-client from the host and port
   		// keepalive 0 disables keepalive
   		// NB: In angular1 code the client was instantiated outside of o
   		// that might be nescessary here as well
-  		const client = mqtt.connect({
-	  			host: host, 
-	  			port: port,
-  			}, 
+  		this.client = mqtt.connect({
+  			host: host, 
+  			port: port,
 				keepalive: 0 
-			);
+  		});
 
 
   		// Handlers for different types of responses from the server: 
 
   		// Client is connected to the server
-  		client.on('connect', () => {
-  			clearTimeout(failedConnectionTimeout);
+  		this.client.on('connect', () => {
+  			clearTimeout(this.serverConnectionTimeout);
   			observer.complete();
   		});
 
   		// Handle a message from the server
-  		client.on('message', (topic, message) => {
+  		this.client.on('message', (topic, message) => {
   			console.log('Received message from server: ' + message);
   			try {
   				const command = JSON.parse(message);
@@ -66,27 +82,27 @@ export class mqttClient {
 						 * from angular 1. This link might be the solution: 
 						 * https://laco0416.github.io/post/event-broadcasting-in-angular-2/
 						 */
-  				}
-  			}
+  				};
+  			} finally {};
   		});
 
 
-  		client.on('offline', () => {
+  		this.client.on('offline', () => {
 	      //$rootScope.$broadcast('offline');
 	      //$rootScope.$apply();
 	    });
 
-	    client.on('close', () => {
+	    this.client.on('close', () => {
 	      //$rootScope.$broadcast('close');
 	      //$rootScope.$apply();
 	    });
 
-	    client.on('reconnect', () => {
+	    this.client.on('reconnect', () => {
 	      //$rootScope.$broadcast('reconnect');
 	      //$rootScope.$apply();
 	    });
 
-	    client.on('error', error => {
+	    this.client.on('error', error => {
 	      //$rootScope.$broadcast('error', error);
 	      //$rootScope.$apply();
 	    });
@@ -96,34 +112,32 @@ export class mqttClient {
   };
 
 	// The fact that the other functions are using client might be why it was instantiated globally
-	o.registerDevice = device => {
-		if (client) {
-			client.publish(getDeviceSpecificTopic(device.id, true) + '/active', 'true', publishOpts);
-      client.publish(getDeviceSpecificTopic(device.id, true) + '/name', device.name, publishOpts);
-      client.subscribe(getDeviceSpecificTopic(device.id, false));
+	registerDevice = device => {
+		if (this.client) {
+			this.client.publish(this.getDeviceSpecificTopic(device.id, true) + '/active', 'true', this.publishOpts);
+      this.client.publish(this.getDeviceSpecificTopic(device.id, true) + '/name', device.name, this.publishOpts);
+      this.client.subscribe(this.getDeviceSpecificTopic(device.id, false));
       console.log('Registered device: ' + device.name + ' (' + device.id + ')');
   	};
 	};
 
-  o.unregisterDevice = device => {
-    if (client) {
-      client.publish(getDeviceSpecificTopic(device.id, true) + '/active', 'false', publishOpts);
-      client.unsubscribe(getDeviceSpecificTopic(device.id, false));
+  unregisterDevice = device => {
+    if (this.client) {
+      this.client.publish(this.getDeviceSpecificTopic(device.id, true) + '/active', 'false', this.publishOpts);
+      this.client.unsubscribe(this.getDeviceSpecificTopic(device.id, false));
     };
   };
 
-  o.sendEvent = (deviceId, event) => {
-    if (client) {
-    	client.publish(getDeviceSpecificTopic(deviceId, true), JSON.stringify(event), publishOpts)
+  sendEvent = (deviceId, event) => {
+    if (this.client) {
+    	this.client.publish(this.getDeviceSpecificTopic(deviceId, true), JSON.stringify(event), this.publishOpts)
     };
   };
 
-  o.endConnection = (deviceId, event) => {
-    if (client) {
-    	client.end()
+  endConnection = (deviceId, event) => {
+    if (this.client) {
+    	this.client.end()
     };
   };
-
-  return o;
 
 }
