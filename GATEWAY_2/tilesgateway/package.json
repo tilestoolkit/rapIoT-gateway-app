@@ -1,8 +1,9 @@
 {
-  "name": "ionic-hello-world",
-  "author": "Ionic Framework",
-  "homepage": "http://ionicframework.com/",
-  "private": true,
+  "name": "tiles gateway",
+  "author": "it2901, group 7, 2017",
+  "homepage": "https://github.com/nornes/tiles-rapIoT/",
+  "repository": "https://github.com/nornes/tiles-rapIoT/",
+  "licence": "Apache",
   "scripts": {
     "clean": "ionic-app-scripts clean",
     "build": "ionic-app-scripts build",
