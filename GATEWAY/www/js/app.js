@@ -23,4 +23,4 @@ angular.module('tiles', ['ionic', 'tiles.controllers', 'tiles.services'])
     });
 
   });
-})
+});
