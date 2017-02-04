@@ -54,6 +54,7 @@ angular.module('tiles.controllers', [])
     setServerConnectionStatus('Error: ' + error, false);
   });
 
+  // REFACTOR: This can be made a component in the new code 
   $scope.showConnectMQTTPopup = function() {
     var serverConnectionPopup = $ionicPopup.show({
       template: 'Username:<input type="text" ng-model="mqttConnectionData.username">Host:<input type="text" ng-model="mqttConnectionData.host">Port:<input type="number" ng-model="mqttConnectionData.port">',
@@ -89,10 +90,6 @@ angular.module('tiles.controllers', [])
     });
   };
 
-  function getDeviceSpecificTopic(deviceId, isEvent){
-    var type = isEvent ? 'evt' : 'cmd';
-    return 'tiles/' + type + '/' + tilesApi.username + '/' + deviceId;
-  }
 
   function setServerConnectionStatus(msg, connected){
     console.log(msg);
@@ -105,6 +102,9 @@ angular.module('tiles.controllers', [])
       {'name': 'Some OtherDevice', 'id': 'A1:B2:5C:87:2D:36', 'rssi': -52, 'advertising': null}*/
   ];
 
+  // REFACTOR: port numbers, can be get-ed dynimacally in the new code
+  // should be made into tmp-data that checks which tile sent data and which 
+  // should recieve
   var rfduino = {
     serviceUUID: '2220',
     receiveCharacteristic: '2221',
@@ -112,11 +112,13 @@ angular.module('tiles.controllers', [])
     disconnectCharacteristic: '2223'
   };
 
+  // REFACTOR: use with datareciever
   var arrayBufferToString = function(buf) {
     var data = String.fromCharCode.apply(null, new Uint8Array(buf));
     return data.slice(0, -1);   // Removing terminating null character to remove '\u0000' at end of stringified object
   };
 
+  // REFACTOR: Gets data from rfduino, used on connect
   var DataReceiver = function DataReceiver(device) {
     this.onData = function(data) { // Data received from RFduino
       var receivedEventAsString = arrayBufferToString(data);
@@ -148,10 +150,12 @@ angular.module('tiles.controllers', [])
     return true;
   };
 
+  // REFACTOR: Should search for tile instead of making a list and then searching it
   var isTilesDevice = function(discoveredDevice) {
     return discoveredDevice.name != null && discoveredDevice.name.substring(0, 4) === 'Tile';
   };
 
+  // REFACTOR: together with the scope listeners maybe? 
   var app = {
     onDiscoverDevice: function(device) {
       console.log('Device discovered: '+device);
@@ -160,11 +164,13 @@ angular.module('tiles.controllers', [])
         $scope.devices.push(device);
       }
     },
+    // REFACTOR: this is the reason for the error message error
     onError: function(reason) {
       alert('ERROR: ' + reason);
     }
   };
 
+  // REFACTOR: all the below will be the bluetooth provider
   $scope.sendData = function(device, dataString) { // Send data to RFduino
     var success = function() {
       console.log('Data sent successfully.');
