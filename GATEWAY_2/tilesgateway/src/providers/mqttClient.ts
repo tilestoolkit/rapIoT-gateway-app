@@ -13,15 +13,13 @@ interface MqttClientInterface {
 
 @Injectable()
 export class mqttClient {
+  publishOpts = { retain: true };
+  serverConnectionTimeout = 10000; // 10 seconds  
+  client;
 
 
   constructor() {
-  	let client;
   };
-  publishOpts = { retain: true };
-  serverConnectionTimeout = 10000; // 10 seconds
-  
-  client;
 
 
 
@@ -52,8 +50,6 @@ export class mqttClient {
   		
   		// Instantiate a mqtt-client from the host and port
   		// keepalive 0 disables keepalive
-  		// NB: In angular1 code the client was instantiated outside of o
-  		// that might be nescessary here as well
   		this.client = mqtt.connect({
   			host: host, 
   			port: port,
@@ -111,26 +107,55 @@ export class mqttClient {
   	});
   };
 
-	// The fact that the other functions are using client might be why it was instantiated globally
+
+  // The functions called on the client comes from the mqtt-library,
+  // API reference can be found at https://github.com/mqttjs/MQTT.js
 	registerDevice = device => {
 		if (this.client) {
-			this.client.publish(this.getDeviceSpecificTopic(device.id, true) + '/active', 'true', this.publishOpts);
-      this.client.publish(this.getDeviceSpecificTopic(device.id, true) + '/name', device.name, this.publishOpts);
-      this.client.subscribe(this.getDeviceSpecificTopic(device.id, false));
+
+			this.client.publish(
+				this.getDeviceSpecificTopic(device.id, true) + '/active', 
+				'true', 
+				this.publishOpts
+			);
+
+      this.client.publish(
+      	this.getDeviceSpecificTopic(device.id, true) + '/name', 
+      	device.name, 
+      	this.publishOpts
+      );
+
+      this.client.subscribe(
+      	this.getDeviceSpecificTopic(device.id, false)
+      );
+
       console.log('Registered device: ' + device.name + ' (' + device.id + ')');
   	};
 	};
 
   unregisterDevice = device => {
     if (this.client) {
-      this.client.publish(this.getDeviceSpecificTopic(device.id, true) + '/active', 'false', this.publishOpts);
-      this.client.unsubscribe(this.getDeviceSpecificTopic(device.id, false));
+
+      this.client.publish(
+      	this.getDeviceSpecificTopic(device.id, true) + '/active', 
+      	'false', 
+      	this.publishOpts
+      );
+
+      this.client.unsubscribe(
+      	this.getDeviceSpecificTopic(device.id, false)
+      );
     };
   };
 
   sendEvent = (deviceId, event) => {
     if (this.client) {
-    	this.client.publish(this.getDeviceSpecificTopic(deviceId, true), JSON.stringify(event), this.publishOpts)
+
+    	this.client.publish(
+    		this.getDeviceSpecificTopic(deviceId, true), 
+    		JSON.stringify(event), 
+    		this.publishOpts
+    	);
     };
   };
 
