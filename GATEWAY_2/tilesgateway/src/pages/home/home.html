@@ -17,15 +17,33 @@
   </ion-header>
 
 <ion-content padding>
-  <h2>Welcome to Ionic!</h2>
-  <p>
-    This starter project comes with simple tabs-based layout for apps
-    that are going to primarily use a Tabbed UI.
-  </p>
-  <p>
-    Take a look at the <code>src/pages/</code> directory to add or change tabs,
-    update any existing page or create new pages.
-  </p>
+  <ion-list>
+    <ion-item *ngFor="let device of devices">
+      <div class="row row-center">
+        <div class="col col-75">
+          <b>{{device.name}}</b><br>RSSI:{{device.rssi}}<br>{{device.id}}
+        </div>
+        <!--div class="col">
+          <button ion-button small color="positive" style="float: right;" (click)="connect(device)" [hidden]="device.connected">Connect</button>
+          <button id="disconnectButton" ion-button small style="float: right;" (click)="disconnect(device)" [hidden]="!device.connected">Disconnect</button>
+          <button id="fetchEventMappingsButton" ion-button small class="icon ion-code-download" style="float: right;" (click)="fetchEventMappings(device)" [hidden]="!device.connected">
+            <ion-icon name="code-download"></ion-icon>
+          </button>
+        </div-->
+      </div>
+      <!--ion-list [hidden]="!device.connected">
+        <ion-item name="item-icon-right">Button
+          <ion-badge class="badge-stable" style="right: 16px;" [hidden]="device.buttonPressed">Released</span>
+          <ion-badge class="badge-balanced" style="right: 16px;" [hidden]="!device.buttonPressed">Pressed</span>
+        </ion-item>
+        <ion-toggle ng-model="device.ledOn" ng-change="sendData(device)" toggle-class="toggle-calm">LED Light</ion-toggle>
+        <ion-item class="item-icon-right">Name
+          <input ng-model="$parent.newName" />
+          <button (click)="updateName(device)">Update</button>
+        </ion-item>
+      </ion-list-->
+    </ion-item>
+  </ion-list>
 </ion-content>
 
 <!-- 
