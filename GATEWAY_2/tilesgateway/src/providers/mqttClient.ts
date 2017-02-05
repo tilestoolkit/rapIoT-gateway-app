@@ -12,7 +12,7 @@ interface MqttClientInterface {
 }*/
 
 @Injectable()
-export class mqttClient {
+export class MqttClient {
   publishOpts = { retain: true };
   serverConnectionTimeout = 10000; // 10 seconds  
   client;
