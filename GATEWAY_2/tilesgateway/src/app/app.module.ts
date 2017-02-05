@@ -10,6 +10,7 @@ import { HomePage } from '../pages/home/home';
 import { BleService } from '../providers/ble.service';
 import { MqttClient } from '../providers/mqttClient';
 import { TilesApi } from '../providers/tilesApi.service';
+import { DevicesService } from '../providers/devices.service';
 
 
 @NgModule({
@@ -33,7 +34,8 @@ import { TilesApi } from '../providers/tilesApi.service';
     Storage,
     BleService,
     MqttClient,
-    TilesApi
+    TilesApi,
+    DevicesService
   ]
 })
 export class AppModule {}
