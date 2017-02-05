@@ -15,6 +15,10 @@ export class BleService {
     disconnectCharacteristicUUID: '2223'
   }; 
 
+  mockDevices = [
+  	{'name': 'TI SensorTag','id': '01:23:45:67:89:AB', 'rssi': -79, 'advertising': null},
+  	{'name': 'Some OtherDevice', 'id': 'A1:B2:5C:87:2D:36', 'rssi': -52, 'advertising': null}
+  ];
 
   constructor(private mqttClient: MqttClient, 
   						private tilesApi: TilesApi) {
@@ -72,9 +76,23 @@ export class BleService {
 		 				.then( res => {
 		 			 		const device = res;
 		 			 		console.log('Device discovered: ' + device)
-		 			 		this.mqttClient.registerDevice(device);
+		 			 		if(this.isTilesDevice(device) && this.isNewDevice(device)) {
+		 			 			this.mqttClient.registerDevice(device);
+		 			 		}
 		 			 	})
 		 			  .catch( err => console.log('Error when scanning for devices'));
+  }
+
+  isTilesDevice = (device: any) => (device.name != null && device.name.substring(0, 4) === 'Tile');
+
+  isNewDevice = (device: any) => {
+  	//TODO: use actual devices!
+  	for (let i = 0; i < this.mockDevices.length; i ++) {
+  		if (this.mockDevices[i].id === device.id) {
+  			return false;
+  		}
+  	}
+  	return true;
   }
 
   /* Update the name of a device
