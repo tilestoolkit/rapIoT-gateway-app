@@ -22,7 +22,7 @@ export class TilesApi {
 
 	constructor(public username: string = 'TestUser', 
 							public hostAddress: string = 'cloud.tilestoolkit.io', 
-							public mqttPort: number | string = 8080,
+							public mqttPort: number = 8080,
 							public storage: Storage,
 							private http: Http) { 
 	};
@@ -76,7 +76,9 @@ export class TilesApi {
   loadEventMappings = (tileId) => {
   	// TODO: 
     const storedEventMappings = {} //$localstorage.getEventMappings(tileId, o.username);
-    if (this.eventMappings[this.username] == null) this.eventMappings[this.username] = {};
+    if (this.eventMappings[this.username] == null) {
+      this.eventMappings[this.username] = {}
+    };
     this.eventMappings[this.username][tileId] = this.extend(this.defaultEventMappings, storedEventMappings);
   };
 
