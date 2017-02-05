@@ -5,12 +5,6 @@ import 'rxjs/add/operator/toPromise';
 
 @Injectable()
 export class TilesApi {
-	//TODO: get the data from the angular2 alternative to localstorage when it is made
-	username: string;
-	host: any;
-	storage: Storage;
-	//hostAddress: string;
-	//mqttPort: int | string;
 
   // Make this a global? 
   defaultEventMappings = {
@@ -26,18 +20,12 @@ export class TilesApi {
 
   eventMappings = {};
 
-	constructor(username: string = 'TestUser', 
-							hostAddress: string = 'cloud.tilestoolkit.io', 
-							mqttPort: number | string = 8080,
-							storage: Storage,
-							private http: Http) {
-		// I think it might be possible to omit these and also the 
-		// declarations of the properties outside the constructor 
-		this.username = username;
-		this.host.Address = hostAddress;
-		this.host.mqttPort = mqttPort;
-		this.storage = storage;
-	}
+	constructor(public username: string = 'TestUser', 
+							public hostAddress: string = 'cloud.tilestoolkit.io', 
+							public mqttPort: number | string = 8080,
+							public storage: Storage,
+							private http: Http) { 
+	};
 	
 	// Returns an object with name and properties from the inputstring
   getEventStringAsObject = (evtString: string) => {
@@ -69,12 +57,12 @@ export class TilesApi {
   };
 
   setHostAddress = (hostAddress: string) => {
-    this.host.address = hostAddress;
+    this.hostAddress = hostAddress;
     //$localstorage.set('hostAddress', hostAddress);
   };
 
   setHostMqttPort = (hostMqttPort) => {
-    this.host.mqttPort = hostMqttPort;
+    this.mqttPort = hostMqttPort;
     //$localstorage.set('hostMqttPort', hostMqttPort);
   };
 
@@ -94,7 +82,7 @@ export class TilesApi {
 
 
   fetchEventMappings = (tileId, successCb) => {
-   const url = 'http://' + this.host.address + ':' + this.host.apiPort + '/eventmappings/' + this.username + '/' + tileId;
+   const url = 'http://' + this.hostAddress + ':' + this.mqttPort + '/eventmappings/' + this.username + '/' + tileId;
     return this.http.get(url)
 					     .toPromise()
 					   	 .then((res) => {
