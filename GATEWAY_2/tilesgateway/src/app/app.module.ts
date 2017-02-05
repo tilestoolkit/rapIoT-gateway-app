@@ -7,6 +7,11 @@ import { Tiles } from './app.component';
 import { TabsPage } from '../pages/tabs/tabs';
 import { HomePage } from '../pages/home/home';
 
+import { BleService } from '../providers/ble.service';
+import { MqttClient } from '../providers/mqttClient';
+import { TilesApi } from '../providers/tilesApi.service';
+
+
 @NgModule({
   declarations: [
     Tiles,
@@ -25,7 +30,10 @@ import { HomePage } from '../pages/home/home';
   ],
   providers: [
     {provide: ErrorHandler, useClass: IonicErrorHandler},
-    Storage
+    Storage,
+    BleService,
+    MqttClient,
+    TilesApi
   ]
 })
 export class AppModule {}
