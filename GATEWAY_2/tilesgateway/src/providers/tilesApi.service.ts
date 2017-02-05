@@ -1,10 +1,14 @@
 import { Injectable } from '@angular/core';
+import { Http }    from '@angular/http';
+import { Storage } from '@ionic/storage';
+import 'rxjs/add/operator/toPromise';
 
 @Injectable()
-export class tilesApi {
+export class TilesApi {
 	//TODO: get the data from the angular2 alternative to localstorage when it is made
 	username: string;
 	host: any;
+	storage: Storage;
 	//hostAddress: string;
 	//mqttPort: int | string;
 
@@ -24,10 +28,15 @@ export class tilesApi {
 
 	constructor(username: string = 'TestUser', 
 							hostAddress: string = 'cloud.tilestoolkit.io', 
-							mqttPort: number | string = 8080) {
+							mqttPort: number | string = 8080,
+							storage: Storage,
+							private http: Http) {
+		// I think it might be possible to omit these and also the 
+		// declarations of the properties outside the constructor 
 		this.username = username;
 		this.host.Address = hostAddress;
 		this.host.mqttPort = mqttPort;
+		this.storage = storage;
 	}
 	
 	// Returns an object with name and properties from the inputstring
@@ -83,23 +92,24 @@ export class tilesApi {
     this.eventMappings[this.username][tileId] = this.extend(this.defaultEventMappings, storedEventMappings);
   };
 
-/*
+
   fetchEventMappings = (tileId, successCb) => {
    const url = 'http://' + this.host.address + ':' + this.host.apiPort + '/eventmappings/' + this.username + '/' + tileId;
-    return $http.get(url).then(function(resp) {
-      var fetchedEventMappings = resp.data;
-      console.log('Success. Fetched data:' + JSON.stringify(fetchedEventMappings));
-      
-      $localstorage.setEventMappings(tileId, o.username, fetchedEventMappings);
-      if (eventMappings[o.username] == null) eventMappings[o.username] = {};
-      eventMappings[o.username][tileId] = extend(defaultEventMappings, fetchedEventMappings);
+    return this.http.get(url)
+					     .toPromise()
+					   	 .then((res) => {
+						      const fetchedEventMappings = JSON.stringify(res.json().data);
+						      console.log('Success. Fetched data:' + fetchedEventMappings);
+						      
+						      this.storage.set('eventMappings_' + this.username + '_' + tileId, fetchedEventMappings);
+						      if (this.eventMappings[this.username] == null) {
+						      	this.eventMappings[this.username] = {};
+						      };
 
-      if (successCb) successCb(fetchedEventMappings);
-    }, function(err) {
-      console.error('Error', JSON.stringify(err));
-    });
+						      this.eventMappings[this.username][tileId] = this.extend(this.defaultEventMappings, res.json().data);
 
-*/
-
-
-}
+						      if (successCb) successCb(res.json().data);
+						   })
+						   .catch((err) => (console.error('Error', JSON.stringify(err))));
+  };
+};
