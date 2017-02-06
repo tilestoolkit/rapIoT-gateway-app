@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
+import { Events } from 'ionic-angular';
 import mqtt from 'mqtt';
 /*
 interface MqttClientInterface {
@@ -18,7 +19,7 @@ export class MqttClient {
   client;
 
 
-  constructor() {
+  constructor(public events: Events) {
   };
 
 
@@ -72,38 +73,26 @@ export class MqttClient {
   				const command = JSON.parse(message);
   				if (command) {
   					const deviceId = topic.split('/')[3];
-  					/* TODO: Find a way to get the functionallity of 
-						 * $rootScope.$broadcast() and
-						 * $rootScope.$apply()
-						 * from angular 1. This link might be the solution: 
-						 * https://laco0416.github.io/post/event-broadcasting-in-angular-2/
-						 */
-  				};
-  			} finally {};
+            this.events.publish('command', deviceId, command);
+  			  };
+        } finally {};
   		});
 
-
   		this.client.on('offline', () => {
-	      //$rootScope.$broadcast('offline');
-	      //$rootScope.$apply();
+        this.events.publish('offline');
 	    });
 
 	    this.client.on('close', () => {
-	      //$rootScope.$broadcast('close');
-	      //$rootScope.$apply();
+	      this.events.publish('close');
 	    });
 
 	    this.client.on('reconnect', () => {
-	      //$rootScope.$broadcast('reconnect');
-	      //$rootScope.$apply();
+	      this.events.publish('reconnect');
 	    });
 
 	    this.client.on('error', error => {
-	      //$rootScope.$broadcast('error', error);
-	      //$rootScope.$apply();
+	      this.events.publish('error', error);
 	    });
-
-
   	});
   };
 
