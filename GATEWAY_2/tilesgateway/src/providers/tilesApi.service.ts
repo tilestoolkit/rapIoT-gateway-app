@@ -37,6 +37,7 @@ export class TilesApi {
   };
 
   // Turn the eventobject into a string
+  // TODO: create a type class for the commandObject to ensure correct data is passed 
   getCommandObjectAsString = cmdObj => {
     return cmdObj.name + ',' + cmdObj.properties.toString();
   };
@@ -75,7 +76,7 @@ export class TilesApi {
   };
 
   loadEventMappings = (tileId) => {
-  	// TODO: 
+  	// TODO: get the mappings from the actual stored ones. 
     const storedEventMappings = {}; //$localstorage.getEventMappings(tileId, o.username);
     if (this.eventMappings[this.username] == null) {
       this.eventMappings[this.username] = {}
