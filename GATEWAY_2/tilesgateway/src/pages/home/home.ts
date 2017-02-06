@@ -2,21 +2,26 @@ import { Component } from '@angular/core';
 import { Events } from 'ionic-angular';
 import { NavController } from 'ionic-angular';
 
-import { TilesApi } from '../../providers/tilesApi.service';
 import { Device, DevicesService } from '../../providers/devices.service';
 import { MqttClient } from '../../providers/mqttClient';
+import { TilesApi } from '../../providers/tilesApi.service';
 
 @Component({
   selector: 'page-home',
-  templateUrl: 'home.html'
+  templateUrl: 'home.html',
+  providers: [ 
+  	TilesApi, 
+  	MqttClient, 
+  	DevicesService
+  ]
 })
 export class HomePage {
 	public devices: Device[];
 
   constructor(public navCtrl: NavController, 
   						public events: Events,
-  						//public tilesApi: TilesApi,
   						private devicesService: DevicesService,
+  						public tilesApi: TilesApi,
   						private mqttClient: MqttClient) {
   	this.devices = devicesService.getMockDevices();
 
@@ -26,7 +31,7 @@ export class HomePage {
 	      if (device.id === deviceId) {
 	        device.ledOn = (command.name === 'led' && command.properties[0] === 'on');
 	        console.log('Device led on: '+device.ledOn);
-	        //const commandString = this.tilesApi.getCommandObjectAsString(command);
+	        const commandString = this.tilesApi.getCommandObjectAsString(command);
 	        // TODO: Find a replacement for this line
 	        //$scope.sendData(device, commandString);
 	      };
