@@ -45,25 +45,26 @@ export class TilesApi {
   extend = (obj1, obj2) => {
     let extended = {};
     // TODO: if any attr has the same name obj 2 will overwrite obj1
-    for (var attrname in obj1) { extended[attrname] = obj1[attrname]; }
-    for (var attrname in obj2) { extended[attrname] = obj2[attrname]; }
+    for (let attrname of obj1) { 
+      extended[attrname] = obj1[attrname]; 
+    };
+    for (let attrname of obj2) { 
+      extended[attrname] = obj2[attrname]; 
+    };
     return extended;
   }
 
 
   setUsername = (username: string) => {
     this.username = username;
-    //$localstorage.set('username', username);
   };
 
   setHostAddress = (hostAddress: string) => {
     this.hostAddress = hostAddress;
-    //$localstorage.set('hostAddress', hostAddress);
   };
 
   setHostMqttPort = (hostMqttPort) => {
     this.mqttPort = hostMqttPort;
-    //$localstorage.set('hostMqttPort', hostMqttPort);
   };
 
   getEventMapping = (tileId, eventAsString) => {
@@ -75,7 +76,7 @@ export class TilesApi {
 
   loadEventMappings = (tileId) => {
   	// TODO: 
-    const storedEventMappings = {} //$localstorage.getEventMappings(tileId, o.username);
+    const storedEventMappings = {}; //$localstorage.getEventMappings(tileId, o.username);
     if (this.eventMappings[this.username] == null) {
       this.eventMappings[this.username] = {}
     };
@@ -98,7 +99,9 @@ export class TilesApi {
 
 						      this.eventMappings[this.username][tileId] = this.extend(this.defaultEventMappings, res.json().data);
 
-						      if (successCb) successCb(res.json().data);
+						      if (successCb) {
+                    successCb(res.json().data)
+                  };
 						   })
 						   .catch((err) => (console.error('Error', JSON.stringify(err))));
   };
