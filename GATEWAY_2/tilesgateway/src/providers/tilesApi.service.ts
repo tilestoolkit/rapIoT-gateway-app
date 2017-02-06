@@ -20,9 +20,16 @@ export class TilesApi {
 
   eventMappings = {};
 
-	constructor(public username: string = 'TestUser', 
-							public hostAddress: string = 'cloud.tilestoolkit.io', 
-							public mqttPort: number = 8080,
+
+  // TODO: Move these back into the constructor. This caused a runtime-error saying 
+  // 'No provider for String!'. It seems the angular2 @Inject() will solve it 
+  username: string = 'TestUser';
+  hostAddress: string = 'cloud.tilestoolkit.io'; 
+  mqttPort: number = 8080;
+
+	constructor(//public username: string = 'TestUser', 
+							//public hostAddress: string = 'cloud.tilestoolkit.io', 
+							//public mqttPort: number = 8080,
 							public storage: Storage,
 							private http: Http) { 
 	};
