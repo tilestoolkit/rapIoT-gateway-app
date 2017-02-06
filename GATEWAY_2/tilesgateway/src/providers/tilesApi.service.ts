@@ -28,8 +28,8 @@ export class TilesApi {
 	};
 	
 	// Returns an object with name and properties from the inputstring
-  getEventStringAsObject = (evtString: string) => {
-    const params = evtString.split(',');
+  getEventStringAsObject = (eventString: string) => {
+    const params = eventString.split(',');
     return {
       name: params[0],
       properties: Array.prototype.slice.call(params, 1)
