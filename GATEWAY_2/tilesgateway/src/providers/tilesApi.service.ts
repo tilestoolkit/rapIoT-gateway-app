@@ -69,7 +69,8 @@ export class TilesApi {
   };
 
   getEventMapping = (tileId, eventAsString) => {
-    if (this.eventMappings[this.username] == null || this.eventMappings[this.username][tileId] == null) {
+    if (this.eventMappings[this.username] == null || 
+        this.eventMappings[this.username][tileId] == null) {
       this.loadEventMappings(tileId);
     }
     return this.eventMappings[this.username][tileId][eventAsString];
@@ -79,21 +80,20 @@ export class TilesApi {
   	// TODO: get the mappings from the actual stored ones. 
     const storedEventMappings = {}; //$localstorage.getEventMappings(tileId, o.username);
     if (this.eventMappings[this.username] == null) {
-      this.eventMappings[this.username] = {}
+      this.eventMappings[this.username] = {};
     };
     this.eventMappings[this.username][tileId] = this.extend(this.defaultEventMappings, storedEventMappings);
   };
 
 
   fetchEventMappings = (tileId, successCb) => {
-   const url = 'http://' + this.hostAddress + ':' + this.mqttPort + '/eventmappings/' + this.username + '/' + tileId;
-    return this.http.get(url)
+   const eventMappingsUrl = `http://${this.hostAddress}:${this.mqttPort}/eventmappings/${this.username}/${tileId}`;
+    return this.http.get(eventMappingsUrl)
 					     .toPromise()
 					   	 .then((res) => {
 						      const fetchedEventMappings = JSON.stringify(res.json().data);
-						      console.log('Success. Fetched data:' + fetchedEventMappings);
-						      
-						      this.storage.set('eventMappings_' + this.username + '_' + tileId, fetchedEventMappings);
+						      console.log(`Success. Fetched data:${{fetchedEventMappings}}`);
+						      this.storage.set(`eventMappings_${this.username}_${tileId}`, fetchedEventMappings);
 						      if (this.eventMappings[this.username] == null) {
 						      	this.eventMappings[this.username] = {};
 						      };
@@ -101,7 +101,7 @@ export class TilesApi {
 						      this.eventMappings[this.username][tileId] = this.extend(this.defaultEventMappings, res.json().data);
 
 						      if (successCb) {
-                    successCb(res.json().data)
+                    successCb(res.json().data);
                   };
 						   })
 						   .catch((err) => (console.error('Error', JSON.stringify(err))));
