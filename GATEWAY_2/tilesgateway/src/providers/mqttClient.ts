@@ -28,13 +28,19 @@ export class MqttClient {
 	 * @param deviceId: String
 	 * @param isEvent: Boolean
    */
-  getDeviceSpecificTopic(deviceId: string, isEvent: boolean): string {
+  getDeviceSpecificTopic = (deviceId: string, isEvent: boolean): string => {
   	// TODO: NB! temporary, remove when tilesApi class is up!!
   	const tilesApi = {username: 'user'}
   	const type = isEvent ? 'evt' : 'cmd';
   	return 'tiles/' + type + '/' + tilesApi.username + '/' + deviceId;
   };
 
+  setServerConnectionStatus = (msg, connected) => {
+    console.log(msg);
+    // TODO: find out how to implement this
+    //$scope.serverConnectStatusMsg = msg;
+    //$scope.connectedToServer = connected;
+  }
 
   /* Create a connection to the server and
    * return a javascript promise 
