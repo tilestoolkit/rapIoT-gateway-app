@@ -85,7 +85,8 @@ export class TilesApi {
 
   loadEventMappings = (tileId) => {
   	// TODO: get the mappings from the actual stored ones. 
-    const storedEventMappings = {}; //$localstorage.getEventMappings(tileId, o.username);
+    const storedEventMappings = this.storage.get(`eventMappings_${this.username}_${tileId}`)
+                                            .then( res => res);
     if (this.eventMappings[this.username] == null) {
       this.eventMappings[this.username] = {};
     };
