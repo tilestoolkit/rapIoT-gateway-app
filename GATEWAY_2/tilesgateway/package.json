@@ -36,6 +36,8 @@
     "eslint-plugin-import": "^2.2.0"
   },
   "cordovaPlugins": [
+    "cordova-plugin-app-version",
+    "cordova-plugin-ble-central",
     "cordova-plugin-whitelist",
     "cordova-plugin-console",
     "cordova-plugin-statusbar",
@@ -44,6 +46,7 @@
     "ionic-plugin-keyboard"
   ],
   "cordovaPlatforms": [
+    "android",
     "ios",
     {
       "platform": "ios",
