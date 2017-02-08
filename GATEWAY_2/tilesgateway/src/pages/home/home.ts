@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Events } from 'ionic-angular';
 import { NavController } from 'ionic-angular';
 
+import { BleService } from '../../providers/ble.service';
 import { Device, DevicesService } from '../../providers/devices.service';
 import { MqttClient } from '../../providers/mqttClient';
 import { TilesApi } from '../../providers/tilesApi.service';
@@ -21,6 +22,7 @@ export class HomePage {
 
   constructor(public navCtrl: NavController, 
   						public events: Events,
+  						private bleService: BleService,
   						private devicesService: DevicesService,
   						public tilesApi: TilesApi,
   						private mqttClient: MqttClient) 
@@ -35,8 +37,7 @@ export class HomePage {
 	        device.ledOn = (command.name === 'led' && command.properties[0] === 'on');
 	        console.log('Device led on: '+device.ledOn);
 	        const commandString = this.tilesApi.getCommandObjectAsString(command);
-	        // TODO: Find a replacement for this line
-	        //$scope.sendData(device, commandString);
+	        this.bleService.sendData(device, commandString);
 	      };
 	    };
 	  });
