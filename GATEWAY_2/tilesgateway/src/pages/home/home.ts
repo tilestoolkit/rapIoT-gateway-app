@@ -17,13 +17,16 @@ import { TilesApi } from '../../providers/tilesApi.service';
 })
 export class HomePage {
 	public devices: Device[];
+	serverConnectStatusMsg: string;
 
   constructor(public navCtrl: NavController, 
   						public events: Events,
   						private devicesService: DevicesService,
   						public tilesApi: TilesApi,
-  						private mqttClient: MqttClient) {
+  						private mqttClient: MqttClient) 
+  {
   	this.devices = devicesService.getMockDevices();
+  	this.serverConnectStatusMsg = 'Click to connect to server';
 
 	  this.events.subscribe('command', (deviceId, command) => {
 	    for (let i = 0; i < this.devices.length; i++) {
@@ -39,19 +42,23 @@ export class HomePage {
 	  });
 
 	  this.events.subscribe('offline', () => {
-	  	this.mqttClient.setServerConnectionStatus('Client gone offline', false);
+	  	this.mqttClient.setServerConnectionStatus(false);
+	  	this.serverConnectStatusMsg = 'Client gone offline';
 	  });
 
 	  this.events.subscribe('close', () => {
-	  	this.mqttClient.setServerConnectionStatus('Disconnected from server', false);
+	  	this.mqttClient.setServerConnectionStatus(false);
+	  	this.serverConnectStatusMsg = 'Disconnected from server';
 	  });
 
 		this.events.subscribe('reconnect', () => {
-	  	this.mqttClient.setServerConnectionStatus('A reconnect is started', false);
+	  	this.mqttClient.setServerConnectionStatus(false);
+	  	this.serverConnectStatusMsg = 'A reconnect is started';
 	  });
 
 		this.events.subscribe('error', (err) => {
-	  	this.mqttClient.setServerConnectionStatus('Error: ' + err, false);
+	  	this.mqttClient.setServerConnectionStatus(false);
+	  	this.serverConnectStatusMsg = 'Error: ${err}';
 	  });
 	};
 

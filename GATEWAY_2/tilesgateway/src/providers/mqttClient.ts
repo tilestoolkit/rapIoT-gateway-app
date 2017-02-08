@@ -41,11 +41,8 @@ export class MqttClient {
   	return 'tiles/' + type + '/' + this.tilesApi.username + '/' + deviceId;
   };
 
-  setServerConnectionStatus = (msg, connected) => {
-    console.log(msg);
-    // TODO: find out how to implement this
-    //$scope.serverConnectStatusMsg = msg;
-    //$scope.connectedToServer = connected;
+  setServerConnectionStatus = (connected: boolean) => {
+    this.connectedToServer = connected;
   }
 
   /* Create a connection to the server and
