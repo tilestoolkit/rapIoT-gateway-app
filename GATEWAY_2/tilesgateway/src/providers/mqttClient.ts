@@ -43,7 +43,7 @@ export class MqttClient {
 
   setServerConnectionStatus = (connected: boolean) => {
     this.connectedToServer = connected;
-  }
+  };
 
   /* Create a connection to the server and
    * return a javascript promise 
