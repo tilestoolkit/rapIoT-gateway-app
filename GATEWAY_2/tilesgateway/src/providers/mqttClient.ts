@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { Events } from 'ionic-angular';
 import mqtt from 'mqtt';
+
+import { TilesApi } from './tilesApi.service';
 /*
 interface MqttClientInterface {
 
@@ -15,24 +17,28 @@ interface MqttClientInterface {
 @Injectable()
 export class MqttClient {
   publishOpts = { retain: true };
-  serverConnectionTimeout = 10000; // 10 seconds  
+  serverConnectionTimeout: number = 10000; // 10 seconds  
+  connectedToServer: boolean = false; 
   client;
 
 
-  constructor(public events: Events) {
+  constructor(public events: Events,
+              private tilesApi: TilesApi) { };
+
+
+  mqttConnectionData = {
+    username: this.tilesApi.username,
+    host: this.tilesApi.hostAddress,
+    port: this.tilesApi.mqttPort
   };
-
-
 
   /* Returns a url for the specific device
 	 * @param deviceId: String
 	 * @param isEvent: Boolean
    */
   getDeviceSpecificTopic = (deviceId: string, isEvent: boolean): string => {
-  	// TODO: NB! temporary, remove when tilesApi class is up!!
-  	const tilesApi = {username: 'user'}
   	const type = isEvent ? 'evt' : 'cmd';
-  	return 'tiles/' + type + '/' + tilesApi.username + '/' + deviceId;
+  	return 'tiles/' + type + '/' + this.tilesApi.username + '/' + deviceId;
   };
 
   setServerConnectionStatus = (msg, connected) => {
