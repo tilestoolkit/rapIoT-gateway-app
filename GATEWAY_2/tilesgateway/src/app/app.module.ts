@@ -1,4 +1,5 @@
 import { NgModule, ErrorHandler } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { HttpModule }    from '@angular/http';
 import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
 import { Storage } from '@ionic/storage';
@@ -20,6 +21,7 @@ import { DevicesService } from '../providers/devices.service';
     TabsPage
   ],
   imports: [
+    FormsModule,
     HttpModule,
     IonicModule.forRoot(Tiles)
   ],

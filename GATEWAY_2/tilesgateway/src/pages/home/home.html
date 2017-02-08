@@ -17,6 +17,7 @@
   </ion-header>
 
 <ion-content padding>
+  <button ion-button small icon-only style="float: right;" (click)="mqttClient.connect(tilesApi.hostAddress, tilesApi.mqttPort)">Connect</button>
   <ion-list>
     <ion-item *ngFor="let device of devices">
       <div class="row row-center">
@@ -36,11 +37,14 @@
           <ion-badge badge-stable style="right: 16px;" [hidden]="device.buttonPressed">Released</ion-badge>
           <ion-badge badge-balanced style="right: 16px;" [hidden]="!device.buttonPressed">Pressed</ion-badge>
         </ion-item>
-        <!--ion-toggle ng-model="device.ledOn" ng-change="sendData(device)" toggle-class="toggle-calm">LED Light</ion-toggle>
+        <ion-item>
+          <!--ion-label>LED Light </ion-label-->
+          <ion-toggle [(ngModel)]="device.ledOn" (ionChange)="bleService.sendData(device, 'led,on,red')"></ion-toggle>
+        </ion-item>
         <ion-item class="item-icon-right">Name
-          <input ng-model="$parent.newName" />
-          <button (click)="updateName(device)">Update</button>
-        </ion-item-->
+          <input [(ngModel)]="newName" name="newName"/>
+          <button (click)="updateName(device, newName)">Update</button>
+        </ion-item>
       </ion-list>
     </ion-item>
   </ion-list>
