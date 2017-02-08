@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Platform } from 'ionic-angular';
-import { StatusBar, Splashscreen } from 'ionic-native';
+import { AppVersion, StatusBar, Splashscreen } from 'ionic-native';
 
 import { TabsPage } from '../pages/tabs/tabs';
 
@@ -10,6 +10,7 @@ import { TabsPage } from '../pages/tabs/tabs';
 })
 export class Tiles {
   rootPage = TabsPage;
+  appVersion: any;
 
   constructor(platform: Platform) {
     platform.ready().then(() => {
@@ -31,6 +32,8 @@ export class Tiles {
         text:   'Running in background'
       });
       */
+
+      //this.appVersion = AppVersion.getVersionNumber().then(res => (res));
 
       StatusBar.styleDefault();
       Splashscreen.hide();
