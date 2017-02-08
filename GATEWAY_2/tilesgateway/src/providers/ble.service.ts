@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BLE } from 'ionic-native';
+import 'rxjs/add/operator/toPromise';
 
 import { MqttClient } from './mqttClient';
 import { TilesApi } from './tilesApi.service';
