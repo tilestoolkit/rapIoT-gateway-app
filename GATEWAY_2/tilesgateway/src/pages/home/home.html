@@ -24,9 +24,9 @@
           <b>{{device.name}}</b><br>RSSI:{{device.rssi}}<br>{{device.id}}
         </div>
         <div class="col">
-          <button ion-button small color="positive" style="float: right;" (click)="connect(device)" [hidden]="device.connected">Connect</button>
-          <button ion-button small id="disconnectButton" style="float: right;" (click)="disconnect(device)" [hidden]="!device.connected">Disconnect</button>
-          <button ion-button small icon-only id="fetchEventMappingsButton" style="float: right;" (click)="fetchEventMappings(device)" [hidden]="!device.connected">
+          <button ion-button small color="positive" style="float: right;" (click)="bleService.connect(device)" [hidden]="device.connected">Connect</button>
+          <button ion-button small id="disconnectButton" style="float: right;" (click)="bleService.disconnect(device)" [hidden]="!device.connected">Disconnect</button>
+          <button ion-button small icon-only id="fetchEventMappingsButton" style="float: right;" (click)="tilesApi.fetchEventMappings(device)" [hidden]="!device.connected">
             <ion-icon name="code-download"></ion-icon>
           </button>
         </div>
