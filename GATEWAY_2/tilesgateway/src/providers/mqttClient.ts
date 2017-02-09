@@ -48,7 +48,7 @@ export class MqttClient {
   /* Create a connection to the server and
    * return a javascript promise 
    */
-  connect = (host: string, port: string) => {
+  connect = (host: string, port: number) => {
   	return new Observable( observer => {
 
   		// Check if a previous server connection exists
