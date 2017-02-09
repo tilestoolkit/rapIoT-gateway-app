@@ -4,6 +4,7 @@ import 'rxjs/add/operator/toPromise';
 
 import { MqttClient } from './mqttClient';
 import { TilesApi } from './tilesApi.service';
+import { DevicesService, Device }from './devices.service';
 
 
 @Injectable()
@@ -22,7 +23,8 @@ export class BleService {
   ];
 
   constructor(private mqttClient: MqttClient, 
-  						private tilesApi: TilesApi) {
+  						private tilesApi: TilesApi,
+              private devicesService: DevicesService) {
   };
 
   /* Send data to a device using BLE
@@ -79,6 +81,7 @@ export class BleService {
 		 			 		console.log('Device discovered: ' + device)
 		 			 		if(this.isTilesDevice(device) && this.isNewDevice(device)) {
 		 			 			this.mqttClient.registerDevice(device);
+                this.devicesService.newDevice(device);
 		 			 		}
 		 			 	})
 		 			  .catch( err => console.log('Error when scanning for devices'));
