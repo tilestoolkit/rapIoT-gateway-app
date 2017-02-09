@@ -49,60 +49,58 @@ export class MqttClient {
    * return a javascript promise 
    */
   connect = (host: string, port: number) => {
-  	return new Observable( observer => {
 
-  		// Check if a previous server connection exists
-  		// and end it if it does
-  		if (this.client) {
-  			this.client.end();
-  		};
+		// Check if a previous server connection exists
+		// and end it if it does
+		if (this.client) {
+			this.client.end();
+		};
 
-  		
-  		// Instantiate a mqtt-client from the host and port
-  		// keepalive 0 disables keepalive
-  		this.client = mqtt.connect({
-  			host: host, 
-  			port: port,
-				keepalive: 0 
-  		});
+		
+		// Instantiate a mqtt-client from the host and port
+		// keepalive 0 disables keepalive
+		this.client = mqtt.connect({
+			host: host, 
+			port: port,
+			keepalive: 0 
+		});
 
 
-  		// Handlers for different types of responses from the server: 
+		// Handlers for different types of responses from the server: 
 
-  		// Client is connected to the server
-  		this.client.on('connect', () => {
-  			clearTimeout(this.serverConnectionTimeout);
-  			observer.complete();
-  		});
+		// Client is connected to the server
+		this.client.on('connect', () => {
+			clearTimeout(this.serverConnectionTimeout);
+			alert('Connected');
+		});
 
-  		// Handle a message from the server
-  		this.client.on('message', (topic, message) => {
-  			console.log('Received message from server: ' + message);
-  			try {
-  				const command = JSON.parse(message);
-  				if (command) {
-  					const deviceId = topic.split('/')[3];
-            this.events.publish('command', deviceId, command);
-  			  };
-        } finally {};
-  		});
+		// Handle a message from the server
+		this.client.on('message', (topic, message) => {
+			console.log('Received message from server: ' + message);
+			try {
+				const command = JSON.parse(message);
+				if (command) {
+					const deviceId = topic.split('/')[3];
+          this.events.publish('command', deviceId, command);
+			  };
+      } finally { alert(message) };
+		});
 
-  		this.client.on('offline', () => {
-        this.events.publish('offline');
-	    });
+		this.client.on('offline', () => {
+      this.events.publish('offline');
+    });
 
-	    this.client.on('close', () => {
-	      this.events.publish('close');
-	    });
+    this.client.on('close', () => {
+      this.events.publish('close');
+    });
 
-	    this.client.on('reconnect', () => {
-	      this.events.publish('reconnect');
-	    });
+    this.client.on('reconnect', () => {
+      this.events.publish('reconnect');
+    });
 
-	    this.client.on('error', error => {
-	      this.events.publish('error', error);
-	    });
-  	});
+    this.client.on('error', error => {
+      this.events.publish('error', error);
+    });
   };
 
 
@@ -127,6 +125,7 @@ export class MqttClient {
       	this.getDeviceSpecificTopic(device.id, false)
       );
 
+      this.events.publish('updateDevices');
       console.log('Registered device: ' + device.name + ' (' + device.id + ')');
   	};
 	};

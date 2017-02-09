@@ -17,7 +17,7 @@
   </ion-header>
 
 <ion-content padding>
-  <button ion-button small icon-only style="float: right;" (click)="mqttClient.connect(tilesApi.hostAddress, tilesApi.mqttPort)">Connect</button>
+  <button ion-button small icon-only style="float: right;" (click)="connect()">Connect</button>
   <ion-list>
     <ion-item *ngFor="let device of devices">
       <div class="row row-center">
