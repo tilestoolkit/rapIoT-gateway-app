@@ -15,7 +15,7 @@ export class BleService {
     receiveCharacteristicUUID: '2221',
     sendCharacteristicUUID: '2222',
     disconnectCharacteristicUUID: '2223'
-  }; 
+  };
 
   mockDevices = [
   	{'name': 'TI SensorTag','id': '01:23:45:67:89:AB', 'rssi': -79, 'advertising': null},
@@ -29,7 +29,7 @@ export class BleService {
 
   /* Send data to a device using BLE
 	 * @param device: the target device
-	 * @param dataString: the string of data to send to the device 
+	 * @param dataString: the string of data to send to the device
 	*/
   sendData = (device: any, dataString: string) => {
   	try {
@@ -73,21 +73,21 @@ export class BleService {
 
   // Checking to see if any bluetooth devices are in reach
   scanForDevices = () => {
-		// The first param is the UUIDs to discover, this might 
+		// The first param is the UUIDs to discover, this might
  		// be specified to only search for tiles.
  		BLE.scan([], 5).toPromise()
  			 	// TODO: match the app.onDiscoverDevice from controllers.js in old code
  			 	// but in a better way
 		 				.then( res => {
 		 			 		const device = res;
-		 			 		console.log('Device discovered: ' + device)
+		 			 		console.log('Device discovered: ' + device);
 		 			 		if(this.isTilesDevice(device) && this.isNewDevice(device)) {
 		 			 			this.mqttClient.registerDevice(device);
                 this.devicesService.newDevice(device);
 		 			 		}
 		 			 	})
 		 			  .catch( err => console.log('Error when scanning for devices'));
-  }
+  };
 
   isTilesDevice = (device: any) => (device.name != null && device.name.substring(0, 4) === 'Tile');
 
@@ -99,11 +99,11 @@ export class BleService {
   		}
   	}
   	return true;
-  }
+  };
 
   /* Update the name of a device
 	 * @param device: the target device
-	 * @param newName: The new name 
+	 * @param newName: The new name
 	*/
   updateName = (device: any, newName: string) => {
   	BLE.disconnect(device.id)
@@ -161,5 +161,6 @@ export class BleService {
   					})
   					.catch( err => alert('Failed to disconnect'))
   };
+
 
 };
