@@ -3,6 +3,11 @@ import { Http }    from '@angular/http';
 import { Storage } from '@ionic/storage';
 import 'rxjs/add/operator/toPromise';
 
+class CommandObject {
+  name: string;
+  properties: string;
+};
+
 @Injectable()
 export class TilesApi {
 
@@ -44,8 +49,7 @@ export class TilesApi {
   };
 
   // Turn the eventobject into a string
-  // TODO: create a type class for the commandObject to ensure correct data is passed
-  getCommandObjectAsString = cmdObj => {
+  getCommandObjectAsString = (cmdObj: CommandObject) => {
     return cmdObj.name + ',' + cmdObj.properties.toString();
   };
 
@@ -84,7 +88,6 @@ export class TilesApi {
   };
 
   loadEventMappings = (tileId) => {
-  	// TODO: get the mappings from the actual stored ones.
     const storedEventMappings = this.storage.get(`eventMappings_${this.username}_${tileId}`)
                                             .then( res => res);
     if (this.eventMappings[this.username] == null) {
