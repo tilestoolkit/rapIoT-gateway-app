@@ -6,7 +6,7 @@ import 'rxjs/add/operator/toPromise';
 @Injectable()
 export class TilesApi {
 
-  // Make this a global? 
+  // Make this a global?
   defaultEventMappings = {
     btnON: {
       type: 'button_event',
@@ -21,19 +21,19 @@ export class TilesApi {
   eventMappings = {};
 
 
-  // TODO: Move these back into the constructor. This caused a runtime-error saying 
-  // 'No provider for String!'. It seems the angular2 @Inject() will solve it 
+  // TODO: Move these back into the constructor. This caused a runtime-error saying
+  // 'No provider for String!'. It seems the angular2 @Inject() will solve it
   username: string = 'TestUser';
-  hostAddress: string = 'cloud.tilestoolkit.io'; 
+  hostAddress: string = 'cloud.tilestoolkit.io';
   mqttPort: number = 8080;
 
-	constructor(//public username: string = 'TestUser', 
-							//public hostAddress: string = 'cloud.tilestoolkit.io', 
+	constructor(//public username: string = 'TestUser',
+							//public hostAddress: string = 'cloud.tilestoolkit.io',
 							//public mqttPort: number = 8080,
 							public storage: Storage,
-							private http: Http) { 
+							private http: Http) {
 	};
-	
+
 	// Returns an object with name and properties from the inputstring
   getEventStringAsObject = (eventString: string) => {
     const params = eventString.split(',');
@@ -44,7 +44,7 @@ export class TilesApi {
   };
 
   // Turn the eventobject into a string
-  // TODO: create a type class for the commandObject to ensure correct data is passed 
+  // TODO: create a type class for the commandObject to ensure correct data is passed
   getCommandObjectAsString = cmdObj => {
     return cmdObj.name + ',' + cmdObj.properties.toString();
   };
@@ -53,11 +53,11 @@ export class TilesApi {
   extend = (obj1, obj2) => {
     let extended = {};
     // TODO: if any attr has the same name obj 2 will overwrite obj1
-    for (let attrname of obj1) { 
-      extended[attrname] = obj1[attrname]; 
+    for (let attrname of obj1) {
+      extended[attrname] = obj1[attrname];
     };
-    for (let attrname of obj2) { 
-      extended[attrname] = obj2[attrname]; 
+    for (let attrname of obj2) {
+      extended[attrname] = obj2[attrname];
     };
     return extended;
   }
@@ -76,7 +76,7 @@ export class TilesApi {
   };
 
   getEventMapping = (tileId, eventAsString) => {
-    if (this.eventMappings[this.username] == null || 
+    if (this.eventMappings[this.username] == null ||
         this.eventMappings[this.username][tileId] == null) {
       this.loadEventMappings(tileId);
     }
@@ -84,7 +84,7 @@ export class TilesApi {
   };
 
   loadEventMappings = (tileId) => {
-  	// TODO: get the mappings from the actual stored ones. 
+  	// TODO: get the mappings from the actual stored ones.
     const storedEventMappings = this.storage.get(`eventMappings_${this.username}_${tileId}`)
                                             .then( res => res);
     if (this.eventMappings[this.username] == null) {

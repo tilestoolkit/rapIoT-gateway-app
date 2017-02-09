@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
 
-// Class for the devices, this makes it possible to specify the 
+// Class for the devices, this makes it possible to specify the
 // device type in typescript to avoid getting invalid device-objects
 export class Device {
   id: string;
@@ -27,7 +27,7 @@ export class DevicesService {
 
   getDevices = (): Device[] => {
   	return this.devices;
-  }
+  };
 
   newDevice = (device: Device) => {
   	this.devices.push(device);
