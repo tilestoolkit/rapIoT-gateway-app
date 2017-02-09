@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Events } from 'ionic-angular';
 import { NavController } from 'ionic-angular';
+import { Observable } from 'rxjs/Observable';
 
 import { BleService } from '../../providers/ble.service';
 import { Device, DevicesService } from '../../providers/devices.service';
@@ -43,6 +44,10 @@ export class HomePage {
 	    };
 	  });
 
+	  this.events.subscribe('updateDevices', () => {
+	  	this.devices = devicesService.getDevices();
+	  });
+
 	  this.events.subscribe('offline', () => {
 	  	this.mqttClient.setServerConnectionStatus(false);
 	  	this.serverConnectStatusMsg = 'Client gone offline';
@@ -63,5 +68,12 @@ export class HomePage {
 	  	this.serverConnectStatusMsg = 'Error: ${err}';
 	  });
 	};
+
+	connect = () => {
+		this.mqttClient.connect(this.tilesApi.hostAddress, this.tilesApi.mqttPort)
+
+		this.serverConnectStatusMsg = 'COnnected to server';
+	}
+
 
 };
