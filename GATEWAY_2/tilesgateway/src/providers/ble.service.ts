@@ -32,23 +32,25 @@ export class BleService {
 	 * @param dataString: the string of data to send to the device 
 	*/
   sendData = (device: any, dataString: string) => {
-  	console.log('Attempting to send data to device via BLE.');
-
-  	// TODO: See if we can find a better way to do this
-  	// Turns the dataString into an array of bytes
-  	let dataArray = new Uint8Array(dataString.length);
-  	for(let i = 0, l = dataString.length; i < l; i ++){
-  		dataArray[i] = dataString.charCodeAt(i);
-  	};
-  	console.log('Bytes: ' + dataArray.length);
-
-  	// Attempting to send the array of bytes to the device
-  	BLE.writeWithoutResponse(device.id, 
-  													 this.rfduino.serviceUUID, 
-  													 this.rfduino.sendCharacteristicUUID,
-  													 dataArray.buffer)
-		  		  .then( res => console.log('Success sending the string: ' + dataString))
-		  		  .catch( err => alert('Failed when trying to send daata to the RFduino'));
+  	try {
+  	  	console.log('Attempting to send data to device via BLE.');
+  	
+  	  	// TODO: See if we can find a better way to do this
+  	  	// Turns the dataString into an array of bytes
+  	  	let dataArray = new Uint8Array(dataString.length);
+  	  	for(let i = 0, l = dataString.length; i < l; i ++){
+  	  		dataArray[i] = dataString.charCodeAt(i);
+  	  	};
+  	  	console.log('Bytes: ' + dataArray.length);
+  	
+  	  	// Attempting to send the array of bytes to the device
+  	  	BLE.writeWithoutResponse(device.id, 
+  	  													 this.rfduino.serviceUUID, 
+  	  													 this.rfduino.sendCharacteristicUUID,
+  	  													 dataArray.buffer)
+  			  		  .then( res => console.log('Success sending the string: ' + dataString))
+  			  		  .catch( err => alert('Failed when trying to send daata to the RFduino'));
+  	} finally {};
   };
 
 
