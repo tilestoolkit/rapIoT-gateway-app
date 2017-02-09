@@ -11,9 +11,9 @@ import { TilesApi } from '../../providers/tilesApi.service';
 @Component({
   selector: 'page-home',
   templateUrl: 'home.html',
-  providers: [ 
-  	TilesApi, 
-  	MqttClient, 
+  providers: [
+  	TilesApi,
+  	MqttClient,
   	DevicesService,
   	BleService
   ]
@@ -22,12 +22,12 @@ export class HomePage {
 	public devices: Device[];
 	serverConnectStatusMsg: string;
 
-  constructor(public navCtrl: NavController, 
+  constructor(public navCtrl: NavController,
   						public events: Events,
   						private bleService: BleService,
   						private devicesService: DevicesService,
   						public tilesApi: TilesApi,
-  						private mqttClient: MqttClient) 
+  						private mqttClient: MqttClient)
   {
   	this.devices = devicesService.getMockDevices();
   	this.serverConnectStatusMsg = 'Click to connect to server';
@@ -40,9 +40,9 @@ export class HomePage {
 	        console.log('Device led on: '+device.ledOn);
 	        const commandString = this.tilesApi.getCommandObjectAsString(command);
 	        this.bleService.sendData(device, commandString);
-	      };
-	    };
-	  });
+        }
+      }
+    });
 
 	  this.events.subscribe('updateDevices', () => {
 	  	this.devices = devicesService.getDevices();
@@ -70,10 +70,10 @@ export class HomePage {
 	};
 
 	connect = () => {
-		this.mqttClient.connect(this.tilesApi.hostAddress, this.tilesApi.mqttPort)
+		this.mqttClient.connect(this.tilesApi.hostAddress, this.tilesApi.mqttPort);
 
 		this.serverConnectStatusMsg = 'COnnected to server';
 	}
 
 
-};
+}

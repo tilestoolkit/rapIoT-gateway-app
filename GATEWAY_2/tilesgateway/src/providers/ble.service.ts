@@ -22,7 +22,7 @@ export class BleService {
   	{'name': 'Some OtherDevice', 'id': 'A1:B2:5C:87:2D:36', 'rssi': -52, 'advertising': null}
   ];
 
-  constructor(private mqttClient: MqttClient, 
+  constructor(private mqttClient: MqttClient,
   						private tilesApi: TilesApi,
               private devicesService: DevicesService) {
   };
@@ -34,23 +34,24 @@ export class BleService {
   sendData = (device: any, dataString: string) => {
   	try {
   	  	console.log('Attempting to send data to device via BLE.');
-  	
+
   	  	// TODO: See if we can find a better way to do this
   	  	// Turns the dataString into an array of bytes
   	  	let dataArray = new Uint8Array(dataString.length);
   	  	for(let i = 0, l = dataString.length; i < l; i ++){
   	  		dataArray[i] = dataString.charCodeAt(i);
-  	  	};
-  	  	console.log('Bytes: ' + dataArray.length);
-  	
+        }
+      console.log('Bytes: ' + dataArray.length);
+
   	  	// Attempting to send the array of bytes to the device
-  	  	BLE.writeWithoutResponse(device.id, 
-  	  													 this.rfduino.serviceUUID, 
+  	  	BLE.writeWithoutResponse(device.id,
+  	  													 this.rfduino.serviceUUID,
   	  													 this.rfduino.sendCharacteristicUUID,
   	  													 dataArray.buffer)
   			  		  .then( res => console.log('Success sending the string: ' + dataString))
   			  		  .catch( err => alert('Failed when trying to send daata to the RFduino'));
-  	} finally {};
+    } finally {
+    }
   };
 
 
@@ -161,6 +162,4 @@ export class BleService {
   					})
   					.catch( err => alert('Failed to disconnect'))
   };
-
-
-};
+}

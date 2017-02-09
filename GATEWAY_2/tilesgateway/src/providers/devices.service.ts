@@ -8,9 +8,7 @@ export class Device {
   name: string;
   connected: boolean;
   ledOn: boolean;
-};
-
-
+}
 @Injectable()
 export class DevicesService {
 
@@ -33,4 +31,4 @@ export class DevicesService {
   	this.devices.push(device);
   }
 
-};
+}
