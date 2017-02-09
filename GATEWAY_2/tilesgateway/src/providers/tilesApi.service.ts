@@ -7,6 +7,7 @@ class CommandObject {
   name: string;
   properties: string;
 }
+
 @Injectable()
 export class TilesApi {
 
@@ -23,7 +24,6 @@ export class TilesApi {
   };
 
   eventMappings = {};
-
 
   // TODO: Move these back into the constructor. This caused a runtime-error saying
   // 'No provider for String!'. It seems the angular2 @Inject() will solve it
@@ -93,7 +93,6 @@ export class TilesApi {
     }
     this.eventMappings[this.username][tileId] = this.extend(this.defaultEventMappings, storedEventMappings);
   };
-
 
   fetchEventMappings = (tileId, successCb) => {
    const eventMappingsUrl = `http://${this.hostAddress}:${this.mqttPort}/eventmappings/${this.username}/${tileId}`;

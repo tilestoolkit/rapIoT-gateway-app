@@ -62,7 +62,6 @@ export class MqttClient {
 			keepalive: 0
 		});
 
-
 		// Handlers for different types of responses from the server:
 
 		// Client is connected to the server
@@ -102,28 +101,23 @@ export class MqttClient {
     });
   };
 
-
   // The functions called on the client comes from the mqtt-library,
   // API reference can be found at https://github.com/mqttjs/MQTT.js
 	registerDevice = device => {
 		if (this.client) {
-
 			this.client.publish(
 				this.getDeviceSpecificTopic(device.id, true) + '/active',
 				'true',
 				this.publishOpts
 			);
-
       this.client.publish(
       	this.getDeviceSpecificTopic(device.id, true) + '/name',
       	device.name,
       	this.publishOpts
       );
-
       this.client.subscribe(
       	this.getDeviceSpecificTopic(device.id, false)
       );
-
       this.events.publish('updateDevices');
       console.log('Registered device: ' + device.name + ' (' + device.id + ')');
     }
@@ -131,13 +125,11 @@ export class MqttClient {
 
   unregisterDevice = device => {
     if (this.client) {
-
       this.client.publish(
       	this.getDeviceSpecificTopic(device.id, true) + '/active',
       	'false',
       	this.publishOpts
       );
-
       this.client.unsubscribe(
       	this.getDeviceSpecificTopic(device.id, false)
       );
@@ -146,7 +138,6 @@ export class MqttClient {
 
   sendEvent = (deviceId, event) => {
     if (this.client) {
-
     	this.client.publish(
     		this.getDeviceSpecificTopic(deviceId, true),
     		JSON.stringify(event),

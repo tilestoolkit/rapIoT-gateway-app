@@ -1,11 +1,9 @@
 import { Injectable } from '@angular/core';
 import { BLE } from 'ionic-native';
 import 'rxjs/add/operator/toPromise';
-
 import { MqttClient } from './mqttClient';
 import { TilesApi } from './tilesApi.service';
 import { DevicesService, Device }from './devices.service';
-
 
 @Injectable()
 export class BleService {
@@ -54,7 +52,6 @@ export class BleService {
     }
   };
 
-
   // Checking if bluetooth is enabled and enable on android if not
   doRefresh = () => {
   	BLE.isEnabled()
@@ -69,7 +66,6 @@ export class BleService {
 				  		 			  .then( res => console.log('Bluetooth has been enabled'))
 				  		 			  .catch( err => console.log('Failed to enable bluetooth'));
 		  		  });
-
   };
 
   // Checking to see if any bluetooth devices are in reach

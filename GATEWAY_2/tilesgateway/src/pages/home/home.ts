@@ -18,6 +18,7 @@ import { TilesApi } from '../../providers/tilesApi.service';
   	BleService
   ]
 })
+
 export class HomePage {
 	public devices: Device[];
 	serverConnectStatusMsg: string;
@@ -74,6 +75,4 @@ export class HomePage {
 
 		this.serverConnectStatusMsg = 'COnnected to server';
 	}
-
-
 }
