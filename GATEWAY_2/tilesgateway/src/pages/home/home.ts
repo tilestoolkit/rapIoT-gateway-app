@@ -13,7 +13,8 @@ import { TilesApi } from '../../providers/tilesApi.service';
   providers: [ 
   	TilesApi, 
   	MqttClient, 
-  	DevicesService
+  	DevicesService,
+  	BleService
   ]
 })
 export class HomePage {
