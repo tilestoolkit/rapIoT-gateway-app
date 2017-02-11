@@ -33,7 +33,7 @@ export class Tiles {
       });
       */
 
-      //this.appVersion = AppVersion.getVersionNumber().then(res => (res));
+      this.appVersion = AppVersion.getVersionNumber().then(res => JSON.stringify(res));
 
       StatusBar.styleDefault();
       Splashscreen.hide();
