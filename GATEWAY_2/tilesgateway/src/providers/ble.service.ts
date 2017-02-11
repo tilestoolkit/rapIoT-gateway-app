@@ -71,22 +71,35 @@ export class BleService {
 
   };
 
+  convertBleDeviceToDecive = (bleDevice) => {
+    const device: Device = {
+      id: '01:23:45:67:89:AB', 
+      name: 'TI SensorTag1', 
+      connected: false, 
+      ledOn: false
+    };
+
+    return device;
+  };
+
   // Checking to see if any bluetooth devices are in reach
   scanForDevices = () => {
 		// The first param is the UUIDs to discover, this might
  		// be specified to only search for tiles.
- 		BLE.scan([], 5).toPromise()
- 			 	// TODO: match the app.onDiscoverDevice from controllers.js in old code
- 			 	// but in a better way
-		 				.then( res => {
-		 			 		const device = res;
-		 			 		console.log('Device discovered: ' + device);
-		 			 		if(this.isTilesDevice(device) && this.isNewDevice(device)) {
-		 			 			this.mqttClient.registerDevice(device);
-                this.devicesService.newDevice(device);
-		 			 		}
-		 			 	})
-		 			  .catch( err => console.log('Error when scanning for devices'));
+ 		return BLE.scan([], 5).forEach(
+        res => {
+          //TODO: Place inside the if-statement
+          const device = this.convertBleDeviceToDecive(res);
+          this.mqttClient.registerDevice(this.convertBleDeviceToDecive(device));
+          this.devicesService.newDevice(this.convertBleDeviceToDecive(device));
+            //if(this.isTilesDevice(device) && this.isNewDevice(device)) {
+              //this.mqttClient.registerDevice(device);
+            //this.devicesService.newDevice(device);
+            //}
+          }
+          //err => console.log('Error when scanning for devices'),
+      ).then(() => '\nNo more devices: ');
+ 			 	
   };
 
   isTilesDevice = (device: any) => (device.name != null && device.name.substring(0, 4) === 'Tile');

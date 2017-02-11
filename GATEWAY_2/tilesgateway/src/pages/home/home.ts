@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
-import { Events } from 'ionic-angular';
+import { Events, Platform } from 'ionic-angular';
 import { NavController } from 'ionic-angular';
-import { Observable } from 'rxjs/Observable';
 
 import { BleService } from '../../providers/ble.service';
 import { Device, DevicesService } from '../../providers/devices.service';
@@ -21,17 +20,19 @@ import { TilesApi } from '../../providers/tilesApi.service';
 export class HomePage {
 	public devices: Device[];
 	serverConnectStatusMsg: string;
+	statusMsg: string;
 
   constructor(public navCtrl: NavController, 
   						public events: Events,
+  						public platform: Platform,
   						private bleService: BleService,
   						private devicesService: DevicesService,
   						public tilesApi: TilesApi,
   						private mqttClient: MqttClient) 
   {
-  	this.devices = devicesService.getMockDevices();
+  	this.devices = devicesService.getDevices();
   	this.serverConnectStatusMsg = 'Click to connect to server';
-
+  	//TODO: Dunno if this should be in the constructor or if that was a mistake
 	  this.events.subscribe('command', (deviceId, command) => {
 	    for (let i = 0; i < this.devices.length; i++) {
 	      const device = this.devices[i];
@@ -45,8 +46,34 @@ export class HomePage {
 	  });
 
 	  this.events.subscribe('updateDevices', () => {
+	  	this.statusMsg = 'Found new devices';
 	  	this.devices = devicesService.getDevices();
+	  	for (let device of this.devices) {
+	  		this.mqttClient.registerDevice(device);
+	  	}
 	  });
+
+	  this.events.subscribe('serverConnected', () => {
+	  	this.serverConnectStatusMsg = 'Connected to server';
+	  	this.statusMsg = 'Searching for devices...';
+	  	this.bleService.scanForDevices().then(res => this.statusMsg = res).catch(err => this.statusMsg = err);
+	  });
+
+/* TODO: match the app.onDiscoverDevice from controllers.js in old code
+ 			 	// but in a better way
+		 				.then( res => {
+		 			 		const device = res;
+		 			 		alert('Device discovered: ' + device);
+              //TODO: Place inside the if-statement
+              this.mqttClient.registerDevice(this.convertBleDeviceToDecive(device));
+              this.devicesService.newDevice(this.convertBleDeviceToDecive(device));
+		 			 		if(this.isTilesDevice(device) && this.isNewDevice(device)) {
+		 			 			//this.mqttClient.registerDevice(device);
+                //this.devicesService.newDevice(device);
+		 			 		}
+		 			 	})
+		 			  .catch( err => alert('Error when scanning for devices'));*/
+
 
 	  this.events.subscribe('offline', () => {
 	  	this.mqttClient.setServerConnectionStatus(false);
@@ -67,12 +94,23 @@ export class HomePage {
 	  	this.mqttClient.setServerConnectionStatus(false);
 	  	this.serverConnectStatusMsg = 'Error: ${err}';
 	  });
+
 	};
 
-	connect = () => {
-		this.mqttClient.connect(this.tilesApi.hostAddress, this.tilesApi.mqttPort)
+	connectToServer = () => {
+		this.mqttClient.connect(this.tilesApi.hostAddress, this.tilesApi.mqttPort);
+	};
 
-		this.serverConnectStatusMsg = 'COnnected to server';
+	refreshDevices = (refresher) => {
+		console.log('Scanning for more devices...');
+		this.bleService.scanForDevices()
+									 .then(res => {
+									 		this.statusMsg = res;
+									 		refresher.complete();
+									 	}).catch(err => {
+									 		this.statusMsg = err;
+									 		refresher.complete();
+									 	});
 	}
 
 

@@ -13,11 +13,20 @@
         from the old code 
       -->
       <ion-title >{{serverConnectStatusMsg}}</ion-title>
+      <button ion-button small icon-only style="float: right;" (click)="connectToServer()">Connect</button>
     </ion-toolbar>
   </ion-header>
 
 <ion-content padding>
-  <button ion-button small icon-only style="float: right;" (click)="connect()">Connect</button>
+  <ion-refresher (ionRefresh)="refreshDevices($event)">
+    <ion-refresher-content
+      pullingIcon="arrow-dropdown"
+      pullingText="Pull to refresh"
+      refreshingSpinner="circles"
+      refreshingText="Refreshing...">
+    </ion-refresher-content>
+  </ion-refresher>
+  <ion-item>{{statusMsg}}</ion-item>
   <ion-list>
     <ion-item *ngFor="let device of devices">
       <div class="row row-center">
