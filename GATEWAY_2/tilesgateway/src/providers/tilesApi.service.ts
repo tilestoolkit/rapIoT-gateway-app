@@ -6,7 +6,7 @@ import 'rxjs/add/operator/toPromise';
 class CommandObject {
   name: string;
   properties: string;
-};
+}
 
 @Injectable()
 export class TilesApi {
@@ -24,7 +24,6 @@ export class TilesApi {
   };
 
   eventMappings = {};
-
 
   // TODO: Move these back into the constructor. This caused a runtime-error saying
   // 'No provider for String!'. It seems the angular2 @Inject() will solve it
@@ -59,13 +58,12 @@ export class TilesApi {
     // TODO: if any attr has the same name obj 2 will overwrite obj1
     for (let attrname of obj1) {
       extended[attrname] = obj1[attrname];
-    };
+    }
     for (let attrname of obj2) {
       extended[attrname] = obj2[attrname];
-    };
+    }
     return extended;
-  }
-
+  };
 
   setUsername = (username: string) => {
     this.username = username;
@@ -92,10 +90,9 @@ export class TilesApi {
                                             .then( res => res);
     if (this.eventMappings[this.username] == null) {
       this.eventMappings[this.username] = {};
-    };
+    }
     this.eventMappings[this.username][tileId] = this.extend(this.defaultEventMappings, storedEventMappings);
   };
-
 
   fetchEventMappings = (tileId, successCb) => {
    const eventMappingsUrl = `http://${this.hostAddress}:${this.mqttPort}/eventmappings/${this.username}/${tileId}`;
@@ -107,14 +104,13 @@ export class TilesApi {
 						      this.storage.set(`eventMappings_${this.username}_${tileId}`, fetchedEventMappings);
 						      if (this.eventMappings[this.username] == null) {
 						      	this.eventMappings[this.username] = {};
-						      };
-
-						      this.eventMappings[this.username][tileId] = this.extend(this.defaultEventMappings, res.json().data);
+                  }
+                 this.eventMappings[this.username][tileId] = this.extend(this.defaultEventMappings, res.json().data);
 
 						      if (successCb) {
                     successCb(res.json().data);
-                  };
-						   })
+                  }
+               })
 						   .catch((err) => (console.error('Error', JSON.stringify(err))));
   };
-};
+}

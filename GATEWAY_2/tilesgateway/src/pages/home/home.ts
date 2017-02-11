@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Events, Platform } from 'ionic-angular';
 import { NavController } from 'ionic-angular';
+import { Observable } from 'rxjs/Observable';
 
 import { BleService } from '../../providers/ble.service';
 import { Device, DevicesService } from '../../providers/devices.service';
@@ -10,25 +11,26 @@ import { TilesApi } from '../../providers/tilesApi.service';
 @Component({
   selector: 'page-home',
   templateUrl: 'home.html',
-  providers: [ 
-  	TilesApi, 
-  	MqttClient, 
+  providers: [
+  	TilesApi,
+  	MqttClient,
   	DevicesService,
   	BleService
   ]
 })
+
 export class HomePage {
 	public devices: Device[];
 	serverConnectStatusMsg: string;
 	statusMsg: string;
 
-  constructor(public navCtrl: NavController, 
+  constructor(public navCtrl: NavController,
   						public events: Events,
   						public platform: Platform,
   						private bleService: BleService,
   						private devicesService: DevicesService,
   						public tilesApi: TilesApi,
-  						private mqttClient: MqttClient) 
+  						private mqttClient: MqttClient)
   {
   	this.devices = devicesService.getDevices();
   	this.serverConnectStatusMsg = 'Click to connect to server';
@@ -41,9 +43,9 @@ export class HomePage {
 	        console.log('Device led on: '+device.ledOn);
 	        const commandString = this.tilesApi.getCommandObjectAsString(command);
 	        this.bleService.sendData(device, commandString);
-	      };
-	    };
-	  });
+        }
+      }
+    });
 
 	  this.events.subscribe('updateDevices', () => {
 	  	this.statusMsg = 'Found new devices';
@@ -112,6 +114,4 @@ export class HomePage {
 									 		refresher.complete();
 									 	});
 	}
-
-
-};
+}

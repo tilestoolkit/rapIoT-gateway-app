@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Events } from 'ionic-angular';
 
-
 // Class for the devices, this makes it possible to specify the
 // device type in typescript to avoid getting invalid device-objects
 export class Device {
@@ -9,12 +8,10 @@ export class Device {
   name: string;
   connected: boolean;
   ledOn: boolean;
-};
-
+}
 
 @Injectable()
 export class DevicesService {
-
 	devices: Device[];
 
   constructor(public events: Events) {
@@ -34,5 +31,4 @@ export class DevicesService {
   	this.devices.push(device);
     this.events.publish('updateDevices');
   }
-
-};
+}

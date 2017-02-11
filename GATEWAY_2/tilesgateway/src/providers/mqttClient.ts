@@ -17,14 +17,12 @@ interface MqttClientInterface {
 @Injectable()
 export class MqttClient {
   publishOpts = { retain: true };
-  serverConnectionTimeout: number = 10000; // 10 seconds  
-  connectedToServer: boolean = false; 
+  serverConnectionTimeout: number = 10000; // 10 seconds
+  connectedToServer: boolean = false;
   client;
-
 
   constructor(public events: Events,
               private tilesApi: TilesApi) { };
-
 
   mqttConnectionData = {
     username: this.tilesApi.username,
@@ -46,7 +44,7 @@ export class MqttClient {
   };
 
   /* Create a connection to the server and
-   * return a javascript promise 
+   * return a javascript promise
    */
   connect = (host: string, port: number) => {
 
@@ -54,17 +52,17 @@ export class MqttClient {
 		// and end it if it does
 		if (this.client) {
 			this.client.end();
-		};
+    }
 
-		
-		// Instantiate a mqtt-client from the host and port
+    // Instantiate a mqtt-client from the host and port
 		// keepalive 0 disables keepalive
 		this.client = mqtt.connect({
-			host: host, 
+			host: host,
 			port: port,
-			keepalive: 0 
+			keepalive: 0
 		});
 
+		// Handlers for different types of responses from the server:
 
 		// Handlers for different types of responses from the server: 
 
@@ -113,63 +111,54 @@ export class MqttClient {
     }, this.serverConnectionTimeout);
   };
 
-
   // The functions called on the client comes from the mqtt-library,
   // API reference can be found at https://github.com/mqttjs/MQTT.js
 	registerDevice = (device: Device) => {
 		if (this.client) {
-
 			this.client.publish(
-				this.getDeviceSpecificTopic(device.id, true) + '/active', 
-				'true', 
+				this.getDeviceSpecificTopic(device.id, true) + '/active',
+				'true',
 				this.publishOpts
 			);
-
       this.client.publish(
-      	this.getDeviceSpecificTopic(device.id, true) + '/name', 
-      	device.name, 
+      	this.getDeviceSpecificTopic(device.id, true) + '/name',
+      	device.name,
       	this.publishOpts
       );
-
       this.client.subscribe(
       	this.getDeviceSpecificTopic(device.id, false)
       );
-
       this.events.publish('updateDevices');
       console.log('Registered device: ' + device.name + ' (' + device.id + ')');
-  	};
-	};
+    }
+  };
 
   unregisterDevice = (device: Device) => {
     if (this.client) {
-
       this.client.publish(
-      	this.getDeviceSpecificTopic(device.id, true) + '/active', 
-      	'false', 
+      	this.getDeviceSpecificTopic(device.id, true) + '/active',
+      	'false',
       	this.publishOpts
       );
-
       this.client.unsubscribe(
       	this.getDeviceSpecificTopic(device.id, false)
       );
-    };
+    }
   };
 
   sendEvent = (deviceId, event) => {
     if (this.client) {
-
     	this.client.publish(
-    		this.getDeviceSpecificTopic(deviceId, true), 
-    		JSON.stringify(event), 
+    		this.getDeviceSpecificTopic(deviceId, true),
+    		JSON.stringify(event),
     		this.publishOpts
     	);
-    };
+    }
   };
 
   endConnection = (deviceId, event) => {
     if (this.client) {
     	this.client.end()
-    };
+    }
   };
-
 }
