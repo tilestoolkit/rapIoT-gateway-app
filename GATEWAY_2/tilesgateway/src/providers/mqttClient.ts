@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
 import { Events } from 'ionic-angular';
 import mqtt from 'mqtt';
 
 import { TilesApi } from './tilesApi.service';
+import { Device } from './devices.service';
 /*
 interface MqttClientInterface {
 
@@ -106,7 +106,7 @@ export class MqttClient {
 
   // The functions called on the client comes from the mqtt-library,
   // API reference can be found at https://github.com/mqttjs/MQTT.js
-	registerDevice = device => {
+	registerDevice = (device: Device) => {
 		if (this.client) {
 
 			this.client.publish(
@@ -130,7 +130,7 @@ export class MqttClient {
   	};
 	};
 
-  unregisterDevice = device => {
+  unregisterDevice = (device: Device) => {
     if (this.client) {
 
       this.client.publish(
