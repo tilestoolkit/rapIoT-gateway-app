@@ -68,29 +68,25 @@ export class MqttClient {
 
 		// Handlers for different types of responses from the server: 
 
-		// Client is connected to the server
-		this.client.on('connect', () => {
-			clearTimeout(this.serverConnectionTimeout);
-			alert('Connected');
-		});
-
-		// Handle a message from the server
-		this.client.on('message', (topic, message) => {
-			console.log('Received message from server: ' + message);
-			try {
-				const command = JSON.parse(message);
-				if (command) {
-					const deviceId = topic.split('/')[3];
+    // Handle a message from the server
+    this.client.on('message', (topic, message) => {
+      console.log('Received message from server: ' + message);
+      try {
+        const command = JSON.parse(message);
+        if (command) {
+          const deviceId = topic.split('/')[3];
           this.events.publish('command', deviceId, command);
-			  };
-      } finally { alert(message) };
-		});
+        };
+      } finally {};
+    });
 
-		this.client.on('offline', () => {
+    this.client.on('offline', () => {
+      this.connectedToServer = false;
       this.events.publish('offline');
     });
 
     this.client.on('close', () => {
+      this.connectedToServer = false;
       this.events.publish('close');
     });
 
@@ -99,8 +95,22 @@ export class MqttClient {
     });
 
     this.client.on('error', error => {
+      this.connectedToServer = false;
       this.events.publish('error', error);
     });
+		
+    // Client is connected to the server
+		this.client.on('connect', () => {
+			clearTimeout(failedConnectionTimeout);
+      this.connectedToServer = true;
+      this.events.publish('serverConnected');
+			//console.log('Connected to server');
+		});
+
+    // Ends the attempt tp connect if the timeout rus out
+    const failedConnectionTimeout = setTimeout(function(){
+      this.client.end();
+    }, this.serverConnectionTimeout);
   };
 
 
