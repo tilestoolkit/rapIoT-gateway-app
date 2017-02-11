@@ -49,7 +49,7 @@ export class BleService {
   	  													 this.rfduino.sendCharacteristicUUID,
   	  													 dataArray.buffer)
   			  		  .then( res => console.log('Success sending the string: ' + dataString))
-  			  		  .catch( err => alert('Failed when trying to send daata to the RFduino'));
+  			  		  .catch( err => console.log('Failed when trying to send daata to the RFduino'));
   	} finally {};
   };
 
@@ -126,7 +126,7 @@ export class BleService {
 			  		 	device.name = newName;
 			  		 	this.connect(device);
 			  		})
-			  		.catch(err => alert('Failed to update the name of device: ' + device.name));
+			  		.catch(err => console.log('Failed to update the name of device: ' + device.name));
   };
 
   /* Connect to a device
@@ -157,10 +157,10 @@ export class BleService {
 	        						this.mqttClient.sendEvent(device.id, message);
 	        					}
 	        				})
-	        				.catch( err => alert('Failed to start notification'));
+	        				.catch( err => console.log('Failed to start notification'));
 					this.mqttClient.registerDevice(device);
 	  		})
-	  		.catch( err => alert('Failed to connect to device ' + device.name));
+	  		.catch( err => console.log('Failed to connect to device ' + device.name));
   };
 
   /* Desconnect from device
@@ -172,7 +172,7 @@ export class BleService {
   						device.connected = false;
   						this.mqttClient.unregisterDevice(device);
   					})
-  					.catch( err => alert('Failed to disconnect'))
+  					.catch( err => console.log('Failed to disconnect'))
   };
 
 
