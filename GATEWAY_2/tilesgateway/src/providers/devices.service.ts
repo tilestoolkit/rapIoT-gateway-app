@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Events } from 'ionic-angular';
 
 
 // Class for the devices, this makes it possible to specify the
@@ -16,7 +17,7 @@ export class DevicesService {
 
 	devices: Device[];
 
-  constructor() {
+  constructor(public events: Events) {
   };
 
   getMockDevices = (): Device[] => ([
@@ -31,6 +32,7 @@ export class DevicesService {
 
   newDevice = (device: Device) => {
   	this.devices.push(device);
+    this.events.publish('updateDevices');
   }
 
 };
