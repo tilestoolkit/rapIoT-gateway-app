@@ -50,9 +50,9 @@ export class HomePage {
 	  this.events.subscribe('updateDevices', () => {
 	  	this.statusMsg = 'Found new devices';
 	  	this.devices = devicesService.getDevices();
-	  	for (let device of this.devices) {
+	  	/*for (let device of this.devices) {
 	  		this.mqttClient.registerDevice(device);
-	  	}
+	  	}*/
 	  });
 
 	  this.events.subscribe('serverConnected', () => {
