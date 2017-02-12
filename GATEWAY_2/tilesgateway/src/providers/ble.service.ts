@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BLE } from 'ionic-native';
+import { Events } from 'ionic-angular';
 import 'rxjs/add/operator/toPromise';
 
 import { MqttClient } from './mqttClient';
@@ -21,7 +22,9 @@ export class BleService {
   	{'name': 'Some OtherDevice', 'id': 'A1:B2:5C:87:2D:36', 'rssi': -52, 'advertising': null}
   ];
 
-  constructor(private mqttClient: MqttClient,
+
+  constructor(public events: Events,
+              private mqttClient: MqttClient,
   						private tilesApi: TilesApi,
               private devicesService: DevicesService) {
   };
