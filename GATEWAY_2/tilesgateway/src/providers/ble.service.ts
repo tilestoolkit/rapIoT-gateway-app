@@ -71,13 +71,19 @@ export class BleService {
 		  		  });
   };
 
-  convertBleDeviceToDecive = (bleDevice) => {
-    const device: Device = {
+  convertBleDeviceToDevice = (bleDevice: any): Device  => {
+    /*const device: Device = {
       id: '01:23:45:67:89:AB', 
       name: 'TI SensorTag1', 
       connected: false, 
       ledOn: false
-    };
+    };*/
+    const device = {
+      id: bleDevice.id,
+      name: (bleDevice.name ? bleDevice.name : 'NoName'),
+      connected: false, 
+      ledOn: false
+    }
 
     return device;
   };
