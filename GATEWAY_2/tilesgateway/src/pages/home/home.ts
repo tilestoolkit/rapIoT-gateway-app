@@ -58,24 +58,8 @@ export class HomePage {
 	  this.events.subscribe('serverConnected', () => {
 	  	this.serverConnectStatusMsg = 'Connected to server';
 	  	this.statusMsg = 'Searching for devices...';
-	  	this.bleService.scanForDevices().then(res => this.statusMsg = res).catch(err => this.statusMsg = err);
+	  	this.bleService.scanForDevices();
 	  });
-
-/* TODO: match the app.onDiscoverDevice from controllers.js in old code
- 			 	// but in a better way
-		 				.then( res => {
-		 			 		const device = res;
-		 			 		alert('Device discovered: ' + device);
-              //TODO: Place inside the if-statement
-              this.mqttClient.registerDevice(this.convertBleDeviceToDecive(device));
-              this.devicesService.newDevice(this.convertBleDeviceToDecive(device));
-		 			 		if(this.isTilesDevice(device) && this.isNewDevice(device)) {
-		 			 			//this.mqttClient.registerDevice(device);
-                //this.devicesService.newDevice(device);
-		 			 		}
-		 			 	})
-		 			  .catch( err => alert('Error when scanning for devices'));*/
-
 
 	  this.events.subscribe('offline', () => {
 	  	this.mqttClient.setServerConnectionStatus(false);
@@ -105,13 +89,13 @@ export class HomePage {
 
 	refreshDevices = (refresher) => {
 		console.log('Scanning for more devices...');
-		this.bleService.scanForDevices()
+		this.bleService.scanForDevices()/*
 									 .then(res => {
 									 		this.statusMsg = res;
 									 		refresher.complete();
 									 	}).catch(err => {
 									 		this.statusMsg = err;
 									 		refresher.complete();
-									 	});
+									 	});*/
 	}
 }

@@ -83,20 +83,33 @@ export class BleService {
   scanForDevices = () => {
 		// The first param is the UUIDs to discover, this might
  		// be specified to only search for tiles.
- 		return BLE.scan([], 5).forEach(
-        res => {
-          //TODO: Place inside the if-statement
-          const device = this.convertBleDeviceToDecive(res);
-          this.mqttClient.registerDevice(this.convertBleDeviceToDecive(device));
-          this.devicesService.newDevice(this.convertBleDeviceToDecive(device));
+    let newDevices: Array<Device> = [];
+
+ 		return BLE.scan([], 30).subscribe(
+        bleDevice => {
+          //alert('Found device: ' + JSON.stringify(device));
+          //TODO: Place inside the if-statement and uncomment
+          newDevices.push(this.convertBleDeviceToDevice(bleDevice));
+        },
+        err => {
+          console.log('Error when scanning for devices');
+        },
+        () => {
+          for (let device of newDevices) {
+            //TODO: Place these in if-statement below
+            this.mqttClient.registerDevice(device);
+            this.devicesService.newDevice(device);
             //if(this.isTilesDevice(device) && this.isNewDevice(device)) {
               //this.mqttClient.registerDevice(device);
-            //this.devicesService.newDevice(device);
+              //this.devicesService.newDevice(device);
             //}
           }
-          //err => console.log('Error when scanning for devices'),
-      ).then(() => '\nNo more devices: ');
- 			 	
+          if (newDevices.length > 0) {
+            this.events.publish('updateDevices');
+          }
+          console.log('\nNo more devices: ');
+        }
+ 			);
   };
 
   isTilesDevice = (device: any) => (device.name != null && device.name.substring(0, 4) === 'Tile');
