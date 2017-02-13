@@ -41,7 +41,7 @@ export class DevicesService {
    * @param {Device} deviceId - the device to add
    */
   newDevice = (device: Device) => {
-    if (!this.devices.includes(device)){
+    if (this.isNewDevice(device)){
       this.devices.push(device);
       alert('device added: ' + JSON.stringify(device));
     }
@@ -66,5 +66,14 @@ export class DevicesService {
     }
 
     return device;
+  };
+
+
+  /** 
+   * Check if a device already exists among the stored ones
+   * @param {Device} device - The device to check
+   */
+  isNewDevice = (device: Device) => {
+    return !this.devices.includes(device);
   };
 }

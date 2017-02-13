@@ -82,21 +82,6 @@ export class BleService {
  		return BLE.scan([], 30);
   };
 
-  
-  /** 
-   * Check if a device already exists in the stored ones
-   * @param {Device} device - The device to check
-   */
-  isNewDevice = (device: Device) => {
-  	//TODO: use actual devices!
-  	for (let i = 0; i < this.mockDevices.length; i ++) {
-  		if (this.mockDevices[i].id === device.id) {
-  			return false;
-  		}
-  	}
-  	return true;
-  };
-
   /**
    * Update the name of a device
 	 * @param {Device} device - the target device
