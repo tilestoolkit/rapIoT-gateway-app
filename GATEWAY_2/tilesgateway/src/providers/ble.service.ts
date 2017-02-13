@@ -93,22 +93,31 @@ export class BleService {
 		// The first param is the UUIDs to discover, this might
  		// be specified to only search for tiles.
     let newDevices: Array<Device> = [];
+    let numDevices = 0;
+    
+    //TODO: BUG: The completion function is never called, making it run forever. 
 
- 		return BLE.scan([], 30).subscribe(
+ 		return BLE.scan([], 5)
+     .subscribe(
         bleDevice => {
+          numDevices += 1;
+          let device = this.convertBleDeviceToDevice(bleDevice)
           //alert('Found device: ' + JSON.stringify(device));
-          //TODO: Place inside the if-statement and uncomment
-          newDevices.push(this.convertBleDeviceToDevice(bleDevice));
+          this.mqttClient.registerDevice(device);
+          this.devicesService.newDevice(device);
+          //newDevices.push(device);
         },
         err => {
-          console.log('Error when scanning for devices');
+          alert('Error when scanning for devices: ' + err);
         },
         () => {
+          alert('No more devices');
           for (let device of newDevices) {
             //TODO: Place these in if-statement below
+            alert('Found device: ' + JSON.stringify(device));
             this.mqttClient.registerDevice(device);
             this.devicesService.newDevice(device);
-            //if(this.isTilesDevice(device) && this.isNewDevice(device)) {
+            //if(this.tilesApi.isTilesDevice(device) && this.isNewDevice(device)) {
               //this.mqttClient.registerDevice(device);
               //this.devicesService.newDevice(device);
             //}
@@ -116,12 +125,14 @@ export class BleService {
           if (newDevices.length > 0) {
             this.events.publish('updateDevices');
           }
+          alert(numDevices)
           console.log('\nNo more devices: ');
+          newDevices = [];
         }
  			);
   };
 
-  isTilesDevice = (device: any) => (device.name != null && device.name.substring(0, 4) === 'Tile');
+  
 
   isNewDevice = (device: any) => {
   	//TODO: use actual devices!
