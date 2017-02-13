@@ -21,30 +21,37 @@ export class MqttClient {
   connectedToServer: boolean = false;
   client;
 
-  constructor(public events: Events,
-              private tilesApi: TilesApi) { };
-
   mqttConnectionData = {
     username: this.tilesApi.username,
     host: this.tilesApi.hostAddress,
     port: this.tilesApi.mqttPort
   };
 
-  /* Returns a url for the specific device
-	 * @param deviceId: String
-	 * @param isEvent: Boolean
+  constructor(public events: Events,
+              private tilesApi: TilesApi) { };
+
+  /** 
+   * Returns a url for the specific device
+	 * @param {string} deviceId - the ID of the device
+	 * @param {boolean} isEvent - true if we are sending an event
    */
   getDeviceSpecificTopic = (deviceId: string, isEvent: boolean): string => {
   	const type = isEvent ? 'evt' : 'cmd';
   	return 'tiles/' + type + '/' + this.tilesApi.username + '/' + deviceId;
   };
 
+  /**
+   * Set the connection status for the server
+   * @param {boolean} connected - The new status of the connection
+   */
   setServerConnectionStatus = (connected: boolean) => {
     this.connectedToServer = connected;
   };
 
-  /* Create a connection to the server and
-   * return a javascript promise
+  /** 
+   * Create a connection to the server and return a javascript promise
+   * @param {string} host - the host url / ip
+   * @param {number} port - the port to send to
    */
   connect = (host: string, port: number) => {
 
@@ -113,8 +120,12 @@ export class MqttClient {
 
   // The functions called on the client comes from the mqtt-library,
   // API reference can be found at https://github.com/mqttjs/MQTT.js
+
+  /**
+   * Register a device at the server
+   * @param {Device} device - the device to register
+   */
 	registerDevice = (device: Device) => {
-    alert('mqttregistering')
 		if (this.client) {
 			this.client.publish(
 				this.getDeviceSpecificTopic(device.id, true) + '/active',
@@ -134,6 +145,10 @@ export class MqttClient {
     }
   };
 
+  /**
+   * Unregister a device at the server
+   * @param {Device} device - the device to register
+   */
   unregisterDevice = (device: Device) => {
     if (this.client) {
       this.client.publish(
@@ -147,7 +162,12 @@ export class MqttClient {
     }
   };
 
-  sendEvent = (deviceId, event) => {
+  /**
+   * Send an event to the server
+   * @param {string} deviceId - the ID of the device to register
+   * @param event - The event we want to send
+   */
+  sendEvent = (deviceId: string, event: any) => {
     if (this.client) {
     	this.client.publish(
     		this.getDeviceSpecificTopic(deviceId, true),
@@ -157,7 +177,12 @@ export class MqttClient {
     }
   };
 
-  endConnection = (deviceId, event) => {
+  /**
+   * End the connection to a device
+   * @param {string} deviceId - the ID of the device to register
+   * @param event - ??
+   */
+  endConnection = (deviceId: string, event: any) => {
     if (this.client) {
     	this.client.end()
     }
