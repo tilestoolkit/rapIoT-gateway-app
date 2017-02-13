@@ -114,6 +114,7 @@ export class MqttClient {
   // The functions called on the client comes from the mqtt-library,
   // API reference can be found at https://github.com/mqttjs/MQTT.js
 	registerDevice = (device: Device) => {
+    alert('mqttregistering')
 		if (this.client) {
 			this.client.publish(
 				this.getDeviceSpecificTopic(device.id, true) + '/active',
@@ -129,7 +130,7 @@ export class MqttClient {
       	this.getDeviceSpecificTopic(device.id, false)
       );
       this.events.publish('updateDevices');
-      console.log('Registered device: ' + device.name + ' (' + device.id + ')');
+      alert('Registered device: ' + device.name + ' (' + device.id + ')');
     }
   };
 

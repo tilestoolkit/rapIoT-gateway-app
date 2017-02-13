@@ -59,6 +59,7 @@ export class HomePage {
 	  	this.serverConnectStatusMsg = 'Connected to server';
 	  	this.statusMsg = 'Searching for devices...';
 	  	this.bleService.scanForDevices();
+	  	this.statusMsg = 'Done scanning';
 	  });
 
 	  this.events.subscribe('offline', () => {

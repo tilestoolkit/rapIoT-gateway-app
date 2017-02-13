@@ -28,5 +28,6 @@ export class DevicesService {
 
   newDevice = (device: Device) => {
   	this.devices.push(device);
+    alert('device added: ' + device)
   }
 }
