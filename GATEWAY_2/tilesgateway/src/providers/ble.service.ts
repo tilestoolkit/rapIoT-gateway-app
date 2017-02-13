@@ -71,65 +71,11 @@ export class BleService {
 		  		  });
   };
 
-  convertBleDeviceToDevice = (bleDevice: any): Device  => {
-    /*const device: Device = {
-      id: '01:23:45:67:89:AB', 
-      name: 'TI SensorTag1', 
-      connected: false, 
-      ledOn: false
-    };*/
-    const device = {
-      id: bleDevice.id,
-      name: (bleDevice.name ? bleDevice.name : 'NoName'),
-      connected: false, 
-      ledOn: false
-    }
-
-    return device;
-  };
-
   // Checking to see if any bluetooth devices are in reach
   scanForDevices = () => {
 		// The first param is the UUIDs to discover, this might
  		// be specified to only search for tiles.
-    let newDevices: Array<Device> = [];
-    let numDevices = 0;
-    
-    //TODO: BUG: The completion function is never called, making it run forever. 
-
- 		return BLE.scan([], 5)
-     .subscribe(
-        bleDevice => {
-          numDevices += 1;
-          let device = this.convertBleDeviceToDevice(bleDevice)
-          //alert('Found device: ' + JSON.stringify(device));
-          this.mqttClient.registerDevice(device);
-          this.devicesService.newDevice(device);
-          //newDevices.push(device);
-        },
-        err => {
-          alert('Error when scanning for devices: ' + err);
-        },
-        () => {
-          alert('No more devices');
-          for (let device of newDevices) {
-            //TODO: Place these in if-statement below
-            alert('Found device: ' + JSON.stringify(device));
-            this.mqttClient.registerDevice(device);
-            this.devicesService.newDevice(device);
-            //if(this.tilesApi.isTilesDevice(device) && this.isNewDevice(device)) {
-              //this.mqttClient.registerDevice(device);
-              //this.devicesService.newDevice(device);
-            //}
-          }
-          if (newDevices.length > 0) {
-            this.events.publish('updateDevices');
-          }
-          alert(numDevices)
-          console.log('\nNo more devices: ');
-          newDevices = [];
-        }
- 			);
+ 		return BLE.scan([], 30);
   };
 
   
