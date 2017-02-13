@@ -112,7 +112,7 @@ export class BleService {
   	        this.tilesApi.loadEventMappings(device.id);
             this.startDeviceNotification(device.id);
             this.mqttClient.registerDevice(device);
-        }
+        },
         err => {
           console.log('Failed to connect to device ' + device.name)
         },
@@ -123,10 +123,10 @@ export class BleService {
 
   /** 
    * Start getting notifications of events from a device
-   * @param {string} deviceId - the id from the target device
+   * @param {Device} device - the id from the target device
    */
-  startDeviceNotification = (deviceId: string) => {
-    BLE.startNotification(deviceId, this.rfduino.serviceUUID, this.rfduino.receiveCharacteristicUUID)
+  startDeviceNotification = (device: Device) => {
+    BLE.startNotification(device.id, this.rfduino.serviceUUID, this.rfduino.receiveCharacteristicUUID)
       .subscribe( 
         res => {
           // Convert the bytes sent from the device into a string
@@ -137,8 +137,10 @@ export class BleService {
             console.log('Found no mapping for event: ' + responseString);
           } else {
             message.name = device.name;
+            // TODO: In the future these checks could be turned into a switch statement or something. 
             if (message.properties[0] === 'touch') {
-              device.buttonPressed = !device.buttonPressed
+              //TODO: buttonPressed is not a property of the device class. Not sure if it should be. 
+              //device.buttonPressed = !device.buttonPressed
             }
             console.log('Sending message: ' + JSON.stringify(message));
             this.mqttClient.sendEvent(device.id, message);
@@ -148,7 +150,7 @@ export class BleService {
           console.log('Failed to start notification');
         },
         () => {
-          console.log('Finished attempt to start getting notifications from device with id: ' + deviceId);
+          console.log('Finished attempt to start getting notifications from device with id: ' + device.id);
         });
   };
 
