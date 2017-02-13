@@ -103,35 +103,53 @@ export class BleService {
 	 * @param {Device} device - the target device
 	 */
   connect = (device: any) => {
-    // TODO: Use the observable instead of turning into a promise
-  	BLE.connect(device.id).toPromise()
-  		  .then( res => {
-  		  	// Setting information about the device
-	  		 	device.ledOn = false;
-	  		 	device.connected = true;
-	        this.tilesApi.loadEventMappings(device.id);
-	        BLE.startNotification(device.id, this.rfduino.serviceUUID, this.rfduino.receiveCharacteristicUUID)
-	        				.toPromise()
-	        				.then( res => {
-	        					// Convert the bytes sent from the device into a string
-	        					const responseString = String.fromCharCode.apply(null, new Uint8Array(res));
-	        					console.log('Recieved event: ' + responseString);
-	        					let message = this.tilesApi.getEventStringAsObject(responseString);
-	        					if (message === null) {
-	        						console.log('Found no mapping for event: ' + responseString);
-	        					} else {
-	        						message.name = device.name;
-	        						if (message.properties[0] === 'touch') {
-	        							device.buttonPressed = !device.buttonPressed
-	        						}
-	        						console.log('Sending message: ' + JSON.stringify(message));
-	        						this.mqttClient.sendEvent(device.id, message);
-	        					}
-	        				})
-	        				.catch( err => console.log('Failed to start notification'));
-					this.mqttClient.registerDevice(device);
-	  		})
-	  		.catch( err => console.log('Failed to connect to device ' + device.name));
+  	BLE.connect(device.id)
+  		  .subscribe( 
+          res => {
+    		  	// Setting information about the device
+  	  		 	device.ledOn = false;
+  	  		 	device.connected = true;
+  	        this.tilesApi.loadEventMappings(device.id);
+            this.startDeviceNotification(device.id);
+            this.mqttClient.registerDevice(device);
+        }
+        err => {
+          console.log('Failed to connect to device ' + device.name)
+        },
+        () => {
+          console.log('Connection attempt completed')
+        });
+  };
+
+  /** 
+   * Start getting notifications of events from a device
+   * @param {string} deviceId - the id from the target device
+   */
+  startDeviceNotification = (deviceId: string) => {
+    BLE.startNotification(deviceId, this.rfduino.serviceUUID, this.rfduino.receiveCharacteristicUUID)
+      .subscribe( 
+        res => {
+          // Convert the bytes sent from the device into a string
+          const responseString = String.fromCharCode.apply(null, new Uint8Array(res));
+          console.log('Recieved event: ' + responseString);
+          let message = this.tilesApi.getEventStringAsObject(responseString);
+          if (message === null) {
+            console.log('Found no mapping for event: ' + responseString);
+          } else {
+            message.name = device.name;
+            if (message.properties[0] === 'touch') {
+              device.buttonPressed = !device.buttonPressed
+            }
+            console.log('Sending message: ' + JSON.stringify(message));
+            this.mqttClient.sendEvent(device.id, message);
+          }
+        },
+        err => {
+          console.log('Failed to start notification');
+        },
+        () => {
+          console.log('Finished attempt to start getting notifications from device with id: ' + deviceId);
+        });
   };
 
   /** 
