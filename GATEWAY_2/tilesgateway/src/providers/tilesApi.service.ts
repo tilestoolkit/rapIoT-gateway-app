@@ -65,6 +65,8 @@ export class TilesApi {
     return extended;
   };
 
+  isTilesDevice = (device: any) => (device.name != null && device.name.substring(0, 4) === 'Tile');
+
   setUsername = (username: string) => {
     this.username = username;
   };
