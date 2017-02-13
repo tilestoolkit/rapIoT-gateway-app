@@ -34,7 +34,9 @@ export class HomePage {
   {
   	this.devices = devicesService.getDevices();
   	this.serverConnectStatusMsg = 'Click to connect to server';
-  	//TODO: Dunno if this should be in the constructor or if that was a mistake
+
+  	// Subscriptions to events that can be emitted from other places in the code
+  	//TODO: Dunno if these should be in the constructor or if that was a mistake
 	  this.events.subscribe('command', (deviceId, command) => {
 	    for (let i = 0; i < this.devices.length; i++) {
 	      const device = this.devices[i];
@@ -50,9 +52,7 @@ export class HomePage {
 	  this.events.subscribe('updateDevices', () => {
 	  	this.statusMsg = 'Found new devices';
 	  	this.devices = devicesService.getDevices();
-	  	/*for (let device of this.devices) {
-	  		this.mqttClient.registerDevice(device);
-	  	}*/
+	  	this.statusMsg = this.devices.toString();
 	  });
 
 	  this.events.subscribe('serverConnected', () => {

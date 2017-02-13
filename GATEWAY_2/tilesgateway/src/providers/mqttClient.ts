@@ -140,8 +140,7 @@ export class MqttClient {
       this.client.subscribe(
       	this.getDeviceSpecificTopic(device.id, false)
       );
-      this.events.publish('updateDevices');
-      alert('Registered device: ' + device.name + ' (' + device.id + ')');
+      console.log('Registered device: ' + device.name + ' (' + device.id + ')');
     }
   };
 
