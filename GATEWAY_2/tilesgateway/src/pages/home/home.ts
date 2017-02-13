@@ -82,6 +82,9 @@ export class HomePage {
 
 	};
 
+  /**
+   * Use ble to discover new devices
+	 */
 	scanForNewBLEDevices = () => {
 		this.statusMsg = 'Searching for devices...';
 
@@ -125,10 +128,17 @@ export class HomePage {
 	  this.statusMsg = 'Done scanning';
 	}
 
+  /**
+   * Connect to the mqttServer
+	 */
 	connectToServer = () => {
 		this.mqttClient.connect(this.tilesApi.hostAddress, this.tilesApi.mqttPort);
 	};
 
+  /**
+   * Called when the refresher is triggered by pulling down on the view of 
+	 * the devices. 
+	 */
 	refreshDevices = (refresher) => {
 		console.log('Scanning for more devices...');
 		this.scanForNewBLEDevices();

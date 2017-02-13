@@ -33,7 +33,7 @@ export class BleService {
    * Send data to a device using BLE
 	 * @param {Device} device - the target device
 	 * @param {string} dataString - the string of data to send to the device
-	*/
+	 */
   sendData = (device: Device, dataString: string) => {
   	try {
   	  	console.log('Attempting to send data to device via BLE.');
@@ -86,7 +86,7 @@ export class BleService {
    * Update the name of a device
 	 * @param {Device} device - the target device
 	 * @param {string} newName - The new name
-	*/
+	 */
   updateName = (device: Device, newName: string) => {
   	BLE.disconnect(device.id)
 			  		.then( res => {
@@ -101,7 +101,7 @@ export class BleService {
   /** 
    * Connect to a device
 	 * @param {Device} device - the target device
-	*/
+	 */
   connect = (device: any) => {
     // TODO: Use the observable instead of turning into a promise
   	BLE.connect(device.id).toPromise()
@@ -137,7 +137,7 @@ export class BleService {
   /** 
    * Disconnect from device
 	 * @param {Device} device - the target device
-	*/
+	 */
   disconnect = (device: Device) => {
   	BLE.disconnect(device.id)
   					.then( res => {
