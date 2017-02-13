@@ -14,6 +14,7 @@ export class DevicesService {
 	devices: Device[];
 
   constructor() {
+    this.devices = [];
   };
 
   getMockDevices = (): Device[] => ([
@@ -23,11 +24,31 @@ export class DevicesService {
   ]);
 
   getDevices = (): Device[] => {
+    alert('providing devices from devicesService: ' + this.devices.toString())
   	return this.devices;
   };
 
   newDevice = (device: Device) => {
-  	this.devices.push(device);
-    alert('device added: ' + device)
-  }
+    if (!this.devices.includes(device)){
+      this.devices.push(device);
+      alert('device added: ' + JSON.stringify(device));
+    }
+  };
+
+  convertBleDeviceToDevice = (bleDevice: any): Device  => {
+    /*const device: Device = {
+      id: '01:23:45:67:89:AB', 
+      name: 'TI SensorTag1', 
+      connected: false, 
+      ledOn: false
+    };*/
+    const device = {
+      id: bleDevice.id,
+      name: (bleDevice.name ? bleDevice.name : 'NoName'),
+      connected: false, 
+      ledOn: false
+    }
+
+    return device;
+  };
 }
