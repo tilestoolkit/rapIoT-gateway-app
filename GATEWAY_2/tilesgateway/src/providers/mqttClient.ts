@@ -4,15 +4,7 @@ import mqtt from 'mqtt';
 
 import { TilesApi } from './tilesApi.service';
 import { Device } from './devices.service';
-/*
-interface MqttClientInterface {
 
-	connect: (host: string, port: string) => Observable((observer: any) => void);
-	registerDevice: (device: any) => void;
-	unregisterDevice: (device: any) => void;
-	sendEvent: (deviceId: string, event: any) => void;
-	endConnection: (deviceId: string, event: any) => void;
-}*/
 
 @Injectable()
 export class MqttClient {
