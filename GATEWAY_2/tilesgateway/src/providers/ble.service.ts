@@ -29,15 +29,15 @@ export class BleService {
               private devicesService: DevicesService) {
   };
 
-  /* Send data to a device using BLE
-	 * @param device: the target device
-	 * @param dataString: the string of data to send to the device
+  /** 
+   * Send data to a device using BLE
+	 * @param {Device} device - the target device
+	 * @param {string} dataString - the string of data to send to the device
 	*/
-  sendData = (device: any, dataString: string) => {
+  sendData = (device: Device, dataString: string) => {
   	try {
   	  	console.log('Attempting to send data to device via BLE.');
 
-  	  	// TODO: See if we can find a better way to do this
   	  	// Turns the dataString into an array of bytes
   	  	let dataArray = new Uint8Array(dataString.length);
   	  	for(let i = 0, l = dataString.length; i < l; i ++){
@@ -45,17 +45,19 @@ export class BleService {
         }
       console.log('Bytes: ' + dataArray.length);
 
-  	  	// Attempting to send the array of bytes to the device
-  	  	BLE.writeWithoutResponse(device.id,
-  	  													 this.rfduino.serviceUUID,
-  	  													 this.rfduino.sendCharacteristicUUID,
-  	  													 dataArray.buffer)
-  			  		  .then( res => console.log('Success sending the string: ' + dataString))
-  			  		  .catch( err => console.log('Failed when trying to send daata to the RFduino'));
+	  	// Attempting to send the array of bytes to the device
+	  	BLE.writeWithoutResponse(device.id,
+	  													 this.rfduino.serviceUUID,
+	  													 this.rfduino.sendCharacteristicUUID,
+	  													 dataArray.buffer)
+			  		  .then( res => console.log('Success sending the string: ' + dataString))
+			  		  .catch( err => console.log('Failed when trying to send daata to the RFduino'));
   	} finally {};
   };
 
-  // Checking if bluetooth is enabled and enable on android if not
+  /** 
+   * Checking if bluetooth is enabled and enable on android if not
+   */
   doRefresh = () => {
   	BLE.isEnabled()
 		  		  .then( res => {
@@ -71,7 +73,9 @@ export class BleService {
 		  		  });
   };
 
-  // Checking to see if any bluetooth devices are in reach
+  /** 
+   * Checking to see if any bluetooth devices are in reach
+   */
   scanForDevices = () => {
 		// The first param is the UUIDs to discover, this might
  		// be specified to only search for tiles.
@@ -79,8 +83,11 @@ export class BleService {
   };
 
   
-
-  isNewDevice = (device: any) => {
+  /** 
+   * Check if a device already exists in the stored ones
+   * @param {Device} device - The device to check
+   */
+  isNewDevice = (device: Device) => {
   	//TODO: use actual devices!
   	for (let i = 0; i < this.mockDevices.length; i ++) {
   		if (this.mockDevices[i].id === device.id) {
@@ -90,11 +97,12 @@ export class BleService {
   	return true;
   };
 
-  /* Update the name of a device
-	 * @param device: the target device
-	 * @param newName: The new name
+  /**
+   * Update the name of a device
+	 * @param {Device} device - the target device
+	 * @param {string} newName - The new name
 	*/
-  updateName = (device: any, newName: string) => {
+  updateName = (device: Device, newName: string) => {
   	BLE.disconnect(device.id)
 			  		.then( res => {
 			  		 	device.connected = false;
@@ -105,10 +113,12 @@ export class BleService {
 			  		.catch(err => console.log('Failed to update the name of device: ' + device.name));
   };
 
-  /* Connect to a device
-	 * @param device: the target device
+  /** 
+   * Connect to a device
+	 * @param {Device} device - the target device
 	*/
   connect = (device: any) => {
+    // TODO: Use the observable instead of turning into a promise
   	BLE.connect(device.id).toPromise()
   		  .then( res => {
   		  	// Setting information about the device
@@ -139,10 +149,11 @@ export class BleService {
 	  		.catch( err => console.log('Failed to connect to device ' + device.name));
   };
 
-  /* Desconnect from device
-	 * @param device: the target device
+  /** 
+   * Disconnect from device
+	 * @param {Device} device - the target device
 	*/
-  disconnect = (device: any) => {
+  disconnect = (device: Device) => {
   	BLE.disconnect(device.id)
   					.then( res => {
   						device.connected = false;
