@@ -8,7 +8,8 @@
     "clean": "ionic-app-scripts clean",
     "build": "ionic-app-scripts build",
     "ionic:build": "ionic-app-scripts build",
-    "ionic:serve": "ionic-app-scripts serve"
+    "ionic:serve": "ionic-app-scripts serve",
+    "test": "mocha --recursive test/ --reporter dot"
   },
   "dependencies": {
     "@angular/common": "2.2.1",
@@ -31,9 +32,10 @@
   },
   "devDependencies": {
     "@ionic/app-scripts": "^1.0.0",
-    "typescript": "^2.0.9",
     "eslint": "^3.14.1",
-    "eslint-plugin-import": "^2.2.0"
+    "eslint-plugin-import": "^2.2.0",
+    "mocha": "^3.2.0",
+    "typescript": "^2.0.9"
   },
   "cordovaPlugins": [
     "cordova-plugin-app-version",
