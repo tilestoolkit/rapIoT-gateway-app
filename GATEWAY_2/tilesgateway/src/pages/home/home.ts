@@ -142,5 +142,9 @@ export class HomePage {
 	refreshDevices = (refresher) => {
 		console.log('Scanning for more devices...');
 		this.scanForNewBLEDevices();
+		//Makes the refresher run for 2 secs
+		setTimeout(() => {
+			refresher.complete();
+		}, 2000);
 	}
 }
