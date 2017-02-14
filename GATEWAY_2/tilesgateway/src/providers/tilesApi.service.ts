@@ -28,7 +28,7 @@ export class TilesApi {
     }
   };
 
-  eventMappings = {};
+  eventMappings = this.defaultEventMappings;
 
   // TODO: Move these back into the constructor. This caused a runtime-error saying
   // 'No provider for String!'. It seems the angular2 @Inject() will solve it
@@ -121,24 +121,29 @@ export class TilesApi {
    * All the functions below needs to be rewritten. 
    */
   getEventMapping = (tileId, eventAsString) => {
+    // TODO: Temporary mock code
+    return this.eventMappings;
+    /*
     if (this.eventMappings[this.username] == null ||
         this.eventMappings[this.username][tileId] == null) {
       this.loadEventMappings(tileId);
     }
-    return this.eventMappings[this.username][tileId][eventAsString];
+    return this.eventMappings[this.username][tileId][eventAsString];*/
   };
 
   loadEventMappings = (tileId) => {
+    return this.eventMappings;/*
     const storedEventMappings = this.storage.get(`eventMappings_${this.username}_${tileId}`)
                                             .then( res => res);
     if (this.eventMappings[this.username] == null) {
       this.eventMappings[this.username] = {};
     }
-    this.eventMappings[this.username][tileId] = this.extend(this.defaultEventMappings, storedEventMappings);
+    this.eventMappings[this.username][tileId] = this.extend(this.defaultEventMappings, storedEventMappings);*/
   };
 
   fetchEventMappings = (tileId, successCb) => {
-   const eventMappingsUrl = `http://${this.hostAddress}:${this.mqttPort}/eventmappings/${this.username}/${tileId}`;
+    return this.eventMappings;/*
+    const eventMappingsUrl = `http://${this.hostAddress}:${this.mqttPort}/eventmappings/${this.username}/${tileId}`;
     return this.http.get(eventMappingsUrl)
 					     .toPromise()
 					   	 .then((res) => {
@@ -154,6 +159,6 @@ export class TilesApi {
                     successCb(res.json().data);
                   }
                })
-						   .catch((err) => (console.error('Error', JSON.stringify(err))));
+						   .catch((err) => (console.error('Error', JSON.stringify(err))));*/
   };
 }

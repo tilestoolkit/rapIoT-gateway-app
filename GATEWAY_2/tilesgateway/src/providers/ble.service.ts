@@ -102,7 +102,9 @@ export class BleService {
    * Connect to a device
 	 * @param {Device} device - the target device
 	 */
-  connect = (device: any) => {
+  connect = (device: Device) => {
+    //TODO: unsubscribe at some point
+    alert('connecting to device: ' + device.name)
   	BLE.connect(device.id)
   		  .subscribe( 
           res => {
@@ -110,8 +112,8 @@ export class BleService {
   	  		 	device.ledOn = false;
   	  		 	device.connected = true;
   	        this.tilesApi.loadEventMappings(device.id);
-            this.startDeviceNotification(device.id);
             this.mqttClient.registerDevice(device);
+            this.startDeviceNotification(device);
         },
         err => {
           console.log('Failed to connect to device ' + device.name)
@@ -126,12 +128,14 @@ export class BleService {
    * @param {Device} device - the id from the target device
    */
   startDeviceNotification = (device: Device) => {
+    alert('Starting notifications from device: ' + device.name);
+    //TODO: unsubscribe at some point. Could return the subscriber and unsubscribe after a timeout
     BLE.startNotification(device.id, this.rfduino.serviceUUID, this.rfduino.receiveCharacteristicUUID)
       .subscribe( 
         res => {
           // Convert the bytes sent from the device into a string
           const responseString = String.fromCharCode.apply(null, new Uint8Array(res));
-          console.log('Recieved event: ' + responseString);
+          alert('Recieved event: ' + responseString);
           let message = this.tilesApi.getEventStringAsObject(responseString);
           if (message === null) {
             console.log('Found no mapping for event: ' + responseString);
@@ -142,7 +146,7 @@ export class BleService {
               //TODO: buttonPressed is not a property of the device class. Not sure if it should be. 
               //device.buttonPressed = !device.buttonPressed
             }
-            console.log('Sending message: ' + JSON.stringify(message));
+            alert('Sending message: ' + JSON.stringify(message));
             this.mqttClient.sendEvent(device.id, message);
           }
         },

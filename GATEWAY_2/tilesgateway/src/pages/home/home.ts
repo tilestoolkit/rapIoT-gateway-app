@@ -41,6 +41,7 @@ export class HomePage {
 	    for (let i = 0; i < this.devices.length; i++) {
 	      const device = this.devices[i];
 	      if (device.id === deviceId) {
+	      	alert('Recieved command from dvice: ' + JSON.stringify(command));
 	        device.ledOn = (command.name === 'led' && command.properties[0] === 'on');
 	        console.log('Device led on: '+device.ledOn);
 	        const commandString = this.tilesApi.getCommandObjectAsString(command);
@@ -97,6 +98,7 @@ export class HomePage {
 		// This means that for every new device discovered the first function 
 		// should run, and when it has discovered all the devices it should run 
 		// the last one. 
+		//TODO: unsubscribe at some point
 		this.bleService.scanForDevices().subscribe(
 			// function to be called for each new device discovered
 	    bleDevice => {
@@ -104,7 +106,9 @@ export class HomePage {
 	      //debugging
 	      this.statusMsg = 'Found device: ' + JSON.stringify(device);
 	      //test that we don't add the same device twice
-	      if (!newDevices.map(function(a) {return a.id}).includes(device.id) && !this.devices.map(function(a) {return a.id}).includes(device.id)){
+	      if (!newDevices.map(function(a) {return a.id}).includes(device.id) && 
+	      		this.devicesService.isNewDevice(device) &&
+	      		this.tilesApi.isTilesDevice(device)) {
 	        this.mqttClient.registerDevice(device);
 	        this.devicesService.newDevice(device);
 	        newDevices.push(device);
