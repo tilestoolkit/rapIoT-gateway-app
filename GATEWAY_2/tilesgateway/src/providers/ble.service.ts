@@ -128,13 +128,14 @@ export class BleService {
    * @param {Device} device - the id from the target device
    */
   startDeviceNotification = (device: Device) => {
-    //TODO: unsubscribe at some point
+    alert('Starting notifications from device: ' + device.name);
+    //TODO: unsubscribe at some point. Could return the subscriber and unsubscribe after a timeout
     BLE.startNotification(device.id, this.rfduino.serviceUUID, this.rfduino.receiveCharacteristicUUID)
       .subscribe( 
         res => {
           // Convert the bytes sent from the device into a string
           const responseString = String.fromCharCode.apply(null, new Uint8Array(res));
-          console.log('Recieved event: ' + responseString);
+          alert('Recieved event: ' + responseString);
           let message = this.tilesApi.getEventStringAsObject(responseString);
           if (message === null) {
             console.log('Found no mapping for event: ' + responseString);
@@ -145,7 +146,7 @@ export class BleService {
               //TODO: buttonPressed is not a property of the device class. Not sure if it should be. 
               //device.buttonPressed = !device.buttonPressed
             }
-            console.log('Sending message: ' + JSON.stringify(message));
+            alert('Sending message: ' + JSON.stringify(message));
             this.mqttClient.sendEvent(device.id, message);
           }
         },

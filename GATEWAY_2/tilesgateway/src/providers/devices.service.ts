@@ -32,7 +32,7 @@ export class DevicesService {
    * Returns the list of devices currently stored
    */
   getDevices = (): Device[] => {
-    alert('providing devices from devicesService: ' + this.devices.toString())
+    //alert('providing devices from devicesService: ' + this.devices.toString())
   	return this.devices;
   };
 
@@ -43,7 +43,7 @@ export class DevicesService {
   newDevice = (device: Device) => {
     if (this.isNewDevice(device)){
       this.devices.push(device);
-      alert('device added: ' + JSON.stringify(device));
+      //alert('device added: ' + JSON.stringify(device));
     }
   };
 

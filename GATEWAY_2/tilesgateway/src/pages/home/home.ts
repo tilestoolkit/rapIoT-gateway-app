@@ -41,6 +41,7 @@ export class HomePage {
 	    for (let i = 0; i < this.devices.length; i++) {
 	      const device = this.devices[i];
 	      if (device.id === deviceId) {
+	      	alert('Recieved command from dvice: ' + JSON.stringify(command));
 	        device.ledOn = (command.name === 'led' && command.properties[0] === 'on');
 	        console.log('Device led on: '+device.ledOn);
 	        const commandString = this.tilesApi.getCommandObjectAsString(command);
