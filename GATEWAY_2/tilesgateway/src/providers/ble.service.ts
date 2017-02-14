@@ -102,8 +102,9 @@ export class BleService {
    * Connect to a device
 	 * @param {Device} device - the target device
 	 */
-  connect = (device: any) => {
-        //TODO: unsubscribe at some point
+  connect = (device: Device) => {
+    //TODO: unsubscribe at some point
+    alert('connecting to device: ' + device.name)
   	BLE.connect(device.id)
   		  .subscribe( 
           res => {
@@ -111,8 +112,8 @@ export class BleService {
   	  		 	device.ledOn = false;
   	  		 	device.connected = true;
   	        this.tilesApi.loadEventMappings(device.id);
-            this.startDeviceNotification(device.id);
             this.mqttClient.registerDevice(device);
+            this.startDeviceNotification(device);
         },
         err => {
           console.log('Failed to connect to device ' + device.name)
