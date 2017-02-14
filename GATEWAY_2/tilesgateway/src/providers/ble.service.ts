@@ -103,6 +103,7 @@ export class BleService {
 	 * @param {Device} device - the target device
 	 */
   connect = (device: any) => {
+        //TODO: unsubscribe at some point
   	BLE.connect(device.id)
   		  .subscribe( 
           res => {
@@ -126,6 +127,7 @@ export class BleService {
    * @param {Device} device - the id from the target device
    */
   startDeviceNotification = (device: Device) => {
+    //TODO: unsubscribe at some point
     BLE.startNotification(device.id, this.rfduino.serviceUUID, this.rfduino.receiveCharacteristicUUID)
       .subscribe( 
         res => {

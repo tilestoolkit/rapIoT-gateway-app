@@ -97,6 +97,7 @@ export class HomePage {
 		// This means that for every new device discovered the first function 
 		// should run, and when it has discovered all the devices it should run 
 		// the last one. 
+		//TODO: unsubscribe at some point
 		this.bleService.scanForDevices().subscribe(
 			// function to be called for each new device discovered
 	    bleDevice => {
