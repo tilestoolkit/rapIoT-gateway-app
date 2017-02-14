@@ -74,6 +74,6 @@ export class DevicesService {
    * @param {Device} device - The device to check
    */
   isNewDevice = (device: Device) => {
-    return !this.devices.includes(device);
+    return !this.devices.map(function(a) {return a.id}).includes(device.id);
   };
 }

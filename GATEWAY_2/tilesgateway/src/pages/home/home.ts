@@ -105,7 +105,9 @@ export class HomePage {
 	      //debugging
 	      this.statusMsg = 'Found device: ' + JSON.stringify(device);
 	      //test that we don't add the same device twice
-	      if (!newDevices.map(function(a) {return a.id}).includes(device.id) && !this.devices.map(function(a) {return a.id}).includes(device.id)){
+	      if (!newDevices.map(function(a) {return a.id}).includes(device.id) && 
+	      		this.devicesService.isNewDevice(device) &&
+	      		this.tilesApi.isTilesDevice(device)) {
 	        this.mqttClient.registerDevice(device);
 	        this.devicesService.newDevice(device);
 	        newDevices.push(device);
