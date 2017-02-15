@@ -1,0 +1,21 @@
+<ion-menu [content]="content">
+
+	<ion-header>
+		<ion-navbar align-title="center">
+      <!-- Toggle left side menu -->
+      <button ion-button icon-only menuToggle>
+      	<ion-icon name="menu"></ion-icon>
+      </button>
+      <ion-title>Tiles</ion-title>
+    </ion-navbar>
+	</ion-header>
+
+	<ion-content>
+		<ion-list>
+      <ion-item style="text-align:center;border:0px;">{{appVersion}}</ion-item>
+    </ion-list>
+	</ion-content>
+
+</ion-menu>
+<ion-nav [root]="rootPage" #content></ion-nav>	
+
