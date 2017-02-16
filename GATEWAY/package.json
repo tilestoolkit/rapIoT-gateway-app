@@ -9,7 +9,7 @@
     "build": "ionic-app-scripts build",
     "ionic:build": "ionic-app-scripts build",
     "ionic:serve": "ionic-app-scripts serve",
-    "test": "mocha --recursive test/pages test/providers --reporter dot"
+    "test": "mocha --compilers tsc:commonjs --recursive test/pages test/providers --reporter dot"
   },
   "dependencies": {
     "@angular/common": "2.2.1",
