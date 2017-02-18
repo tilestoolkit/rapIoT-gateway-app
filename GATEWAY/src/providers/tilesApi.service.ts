@@ -127,22 +127,23 @@ export class TilesApi {
   };
 
   /** 
-   * TODO: I cannot see this (or the loadEventMappings working as the eventmappings are objects, not arrays
-   * and does not even have any of the fields asked for. 
-   * All the functions below needs to be rewritten. 
+   * Gets the mappings for a specific event for a tile
+   * @param {string} tileId - a tile 
+   * @param {string} eventAsString - a string representation of the event
    */
-  getEventMapping = (tileId, eventAsString) => {
-    // TODO: Temporary mock code
-    return this.eventMappings;
-    /*
+  getEventMapping = (tileId: string, eventAsString: string) => {
     if (this.eventMappings[this.username] == null ||
         this.eventMappings[this.username][tileId] == null) {
       this.loadEventMappings(tileId);
     }
-    return this.eventMappings[this.username][tileId][eventAsString];*/
+    return this.eventMappings[this.username][tileId][eventAsString];
   };
 
-  loadEventMappings = (tileId) => {
+  /**
+   * Get the eventmappings that are stored in the apps storage
+   * @param {string} tileId - the tile to get events for
+   */
+  loadEventMappings = (tileId: string) => {
     const storedEventMappings = this.storage.get(`eventMappings_${this.username}_${tileId}`)
                                             .then( res => res);
     if (this.eventMappings[this.username] == null) {
