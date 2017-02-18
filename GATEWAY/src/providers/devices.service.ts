@@ -9,6 +9,7 @@ export class Device {
   name: string;
   connected: boolean;
   ledOn: boolean;
+  buttonPressed?: boolean;
 }
 
 @Injectable()
