@@ -144,8 +144,9 @@ export class BleService {
             message.name = device.name;
             // TODO: In the future these checks could be turned into a switch statement or something. 
             if (message.properties[0] === 'touch') {
-              //TODO: buttonPressed is not a property of the device class. Not sure if it should be. 
-              device.buttonPressed = !device.buttonPressed;
+              if (device.buttonPressed !== undefined) {
+                device.buttonPressed = !device.buttonPressed;
+              } else { device.buttonPressed = false }
             }
             alert('Sending message: ' + JSON.stringify(message));
             this.mqttClient.sendEvent(device.id, message);
