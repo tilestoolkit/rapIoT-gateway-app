@@ -13,7 +13,6 @@
     "sourceMap": true,
     "target": "es5",
     "module": "commonjs"
-    //"module": "es2015"
   },
   "include": [
     "src/**/*.ts"
