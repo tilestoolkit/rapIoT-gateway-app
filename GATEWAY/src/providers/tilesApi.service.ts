@@ -28,7 +28,8 @@ export class TilesApi {
     }
   };
 
-  eventMappings = this.defaultEventMappings;
+  // {username: {tile: mappingsForTile}}
+  eventMappings = {};
 
   // TODO: Move these back into the constructor. This caused a runtime-error saying
   // 'No provider for String!'. It seems the angular2 @Inject() will solve it
@@ -115,6 +116,16 @@ export class TilesApi {
     this.mqttPort = hostMqttPort;
   };
 
+  /**
+   * Set the eventmapprings for a tile
+   * @param {string} tileID - The target tile
+   * @param {any} - eventmappings to store for the tile
+   */
+  setEventMappings = (tileId: string, eventMappings: any) => {
+    // TODO: Set an interface for the eventMappings 
+    this.storage.set(this.username + '_' + tileId, eventMappings);
+  };
+
   /** 
    * TODO: I cannot see this (or the loadEventMappings working as the eventmappings are objects, not arrays
    * and does not even have any of the fields asked for. 
@@ -141,8 +152,25 @@ export class TilesApi {
     this.eventMappings[this.username][tileId] = this.extend(this.defaultEventMappings, storedEventMappings);*/
   };
 
-  fetchEventMappings = (tileId, successCb) => {
-    return this.eventMappings;/*
+  /**
+   * Fetch the event mappings for the given tile from the web-server
+   * @param {string} tileId - The ID of the tile
+   */
+  fetchEventMappings = (tileId: string) => {
+    const url = `http://${this.hostAddress}:${this.mqttPort}/eventmappings/${this.username}/${tileId}`;
+    return this.http.get(url)
+            .toPromise()
+            .then(res => {
+              const fetchedEventMappings = res.data;
+              console.log('Success. Fetched data:' + JSON.stringify(fetchedEventMappings));
+              this.setEventMappings(tileId, fetchedEventMappings);
+              // Do we need to check for username? Isn't the user always the same? 
+              this.eventMappings[this.username] = {} ? 
+                    this.eventMappings[this.username] == null : this.eventMappings[this.username] 
+              this.eventMappings[this.username][tileId] = this.extend(this.defaultEventMappings, fetchedEventMappings);
+            })
+            .catch(err => console.log(err));
+    /*
     const eventMappingsUrl = `http://${this.hostAddress}:${this.mqttPort}/eventmappings/${this.username}/${tileId}`;
     return this.http.get(eventMappingsUrl)
 					     .toPromise()
