@@ -150,5 +150,5 @@ export class HomePage {
 		setTimeout(() => {
 			refresher.complete();
 		}, 2000);
-	}
+	};
 }
