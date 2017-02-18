@@ -143,13 +143,13 @@ export class TilesApi {
   };
 
   loadEventMappings = (tileId) => {
-    return this.eventMappings;/*
     const storedEventMappings = this.storage.get(`eventMappings_${this.username}_${tileId}`)
                                             .then( res => res);
     if (this.eventMappings[this.username] == null) {
       this.eventMappings[this.username] = {};
     }
-    this.eventMappings[this.username][tileId] = this.extend(this.defaultEventMappings, storedEventMappings);*/
+    this.eventMappings[this.username][tileId] =
+            this.extend(this.defaultEventMappings, storedEventMappings);
   };
 
   /**
@@ -167,7 +167,8 @@ export class TilesApi {
               // Do we need to check for username? Isn't the user always the same? 
               this.eventMappings[this.username] = {} ? 
                     this.eventMappings[this.username] == null : this.eventMappings[this.username] 
-              this.eventMappings[this.username][tileId] = this.extend(this.defaultEventMappings, fetchedEventMappings);
+              this.eventMappings[this.username][tileId] =
+                    this.extend(this.defaultEventMappings, fetchedEventMappings);
             })
             .catch(err => console.log(err));
     /*
