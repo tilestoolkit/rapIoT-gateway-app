@@ -111,6 +111,7 @@ export class BleService {
     		  	// Setting information about the device
   	  		 	device.ledOn = false;
   	  		 	device.connected = true;
+            device.buttonPressed = false;
   	        this.tilesApi.loadEventMappings(device.id);
             this.mqttClient.registerDevice(device);
             this.startDeviceNotification(device);
@@ -144,7 +145,7 @@ export class BleService {
             // TODO: In the future these checks could be turned into a switch statement or something. 
             if (message.properties[0] === 'touch') {
               //TODO: buttonPressed is not a property of the device class. Not sure if it should be. 
-              //device.buttonPressed = !device.buttonPressed
+              device.buttonPressed = !device.buttonPressed;
             }
             alert('Sending message: ' + JSON.stringify(message));
             this.mqttClient.sendEvent(device.id, message);
