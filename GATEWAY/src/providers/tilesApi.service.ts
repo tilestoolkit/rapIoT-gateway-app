@@ -172,23 +172,5 @@ export class TilesApi {
                     this.extend(this.defaultEventMappings, fetchedEventMappings);
             })
             .catch(err => console.log(err));
-    /*
-    const eventMappingsUrl = `http://${this.hostAddress}:${this.mqttPort}/eventmappings/${this.username}/${tileId}`;
-    return this.http.get(eventMappingsUrl)
-					     .toPromise()
-					   	 .then((res) => {
-						      const fetchedEventMappings = JSON.stringify(res.json().data);
-						      console.log(`Success. Fetched data:${{fetchedEventMappings}}`);
-						      this.storage.set(`eventMappings_${this.username}_${tileId}`, fetchedEventMappings);
-						      if (this.eventMappings[this.username] == null) {
-						      	this.eventMappings[this.username] = {};
-                  }
-                 this.eventMappings[this.username][tileId] = this.extend(this.defaultEventMappings, res.json().data);
-
-						      if (successCb) {
-                    successCb(res.json().data);
-                  }
-               })
-						   .catch((err) => (console.error('Error', JSON.stringify(err))));*/
   };
 }
