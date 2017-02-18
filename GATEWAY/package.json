@@ -5,11 +5,14 @@
   "repository": "https://github.com/nornes/tiles-rapIoT/",
   "licence": "Apache",
   "scripts": {
-    "clean": "ionic-app-scripts clean",
-    "build": "ionic-app-scripts build",
-    "ionic:build": "ionic-app-scripts build",
-    "ionic:serve": "ionic-app-scripts serve",
-    "test": "mocha --recursive test/pages test/providers --reporter dot"
+    "clean": "npm run setProdConfig && ionic-app-scripts clean",
+    "build": "npm run setProdConfig && ionic-app-scripts build",
+    "ionic:build": "npm run setProdConfig && ionic-app-scripts build",
+    "ionic:serve": "npm run setProdConfig && ionic-app-scripts serve",
+    "setProdConfig": "cp -rf configs/tsconfig.prod.json tsconfig.json",
+    "setTestConfig": "cp -rf configs/tsconfig.test.json tsconfig.json",
+    "runTest": "mocha --require ts-node/register --compilers ts:ts-node/register --recursive test/test.ts test/pages test/providers --reporter dot",
+    "test": "npm run setTestConfig && npm run runTest"
   },
   "dependencies": {
     "@angular/common": "2.2.1",
@@ -32,9 +35,14 @@
   },
   "devDependencies": {
     "@ionic/app-scripts": "^1.0.0",
+    "@types/chai": "^3.4.34",
+    "@types/mocha": "^2.2.39",
+    "chai": "^3.5.0",
     "eslint": "^3.14.1",
     "eslint-plugin-import": "^2.2.0",
     "mocha": "^3.2.0",
+    "mocha-typescript": "^1.0.21",
+    "ts-node": "^2.1.0",
     "typescript": "^2.0.9"
   },
   "cordovaPlugins": [

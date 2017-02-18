@@ -77,3 +77,5 @@ export class DevicesService {
     return !this.devices.map(function(a) {return a.id}).includes(device.id);
   };
 }
+
+export default {DevicesService, Device};
