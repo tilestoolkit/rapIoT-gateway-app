@@ -180,3 +180,5 @@ export class MqttClient {
     }
   };
 }
+
+export default { MqttClient }

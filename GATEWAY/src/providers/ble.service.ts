@@ -175,3 +175,5 @@ export class BleService {
   					.catch( err => console.log('Failed to disconnect'))
   };
 }
+
+export default { BleService }

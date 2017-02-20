@@ -176,3 +176,5 @@ export class TilesApi {
             .catch(err => console.log(err));
   };
 }
+
+export default { CommandObject, TilesApi }
