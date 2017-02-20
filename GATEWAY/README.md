@@ -12,7 +12,6 @@ Install cross-platform tools for CLI-commands (Needed to build and test the solu
 
 `$ npm install -g cd-cli`
 
-
 ## Running the app
 Now there are a few possible ways to run the app. The simplest is to run the ionic lab which gives you a collective view of how the app will look on different mobile platforms. This is done by running: 
 `$ ionic serve -l`
