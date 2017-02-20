@@ -8,7 +8,7 @@ import { Device } from './devices.service';
 /** 
  * Class to describe the structure of a command 
  */
-class CommandObject {
+export class CommandObject {
   name: string;
   properties: string;
 }
@@ -162,3 +162,5 @@ export class TilesApi {
 						   .catch((err) => (console.error('Error', JSON.stringify(err))));*/
   };
 }
+
+export default { CommandObject, TilesApi }
