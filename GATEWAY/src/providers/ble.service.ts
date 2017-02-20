@@ -4,7 +4,7 @@ import { Events } from 'ionic-angular';
 import 'rxjs/add/operator/toPromise';
 
 import { MqttClient } from './mqttClient';
-import { TilesApi } from './tilesApi.service';
+import { TilesApi, CommandObject } from './tilesApi.service';
 import { DevicesService, Device }from './devices.service';
 
 @Injectable()
@@ -137,7 +137,7 @@ export class BleService {
           // Convert the bytes sent from the device into a string
           const responseString = String.fromCharCode.apply(null, new Uint8Array(res));
           alert('Recieved event: ' + responseString);
-          let message = this.tilesApi.getEventStringAsObject(responseString);
+          let message: CommandObject = this.tilesApi.getEventStringAsObject(responseString);
           if (message === null) {
             console.log('Found no mapping for event: ' + responseString);
           } else {

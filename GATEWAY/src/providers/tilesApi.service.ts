@@ -8,10 +8,11 @@ import { Device } from './devices.service';
 /** 
  * Class to describe the structure of a command 
  */
-class CommandObject {
+export class CommandObject {
   name: string;
   properties: string;
 }
+
 
 @Injectable()
 export class TilesApi {

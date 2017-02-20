@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Events } from 'ionic-angular';
 import mqtt from 'mqtt';
 
-import { TilesApi } from './tilesApi.service';
+import { TilesApi, CommandObject } from './tilesApi.service';
 import { Device } from './devices.service';
 
 
@@ -153,12 +153,13 @@ export class MqttClient {
     }
   };
 
+// TODO: Look at server code to understand handling
   /**
    * Send an event to the server
    * @param {string} deviceId - the ID of the device to register
-   * @param event - The event we want to send
+   * @param {CommandObject} event - An event represented as a CommandObject (name, params...)
    */
-  sendEvent = (deviceId: string, event: any) => {
+  sendEvent = (deviceId: string, event: CommandObject) => {
     if (this.client) {
     	this.client.publish(
     		this.getDeviceSpecificTopic(deviceId, true),
