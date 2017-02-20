@@ -12,7 +12,7 @@
 
 `$ npm install -g cd-cli`
 
-#Running the app
+## Running the app
 Now there are a few possible ways to run the app. The simplest is to run the ionic lab which gives you a collective view of how the app will look on different mobile platforms. This is done by running: 
 `$ ionic serve -l`
 You will notice a runtime-error message saying cordova is not available, but this can be closed in the top right corner. This is caused by the browser not being able to run cordova plugins. 
