@@ -14,3 +14,5 @@ export class TabsPage {
 
   }
 }
+
+export default { TabsPage }

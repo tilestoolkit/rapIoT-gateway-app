@@ -7,6 +7,10 @@ Clone the project
 
 `$ npm install`
 
+Install cross-platform tools for CLI-commands (Needed to build and test the solution)
+(This is needed because the development-team works on both IOS and Windows, and needed a copy-command that works on both platforms)
+
+`$ npm install -g cd-cli`
 
 ## Running the app
 Now there are a few possible ways to run the app. The simplest is to run the ionic lab which gives you a collective view of how the app will look on different mobile platforms. This is done by running: 

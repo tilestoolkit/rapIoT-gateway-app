@@ -152,3 +152,5 @@ export class HomePage {
 		}, 2000);
 	}
 }
+
+export default { HomePage }
