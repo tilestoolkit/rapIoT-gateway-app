@@ -1,13 +1,13 @@
 #Setup guide:
 
 
-Clone the project
+### Clone the project
 
 `$ cd tiles-rapIoT/GATEWAY`
 
 `$ npm install`
 
-Install cross-platform tools for CLI-commands (Needed to build and test the solution)
+### Install cross-platform tools for CLI-commands (Needed to build and test the solution)
 (This is needed because the development-team works on both IOS and Windows, and needed a copy-command that works on both platforms)
 
 `$ npm install -g cd-cli`
