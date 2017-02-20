@@ -29,7 +29,7 @@ export class BleService {
               private devicesService: DevicesService) {
   };
 
-  /** 
+  /**
    * Send data to a device using BLE
 	 * @param {Device} device - the target device
 	 * @param {string} dataString - the string of data to send to the device
@@ -55,7 +55,7 @@ export class BleService {
   	} finally {};
   };
 
-  /** 
+  /**
    * Checking if bluetooth is enabled and enable on android if not
    */
   doRefresh = () => {
@@ -73,7 +73,7 @@ export class BleService {
 		  		  });
   };
 
-  /** 
+  /**
    * Checking to see if any bluetooth devices are in reach
    */
   scanForDevices = () => {
@@ -98,15 +98,15 @@ export class BleService {
 			  		.catch(err => console.log('Failed to update the name of device: ' + device.name));
   };
 
-  /** 
+  /**
    * Connect to a device
 	 * @param {Device} device - the target device
 	 */
   connect = (device: Device) => {
     //TODO: unsubscribe at some point
-    alert('connecting to device: ' + device.name)
+    alert('connecting to device: ' + device.name);
   	BLE.connect(device.id)
-  		  .subscribe( 
+  		  .subscribe(
           res => {
     		  	// Setting information about the device
   	  		 	device.ledOn = false;
@@ -123,7 +123,7 @@ export class BleService {
         });
   };
 
-  /** 
+  /**
    * Start getting notifications of events from a device
    * @param {Device} device - the id from the target device
    */
@@ -131,7 +131,7 @@ export class BleService {
     alert('Starting notifications from device: ' + device.name);
     //TODO: unsubscribe at some point. Could return the subscriber and unsubscribe after a timeout
     BLE.startNotification(device.id, this.rfduino.serviceUUID, this.rfduino.receiveCharacteristicUUID)
-      .subscribe( 
+      .subscribe(
         res => {
           // Convert the bytes sent from the device into a string
           const responseString = String.fromCharCode.apply(null, new Uint8Array(res));
@@ -141,9 +141,9 @@ export class BleService {
             console.log('Found no mapping for event: ' + responseString);
           } else {
             message.name = device.name;
-            // TODO: In the future these checks could be turned into a switch statement or something. 
+            // TODO: In the future these checks could be turned into a switch statement or something.
             if (message.properties[0] === 'touch') {
-              //TODO: buttonPressed is not a property of the device class. Not sure if it should be. 
+              //TODO: buttonPressed is not a property of the device class. Not sure if it should be.
               //device.buttonPressed = !device.buttonPressed
             }
             alert('Sending message: ' + JSON.stringify(message));
@@ -158,7 +158,7 @@ export class BleService {
         });
   };
 
-  /** 
+  /**
    * Disconnect from device
 	 * @param {Device} device - the target device
 	 */
