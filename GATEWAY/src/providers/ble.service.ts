@@ -142,12 +142,15 @@ export class BleService {
             console.log('Found no mapping for event: ' + responseString);
           } else {
             message.name = device.name;
-            // TODO: In the future these checks could be turned into a switch statement or something. 
-            if (message.properties[0] === 'touch') {
-              if (device.buttonPressed !== undefined) {
-                device.buttonPressed = !device.buttonPressed;
-              } else { device.buttonPressed = false }
-            }
+            // Switch on the event type of the message
+            switch (message.properties[0]){
+              case 'touch':
+                device.buttonPressed = !device.buttonPressed 
+                                      ? device.buttonPressed !== undefined 
+                                      : true;
+              default: 
+                break;
+             }
             alert('Sending message: ' + JSON.stringify(message));
             this.mqttClient.sendEvent(device.id, message);
           }

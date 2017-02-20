@@ -163,7 +163,7 @@ export class TilesApi {
     return this.http.get(url)
             .toPromise()
             .then(res => {
-              const fetchedEventMappings = res.data;
+              const fetchedEventMappings = res;
               console.log('Success. Fetched data:' + JSON.stringify(fetchedEventMappings));
               this.setEventMappings(tileId, fetchedEventMappings);
               // Do we need to check for username? Isn't the user always the same? 
