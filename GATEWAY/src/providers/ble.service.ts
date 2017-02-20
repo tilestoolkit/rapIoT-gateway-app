@@ -145,9 +145,8 @@ export class BleService {
             // Switch on the event type of the message
             switch (message.properties[0]){
               case 'touch':
-                device.buttonPressed = !device.buttonPressed 
-                                      ? device.buttonPressed !== undefined 
-                                      : true;
+                device.buttonPressed = device.buttonPressed !== undefined
+                                      ? !device.buttonPressed : true;
               default: 
                 break;
              }

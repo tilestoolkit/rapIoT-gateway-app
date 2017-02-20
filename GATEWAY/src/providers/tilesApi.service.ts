@@ -167,8 +167,9 @@ export class TilesApi {
               console.log('Success. Fetched data:' + JSON.stringify(fetchedEventMappings));
               this.setEventMappings(tileId, fetchedEventMappings);
               // Do we need to check for username? Isn't the user always the same? 
-              this.eventMappings[this.username] = {} ? 
-                    this.eventMappings[this.username] == null : this.eventMappings[this.username] 
+              this.eventMappings[this.username] =
+                    this.eventMappings[this.username] == null ?
+                    {} : this.eventMappings[this.username];
               this.eventMappings[this.username][tileId] =
                     this.extend(this.defaultEventMappings, fetchedEventMappings);
             })
