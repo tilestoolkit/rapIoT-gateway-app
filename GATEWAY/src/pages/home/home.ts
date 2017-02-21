@@ -49,11 +49,11 @@ export class HomePage {
       }
     });
 
-    this.events.subscribe('updateDevices', () => {
-      this.statusMsg = 'Found new devices';
-      this.devices = devicesService.getDevices();
-      this.statusMsg = this.devices.toString();
-    });
+	  this.events.subscribe('updateDevices', () => {
+	  	this.statusMsg = 'Updating list of devices';
+	  	this.devices = devicesService.getDevices();
+	  	this.statusMsg = this.devices.toString();
+	  });
 
     this.events.subscribe('serverConnected', () => {
       this.serverConnectStatusMsg = 'Connected to server';
@@ -181,3 +181,5 @@ export class HomePage {
     alert.present();
   };
 }
+
+export default { HomePage }

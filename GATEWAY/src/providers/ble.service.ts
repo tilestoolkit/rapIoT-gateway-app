@@ -173,7 +173,10 @@ export class BleService {
   					.then( res => {
   						device.connected = false;
   						this.mqttClient.unregisterDevice(device);
+              this.events.publish('disconnectedDevice', device);
   					})
   					.catch( err => console.log('Failed to disconnect'))
   };
 }
+
+export default { BleService }
