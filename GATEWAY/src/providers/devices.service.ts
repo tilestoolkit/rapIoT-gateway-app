@@ -47,6 +47,15 @@ export class DevicesService {
     }
   };
 
+  removeDevice = (device: Device) => {
+    for (let i = 0; i < this.devices.length; i++) {
+      const device = this.devices[i];
+      if (device.id == this.devices[i].id) {
+        this.devices.splice(i, 1);
+      }
+    }
+  };
+
   /** 
    * Converts the device discovered by ble into a device on the tiles format
    * @param {any} bleDevice - the returned device from the ble scan

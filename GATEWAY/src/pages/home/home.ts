@@ -51,11 +51,16 @@ export class HomePage {
       }
     });
 
-    this.events.subscribe('updateDevices', () => {
-      this.statusMsg = 'Found new devices';
-      this.devices = devicesService.getDevices();
-      this.statusMsg = this.devices.toString();
+    this.events.subscribe('disconnectedDevice', (device: Device) => {
+    	this.devicesService.removeDevice(device);
+    	this.events.publish('updateDevices');
     });
+
+	  this.events.subscribe('updateDevices', () => {
+	  	this.statusMsg = 'Updating list of devices';
+	  	this.devices = devicesService.getDevices();
+	  	this.statusMsg = this.devices.toString();
+	  });
 
     this.events.subscribe('serverConnected', () => {
       this.serverConnectStatusMsg = 'Connected to server';
@@ -131,7 +136,7 @@ export class HomePage {
         console.log('\nNo more devices: ');
       });
     this.statusMsg = 'Done scanning';
-  }
+  };
 
   /**
    * Connect to the mqttServer
@@ -178,3 +183,5 @@ export class HomePage {
     alert.present();
   }
 }
+
+export default { HomePage }
