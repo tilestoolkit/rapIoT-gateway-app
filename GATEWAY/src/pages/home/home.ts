@@ -135,8 +135,8 @@ export class HomePage {
   /**
    * Connect to the mqttServer
 	 */
-	connectToServer = () => {
-		this.mqttClient.connect(this.tilesApi.hostAddress, this.tilesApi.mqttPort);
+	connectToServer = (user, host, port) => {
+		this.mqttClient.connect(user, host, port);
 	};
 
   /**
@@ -153,7 +153,7 @@ export class HomePage {
 	}
 
 	showConnectMQTTPopup = () => {
-		let alert = this.alertCtrl.create({
+		let alertPopup = this.alertCtrl.create({
 			title: 'Connect to server',
 			inputs: [
 				{
@@ -180,21 +180,15 @@ export class HomePage {
 					}
 				},
 				{
-					text: 'Login',
-					/*
+					text: 'Connect',
 					handler: data => {
-						if (User.isValid(data.username, data.password)) {
-							// logged in!
-						} else {
-							// invalid login
-							return false;
-						}
+						alert(data.username + ' ' + data.host.toString() + ' ' + data.port);
+						this.connectToServer(data.username, data.host.toString(), parseInt(data.port));
 					}
-					*/
 				}
 			]
 		});
-		alert.present();
+		alertPopup.present();
 	};
 }
 

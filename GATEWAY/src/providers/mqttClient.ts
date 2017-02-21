@@ -42,10 +42,12 @@ export class MqttClient {
 
   /** 
    * Create a connection to the server and return a javascript promise
+   * @param {string} user - the user name
    * @param {string} host - the host url / ip
    * @param {number} port - the port to send to
    */
-  connect = (host: string, port: number) => {
+  connect = (user:string, host: string, port: number) => {
+		alert(user + ' ' + host + ' ' + port + '\n' + typeof user + ' ' + typeof host + ' ' + typeof port);
 
 		// Check if a previous server connection exists
 		// and end it if it does
