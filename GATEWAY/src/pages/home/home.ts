@@ -132,11 +132,29 @@ export class HomePage {
 	  this.statusMsg = 'Done scanning';
 	}
 
+
+	/**
+	* Verify that input of user login is valid
+	*/
+	verifyLoginCredentials = (user, host, port) => {
+		var validUsername = user.match(/^[a-zA-Z0-9\_\-\.]+$/);
+		var validHost = host.match(/(([0-9]{1,3}[.]){3}([0-9]{1,3}){1})/);
+		var validPort = port.match(/[0-9]{4,5}/);
+
+		if (validUsername && validHost && validPort) {
+			return true;
+		} else { return false; }
+	};
+
   /**
    * Connect to the mqttServer
 	 */
 	connectToServer = (user, host, port) => {
-		this.mqttClient.connect(user, host, port);
+		if (this.verifyLoginCredentials(user, host, port)) {
+			this.mqttClient.connect(user, host, port);
+		} else {
+			alert("Invalid login credentials.");
+		}
 	};
 
   /**
@@ -163,7 +181,6 @@ export class HomePage {
 				{
 					name: 'host',
 					placeholder: 'Host',
-					type: 'number'
 				},
 				{
 					name: 'port',
@@ -182,8 +199,7 @@ export class HomePage {
 				{
 					text: 'Connect',
 					handler: data => {
-						alert(data.username + ' ' + data.host.toString() + ' ' + data.port);
-						this.connectToServer(data.username, data.host.toString(), parseInt(data.port));
+						this.connectToServer(data.username, data.host, parseInt(data.port));
 					}
 				}
 			]
