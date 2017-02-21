@@ -38,12 +38,11 @@ export class HomePage {
   	// Subscriptions to events that can be emitted from other places in the code
   	//TODO: Dunno if these should be in the constructor or if that was a mistake
 	  this.events.subscribe('command', (deviceId, command) => {
-	    for (let i = 0; i < this.devices.length; i++) {
-	      const device = this.devices[i];
+	    for (let device of this.devices) {
 	      if (device.id === deviceId) {
-	      	alert('Recieved command from dvice: ' + JSON.stringify(command));
+	      	alert('Recieved command from device: ' + JSON.stringify(command));
 	        device.ledOn = (command.name === 'led' && command.properties[0] === 'on');
-	        console.log('Device led on: '+device.ledOn);
+	        console.log('Device led on: ' + device.ledOn);
 	        const commandString = this.tilesApi.getCommandObjectAsString(command);
 	        this.bleService.sendData(device, commandString);
         }
