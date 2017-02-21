@@ -153,7 +153,7 @@ export class HomePage {
     }, 2000);
   }
 
-  changeNamePop = (device) => {
+  changeNamePop = (device, ble) => {
     let alert = this.alertCtrl.create({
       title: 'Change tile name',
       inputs: [
@@ -170,7 +170,7 @@ export class HomePage {
         {
           text: 'Rename',
           handler: data => {
-            device.name = data.newName;
+            ble.updateName(device, data.newName);
           }
         }
       ]
