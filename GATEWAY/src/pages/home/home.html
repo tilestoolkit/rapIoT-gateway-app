@@ -8,9 +8,9 @@
     </ion-navbar>
     <ion-toolbar>
       <!--
-        TODO 
+        TODO
         this should be a button that triggers the showConnectMQTTPopup()
-        from the old code 
+        from the old code
       -->
       <ion-title >{{serverConnectStatusMsg}}</ion-title>
       <button ion-button small icon-only style="float: right;" (click)="connectToServer()">Connect</button>
@@ -50,17 +50,16 @@
           <!--ion-label>LED Light </ion-label-->
           <ion-toggle [(ngModel)]="device.ledOn" (ionChange)="bleService.sendData(device, 'led,on,red')"></ion-toggle>
         </ion-item>
-        <ion-item class="item-icon-right">Name
-          <input [(ngModel)]="newName" name="newName"/>
-          <button (click)="updateName(device, newName)">Update</button>
+        <ion-item class="item-icon-right">
+          <button ion-button small color="positive" (click)="changeNamePop(device, bleService)">Update name</button>
         </ion-item>
       </ion-list>
     </ion-item>
   </ion-list>
 </ion-content>
 
-<!-- 
-  TODO: move the code from the old www/index.html here. 
+<!--
+  TODO: move the code from the old www/index.html here.
   This might require changing some of it where the tags are updated
-  or angular 1 is used. 
+  or angular 1 is used.
 -->
