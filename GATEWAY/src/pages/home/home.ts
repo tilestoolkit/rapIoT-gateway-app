@@ -161,9 +161,14 @@ export class HomePage {
 					placeholder: 'Username'
 				},
 				{
-					name: 'password',
-					placeholder: 'Password',
-					type: 'password'
+					name: 'host',
+					placeholder: 'Host',
+					type: 'number'
+				},
+				{
+					name: 'port',
+					placeholder: 'Port',
+					type: 'number'
 				}
 			],
 			buttons: [
