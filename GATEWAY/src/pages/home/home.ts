@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
-import { Events, Platform } from 'ionic-angular';
-import { NavController } from 'ionic-angular';
+import { Events, Platform, NavController, AlertController } from 'ionic-angular';
 import { Observable } from 'rxjs/Observable';
 
 import { BleService } from '../../providers/ble.service';
@@ -25,6 +24,7 @@ export class HomePage {
 	statusMsg: string;
 
   constructor(public navCtrl: NavController,
+							public alertCtrl: AlertController,
   						public events: Events,
   						public platform: Platform,
   						private bleService: BleService,
@@ -151,6 +151,47 @@ export class HomePage {
 			refresher.complete();
 		}, 2000);
 	}
+
+	showConnectMQTTPopup = () => {
+		let alert = this.alertCtrl.create({
+			title: 'Connect to server',
+			inputs: [
+				{
+					name: 'username',
+					placeholder: 'Username'
+				},
+				{
+					name: 'password',
+					placeholder: 'Password',
+					type: 'password'
+				}
+			],
+			buttons: [
+				{
+					text: 'Cancel',
+					role: 'cancel',
+					handler: data => {
+						console.log('Cancel clicked');
+					}
+				},
+				{
+					text: 'Login',
+					/*
+					handler: data => {
+						if (User.isValid(data.username, data.password)) {
+							// logged in!
+						} else {
+							// invalid login
+							return false;
+						}
+					}
+					*/
+				}
+			]
+		});
+		alert.present();
+	};
 }
+
 
 export default { HomePage }
