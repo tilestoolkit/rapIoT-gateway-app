@@ -162,8 +162,7 @@ export class HomePage {
 				},
 				{
 					name: 'host',
-					placeholder: 'Host',
-					type: 'number'
+					placeholder: 'Host'
 				},
 				{
 					name: 'port',
@@ -182,8 +181,8 @@ export class HomePage {
 				{
 					text: 'Connect',
 					handler: data => {
-						alert(data.username + ' ' + data.host.toString() + ' ' + data.port);
-						this.connectToServer(data.username, data.host.toString(), parseInt(data.port));
+						alert(data.host);
+						this.connectToServer(data.username, data.host, parseInt(data.port));
 					}
 				}
 			]
