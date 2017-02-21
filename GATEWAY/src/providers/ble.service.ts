@@ -6,6 +6,7 @@ import { MqttClient } from './mqttClient';
 import { TilesApi } from './tilesApi.service';
 import { DevicesService, Device }from './devices.service';
 
+// A dictionary of new device names set by user
 let tileNames = {};
 
 @Injectable()
@@ -37,7 +38,7 @@ export class BleService {
 	 */
   sendData = (device: Device, dataString: string) => {
   	try {
-  	  	console.log('Attempting to send data to device via BLE.');
+      console.log('Attempting to send data to device via BLE.');
 
   	  	// Turns the dataString into an array of bytes
   	  	let dataArray = new Uint8Array(dataString.length);
@@ -93,6 +94,7 @@ export class BleService {
 			  		.then( res => {
 			  		 	device.connected = false;
 			  		 	this.mqttClient.unregisterDevice(device);
+              tileNames[device.name] = newName;
 			  		 	device.name = newName;
 			  		 	this.connect(device);
 			  		})
