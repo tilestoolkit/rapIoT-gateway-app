@@ -2,10 +2,11 @@ import { Injectable } from '@angular/core';
 import { BLE } from 'ionic-native';
 import { Events } from 'ionic-angular';
 import 'rxjs/add/operator/toPromise';
-
 import { MqttClient } from './mqttClient';
 import { TilesApi } from './tilesApi.service';
 import { DevicesService, Device }from './devices.service';
+
+let tileNames = {};
 
 @Injectable()
 export class BleService {
@@ -52,7 +53,7 @@ export class BleService {
 	  													 dataArray.buffer)
 			  		  .then( res => console.log('Success sending the string: ' + dataString))
 			  		  .catch( err => console.log('Failed when trying to send daata to the RFduino'));
-  	} finally {};
+  	} finally {}
   };
 
   /**
@@ -114,6 +115,9 @@ export class BleService {
   	        this.tilesApi.loadEventMappings(device.id);
             this.mqttClient.registerDevice(device);
             this.startDeviceNotification(device);
+            if (device.name in tileNames){
+              device.name = tileNames[device.name];
+            }
         },
         err => {
           console.log('Failed to connect to device ' + device.name)

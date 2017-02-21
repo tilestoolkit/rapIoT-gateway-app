@@ -1,8 +1,6 @@
 import { Component } from '@angular/core';
 import { Events, Platform } from 'ionic-angular';
 import { NavController, AlertController } from 'ionic-angular';
-import { Observable } from 'rxjs/Observable';
-
 import { BleService } from '../../providers/ble.service';
 import { Device, DevicesService } from '../../providers/devices.service';
 import { MqttClient } from '../../providers/mqttClient';
@@ -131,7 +129,7 @@ export class HomePage {
         console.log('\nNo more devices: ');
       });
     this.statusMsg = 'Done scanning';
-  }
+  };
 
   /**
    * Connect to the mqttServer
@@ -151,9 +149,9 @@ export class HomePage {
     setTimeout(() => {
       refresher.complete();
     }, 2000);
-  }
+  };
 
-  changeNamePop = (device) => {
+  changeNamePop = (device, ble) => {
     let alert = this.alertCtrl.create({
       title: 'Change tile name',
       inputs: [
@@ -170,7 +168,7 @@ export class HomePage {
         {
           text: 'Rename',
           handler: data => {
-            device.name = data.newName;
+            ble.updateName(device, data.newName);
           }
         }
       ]
