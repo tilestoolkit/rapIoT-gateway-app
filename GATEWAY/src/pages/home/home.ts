@@ -1,8 +1,6 @@
 import { Component } from '@angular/core';
 import { Events, Platform } from 'ionic-angular';
 import { NavController, AlertController } from 'ionic-angular';
-import { Observable } from 'rxjs/Observable';
-
 import { BleService } from '../../providers/ble.service';
 import { Device, DevicesService } from '../../providers/devices.service';
 import { MqttClient } from '../../providers/mqttClient';
@@ -42,7 +40,7 @@ export class HomePage {
       for (let i = 0; i < this.devices.length; i++) {
         const device = this.devices[i];
         if (device.id === deviceId) {
-          alert('Recieved command from dvice: ' + JSON.stringify(command));
+          alert('Received command from device: ' + JSON.stringify(command));
           device.ledOn = (command.name === 'led' && command.properties[0] === 'on');
           console.log('Device led on: '+device.ledOn);
           const commandString = this.tilesApi.getCommandObjectAsString(command);
@@ -81,7 +79,6 @@ export class HomePage {
       this.mqttClient.setServerConnectionStatus(false);
       this.serverConnectStatusMsg = 'Error: ${err}';
     });
-
   };
 
   /**
@@ -131,7 +128,7 @@ export class HomePage {
         console.log('\nNo more devices: ');
       });
     this.statusMsg = 'Done scanning';
-  }
+  };
 
   /**
    * Connect to the mqttServer
@@ -151,8 +148,14 @@ export class HomePage {
     setTimeout(() => {
       refresher.complete();
     }, 2000);
-  }
+  };
 
+  /**
+   * Called when the rename button is pushed on the view of the the
+   * the devices.
+   * @param {Device} device - the target device
+   * @param {bleService} ble - the bleService provider containing the updateName function
+   */
   changeNamePop = (device, ble) => {
     let alert = this.alertCtrl.create({
       title: 'Change tile name',
@@ -176,5 +179,5 @@ export class HomePage {
       ]
     });
     alert.present();
-  }
+  };
 }
