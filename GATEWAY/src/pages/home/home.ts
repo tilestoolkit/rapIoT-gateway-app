@@ -50,8 +50,13 @@ export class HomePage {
       }
     });
 
+    this.events.subscribe('disconnectedDevice', (device: Device) => {
+    	this.devicesService.removeDevice(device);
+    	this.events.publish('updateDevices');
+    })
+
 	  this.events.subscribe('updateDevices', () => {
-	  	this.statusMsg = 'Found new devices';
+	  	this.statusMsg = 'Updating list of devices';
 	  	this.devices = devicesService.getDevices();
 	  	this.statusMsg = this.devices.toString();
 	  });
