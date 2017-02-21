@@ -47,7 +47,6 @@ export class MqttClient {
    * @param {number} port - the port to send to
    */
   connect = (user:string, host: string, port: number) => {
-		alert(user + ' ' + host + ' ' + port + '\n' + typeof user + ' ' + typeof host + ' ' + typeof port);
 
 		// Check if a previous server connection exists
 		// and end it if it does
