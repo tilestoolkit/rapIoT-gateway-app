@@ -67,14 +67,15 @@ export class MqttClient {
 
     // Handle a message from the server
     this.client.on('message', (topic, message) => {
-      console.log('Received message from server: ' + message);
+      alert('Received message from server: ' + message);
       try {
         const command = JSON.parse(message);
         if (command) {
+
           const deviceId = topic.split('/')[3];
           this.events.publish('command', deviceId, command);
         };
-      } finally {};
+      } finally { alert('got message')};
     });
 
     this.client.on('offline', () => {
@@ -160,6 +161,7 @@ export class MqttClient {
    * @param {CommandObject} event - An event represented as a CommandObject (name, params...)
    */
   sendEvent = (deviceId: string, event: CommandObject) => {
+    alert('Sending message to mqtt: ' + JSON.stringify(event));
     if (this.client) {
     	this.client.publish(
     		this.getDeviceSpecificTopic(deviceId, true),

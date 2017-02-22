@@ -49,7 +49,7 @@ export class BleService {
 	  													 this.rfduino.serviceUUID,
 	  													 this.rfduino.sendCharacteristicUUID,
 	  													 dataArray.buffer)
-			  		  .then( res => console.log('Success sending the string: ' + dataString))
+			  		  .then( res => alert('Success sending the string: ' + dataString))
 			  		  .catch( err => console.log('Failed when trying to send daata to the RFduino'));
   	} finally {};
   };

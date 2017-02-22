@@ -38,12 +38,12 @@ export class TilesApi {
   hostAddress: string = '138.68.144.206';
   mqttPort: number = 8080;
 
-	constructor(//public username: string = 'TestUser',
-							//public hostAddress: string = 'cloud.tilestoolkit.io',
-							//public mqttPort: number = 8080,
-							public storage: Storage,
-							private http: Http) {
-	};
+  constructor(//public username: string = 'TestUser',
+              //public hostAddress: string = 'cloud.tilestoolkit.io',
+              //public mqttPort: number = 8080,
+              public storage: Storage,
+              private http: Http) {
+  };
 
   /** 
    * Returns an object with name and properties from the inputstring
@@ -159,12 +159,13 @@ export class TilesApi {
    * @param {string} tileId - The ID of the tile
    */
   fetchEventMappings = (tileId: string) => {
-    const url = `http://${this.hostAddress}:${this.mqttPort}/eventmappings/${this.username}/${tileId}`;
+    alert('getting event mappings')
+    const url = `http://${this.hostAddress}:${this.apiPort}/eventmappings/${this.username}/${tileId}`;
     return this.http.get(url)
             .toPromise()
             .then(res => {
               const fetchedEventMappings = res;
-              console.log('Success. Fetched data:' + JSON.stringify(fetchedEventMappings));
+              alert('Success. Fetched data:' + JSON.stringify(fetchedEventMappings));
               this.setEventMappings(tileId, fetchedEventMappings);
               // Do we need to check for username? Isn't the user always the same? 
               this.eventMappings[this.username] =
