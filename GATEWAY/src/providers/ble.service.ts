@@ -103,7 +103,7 @@ export class BleService {
 	 */
   connect = (device: Device) => {
     //TODO: unsubscribe at some point
-    alert('connecting to device: ' + device.name)
+    //alert('connecting to device: ' + device.name)
   	BLE.connect(device.id)
   		  .subscribe( 
           res => {
@@ -128,28 +128,33 @@ export class BleService {
    * @param {Device} device - the id from the target device
    */
   startDeviceNotification = (device: Device) => {
-    alert('Starting notifications from device: ' + device.name);
+    //alert('Starting notifications from device: ' + device.name);
     //TODO: unsubscribe at some point. Could return the subscriber and unsubscribe after a timeout
     BLE.startNotification(device.id, this.rfduino.serviceUUID, this.rfduino.receiveCharacteristicUUID)
       .subscribe( 
         res => {
           // Convert the bytes sent from the device into a string
-          const responseString = String.fromCharCode.apply(null, new Uint8Array(res));
-          alert('Recieved event: ' + responseString);
+          const responseString = ((String.fromCharCode.apply(null, new Uint8Array(res))).slice(0, -1)).trim();
           let message: CommandObject = this.tilesApi.getEventStringAsObject(responseString);
+          //alert('Recieved event: ' + message.name + ' with properties: ' + message.properties);
           if (message === null) {
-            console.log('Found no mapping for event: ' + responseString);
+            alert('Found no mapping for event: ' + responseString);
           } else {
-            message.name = device.name;
             // Switch on the event type of the message
-            switch (message.properties[0]){
-              case 'touch':
+            const eventType = message.properties[0];
+            switch (eventType){
+              case 'tap':
                 device.buttonPressed = device.buttonPressed !== undefined
                                       ? !device.buttonPressed : true;
-              default: 
+                alert('tappeti tap')
                 break;
-             }
-            alert('Sending message: ' + JSON.stringify(message));
+              case 'tilt':
+                alert('You are tilting me!');
+                break;
+              default:
+                alert('No response for ' + message.properties[0])
+                break;
+            }
             this.mqttClient.sendEvent(device.id, message);
           }
         },
