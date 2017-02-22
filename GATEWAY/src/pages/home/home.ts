@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { Events, Platform } from 'ionic-angular';
 import { NavController } from 'ionic-angular';
-import { Observable } from 'rxjs/Observable';
 
 import { BleService } from '../../providers/ble.service';
 import { Device, DevicesService } from '../../providers/devices.service';

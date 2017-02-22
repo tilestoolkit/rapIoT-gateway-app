@@ -5,7 +5,7 @@ import 'rxjs/add/operator/toPromise';
 
 import { MqttClient } from './mqttClient';
 import { TilesApi, CommandObject } from './tilesApi.service';
-import { DevicesService, Device }from './devices.service';
+import { Device }from './devices.service';
 
 @Injectable()
 export class BleService {
@@ -25,8 +25,7 @@ export class BleService {
 
   constructor(public events: Events,
               private mqttClient: MqttClient,
-  						private tilesApi: TilesApi,
-              private devicesService: DevicesService) {
+  						private tilesApi: TilesApi) {
   };
 
   /** 
