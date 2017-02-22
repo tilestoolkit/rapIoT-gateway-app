@@ -35,6 +35,7 @@ export class TilesApi {
   username: string = 'TestUser';
   hostAddress: string = '138.68.144.206';
   mqttPort: number = 8080;
+  apiPort: 3000; 
 
 	constructor(//public username: string = 'TestUser',
 							//public hostAddress: string = 'cloud.tilestoolkit.io',
