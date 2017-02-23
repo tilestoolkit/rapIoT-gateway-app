@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
+import { Http } from '@angular/http';
 import { Events, Platform, NavController, AlertController } from 'ionic-angular';
 import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/operator/map';
 
 import { BleService } from '../../providers/ble.service';
 import { Device, DevicesService } from '../../providers/devices.service';
@@ -11,17 +13,18 @@ import { TilesApi } from '../../providers/tilesApi.service';
   selector: 'page-home',
   templateUrl: 'home.html',
   providers: [
-  	TilesApi,
-  	MqttClient,
-  	DevicesService,
-  	BleService
+    TilesApi,
+    MqttClient,
+    DevicesService,
+    BleService
   ]
 })
 
 export class HomePage {
-	public devices: Device[];
-	serverConnectStatusMsg: string;
-	statusMsg: string;
+  public devices: Device[];
+  serverConnectStatusMsg: string;
+  statusMsg: string;
+  applications: Object[];
 
   constructor(public navCtrl: NavController,
 							public alertCtrl: AlertController,
@@ -30,119 +33,121 @@ export class HomePage {
   						private bleService: BleService,
   						private devicesService: DevicesService,
   						public tilesApi: TilesApi,
-  						private mqttClient: MqttClient)
+  						private mqttClient: MqttClient,
+              private http: Http)
   {
-  	this.devices = devicesService.getDevices();
-  	this.serverConnectStatusMsg = 'Click to connect to server';
+    this.devices = devicesService.getDevices();
+    this.serverConnectStatusMsg = 'Click to connect to server';
 
-  	// Subscriptions to events that can be emitted from other places in the code
-  	//TODO: Dunno if these should be in the constructor or if that was a mistake
-	  this.events.subscribe('command', (deviceId, command) => {
-	    for (let i = 0; i < this.devices.length; i++) {
-	      const device = this.devices[i];
-	      if (device.id === deviceId) {
-	      	alert('Recieved command from dvice: ' + JSON.stringify(command));
-	        device.ledOn = (command.name === 'led' && command.properties[0] === 'on');
-	        console.log('Device led on: '+device.ledOn);
-	        const commandString = this.tilesApi.getCommandObjectAsString(command);
-	        this.bleService.sendData(device, commandString);
+    // Subscriptions to events that can be emitted from other places in the code
+    //TODO: Dunno if these should be in the constructor or if that was a mistake
+    this.events.subscribe('command', (deviceId, command) => {
+      for (let i = 0; i < this.devices.length; i++) {
+        const device = this.devices[i];
+        if (device.id === deviceId) {
+          alert('Received command from device: ' + JSON.stringify(command));
+          device.ledOn = (command.name === 'led' && command.properties[0] === 'on');
+          console.log('Device led on: '+device.ledOn);
+          const commandString = this.tilesApi.getCommandObjectAsString(command);
+          this.bleService.sendData(device, commandString);
         }
       }
     });
 
 	  this.events.subscribe('updateDevices', () => {
-	  	this.statusMsg = 'Found new devices';
+	  	this.statusMsg = 'Updating list of devices';
 	  	this.devices = devicesService.getDevices();
 	  	this.statusMsg = this.devices.toString();
 	  });
 
-	  this.events.subscribe('serverConnected', () => {
-	  	this.serverConnectStatusMsg = 'Connected to server';
-	  	this.scanForNewBLEDevices();
-	  });
+    this.events.subscribe('serverConnected', () => {
+      this.serverConnectStatusMsg = 'Connected to server';
+      this.scanForNewBLEDevices();
+    });
 
-	  this.events.subscribe('offline', () => {
-	  	this.mqttClient.setServerConnectionStatus(false);
-	  	this.serverConnectStatusMsg = 'Client gone offline';
-	  });
+    this.events.subscribe('offline', () => {
+      this.mqttClient.setServerConnectionStatus(false);
+      this.serverConnectStatusMsg = 'Client gone offline';
+    });
 
-	  this.events.subscribe('close', () => {
-	  	this.mqttClient.setServerConnectionStatus(false);
-	  	this.serverConnectStatusMsg = 'Disconnected from server';
-	  });
+    this.events.subscribe('close', () => {
+      this.mqttClient.setServerConnectionStatus(false);
+      this.serverConnectStatusMsg = 'Disconnected from server';
+    });
 
-		this.events.subscribe('reconnect', () => {
-	  	this.mqttClient.setServerConnectionStatus(false);
-	  	this.serverConnectStatusMsg = 'A reconnect is started';
-	  });
+    this.events.subscribe('reconnect', () => {
+      this.mqttClient.setServerConnectionStatus(false);
+      this.serverConnectStatusMsg = 'A reconnect is started';
+    });
 
-		this.events.subscribe('error', (err) => {
-	  	this.mqttClient.setServerConnectionStatus(false);
-	  	this.serverConnectStatusMsg = 'Error: ${err}';
-	  });
-
-	};
+    this.events.subscribe('error', (err) => {
+      this.mqttClient.setServerConnectionStatus(false);
+      this.serverConnectStatusMsg = 'Error: ${err}';
+    });
+  };
 
   /**
    * Use ble to discover new devices
-	 */
-	scanForNewBLEDevices = () => {
-		this.statusMsg = 'Searching for devices...';
+   */
+  scanForNewBLEDevices = () => {
+    this.statusMsg = 'Searching for devices...';
 
-		// A list of the discovered devices
-		let newDevices: Array<Device> = [];    
-    
-    //TODO: BUG: The completion function is never called. 
+    // A list of the discovered devices
+    let newDevices: Array<Device> = [];
 
-		// The ble-service returns an observable and we subscribe to it here
-		// This means that for every new device discovered the first function 
-		// should run, and when it has discovered all the devices it should run 
-		// the last one. 
-		//TODO: unsubscribe at some point
-		this.bleService.scanForDevices().subscribe(
-			// function to be called for each new device discovered
-	    bleDevice => {
-	      let device = this.devicesService.convertBleDeviceToDevice(bleDevice);
-	      //debugging
-	      this.statusMsg = 'Found device: ' + JSON.stringify(device);
-	      //test that we don't add the same device twice
-	      if (!newDevices.map(function(a) {return a.id}).includes(device.id) && 
-	      		this.devicesService.isNewDevice(device) &&
-	      		this.tilesApi.isTilesDevice(device)) {
-	        this.mqttClient.registerDevice(device);
-	        this.devicesService.newDevice(device);
-	        newDevices.push(device);
-	        //TODO: temporary, until we get the completion function to run
-      		this.events.publish('updateDevices');
-	      }
-	    },
-	    // function to be called if an error occurs
-	    err => {
-	      alert('Error when scanning for devices: ' + err);
-	    },
-	    // function to be called when the scan is complete
-	    () => {
-	      alert('No more devices');
-	      // If we found any devices we should update the device list
-	      if (newDevices.length > 0) {
-	        this.events.publish('updateDevices');
-	      }
-	      console.log('\nNo more devices: ');
-	  });
-	  this.statusMsg = 'Done scanning';
-	}
+    //TODO: BUG: The completion function is never called.
+
+    // The ble-service returns an observable and we subscribe to it here
+    // This means that for every new device discovered the first function
+    // should run, and when it has discovered all the devices it should run
+    // the last one.
+    //TODO: unsubscribe at some point
+    this.bleService.scanForDevices().subscribe(
+      // function to be called for each new device discovered
+      bleDevice => {
+        let device = this.devicesService.convertBleDeviceToDevice(bleDevice);
+        //debugging
+        this.statusMsg = 'Found device: ' + JSON.stringify(device);
+        //test that we don't add the same device twice
+        if (!newDevices.map(function(a) {return a.id}).includes(device.id) &&
+          this.devicesService.isNewDevice(device) &&
+          this.tilesApi.isTilesDevice(device)) {
+          this.mqttClient.registerDevice(device);
+          this.devicesService.newDevice(device);
+          newDevices.push(device);
+          //TODO: temporary, until we get the completion function to run
+          this.events.publish('updateDevices');
+        }
+      },
+      // function to be called if an error occurs
+      err => {
+        alert('Error when scanning for devices: ' + err);
+      },
+      // function to be called when the scan is complete
+      () => {
+        alert('No more devices');
+        // If we found any devices we should update the device list
+        if (newDevices.length > 0) {
+          this.events.publish('updateDevices');
+        }
+        console.log('\nNo more devices: ');
+      });
+    this.statusMsg = 'Done scanning';
+  };
 
 
 	/**
 	* Verify that input of user login is valid
 	*/
-	verifyLoginCredentials = (user, host, port) => {
+	verifyLoginCredentials = (user:string, host:string, port:string) => {
 		var validUsername = user.match(/^[a-zA-Z0-9\_\-\.]+$/);
 		var validHost = host.match(/^([0-9]{1,3}.){3}[0-9]{1,3}/);
 
 		if (validUsername != null && validHost != null) {
 			return true;
-		} else { return false; }
+		} else { 
+			return false;
+		}
 	};
 
   /**
@@ -198,14 +203,56 @@ export class HomePage {
 				{
 					text: 'Connect',
 					handler: data => {
-						this.connectToServer(data.username, data.host, parseInt(data.port));
+						//this.connectToServer(data.username, data.host, parseInt(data.port));
+            this.getApplicationData(data.username, data.host, parseInt(data.port));
 					}
 				}
 			]
 		});
 		alertPopup.present();
 	};
+
+  getApplicationData(user, host, port){
+    //alert('http://' + host + ':' + this.tilesApi.apiPort + '/applications');
+    this.http.get('https://178.62.99.218:300/applications').map(res => res.json()).subscribe(data => {
+      alert(JSON.stringify(data[0]));
+    });
+    //var result = this.http.get('http://' + host + ':' + this.tilesApi.apiPort + '/applications').map(res => res.json());
+    //alert(JSON.parse(result));
+  }
+
+  /**
+   * Called when the rename button is pushed on the view of the the
+   * the devices.
+   * @param {Device} device - the target device
+   * @param {bleService} ble - the bleService provider containing the updateName function
+   */
+  changeNamePop = (device, ble) => {
+    let alert = this.alertCtrl.create({
+      title: 'Change tile name',
+      inputs: [
+        {
+          name: 'newName',
+          placeholder: 'new name'
+        }
+      ],
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+        },
+        {
+          text: 'Rename',
+          handler: data => {
+            ble.updateName(device, data.newName);
+          }
+        }
+      ]
+    });
+    alert.present();
+  };
 }
 
 
 export default { HomePage }
+
