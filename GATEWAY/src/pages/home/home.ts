@@ -1,13 +1,12 @@
 import { Component } from '@angular/core';
 import { Http } from '@angular/http';
 import { Events, Platform, NavController, AlertController } from 'ionic-angular';
-import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 
 import { BleService } from '../../providers/ble.service';
 import { Device, DevicesService } from '../../providers/devices.service';
 import { MqttClient } from '../../providers/mqttClient';
-import { TilesApi } from '../../providers/tilesApi.service';
+import { TilesApi, CommandObject } from '../../providers/tilesApi.service';
 
 @Component({
   selector: 'page-home',
@@ -36,20 +35,21 @@ export class HomePage {
   						private mqttClient: MqttClient,
               private http: Http)
   {
-    this.devices = devicesService.getDevices();
-    this.serverConnectStatusMsg = 'Click to connect to server';
 
-    // Subscriptions to events that can be emitted from other places in the code
-    //TODO: Dunno if these should be in the constructor or if that was a mistake
-    this.events.subscribe('command', (deviceId, command) => {
-      for (let i = 0; i < this.devices.length; i++) {
-        const device = this.devices[i];
-        if (device.id === deviceId) {
-          alert('Received command from device: ' + JSON.stringify(command));
-          device.ledOn = (command.name === 'led' && command.properties[0] === 'on');
-          console.log('Device led on: '+device.ledOn);
-          const commandString = this.tilesApi.getCommandObjectAsString(command);
-          this.bleService.sendData(device, commandString);
+  	this.devices = devicesService.getDevices();
+  	this.serverConnectStatusMsg = 'Click to connect to server';
+
+  	// Subscriptions to events that can be emitted from other places in the code
+  	//TODO: Dunno if these should be in the constructor or if that was a mistake
+	  this.events.subscribe('command', (deviceId: string, command: CommandObject) => {
+	    for (let device of this.devices) {
+	      if (device.id === deviceId) {
+	      	//alert('Recieved command from server: ' + JSON.stringify(command));
+	        device.ledOn = (command.name === 'led' && command.properties[0] === 'on');
+	        console.log('Device led on: ' + device.ledOn);
+	        const commandString = this.tilesApi.getCommandObjectAsString(command);
+	        this.bleService.sendData(device, commandString);
+
         }
       }
     });
@@ -159,6 +159,10 @@ export class HomePage {
 		} else {
 			alert("Invalid login credentials.");
 		}
+	};
+
+	fetchEventMappings = (device: Device) => {
+		this.tilesApi.fetchEventMappings(device.id);
 	};
 
   /**
