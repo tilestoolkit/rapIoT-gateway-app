@@ -7,10 +7,11 @@ import { TabsPage } from '../pages/tabs/tabs';
 //TODO: Update this to match the app.js from the old version
 @Component({
   templateUrl: 'app.html'
-})
+})  
 export class Tiles {
   rootPage = TabsPage;
   appVersion: any;
+  applications: Object[];
 
   constructor(platform: Platform) {
     platform.ready().then(() => {
@@ -32,8 +33,8 @@ export class Tiles {
         text:   'Running in background'
       });
       */
-
-      this.appVersion = AppVersion.getVersionNumber().then(res => JSON.stringify(res));
+      this.applications = [{"title":"test"}, {"title":"test2"}];
+      this.appVersion = JSON.stringify(AppVersion.getVersionNumber().then(res => res.json()));
 
       StatusBar.styleDefault();
       Splashscreen.hide();

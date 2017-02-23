@@ -15,7 +15,13 @@ describe('DevicesService', () => {
   });
 
   it('should return a list with three mock devices when running `getMockDevices()`', () => {
-      const devices = this.devicesService.getMockDevices();
-      assert.equal(devices.length, 3);
-  })
+    const devices = this.devicesService.getMockDevices();
+    assert.equal(devices.length, 3);
+  });
+  it('should have one more device in "devices" after running newDvice(device)', () => {
+    const device: Device = {id: '01:23:45:67:89:AB', name: 'TI SensorTag1', connected: false, ledOn: false, buttonPressed: true};
+    const devicesService = new DevicesService();
+    devicesService.newDevice(device);
+    assert.equal(this.deviceService.getDevices().length, 1);
+  });
 });

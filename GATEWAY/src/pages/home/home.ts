@@ -1,5 +1,8 @@
 import { Component } from '@angular/core';
-import { AlertController, Events, NavController, Platform } from 'ionic-angular';
+import { Http } from '@angular/http';
+import { Events, Platform, NavController, AlertController } from 'ionic-angular';
+import 'rxjs/add/operator/map';
+
 import { BleService } from '../../providers/ble.service';
 import { Device, DevicesService } from '../../providers/devices.service';
 import { MqttClient } from '../../providers/mqttClient';
@@ -20,15 +23,17 @@ export class HomePage {
   public devices: Device[];
   serverConnectStatusMsg: string;
   statusMsg: string;
+  applications: Object[];
 
   constructor(public navCtrl: NavController,
-              public events: Events,
-              public platform: Platform,
-              private bleService: BleService,
-              private devicesService: DevicesService,
-              public tilesApi: TilesApi,
-              private mqttClient: MqttClient,
-              private alertCtrl: AlertController)
+							public alertCtrl: AlertController,
+  						public events: Events,
+  						public platform: Platform,
+  						private bleService: BleService,
+  						private devicesService: DevicesService,
+  						public tilesApi: TilesApi,
+  						private mqttClient: MqttClient,
+              private http: Http)
   {
 
   	this.devices = devicesService.getDevices();
@@ -130,12 +135,31 @@ export class HomePage {
     this.statusMsg = 'Done scanning';
   };
 
+
+	/**
+	* Verify that input of user login is valid
+	*/
+	verifyLoginCredentials = (user:string, host:string, port:string) => {
+		var validUsername = user.match(/^[a-zA-Z0-9\_\-\.]+$/);
+		var validHost = host.match(/^([0-9]{1,3}.){3}[0-9]{1,3}/);
+
+		if (validUsername != null && validHost != null) {
+			return true;
+		} else { 
+			return false;
+		}
+	};
+
   /**
    * Connect to the mqttServer
-   */
-  connectToServer = () => {
-    this.mqttClient.connect(this.tilesApi.hostAddress, this.tilesApi.mqttPort);
-  };
+	 */
+	connectToServer = (user, host, port) => {
+		if (this.verifyLoginCredentials(user, host, port)) {
+			this.mqttClient.connect(user, host, port);
+		} else {
+			alert("Invalid login credentials.");
+		}
+	};
 
 	fetchEventMappings = (device: Device) => {
 		this.tilesApi.fetchEventMappings(device.id);
@@ -152,8 +176,52 @@ export class HomePage {
 		setTimeout(() => {
 			refresher.complete();
 		}, 2000);
+	}
+
+	showConnectMQTTPopup = () => {
+		let alertPopup = this.alertCtrl.create({
+			title: 'Connect to server',
+			inputs: [
+				{
+					name: 'username',
+					placeholder: 'Username'
+				},
+				{
+					name: 'host',
+					placeholder: 'Host'
+				},
+				{
+					name: 'port',
+					placeholder: 'Port',
+					type: 'number'
+				}
+			],
+			buttons: [
+				{
+					text: 'Cancel',
+					role: 'cancel',
+					handler: data => {
+						console.log('Cancel clicked');
+					}
+				},
+				{
+					text: 'Connect',
+					handler: data => {
+						this.connectToServer(data.username, data.host, parseInt(data.port));
+            this.getApplicationData(data.username, data.host, parseInt(data.port));
+					}
+				}
+			]
+		});
+		alertPopup.present();
 	};
 
+  getApplicationData(user, host, port){
+    this.http.get('http://' + host + ':' + this.tilesApi.apiPort + '/applications').map(res => res.json()).subscribe(data => {
+      alert(JSON.stringify(data));
+      this.applications = data;
+    });
+  }
 
   /**
    * Called when the rename button is pushed on the view of the the
@@ -186,3 +254,7 @@ export class HomePage {
     alert.present();
   };
 }
+
+
+export default { HomePage }
+
