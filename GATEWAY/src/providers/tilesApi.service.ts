@@ -159,22 +159,22 @@ export class TilesApi {
    * @param {string} tileId - The ID of the tile
    */
   fetchEventMappings = (tileId: string) => {
-    alert('getting event mappings')
     const url = `http://${this.hostAddress}:${this.apiPort}/eventmappings/${this.username}/${tileId}`;
-    return this.http.get(url)
+    alert(url)
+    this.http.get(url)
             .toPromise()
             .then(res => {
-              const fetchedEventMappings = res;
-              alert('Success. Fetched data:' + JSON.stringify(fetchedEventMappings));
-              this.setEventMappings(tileId, fetchedEventMappings);
+              const fetchedEventMappings = res.json();
+              alert('Success. Fetched data:' + JSON.stringify(res.json()));
               // Do we need to check for username? Isn't the user always the same? 
               this.eventMappings[this.username] =
                     this.eventMappings[this.username] == null ?
                     {} : this.eventMappings[this.username];
               this.eventMappings[this.username][tileId] =
                     this.extend(this.defaultEventMappings, fetchedEventMappings);
+              this.setEventMappings(tileId, this.eventMappings[this.username][tileId]);
             })
-            .catch(err => console.log(err));
+            .catch(err => alert('failed fetching data with error: ' + err));
   };
 }
 

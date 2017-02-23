@@ -137,6 +137,10 @@ export class HomePage {
 		this.mqttClient.connect(this.tilesApi.hostAddress, this.tilesApi.mqttPort);
 	};
 
+	fetchEventMappings = (device: Device) => {
+		this.tilesApi.fetchEventMappings(device.id);
+	};
+
   /**
    * Called when the refresher is triggered by pulling down on the view of 
 	 * the devices. 
