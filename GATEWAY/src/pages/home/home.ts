@@ -34,26 +34,8 @@ export class HomePage {
   	this.devices = devicesService.getDevices();
   	this.serverConnectStatusMsg = 'Click to connect to server';
 
+
   	// Subscriptions to events that can be emitted from other places in the code
-  	//TODO: Dunno if these should be in the constructor or if that was a mistake
-	  this.events.subscribe('command', (deviceId: string, command: CommandObject) => {
-	    for (let device of this.devices) {
-	      if (device.id === deviceId) {
-	      	//alert('Recieved command from server: ' + JSON.stringify(command));
-	        device.ledOn = (command.name === 'led' && command.properties[0] === 'on');
-	        console.log('Device led on: ' + device.ledOn);
-	        const commandString = this.tilesApi.getCommandObjectAsString(command);
-	        this.bleService.sendData(device, commandString);
-
-        }
-      }
-    });
-
-	  this.events.subscribe('updateDevices', () => {
-	  	this.statusMsg = 'Updating list of devices';
-	  	this.devices = devicesService.getDevices();
-	  	this.statusMsg = this.devices.toString();
-	  });
 
     this.events.subscribe('serverConnected', () => {
       this.serverConnectStatusMsg = 'Connected to server';
@@ -79,6 +61,25 @@ export class HomePage {
       this.mqttClient.setServerConnectionStatus(false);
       this.serverConnectStatusMsg = 'Error: ${err}';
     });
+
+  	//TODO: Dunno if these should be in the constructor or if that was a mistake
+	  this.events.subscribe('command', (deviceId: string, command: CommandObject) => {
+	    for (let device of this.devices) {
+	      if (device.id === deviceId) {
+	      	//alert('Recieved command from server: ' + JSON.stringify(command));
+	        device.ledOn = (command.name === 'led' && command.properties[0] === 'on');
+	        console.log('Device led on: ' + device.ledOn);
+	        const commandString = this.tilesApi.getCommandObjectAsString(command);
+	        this.bleService.sendData(device, commandString);
+
+        }
+      }
+    });
+	  	
+	  this.events.subscribe('updateDevices', () => {
+	  	this.statusMsg = 'Updated list';
+	  });
+
   };
 
   /**
@@ -185,4 +186,4 @@ export class HomePage {
     });
     alert.present();
   };
-}
+};
