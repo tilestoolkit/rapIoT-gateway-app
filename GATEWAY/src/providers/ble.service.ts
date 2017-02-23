@@ -146,7 +146,7 @@ export class BleService {
 	 * @param {Device} device - the target device
 	 */
   connect = (device: Device) => {
-    //TODO: unsubscribe at some point
+    //TODO: unsubscribe at some point ? 
     //alert('connecting to device: ' + device.name)
   	BLE.connect(device.id)
   		  .subscribe(
@@ -163,10 +163,12 @@ export class BleService {
             }
         },
         err => {
-          console.log('Failed to connect to device ' + device.name)
+          device.connected = false;
+          this.disconnect(device);
+          alert('Lost connection to ' + device.name)
         },
         () => {
-          console.log('Connection attempt completed')
+          alert('Connection attempt completed')
         });
   };
 
@@ -222,7 +224,11 @@ export class BleService {
   					.then( res => {
   						device.connected = false;
   						this.mqttClient.unregisterDevice(device);
+              this.devicesService.clearDisconnectedDevices();
   					})
-  					.catch( err => console.log('Failed to disconnect'))
+  					.catch( err => {
+              console.log('Failed to disconnect')
+              device.connected = false;
+            });
   };
 }

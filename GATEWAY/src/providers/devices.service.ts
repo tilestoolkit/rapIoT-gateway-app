@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Events } from 'ionic-angular';
 
 /**
  * Class for the devices, this makes it possible to specify the
@@ -16,7 +17,7 @@ export class Device {
 export class DevicesService {
 	devices: Device[];
 
-  constructor() {
+  constructor(private events: Events) {
     this.devices = [];
   };
 
@@ -78,6 +79,19 @@ export class DevicesService {
   isNewDevice = (device: Device) => {
     return !this.devices.map(function(a) {return a.id}).includes(device.id);
   };
-}
+
+  /**
+   * Go through the list of registered devices and keep only those connected
+   */
+  clearDisconnectedDevices = () => {
+    for(let i = 0; i < this.devices.length; i++) {
+      const device = this.devices[i];
+      if (device.connected == false) {
+        this.devices.slice(i, 1);
+      }
+    }
+    this.events.publish('updateDevices');
+  };
+};
 
 export default {DevicesService, Device};
