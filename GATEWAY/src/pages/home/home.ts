@@ -141,10 +141,9 @@ export class HomePage {
 	*/
 	verifyLoginCredentials = (user:string, host:string, port:string) => {
 		var validUsername = user.match(/^[a-zA-Z0-9\_\-\.]+$/);
-		var validHost = host.match(/^([0-9]{1,3}[.]){3}[0-9]{1,3}/);
-		var validPort = port.toString().match(/\b\d{4,5}\b/g);
+		var validHost = host.match(/^([0-9]{1,3}.){3}[0-9]{1,3}/);
 
-		if (validUsername != null && validHost != null && validPort != null) {
+		if (validUsername != null && validHost != null) {
 			return true;
 		} else { 
 			return false;
@@ -155,7 +154,7 @@ export class HomePage {
    * Connect to the mqttServer
 	 */
 	connectToServer = (user, host, port) => {
-		if (this.verifyLoginCredentials(user, host, port)){
+		if (this.verifyLoginCredentials(user, host, port)) {
 			this.mqttClient.connect(user, host, port);
 		} else {
 			alert("Invalid login credentials.");
