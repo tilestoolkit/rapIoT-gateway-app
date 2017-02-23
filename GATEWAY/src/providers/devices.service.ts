@@ -53,6 +53,13 @@ export class DevicesService {
    * @param {any} bleDevice - the returned device from the ble scan
    */
   convertBleDeviceToDevice = (bleDevice: any): Device  => {
+    /*
+    bleDevice = {
+      "id" : "01:23:45:67:89:AB",
+      "advertising" : {},
+      "rssi" : -99
+    }
+    */
     /*const device: Device = {
       id: '01:23:45:67:89:AB',
       name: 'TI SensorTag1',
