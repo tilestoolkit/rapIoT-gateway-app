@@ -87,48 +87,8 @@ export class HomePage {
    */
   scanForNewBLEDevices = () => {
     this.statusMsg = 'Searching for devices...';
-
-    // A list of the discovered devices
-    let newDevices: Array<Device> = [];
-
-    //TODO: BUG: The completion function is never called.
-
-    // The ble-service returns an observable and we subscribe to it here
-    // This means that for every new device discovered the first function
-    // should run, and when it has discovered all the devices it should run
-    // the last one.
-    //TODO: unsubscribe at some point
-    this.bleService.scanForDevices().subscribe(
-      // function to be called for each new device discovered
-      bleDevice => {
-        let device = this.devicesService.convertBleDeviceToDevice(bleDevice);
-        //debugging
-        this.statusMsg = 'Found device: ' + JSON.stringify(device);
-        //test that we don't add the same device twice
-        if (!newDevices.map(function(a) {return a.id}).includes(device.id) &&
-          this.devicesService.isNewDevice(device) &&
-          this.tilesApi.isTilesDevice(device)) {
-          this.mqttClient.registerDevice(device);
-          this.devicesService.newDevice(device);
-          newDevices.push(device);
-          //TODO: temporary, until we get the completion function to run
-          this.events.publish('updateDevices');
-        }
-      },
-      // function to be called if an error occurs
-      err => {
-        alert('Error when scanning for devices: ' + err);
-      },
-      // function to be called when the scan is complete
-      () => {
-        alert('No more devices');
-        // If we found any devices we should update the device list
-        if (newDevices.length > 0) {
-          this.events.publish('updateDevices');
-        }
-        console.log('\nNo more devices: ');
-      });
-    this.statusMsg = 'Done scanning';
+    this.devicesService.clearDisconnectedDevices();
+    this.bleService.scanForDevices();
   };
 
   /**
