@@ -5,7 +5,7 @@ import { NavController } from 'ionic-angular';
 import { BleService } from '../../providers/ble.service';
 import { Device, DevicesService } from '../../providers/devices.service';
 import { MqttClient } from '../../providers/mqttClient';
-import { TilesApi } from '../../providers/tilesApi.service';
+import { TilesApi, CommandObject } from '../../providers/tilesApi.service';
 
 @Component({
   selector: 'page-home',
@@ -36,10 +36,10 @@ export class HomePage {
 
   	// Subscriptions to events that can be emitted from other places in the code
   	//TODO: Dunno if these should be in the constructor or if that was a mistake
-	  this.events.subscribe('command', (deviceId, command) => {
+	  this.events.subscribe('command', (deviceId: string, command: CommandObject) => {
 	    for (let device of this.devices) {
 	      if (device.id === deviceId) {
-	      	alert('Recieved command from device: ' + JSON.stringify(command));
+	      	alert('Recieved command from server: ' + JSON.stringify(command));
 	        device.ledOn = (command.name === 'led' && command.properties[0] === 'on');
 	        console.log('Device led on: ' + device.ledOn);
 	        const commandString = this.tilesApi.getCommandObjectAsString(command);

@@ -69,9 +69,8 @@ export class MqttClient {
     this.client.on('message', (topic, message) => {
       alert('Received message from server: ' + message);
       try {
-        const command = JSON.parse(message);
+        const command: CommandObject = JSON.parse(message);
         if (command) {
-
           const deviceId = topic.split('/')[3];
           this.events.publish('command', deviceId, command);
         };
