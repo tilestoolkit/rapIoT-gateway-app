@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
+import { Http } from '@angular/http';
 import { Events, Platform, NavController, AlertController } from 'ionic-angular';
 import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/operator/map';
 
 import { BleService } from '../../providers/ble.service';
 import { Device, DevicesService } from '../../providers/devices.service';
@@ -22,6 +24,7 @@ export class HomePage {
   public devices: Device[];
   serverConnectStatusMsg: string;
   statusMsg: string;
+  applications: Object[];
 
   constructor(public navCtrl: NavController,
 							public alertCtrl: AlertController,
@@ -30,7 +33,8 @@ export class HomePage {
   						private bleService: BleService,
   						private devicesService: DevicesService,
   						public tilesApi: TilesApi,
-  						private mqttClient: MqttClient)
+  						private mqttClient: MqttClient,
+              private http: Http)
   {
     this.devices = devicesService.getDevices();
     this.serverConnectStatusMsg = 'Click to connect to server';
@@ -200,13 +204,24 @@ export class HomePage {
 				{
 					text: 'Connect',
 					handler: data => {
-						this.connectToServer(data.username, data.host, parseInt(data.port));
+						//this.connectToServer(data.username, data.host, parseInt(data.port));
+            this.getApplicationData(data.username, data.host, parseInt(data.port));
 					}
 				}
 			]
 		});
 		alertPopup.present();
 	};
+
+  getApplicationData(user, host, port){
+    //alert('http://' + host + ':' + this.tilesApi.apiPort + '/applications');
+    this.http.get('https://178.62.99.218:300/applications').map(res => res.json()).subscribe(data => {
+      alert(JSON.stringify(data[0]));
+    });
+    //var result = this.http.get('http://' + host + ':' + this.tilesApi.apiPort + '/applications').map(res => res.json());
+    //alert(JSON.parse(result));
+  }
+
   /**
    * Called when the rename button is pushed on the view of the the
    * the devices.

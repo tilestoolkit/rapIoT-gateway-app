@@ -6,13 +6,27 @@
       <button ion-button icon-only menuToggle>
       	<ion-icon name="menu"></ion-icon>
       </button>
-      <ion-title>Tiles</ion-title>
+      <!-- <ion-title>Tiles</ion-title> -->
+      <ion-title>Applications</ion-title>
     </ion-navbar>
 	</ion-header>
-  
+<!--
 	<ion-content>
 		<ion-list>
-      <ion-item style="text-align:center;border:0px;">{{appVersion}}</ion-item>
+      <ion-item style="text-align:center;border:0px;">
+        {{appVersion}}
+      </ion-item>
+    </ion-list>
+	</ion-content>
+  -->
+	<ion-content>
+		<ion-list>
+      <ion-item (click)="this.alert('test')">
+        DEFAULT
+      </ion-item>
+      <ion-item *ngFor="let app of applications" (click)="this.alert('test')">
+        {{app.title}}
+      </ion-item>
     </ion-list>
 	</ion-content>
 

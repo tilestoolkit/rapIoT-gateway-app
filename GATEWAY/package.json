@@ -9,8 +9,8 @@
     "build": "npm run setProdConfig && ionic-app-scripts build",
     "ionic:build": "npm run setProdConfig && ionic-app-scripts build",
     "ionic:serve": "npm run setProdConfig && ionic-app-scripts serve",
-    "setProdConfig": "cp -rf configs/tsconfig.prod.json tsconfig.json",
-    "setTestConfig": "cp -rf configs/tsconfig.test.json tsconfig.json",
+    "setProdConfig": "cp-cli configs/tsconfig.prod.json tsconfig.json",
+    "setTestConfig": "cp-cli configs/tsconfig.test.json tsconfig.json",
     "runTest": "mocha --require ts-node/register --compilers ts:ts-node/register --recursive test/test.ts test/pages test/providers --reporter dot",
     "test": "npm run setTestConfig && npm run runTest"
   },
