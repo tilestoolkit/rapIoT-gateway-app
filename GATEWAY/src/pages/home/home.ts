@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
-import { Events, Platform } from 'ionic-angular';
-import { NavController } from 'ionic-angular';
+import { AlertController, Events, NavController, Platform } from 'ionic-angular';
 import { BleService } from '../../providers/ble.service';
 import { Device, DevicesService } from '../../providers/devices.service';
 import { MqttClient } from '../../providers/mqttClient';
