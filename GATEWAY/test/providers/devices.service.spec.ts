@@ -20,8 +20,7 @@ describe('DevicesService', () => {
   });
   it('should have one more device in "devices" after running newDvice(device)', () => {
     const device: Device = {id: '01:23:45:67:89:AB', name: 'TI SensorTag1', connected: false, ledOn: false, buttonPressed: true};
-    const devicesService = new DevicesService();
-    devicesService.newDevice(device);
-    assert.equal(this.deviceService.getDevices().length, 1);
+    this.devicesService.newDevice(device);
+    assert.equal(this.devicesService.getDevices().length, 1);
   });
 });
