@@ -34,7 +34,7 @@ export class Tiles {
       });
       */
       this.applications = [{"title":"test"}, {"title":"test2"}];
-      this.appVersion = AppVersion.getVersionNumber().then(res => JSON.stringify(res));
+      this.appVersion = JSON.stringify(AppVersion.getVersionNumber().then(res => res.json()));
 
       StatusBar.styleDefault();
       Splashscreen.hide();

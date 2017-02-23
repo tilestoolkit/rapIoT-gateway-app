@@ -204,7 +204,7 @@ export class HomePage {
 				{
 					text: 'Connect',
 					handler: data => {
-						//this.connectToServer(data.username, data.host, parseInt(data.port));
+						this.connectToServer(data.username, data.host, parseInt(data.port));
             this.getApplicationData(data.username, data.host, parseInt(data.port));
 					}
 				}
@@ -214,12 +214,10 @@ export class HomePage {
 	};
 
   getApplicationData(user, host, port){
-    //alert('http://' + host + ':' + this.tilesApi.apiPort + '/applications');
-    this.http.get('https://178.62.99.218:300/applications').map(res => res.json()).subscribe(data => {
-      alert(JSON.stringify(data[0]));
+    this.http.get('http://' + host + ':' + this.tilesApi.apiPort + '/applications').map(res => res.json()).subscribe(data => {
+      alert(JSON.stringify(data));
+      this.applications = data;
     });
-    //var result = this.http.get('http://' + host + ':' + this.tilesApi.apiPort + '/applications').map(res => res.json());
-    //alert(JSON.parse(result));
   }
 
   /**
