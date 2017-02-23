@@ -170,7 +170,7 @@ export class MqttClient {
     }
     //TODO: NB: Temporary, this should come as a message from the server!!
     if (event.properties[0] === 'tilt') {
-      this.events.publish('command', deviceId, {name: 'led', properties: ['on']});
+      this.events.publish('command', deviceId, {name: 'led', properties: ['on', 'red']});
     } else {
       this.events.publish('command', deviceId, {name: 'led', properties: ['off']});
     }
