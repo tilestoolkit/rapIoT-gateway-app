@@ -39,7 +39,7 @@ export class BleService {
 
   	  	// Turns the dataString into an array of bytes
   	  	let dataArray = new Uint8Array(dataString.length);
-  	  	for(let i = 0, l = dataString.length; i < l; i ++){
+  	  	for(let i = 0; i < dataString.length; i ++){
   	  		dataArray[i] = dataString.charCodeAt(i);
         }
       console.log('Bytes: ' + dataArray.length);
