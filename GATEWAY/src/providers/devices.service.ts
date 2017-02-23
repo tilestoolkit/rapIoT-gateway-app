@@ -9,6 +9,7 @@ export class Device {
   name: string;
   connected: boolean;
   ledOn: boolean;
+  buttonPressed?: boolean;
 }
 
 @Injectable()
@@ -23,9 +24,9 @@ export class DevicesService {
    * Returns mock devices for testing purposes
    */
   getMockDevices = (): Device[] => ([
-  	{id: '01:23:45:67:89:AB', name: 'TI SensorTag1', connected: false, ledOn: false},
-  	{id: '01:23:45:67:89:AC', name: 'TI SensorTag2', connected: true, ledOn: true},
-  	{id: '01:23:45:67:89:AD', name: 'TI SensorTag3', connected: false, ledOn: false},
+  	{id: '01:23:45:67:89:AB', name: 'TI SensorTag1', connected: false, ledOn: false, buttonPressed: true},
+  	{id: '01:23:45:67:89:AC', name: 'TI SensorTag2', connected: true, ledOn: true, buttonPressed: true},
+  	{id: '01:23:45:67:89:AD', name: 'TI SensorTag3', connected: false, ledOn: false, buttonPressed: true},
   ]);
 
   /**
@@ -58,11 +59,12 @@ export class DevicesService {
       connected: false,
       ledOn: false
     };*/
-    const device = {
+    const device: Device = {
       id: bleDevice.id,
       name: (bleDevice.name ? bleDevice.name : 'NoName'),
-      connected: false,
-      ledOn: false
+      connected: false, 
+      ledOn: false,
+      buttonPressed: false
     };
 
     return device;

@@ -13,6 +13,7 @@ export class CommandObject {
   properties: string;
 }
 
+
 @Injectable()
 export class TilesApi {
 
@@ -28,21 +29,22 @@ export class TilesApi {
     }
   };
 
-  eventMappings = this.defaultEventMappings;
+  // {username: {tile: mappingsForTile}}
+  eventMappings = {};
 
   // TODO: Move these back into the constructor. This caused a runtime-error saying
   // 'No provider for String!'. It seems the angular2 @Inject() will solve it
   username: string = 'TestUser';
   hostAddress: string = '138.68.144.206';
   mqttPort: number = 8080;
-  apiPort: 3000; 
+  apiPort: number = 3000;
 
-	constructor(//public username: string = 'TestUser',
-							//public hostAddress: string = 'cloud.tilestoolkit.io',
-							//public mqttPort: number = 8080,
-							public storage: Storage,
-							private http: Http) {
-	};
+  constructor(//public username: string = 'TestUser',
+              //public hostAddress: string = 'cloud.tilestoolkit.io',
+              //public mqttPort: number = 8080,
+              public storage: Storage,
+              private http: Http) {
+  };
 
   /** 
    * Returns an object with name and properties from the inputstring
@@ -116,51 +118,64 @@ export class TilesApi {
     this.mqttPort = hostMqttPort;
   };
 
-  /** 
-   * TODO: I cannot see this (or the loadEventMappings working as the eventmappings are objects, not arrays
-   * and does not even have any of the fields asked for. 
-   * All the functions below needs to be rewritten. 
+  /**
+   * Set the eventmapprings for a tile
+   * @param {string} tileID - The target tile
+   * @param {any} - eventmappings to store for the tile
    */
-  getEventMapping = (tileId, eventAsString) => {
-    // TODO: Temporary mock code
-    return this.eventMappings;
-    /*
+  setEventMappings = (tileId: string, eventMappings: any) => {
+    // TODO: Set an interface for the eventMappings 
+    this.storage.set(this.username + '_' + tileId, eventMappings);
+  };
+
+  /** 
+   * Gets the mappings for a specific event for a tile
+   * @param {string} tileId - a tile 
+   * @param {string} eventAsString - a string representation of the event
+   */
+  getEventMapping = (tileId: string, eventAsString: string) => {
     if (this.eventMappings[this.username] == null ||
         this.eventMappings[this.username][tileId] == null) {
       this.loadEventMappings(tileId);
     }
-    return this.eventMappings[this.username][tileId][eventAsString];*/
+    return this.eventMappings[this.username][tileId][eventAsString];
   };
 
-  loadEventMappings = (tileId) => {
-    return this.eventMappings;/*
+  /**
+   * Get the eventmappings that are stored in the apps storage
+   * @param {string} tileId - the tile to get events for
+   */
+  loadEventMappings = (tileId: string) => {
     const storedEventMappings = this.storage.get(`eventMappings_${this.username}_${tileId}`)
                                             .then( res => res);
     if (this.eventMappings[this.username] == null) {
       this.eventMappings[this.username] = {};
     }
-    this.eventMappings[this.username][tileId] = this.extend(this.defaultEventMappings, storedEventMappings);*/
+    this.eventMappings[this.username][tileId] =
+            this.extend(this.defaultEventMappings, storedEventMappings);
   };
 
-  fetchEventMappings = (tileId, successCb) => {
-    return this.eventMappings;/*
-    const eventMappingsUrl = `http://${this.hostAddress}:${this.mqttPort}/eventmappings/${this.username}/${tileId}`;
-    return this.http.get(eventMappingsUrl)
-					     .toPromise()
-					   	 .then((res) => {
-						      const fetchedEventMappings = JSON.stringify(res.json().data);
-						      console.log(`Success. Fetched data:${{fetchedEventMappings}}`);
-						      this.storage.set(`eventMappings_${this.username}_${tileId}`, fetchedEventMappings);
-						      if (this.eventMappings[this.username] == null) {
-						      	this.eventMappings[this.username] = {};
-                  }
-                 this.eventMappings[this.username][tileId] = this.extend(this.defaultEventMappings, res.json().data);
-
-						      if (successCb) {
-                    successCb(res.json().data);
-                  }
-               })
-						   .catch((err) => (console.error('Error', JSON.stringify(err))));*/
+  /**
+   * Fetch the event mappings for the given tile from the web-server
+   * @param {string} tileId - The ID of the tile
+   */
+  fetchEventMappings = (tileId: string) => {
+    const url = `http://${this.hostAddress}:${this.apiPort}/eventmappings/${this.username}/${tileId}`;
+    //alert(url)
+    this.http.get(url)
+            .toPromise()
+            .then(res => {
+              const fetchedEventMappings = res.json();
+              alert('Success. Fetched data:' + JSON.stringify(res.json()));
+              // Do we need to check for username? Isn't the user always the same? 
+              this.eventMappings[this.username] =
+                    this.eventMappings[this.username] == null ?
+                    {} : this.eventMappings[this.username];
+              this.eventMappings[this.username][tileId] =
+                    this.extend(this.defaultEventMappings, fetchedEventMappings);
+              this.setEventMappings(tileId, this.eventMappings[this.username][tileId]);
+            })
+            .catch(err => alert('failed fetching data with error: ' + err));
   };
 }
 

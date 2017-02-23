@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Events } from 'ionic-angular';
 import mqtt from 'mqtt';
-import { TilesApi } from './tilesApi.service';
+
+import { TilesApi, CommandObject } from './tilesApi.service';
 import { Device } from './devices.service';
 
 
@@ -66,9 +67,9 @@ export class MqttClient {
 
     // Handle a message from the server
     this.client.on('message', (topic, message) => {
-      console.log('Received message from server: ' + message);
+      //alert('Received message from server: ' + message);
       try {
-        const command = JSON.parse(message);
+        const command: CommandObject = JSON.parse(message);
         if (command) {
           const deviceId = topic.split('/')[3];
           this.events.publish('command', deviceId, command);
@@ -152,18 +153,26 @@ export class MqttClient {
     }
   };
 
+// TODO: Look at server code to understand handling
   /**
    * Send an event to the server
    * @param {string} deviceId - the ID of the device to register
-   * @param event - The event we want to send
+   * @param {CommandObject} event - An event represented as a CommandObject (name, params...)
    */
-  sendEvent = (deviceId: string, event: any) => {
+  sendEvent = (deviceId: string, event: CommandObject) => {
+    //alert('Sending message to mqtt: ' + JSON.stringify(event));
     if (this.client) {
     	this.client.publish(
     		this.getDeviceSpecificTopic(deviceId, true),
     		JSON.stringify(event),
     		this.publishOpts
     	);
+    }
+    //TODO: NB: Temporary, this should come as a message from the server!!
+    if (event.properties[0] === 'tilt') {
+      this.events.publish('command', deviceId, {name: 'led', properties: ['on', 'red']});
+    } else {
+      this.events.publish('command', deviceId, {name: 'led', properties: ['off']});
     }
   };
 

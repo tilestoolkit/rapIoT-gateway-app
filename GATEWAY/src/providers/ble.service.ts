@@ -3,8 +3,8 @@ import { BLE } from 'ionic-native';
 import { Events } from 'ionic-angular';
 import 'rxjs/add/operator/toPromise';
 import { MqttClient } from './mqttClient';
-import { TilesApi } from './tilesApi.service';
-import { DevicesService, Device }from './devices.service';
+import { TilesApi, CommandObject } from './tilesApi.service';
+import { Device }from './devices.service';
 
 // A dictionary of new device names set by user
 let tileNames = {};
@@ -27,8 +27,7 @@ export class BleService {
 
   constructor(public events: Events,
               private mqttClient: MqttClient,
-  						private tilesApi: TilesApi,
-              private devicesService: DevicesService) {
+  						private tilesApi: TilesApi) {
   };
 
   /**
@@ -42,7 +41,7 @@ export class BleService {
 
   	  	// Turns the dataString into an array of bytes
   	  	let dataArray = new Uint8Array(dataString.length);
-  	  	for(let i = 0, l = dataString.length; i < l; i ++){
+  	  	for(let i = 0; i < dataString.length; i ++){
   	  		dataArray[i] = dataString.charCodeAt(i);
         }
       console.log('Bytes: ' + dataArray.length);
@@ -52,7 +51,7 @@ export class BleService {
 	  													 this.rfduino.serviceUUID,
 	  													 this.rfduino.sendCharacteristicUUID,
 	  													 dataArray.buffer)
-			  		  .then( res => console.log('Success sending the string: ' + dataString))
+			  		  .then( res => alert('Success sending the string: ' + dataString))
 			  		  .catch( err => console.log('Failed when trying to send daata to the RFduino'));
   	} finally {}
   };
@@ -107,13 +106,14 @@ export class BleService {
 	 */
   connect = (device: Device) => {
     //TODO: unsubscribe at some point
-    alert('connecting to device: ' + device.name);
+    //alert('connecting to device: ' + device.name)
   	BLE.connect(device.id)
   		  .subscribe(
           res => {
     		  	// Setting information about the device
   	  		 	device.ledOn = false;
   	  		 	device.connected = true;
+            device.buttonPressed = false;
   	        this.tilesApi.loadEventMappings(device.id);
             this.mqttClient.registerDevice(device);
             this.startDeviceNotification(device);
@@ -134,25 +134,33 @@ export class BleService {
    * @param {Device} device - the id from the target device
    */
   startDeviceNotification = (device: Device) => {
-    alert('Starting notifications from device: ' + device.name);
+    //alert('Starting notifications from device: ' + device.name);
     //TODO: unsubscribe at some point. Could return the subscriber and unsubscribe after a timeout
     BLE.startNotification(device.id, this.rfduino.serviceUUID, this.rfduino.receiveCharacteristicUUID)
       .subscribe(
         res => {
           // Convert the bytes sent from the device into a string
-          const responseString = String.fromCharCode.apply(null, new Uint8Array(res));
-          alert('Recieved event: ' + responseString);
-          let message = this.tilesApi.getEventStringAsObject(responseString);
+          const responseString = ((String.fromCharCode.apply(null, new Uint8Array(res))).slice(0, -1)).trim();
+          let message: CommandObject = this.tilesApi.getEventStringAsObject(responseString);
+          //alert('Recieved event: ' + message.name + ' with properties: ' + message.properties);
           if (message === null) {
-            console.log('Found no mapping for event: ' + responseString);
+            alert('Found no mapping for event: ' + responseString);
           } else {
-            message.name = device.name;
-            // TODO: In the future these checks could be turned into a switch statement or something.
-            if (message.properties[0] === 'touch') {
-              //TODO: buttonPressed is not a property of the device class. Not sure if it should be.
-              //device.buttonPressed = !device.buttonPressed
+            // Switch on the event type of the message
+            const eventType = message.properties[0];
+            switch (eventType){
+              case 'tap':
+                device.buttonPressed = device.buttonPressed !== undefined
+                                      ? !device.buttonPressed : true;
+                alert('tappeti tap')
+                break;
+              case 'tilt':
+                alert('You are tilting me!');
+                break;
+              default:
+                alert('No response for ' + message.properties[0])
+                break;
             }
-            alert('Sending message: ' + JSON.stringify(message));
             this.mqttClient.sendEvent(device.id, message);
           }
         },
