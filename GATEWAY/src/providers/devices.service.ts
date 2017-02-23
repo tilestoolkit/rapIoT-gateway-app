@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-/** 
+/**
  * Class for the devices, this makes it possible to specify the
  * device type in typescript to avoid getting invalid device-objects
  */
@@ -20,7 +20,7 @@ export class DevicesService {
     this.devices = [];
   };
 
-  /** 
+  /**
    * Returns mock devices for testing purposes
    */
   getMockDevices = (): Device[] => ([
@@ -29,7 +29,7 @@ export class DevicesService {
   	{id: '01:23:45:67:89:AD', name: 'TI SensorTag3', connected: false, ledOn: false, buttonPressed: true},
   ]);
 
-  /** 
+  /**
    * Returns the list of devices currently stored
    */
   getDevices = (): Device[] => {
@@ -37,9 +37,9 @@ export class DevicesService {
   	return this.devices;
   };
 
-  /** 
+  /**
    * Adds a new device to the list of devices
-   * @param {Device} deviceId - the device to add
+   * @param {Device} device - the device to add
    */
   newDevice = (device: Device) => {
     if (this.isNewDevice(device)){
@@ -48,15 +48,15 @@ export class DevicesService {
     }
   };
 
-  /** 
+  /**
    * Converts the device discovered by ble into a device on the tiles format
    * @param {any} bleDevice - the returned device from the ble scan
    */
   convertBleDeviceToDevice = (bleDevice: any): Device  => {
     /*const device: Device = {
-      id: '01:23:45:67:89:AB', 
-      name: 'TI SensorTag1', 
-      connected: false, 
+      id: '01:23:45:67:89:AB',
+      name: 'TI SensorTag1',
+      connected: false,
       ledOn: false
     };*/
     const device: Device = {
@@ -65,13 +65,13 @@ export class DevicesService {
       connected: false, 
       ledOn: false,
       buttonPressed: false
-    }
+    };
 
     return device;
   };
 
 
-  /** 
+  /**
    * Check if a device already exists among the stored ones
    * @param {Device} device - The device to check
    */
