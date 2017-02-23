@@ -161,7 +161,7 @@ export class TilesApi {
    */
   fetchEventMappings = (tileId: string) => {
     const url = `http://${this.hostAddress}:${this.apiPort}/eventmappings/${this.username}/${tileId}`;
-    alert(url)
+    //alert(url)
     this.http.get(url)
             .toPromise()
             .then(res => {
