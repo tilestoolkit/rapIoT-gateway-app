@@ -50,7 +50,7 @@
           <ion-toggle [(ngModel)]="device.ledOn" (ionChange)="bleService.sendData(device, 'led,on,red')"></ion-toggle>
         </ion-item>
         <ion-item class="item-icon-right">
-          <button ion-button small color="positive" (click)="changeNamePop(device, bleService)">Update name</button>
+          <button ion-button small color="positive" (click)="changeNamePop(device)">Update name</button>
         </ion-item>
       </ion-list>
     </ion-item>
