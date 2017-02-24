@@ -154,9 +154,8 @@ export class HomePage {
    * Called when the rename button is pushed on the view of the the
    * the devices.
    * @param {Device} device - the target device
-   * @param {bleService} ble - the bleService provider containing the updateName function
    */
-  changeNamePop = (device, ble) => {
+  changeNamePop = (device: Device) => {
     let alert = this.alertCtrl.create({
       title: 'Change tile name',
       inputs: [
@@ -173,7 +172,7 @@ export class HomePage {
         {
           text: 'Rename',
           handler: data => {
-            ble.updateName(device, data.newName);
+            this.bleService.updateName(device, data.newName);
           }
         }
       ]
