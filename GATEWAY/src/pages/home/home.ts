@@ -75,17 +75,10 @@ export class HomePage {
         }
       }
     });
-	  	
-	  this.events.subscribe('updateDevices', () => {
-	  	this.statusMsg = 'Updated list';
-	  	this.setDevices();
-	  	alert('updated devices: ' + this.devices)
-	  });
-
   };
 
   /**
-   *
+   * Set the devices equal to the devices from devicesservice
    */
   setDevices = () => {
     this.devices = this.devicesService.getDevices();
@@ -98,6 +91,7 @@ export class HomePage {
     this.statusMsg = 'Searching for devices...';
     this.devicesService.clearDisconnectedDevices();
     this.bleService.scanForDevices();
+    this.setDevices();
   };
 
   /**
