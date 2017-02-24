@@ -86,7 +86,7 @@ export class DevicesService {
     for(let i = 0; i < this.devices.length; i++) {
       const device = this.devices[i];
       if (device.connected == false) {
-        this.devices.slice(i, 1);
+        this.devices.splice(i, 1);
       }
     }
   };
