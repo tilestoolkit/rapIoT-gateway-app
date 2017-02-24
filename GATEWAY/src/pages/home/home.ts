@@ -31,7 +31,7 @@ export class HomePage {
               private alertCtrl: AlertController)
   {
 
-  	this.devices = devicesService.getDevices();
+  	this.setDevices();
   	this.serverConnectStatusMsg = 'Click to connect to server';
 
 
@@ -78,9 +78,18 @@ export class HomePage {
 	  	
 	  this.events.subscribe('updateDevices', () => {
 	  	this.statusMsg = 'Updated list';
+	  	this.setDevices();
+	  	alert('updated devices: ' + this.devices)
 	  });
 
   };
+
+  /**
+   *
+   */
+  setDevices = () => {
+    this.devices = this.devicesService.getDevices();
+  }
 
   /**
    * Use ble to discover new devices
