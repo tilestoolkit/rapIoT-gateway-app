@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { Events } from 'ionic-angular';
 
 /**
  * Class for the devices, this makes it possible to specify the
@@ -17,7 +16,7 @@ export class Device {
 export class DevicesService {
 	devices: Device[];
 
-  constructor(private events: Events) {
+  constructor() {
     this.devices = [];
   };
 
@@ -90,7 +89,6 @@ export class DevicesService {
         this.devices.slice(i, 1);
       }
     }
-    this.events.publish('updateDevices');
   };
 };
 
