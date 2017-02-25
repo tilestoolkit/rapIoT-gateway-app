@@ -31,29 +31,11 @@ export class HomePage {
               private alertCtrl: AlertController)
   {
 
-  	this.devices = devicesService.getDevices();
+  	this.setDevices();
   	this.serverConnectStatusMsg = 'Click to connect to server';
 
+
   	// Subscriptions to events that can be emitted from other places in the code
-  	//TODO: Dunno if these should be in the constructor or if that was a mistake
-	  this.events.subscribe('command', (deviceId: string, command: CommandObject) => {
-	    for (let device of this.devices) {
-	      if (device.id === deviceId) {
-	      	//alert('Recieved command from server: ' + JSON.stringify(command));
-	        device.ledOn = (command.name === 'led' && command.properties[0] === 'on');
-	        console.log('Device led on: ' + device.ledOn);
-	        const commandString = this.tilesApi.getCommandObjectAsString(command);
-	        this.bleService.sendData(device, commandString);
-
-        }
-      }
-    });
-
-	  this.events.subscribe('updateDevices', () => {
-	  	this.statusMsg = 'Updating list of devices';
-	  	this.devices = devicesService.getDevices();
-	  	this.statusMsg = this.devices.toString();
-	  });
 
     this.events.subscribe('serverConnected', () => {
       this.serverConnectStatusMsg = 'Connected to server';
@@ -79,55 +61,37 @@ export class HomePage {
       this.mqttClient.setServerConnectionStatus(false);
       this.serverConnectStatusMsg = 'Error: ${err}';
     });
+
+  	//TODO: Dunno if these should be in the constructor or if that was a mistake
+	  this.events.subscribe('command', (deviceId: string, command: CommandObject) => {
+	    for (let device of this.devices) {
+	      if (device.id === deviceId) {
+	      	//alert('Recieved command from server: ' + JSON.stringify(command));
+	        device.ledOn = (command.name === 'led' && command.properties[0] === 'on');
+	        console.log('Device led on: ' + device.ledOn);
+	        const commandString = this.tilesApi.getCommandObjectAsString(command);
+	        this.bleService.sendData(device, commandString);
+
+        }
+      }
+    });
   };
+
+  /**
+   * Set the devices equal to the devices from devicesservice
+   */
+  setDevices = () => {
+    this.devices = this.devicesService.getDevices();
+  }
 
   /**
    * Use ble to discover new devices
    */
   scanForNewBLEDevices = () => {
     this.statusMsg = 'Searching for devices...';
-
-    // A list of the discovered devices
-    let newDevices: Array<Device> = [];
-
-    //TODO: BUG: The completion function is never called.
-
-    // The ble-service returns an observable and we subscribe to it here
-    // This means that for every new device discovered the first function
-    // should run, and when it has discovered all the devices it should run
-    // the last one.
-    //TODO: unsubscribe at some point
-    this.bleService.scanForDevices().subscribe(
-      // function to be called for each new device discovered
-      bleDevice => {
-        let device = this.devicesService.convertBleDeviceToDevice(bleDevice);
-        //debugging
-        this.statusMsg = 'Found device: ' + JSON.stringify(device);
-        //test that we don't add the same device twice
-        if (!newDevices.map(function(a) {return a.id}).includes(device.id) &&
-          this.devicesService.isNewDevice(device) &&
-          this.tilesApi.isTilesDevice(device)) {
-          this.mqttClient.registerDevice(device);
-          this.devicesService.newDevice(device);
-          newDevices.push(device);
-          //TODO: temporary, until we get the completion function to run
-          this.events.publish('updateDevices');
-        }
-      },
-      // function to be called if an error occurs
-      err => {
-        alert('Error when scanning for devices: ' + err);
-      },
-      // function to be called when the scan is complete
-      () => {
-        alert('No more devices');
-        // If we found any devices we should update the device list
-        if (newDevices.length > 0) {
-          this.events.publish('updateDevices');
-        }
-        console.log('\nNo more devices: ');
-      });
-    this.statusMsg = 'Done scanning';
+    this.devicesService.clearDisconnectedDevices();
+    this.bleService.scanForDevices();
+    this.setDevices();
   };
 
   /**
@@ -184,4 +148,4 @@ export class HomePage {
     });
     alert.present();
   };
-}
+};

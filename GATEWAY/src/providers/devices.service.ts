@@ -78,6 +78,18 @@ export class DevicesService {
   isNewDevice = (device: Device) => {
     return !this.devices.map(function(a) {return a.id}).includes(device.id);
   };
-}
+
+  /**
+   * Go through the list of registered devices and keep only those connected
+   */
+  clearDisconnectedDevices = () => {
+    for(let i = 0; i < this.devices.length; i++) {
+      const device = this.devices[i];
+      if (device.connected == false) {
+        this.devices.splice(i, 1);
+      }
+    }
+  };
+};
 
 export default {DevicesService, Device};

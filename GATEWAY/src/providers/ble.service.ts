@@ -4,7 +4,7 @@ import { Events } from 'ionic-angular';
 import 'rxjs/add/operator/toPromise';
 import { MqttClient } from './mqttClient';
 import { TilesApi, CommandObject } from './tilesApi.service';
-import { Device }from './devices.service';
+import { Device, DevicesService }from './devices.service';
 
 // A dictionary of new device names set by user
 let tileNames = {};
@@ -27,7 +27,8 @@ export class BleService {
 
   constructor(public events: Events,
               private mqttClient: MqttClient,
-  						private tilesApi: TilesApi) {
+  						private tilesApi: TilesApi,
+              private devicesService: DevicesService) {
   };
 
   /**
@@ -58,29 +59,69 @@ export class BleService {
 
   /**
    * Checking if bluetooth is enabled and enable on android if not
+   * never used atm
    */
-  doRefresh = () => {
-  	BLE.isEnabled()
+  scanForDevices = () => {
+    BLE.isEnabled()
 		  		  .then( res => {
-		   		 		console.log('Bluetooth is enabled');
-		   		 		this.scanForDevices();
+		   		 		this.scanBLE();
 		   		 	})
 		  		  .catch( err => {
-		  		 		console.log('Bluetooth not enabled!');
-		  		 		// NB! Android only!! IOS users has to be told to turn bluetooth on
+		  		 		alert('Bluetooth not enabled!');
+		  		 		// NB! Android only!! IOS users has to turn bluetooth on manually
 		  		 		BLE.enable()
-				  		 			  .then( res => console.log('Bluetooth has been enabled'))
-				  		 			  .catch( err => console.log('Failed to enable bluetooth'));
+				  		 	 .then( res => {
+                    alert('Bluetooth has been enabled');
+                    this.scanBLE();
+                  })
+				    		 .catch( err => {
+                    alert('Failed to enable bluetooth, try doing it manually');
+                  });
 		  		  });
   };
 
   /**
    * Checking to see if any bluetooth devices are in reach
    */
-  scanForDevices = () => {
-		// The first param is the UUIDs to discover, this might
- 		// be specified to only search for tiles.
- 		return BLE.scan([], 30);
+  scanBLE = () => {
+    // A list of the discovered devices
+    let newDevices: Array<Device> = [];
+    //TODO: BUG: The completion function is never called.
+
+    // The ble-service returns an observable and we subscribe to it here
+    // This means that for every new device discovered the first function
+    // should run, and when it has discovered all the devices it should run
+    // the last one.
+    //TODO: unsubscribe at some point
+    BLE.scan([], 30).subscribe(
+      // function to be called for each new device discovered
+      bleDevice => {
+        let device = this.devicesService.convertBleDeviceToDevice(bleDevice);
+
+        //test that we don't add the same device twice and only add tiles devices
+        if (!newDevices.map(function(a) {return a.id}).includes(device.id) &&
+                                   this.devicesService.isNewDevice(device) &&
+                                   this.tilesApi.isTilesDevice(device)) {
+          this.mqttClient.registerDevice(device);
+          this.devicesService.newDevice(device);
+          newDevices.push(device);
+          //TODO: temporary, until we get the completion function to run
+          this.events.publish('updateDevices');
+        }
+      },
+      // function to be called if an error occurs
+      err => {
+        alert('Error when scanning for devices: ' + err);
+      },
+      // function to be called when the scan is complete
+      () => {
+        alert('No more devices');
+        // If we found any devices we should update the device list
+        if (newDevices.length > 0) {
+          this.events.publish('updateDevices');
+        }
+        console.log('\nNo more devices: ');
+      });
   };
 
   /**
@@ -105,7 +146,7 @@ export class BleService {
 	 * @param {Device} device - the target device
 	 */
   connect = (device: Device) => {
-    //TODO: unsubscribe at some point
+    //TODO: unsubscribe at some point ? 
     //alert('connecting to device: ' + device.name)
   	BLE.connect(device.id)
   		  .subscribe(
@@ -122,10 +163,12 @@ export class BleService {
             }
         },
         err => {
-          console.log('Failed to connect to device ' + device.name)
+          device.connected = false;
+          this.disconnect(device);
+          alert('Lost connection to ' + device.name)
         },
         () => {
-          console.log('Connection attempt completed')
+          alert('Connection attempt completed')
         });
   };
 
@@ -181,7 +224,11 @@ export class BleService {
   					.then( res => {
   						device.connected = false;
   						this.mqttClient.unregisterDevice(device);
+              this.devicesService.clearDisconnectedDevices();
   					})
-  					.catch( err => console.log('Failed to disconnect'))
+  					.catch( err => {
+              console.log('Failed to disconnect')
+              device.connected = false;
+            });
   };
 }
