@@ -12,8 +12,9 @@
         this should be a button that triggers the showConnectMQTTPopup()
         from the old code
       -->
-      <ion-title >{{serverConnectStatusMsg}}</ion-title>
-      <button ion-button small style="float: right;" (click)="connectToServer()">Connect</button>
+      <ion-title >{{serverConnectStatusMsg}}
+        <button ion-button small style="float: right;" (click)="connectToServer()">Connect</button>
+      </ion-title>
     </ion-toolbar>
   </ion-header>
 
@@ -26,9 +27,9 @@
       refreshingText="Refreshing...">
     </ion-refresher-content>
   </ion-refresher>
-  <ion-item>{{statusMsg}}</ion-item>
-  <ion-list padding>
-    <ion-item margin-bottom="3px" color="light" *ngFor="let device of devices">
+  <ion-item no-lines>{{statusMsg}}</ion-item>
+  <ion-list style="margin-left: 10px; margin-right: 10px;">
+    <ion-item style="margin-bottom: 7px;" color="light" *ngFor="let device of devices">
       <div class="row row-center">
         <div class="col col-75">
           <b>{{device.name}}</b><br>ID: {{device.id}}
