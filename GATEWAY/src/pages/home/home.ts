@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { AlertController, Events, NavController, Platform } from 'ionic-angular';
+
 import { BleService } from '../../providers/ble.service';
 import { Device, DevicesService } from '../../providers/devices.service';
 import { MqttClient } from '../../providers/mqttClient';
@@ -17,26 +18,24 @@ import { TilesApi, CommandObject } from '../../providers/tilesApi.service';
 })
 
 export class HomePage {
-  public devices: Device[];
+  devices: Device[];
   serverConnectStatusMsg: string;
   statusMsg: string;
 
-  constructor(public navCtrl: NavController,
-              public events: Events,
+  constructor(public alertCtrl: AlertController,
+              public navCtrl: NavController,
               public platform: Platform,
+              private events: Events,
               private bleService: BleService,
               private devicesService: DevicesService,
-              public tilesApi: TilesApi,
-              private mqttClient: MqttClient,
-              private alertCtrl: AlertController)
+              private tilesApi: TilesApi,
+              private mqttClient: MqttClient)
   {
 
   	this.setDevices();
   	this.serverConnectStatusMsg = 'Click to connect to server';
 
-
   	// Subscriptions to events that can be emitted from other places in the code
-
     this.events.subscribe('serverConnected', () => {
       this.serverConnectStatusMsg = 'Connected to server';
       this.scanForNewBLEDevices();
@@ -62,7 +61,6 @@ export class HomePage {
       this.serverConnectStatusMsg = 'Error: ${err}';
     });
 
-  	//TODO: Dunno if these should be in the constructor or if that was a mistake
 	  this.events.subscribe('command', (deviceId: string, command: CommandObject) => {
 	    for (let device of this.devices) {
 	      if (device.id === deviceId) {
@@ -80,14 +78,14 @@ export class HomePage {
   /**
    * Set the devices equal to the devices from devicesservice
    */
-  setDevices = () => {
+  setDevices = (): void => {
     this.devices = this.devicesService.getDevices();
   }
 
   /**
    * Use ble to discover new devices
    */
-  scanForNewBLEDevices = () => {
+  scanForNewBLEDevices = (): void => {
     this.statusMsg = 'Searching for devices...';
     this.devicesService.clearDisconnectedDevices();
     this.bleService.scanForDevices();
@@ -97,11 +95,11 @@ export class HomePage {
   /**
    * Connect to the mqttServer
    */
-  connectToServer = () => {
+  connectToServer = (): void => {
     this.mqttClient.connect(this.tilesApi.hostAddress, this.tilesApi.mqttPort);
   };
 
-	fetchEventMappings = (device: Device) => {
+	fetchEventMappings = (device: Device): void => {
 		this.tilesApi.fetchEventMappings(device.id);
 	};
 
@@ -109,7 +107,7 @@ export class HomePage {
    * Called when the refresher is triggered by pulling down on the view of 
 	 * the devices. 
 	 */
-	refreshDevices = (refresher) => {
+	refreshDevices = (refresher): void => {
 		console.log('Scanning for more devices...');
 		this.scanForNewBLEDevices();
 		//Makes the refresher run for 2 secs
@@ -124,7 +122,7 @@ export class HomePage {
    * the devices.
    * @param {Device} device - the target device
    */
-  changeNamePop = (device: Device) => {
+  changeNamePop = (device: Device): void => {
     let alert = this.alertCtrl.create({
       title: 'Change tile name',
       inputs: [
