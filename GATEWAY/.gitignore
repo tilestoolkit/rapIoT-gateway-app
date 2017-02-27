@@ -3,3 +3,5 @@ platforms/
 plugins/
 www/lib/
 www/
+
+.io-onfig.json
