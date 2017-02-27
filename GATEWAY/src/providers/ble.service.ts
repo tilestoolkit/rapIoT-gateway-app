@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import { BLE } from 'ionic-native';
 import { Events } from 'ionic-angular';
+import { BLE } from 'ionic-native';
 import 'rxjs/add/operator/toPromise';
+
 import { MqttClient } from './mqttClient';
 import { TilesApi, CommandObject } from './tilesApi.service';
 import { Device, DevicesService }from './devices.service';
@@ -25,43 +26,17 @@ export class BleService {
   ];
 
 
-  constructor(public events: Events,
+  constructor(private events: Events,
+              private devicesService: DevicesService,
               private mqttClient: MqttClient,
-  						private tilesApi: TilesApi,
-              private devicesService: DevicesService) {
-  };
-
-  /**
-   * Send data to a device using BLE
-	 * @param {Device} device - the target device
-	 * @param {string} dataString - the string of data to send to the device
-	 */
-  sendData = (device: Device, dataString: string) => {
-  	try {
-      console.log('Attempting to send data to device via BLE.');
-
-  	  	// Turns the dataString into an array of bytes
-  	  	let dataArray = new Uint8Array(dataString.length);
-  	  	for(let i = 0; i < dataString.length; i ++){
-  	  		dataArray[i] = dataString.charCodeAt(i);
-        }
-      console.log('Bytes: ' + dataArray.length);
-
-	  	// Attempting to send the array of bytes to the device
-	  	BLE.writeWithoutResponse(device.id,
-	  													 this.rfduino.serviceUUID,
-	  													 this.rfduino.sendCharacteristicUUID,
-	  													 dataArray.buffer)
-			  		  .then( res => alert('Success sending the string: ' + dataString))
-			  		  .catch( err => console.log('Failed when trying to send daata to the RFduino'));
-  	} finally {}
+  						private tilesApi: TilesApi) {
   };
 
   /**
    * Checking if bluetooth is enabled and enable on android if not
    * never used atm
    */
-  scanForDevices = () => {
+  scanForDevices = (): void => {
     BLE.isEnabled()
 		  		  .then( res => {
 		   		 		this.scanBLE();
@@ -83,7 +58,7 @@ export class BleService {
   /**
    * Checking to see if any bluetooth devices are in reach
    */
-  scanBLE = () => {
+  scanBLE = (): void => {
     // A list of the discovered devices
     let newDevices: Array<Device> = [];
     //TODO: BUG: The completion function is never called.
@@ -125,27 +100,10 @@ export class BleService {
   };
 
   /**
-   * Update the name of a device
-	 * @param {Device} device - the target device
-	 * @param {string} newName - The new name
-	 */
-  updateName = (device: Device, newName: string) => {
-  	BLE.disconnect(device.id)
-			  		.then( res => {
-			  		 	device.connected = false;
-			  		 	this.mqttClient.unregisterDevice(device);
-              tileNames[device.name] = newName;
-			  		 	device.name = newName;
-			  		 	this.connect(device);
-			  		})
-			  		.catch(err => console.log('Failed to update the name of device: ' + device.name));
-  };
-
-  /**
    * Connect to a device
 	 * @param {Device} device - the target device
 	 */
-  connect = (device: Device) => {
+  connect = (device: Device): void => {
     //TODO: unsubscribe at some point ? 
     //alert('connecting to device: ' + device.name)
   	BLE.connect(device.id)
@@ -176,7 +134,7 @@ export class BleService {
    * Start getting notifications of events from a device
    * @param {Device} device - the id from the target device
    */
-  startDeviceNotification = (device: Device) => {
+  startDeviceNotification = (device: Device): void => {
     //alert('Starting notifications from device: ' + device.name);
     //TODO: unsubscribe at some point. Could return the subscriber and unsubscribe after a timeout
     BLE.startNotification(device.id, this.rfduino.serviceUUID, this.rfduino.receiveCharacteristicUUID)
@@ -219,7 +177,7 @@ export class BleService {
    * Disconnect from device
 	 * @param {Device} device - the target device
 	 */
-  disconnect = (device: Device) => {
+  disconnect = (device: Device): void => {
   	BLE.disconnect(device.id)
   					.then( res => {
   						device.connected = false;
@@ -231,4 +189,47 @@ export class BleService {
               device.connected = false;
             });
   };
-}
+
+  /**
+   * Send data to a device using BLE
+   * @param {Device} device - the target device
+   * @param {string} dataString - the string of data to send to the device
+   */
+  sendData = (device: Device, dataString: string): void => {
+    try {
+      console.log('Attempting to send data to device via BLE.');
+
+        // Turns the dataString into an array of bytes
+        let dataArray = new Uint8Array(dataString.length);
+        for(let i = 0; i < dataString.length; i ++){
+          dataArray[i] = dataString.charCodeAt(i);
+        }
+      console.log('Bytes: ' + dataArray.length);
+
+      // Attempting to send the array of bytes to the device
+      BLE.writeWithoutResponse(device.id,
+                               this.rfduino.serviceUUID,
+                               this.rfduino.sendCharacteristicUUID,
+                               dataArray.buffer)
+              .then( res => alert('Success sending the string: ' + dataString))
+              .catch( err => console.log('Failed when trying to send daata to the RFduino'));
+    } finally {}
+  };
+
+  /**
+   * Update the name of a device
+   * @param {Device} device - the target device
+   * @param {string} newName - The new name
+   */
+  updateName = (device: Device, newName: string): void => {
+    BLE.disconnect(device.id)
+            .then( res => {
+               device.connected = false;
+               this.mqttClient.unregisterDevice(device);
+              tileNames[device.name] = newName;
+               device.name = newName;
+               this.connect(device);
+            })
+            .catch(err => console.log('Failed to update the name of device: ' + device.name));
+  };
+};

@@ -38,6 +38,21 @@ export class DevicesService {
   };
 
   /**
+   * Converts the device discovered by ble into a device on the tiles format
+   * @param {any} bleDevice - the returned device from the ble scan
+   */
+  convertBleDeviceToDevice = (bleDevice: any): Device  => {
+    const device: Device = {
+      id: bleDevice.id,
+      name: (bleDevice.name ? bleDevice.name : 'NoName'),
+      connected: false, 
+      ledOn: false,
+      buttonPressed: false
+    };
+    return device;
+  };
+
+  /**
    * Adds a new device to the list of devices
    * @param {Device} device - the device to add
    */
@@ -49,40 +64,17 @@ export class DevicesService {
   };
 
   /**
-   * Converts the device discovered by ble into a device on the tiles format
-   * @param {any} bleDevice - the returned device from the ble scan
-   */
-  convertBleDeviceToDevice = (bleDevice: any): Device  => {
-    /*const device: Device = {
-      id: '01:23:45:67:89:AB',
-      name: 'TI SensorTag1',
-      connected: false,
-      ledOn: false
-    };*/
-    const device: Device = {
-      id: bleDevice.id,
-      name: (bleDevice.name ? bleDevice.name : 'NoName'),
-      connected: false, 
-      ledOn: false,
-      buttonPressed: false
-    };
-
-    return device;
-  };
-
-
-  /**
    * Check if a device already exists among the stored ones
    * @param {Device} device - The device to check
    */
-  isNewDevice = (device: Device) => {
+  isNewDevice = (device: Device): boolean => {
     return !this.devices.map(function(a) {return a.id}).includes(device.id);
   };
 
   /**
    * Go through the list of registered devices and keep only those connected
    */
-  clearDisconnectedDevices = () => {
+  clearDisconnectedDevices = (): void => {
     for(let i = 0; i < this.devices.length; i++) {
       const device = this.devices[i];
       if (device.connected == false) {
