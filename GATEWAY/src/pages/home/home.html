@@ -13,7 +13,7 @@
         from the old code
       -->
       <ion-title >{{serverConnectStatusMsg}}
-        <button ion-button small style="float: right;" (click)="connectToServer()">Connect</button>
+        <button class="titleBttn" ion-button small color="positive" (click)="connectToServer()">Connect</button>
       </ion-title>
     </ion-toolbar>
   </ion-header>
@@ -28,31 +28,32 @@
     </ion-refresher-content>
   </ion-refresher>
   <ion-item no-lines>{{statusMsg}}</ion-item>
-  <ion-list style="margin-left: 10px; margin-right: 10px;">
-    <ion-item style="margin-bottom: 7px;" color="light" *ngFor="let device of devices">
+  <ion-list class="mainList">
+    <ion-item class="devices" color="light" *ngFor="let device of devices">
       <div class="row row-center">
         <div class="col col-75">
           <b>{{device.name}}</b><br>ID: {{device.id}}
         </div>
         <div class="col">
-          <button ion-button small color="positive" style="float: right;" (click)="bleService.connect(device)" [hidden]="device.connected">Connect</button>
-          <button ion-button small id="disconnectButton" style="float: right;" (click)="bleService.disconnect(device)" [hidden]="!device.connected">Disconnect</button>
-          <button ion-button small id="fetchEventMappingsButton" style="float: right;" (click)="fetchEventMappings(device)" [hidden]="!device.connected"> FETCH EVT
-          </button>
+          <button class="bttn" ion-button small color="positive" (click)="bleService.connect(device)" [hidden]="device.connected">Connect</button>
+          <button class="bttn" ion-button small color="positive" id="disconnectButton" (click)="bleService.disconnect(device)" [hidden]="!device.connected">Disconnect</button>
+          <button class="bttn" ion-button small color="positive" id="fetchEventMappingsButton" (click)="fetchEventMappings(device)" [hidden]="!device.connected">FETCH EVT</button>
         </div>
       </div>
       <ion-list [hidden]="!device.connected" no-lines>
-        <ion-item color="light" name="item-icon-right">Button
-          <ion-badge badge-stable style="right: 16px;" [hidden]="device.buttonPressed">Released</ion-badge>
-          <ion-badge badge-balanced style="right: 16px;" [hidden]="!device.buttonPressed">Pressed</ion-badge>
-        </ion-item>
-        <ion-item color="light">
-          <!--ion-label>LED Light </ion-label-->
-          <ion-toggle [(ngModel)]="device.ledOn" (ionChange)="bleService.sendData(device, 'led,on,red')"></ion-toggle>
-        </ion-item>
-        <ion-item color="light" class="item-icon-right">
-          <button ion-button small color="positive" (click)="changeNamePop(device)">Update name</button>
-        </ion-item>
+        <div class="row row-center">
+          <div class="col col-75">
+            <ion-badge class="bttnRel" badge-stable [hidden]="device.buttonPressed">Button released</ion-badge>
+            <ion-badge class="bttnRel" badge-balanced [hidden]="!device.buttonPressed">Button pressed</ion-badge>
+            <ion-item color="light">
+              <!--ion-label>LED Light</ion-label-->
+              <ion-toggle [(ngModel)]="device.ledOn" (ionChange)="bleService.sendData(device, 'led,on,red')"></ion-toggle>
+            </ion-item>
+          </div>
+          <div class="col">
+            <button class="bttn" ion-button small color="positive" (click)="changeNamePop(device)">Rename Tile</button>
+          </div>
+        </div>
       </ion-list>
     </ion-item>
   </ion-list>
