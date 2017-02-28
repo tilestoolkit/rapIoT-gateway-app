@@ -1,15 +1,16 @@
 {
-	"users": [
-		{"_id":"Anders","__v":2,"tiles":["F3:45:F7:CB:67:C0"]}
-	],
+  "users": [
+    {"_id":"TestUser","__v":2,"tiles":["F3:45:F7:CB:67:C0", "00:12:AA:BB:CC:FF"]},
+    {"_id":"Anders","__v":2,"tiles":["F3:45:F7:CB:67:C0"]}
+  ],
 
 
-	"tiles": [
-		{"_id":"F3:45:F7:CB:67:C0","__v":0,"timestamp":"2017-2-20T15:26:4.500","user":"Anders","active":false,"name":"Tile_c0"}
-	],
+  "tiles": [
+    {"_id":"F3:45:F7:CB:67:C0","__v":0,"timestamp":"2017-2-20T15:26:4.500","user":"Anders","active":false,"name":"Tile_c0"}
+  ],
 
 
-	"applications": [
+  "applications": [
   { "_id": "test_app",
     "devEnvironment": "Cloud",
     "user": "Anders",
