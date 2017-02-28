@@ -1,0 +1,7 @@
+{
+    "id": "01:23:45:67:89:AB",
+    "name": "TI SensorTag1",
+    "connected": false,
+    "ledOn": false,
+    "buttonPressed": true
+}
