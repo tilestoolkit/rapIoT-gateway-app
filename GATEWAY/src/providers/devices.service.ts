@@ -69,7 +69,7 @@ export class DevicesService {
     const device: Device = {
       id: bleDevice.id,
       name: (bleDevice.name ? bleDevice.name : 'NoName'),
-      connected: false, 
+      connected: false,
       ledOn: false,
       buttonPressed: false
     };

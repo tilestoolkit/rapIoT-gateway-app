@@ -29,4 +29,17 @@ describe('DevicesService', () => {
     const device: Device = {id: '01:23:45:67:89:AB', name: 'TI SensorTag1', connected: false, ledOn: false, buttonPressed: true};
     assert.equal(this.devicesService.isNewDevice(device), true);
   });
+
+  it('should return false since the device is allready in the devices list', () => {
+    const firstDevice: Device = {id: '01:23:45:67:89:AB', name: 'TI SensorTag1', connected: false, ledOn: false, buttonPressed: true};
+    this.devicesService.newDevice(firstDevice);
+    const secondDevice: Device = {id: '01:23:45:67:89:AB', name: 'TI SensorTag1', connected: false, ledOn: false, buttonPressed: true};
+    assert.equal(this.devicesService.isNewDevice(secondDevice), false);
+  });
+
+  it('should return an object of type Device when converting a BLE-device with method convertBleDeviceToDevice()', () => {
+    const bleDevice = {"id" : "01:23:45:67:89:AB", "advertising" : {}, "rssi" : -99};
+    const device = this.devicesService.convertBleDeviceToDevice(bleDevice);
+    assert.typeOf(device, 'Device', "this is a Device");
+  });
 });
