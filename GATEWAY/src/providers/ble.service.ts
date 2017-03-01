@@ -213,13 +213,4 @@ export class BleService {
               .catch( err => console.log('Failed when trying to send daata to the RFduino'));
     } finally {}
   };
-
-  /**
-   * Update the name of a device
-   * @param {Device} device - the target device
-   * @param {string} newName - The new name
-   */
-  updateName = (device: Device, newName: string): void => {
-    this.devicesService.setCustomDeviceName(device, newName);
-  };
 };

@@ -139,7 +139,7 @@ export class HomePage {
         {
           text: 'Rename',
           handler: data => {
-            this.bleService.updateName(device, data.newName);
+            this.devicesService.setCustomDeviceName(device, data.newName);
           }
         }
       ]
