@@ -13,8 +13,9 @@
     "setTestConfig": "cp-cli configs/tsconfig.test.json tsconfig.json",
     "runTest": "mocha --require ts-node/register --compilers ts:ts-node/register --recursive test/pages test/providers --reporter dot",
     "test": "npm run setTestConfig && npm run runTest",
-    "runApi": "json-server --watch test/fixtures/tilesApi.json",
-    "api": "npm run runApi"
+    "runJSONApi": "json-server --watch test/fixtures/tilesApi.json",
+    "runMockApi": "mockserver -p 8080 -m test/fixtures/mocks",
+    "api": "npm run runMockApi"
   },
   "dependencies": {
     "@angular/common": "2.2.1",
