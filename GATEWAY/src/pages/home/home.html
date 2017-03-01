@@ -4,7 +4,7 @@
       <button ion-button icon-only menuToggle>
         <ion-icon name="menu"></ion-icon>
       </button>
-      <ion-title>Tiles</ion-title>
+      <ion-title item-left>Tiles</ion-title>
     </ion-navbar>
     <ion-toolbar>
       <!--
@@ -12,8 +12,8 @@
         this should be a button that triggers the showConnectMQTTPopup()
         from the old code
       -->
-      <ion-title >{{serverConnectStatusMsg}}
-        <button class="titleBttn" ion-button small color="positive" (click)="connectToServer()">Connect</button>
+      <ion-title item-left>{{serverConnectStatusMsg}}
+        <button class="titleBttn" ion-button small color="positive" (click)="connectToServer()">CONNECT</button>
       </ion-title>
     </ion-toolbar>
   </ion-header>
@@ -35,8 +35,8 @@
           <b>{{device.name}}</b><br>ID: {{device.id}}
         </div>
         <div class="col">
-          <button class="bttn" ion-button small color="positive" (click)="bleService.connect(device)" [hidden]="device.connected">Connect</button>
-          <button class="bttn" ion-button small color="positive" id="disconnectButton" (click)="bleService.disconnect(device)" [hidden]="!device.connected">Disconnect</button>
+          <button class="bttn" ion-button small color="positive" (click)="bleService.connect(device)" [hidden]="device.connected">CONNECT</button>
+          <button class="bttn" ion-button small color="positive" id="disconnectButton" (click)="bleService.disconnect(device)" [hidden]="!device.connected">DISCONNECT</button>
           <button class="bttn" ion-button small color="positive" id="fetchEventMappingsButton" (click)="fetchEventMappings(device)" [hidden]="!device.connected">FETCH EVT</button>
         </div>
       </div>
@@ -51,7 +51,7 @@
             </ion-item>
           </div>
           <div class="col">
-            <button class="bttn" ion-button small color="positive" (click)="changeNamePop(device)">Rename Tile</button>
+            <button class="bttn" ion-button small color="positive" (click)="changeNamePop(device)">RENAME TILE</button>
           </div>
         </div>
       </ion-list>
