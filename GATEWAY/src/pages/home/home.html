@@ -45,9 +45,9 @@
           <div class="col col-75">
             <ion-badge class="bttnRel" badge-stable [hidden]="device.buttonPressed">Button released</ion-badge>
             <ion-badge class="bttnRel" badge-balanced [hidden]="!device.buttonPressed">Button pressed</ion-badge>
-            <ion-item color="light">
-              <!--ion-label>LED Light</ion-label-->
-              <ion-toggle [(ngModel)]="device.ledOn" (ionChange)="bleService.sendData(device, 'led,on,red')"></ion-toggle>
+            <ion-item class="toggleIonItem" color="light">
+              <ion-item class="toggleText" color="light" item-left>LED</ion-item>
+              <ion-toggle class="tgle" item-left [(ngModel)]="device.ledOn" (ionChange)="bleService.sendData(device, 'led,on,red')"></ion-toggle>
             </ion-item>
           </div>
           <div class="col">
