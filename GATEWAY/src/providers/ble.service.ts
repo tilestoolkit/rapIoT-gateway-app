@@ -61,27 +61,25 @@ export class BleService {
   scanBLE = (): void => {
     // A list of the discovered devices
     let newDevices: Array<Device> = [];
-    //TODO: BUG: The completion function is never called.
 
-    // The ble-service returns an observable and we subscribe to it here
-    // This means that for every new device discovered the first function
-    // should run, and when it has discovered all the devices it should run
-    // the last one.
+    //TODO: BUG: The completion function is never called.
     //TODO: unsubscribe at some point
+
+    // Subscribing to the observable returned by BLE.scan()
     BLE.scan([], 30).subscribe(
       // function to be called for each new device discovered
       bleDevice => {
-        let device = this.devicesService.convertBleDeviceToDevice(bleDevice);
-
-        //test that we don't add the same device twice and only add tiles devices
-        if (!newDevices.map(function(a) {return a.id}).includes(device.id) &&
-                                   this.devicesService.isNewDevice(device) &&
-                                   this.tilesApi.isTilesDevice(device)) {
-          this.mqttClient.registerDevice(device);
-          this.devicesService.newDevice(device);
-          newDevices.push(device);
-          //TODO: temporary, until we get the completion function to run
-          this.events.publish('updateDevices');
+        if (this.tilesApi.isTilesDevice(bleDevice) && this.devicesService.isNewDevice(bleDevice)) {
+          this.devicesService.convertBleDeviceToDevice(bleDevice).then( device => {
+            //test that the discovered device is not in the list of new devices
+            if (!newDevices.map(discoveredDevice => discoveredDevice.id).includes(device.id)) {
+              this.mqttClient.registerDevice(device);
+              this.devicesService.newDevice(device);
+              newDevices.push(device);
+              //TODO: temporary, until we get the completion function to run
+              this.events.publish('updateDevices');
+            }
+          }).catch(err => alert(err));
         }
       },
       // function to be called if an error occurs
@@ -213,22 +211,5 @@ export class BleService {
               .then( res => alert('Success sending the string: ' + dataString))
               .catch( err => console.log('Failed when trying to send daata to the RFduino'));
     } finally {}
-  };
-
-  /**
-   * Update the name of a device
-   * @param {Device} device - the target device
-   * @param {string} newName - The new name
-   */
-  updateName = (device: Device, newName: string): void => {
-    BLE.disconnect(device.id)
-            .then( res => {
-               device.connected = false;
-               this.mqttClient.unregisterDevice(device);
-              tileNames[device.name] = newName;
-               device.name = newName;
-               this.connect(device);
-            })
-            .catch(err => console.log('Failed to update the name of device: ' + device.name));
   };
 };
