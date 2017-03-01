@@ -61,13 +61,11 @@ export class BleService {
   scanBLE = (): void => {
     // A list of the discovered devices
     let newDevices: Array<Device> = [];
-    //TODO: BUG: The completion function is never called.
 
-    // The ble-service returns an observable and we subscribe to it here
-    // This means that for every new device discovered the first function
-    // should run, and when it has discovered all the devices it should run
-    // the last one.
+    //TODO: BUG: The completion function is never called.
     //TODO: unsubscribe at some point
+
+    // Subscribing to the observable returned by BLE.scan()
     BLE.scan([], 30).subscribe(
       // function to be called for each new device discovered
       bleDevice => {
