@@ -12,7 +12,9 @@
     "setProdConfig": "cp-cli configs/tsconfig.prod.json tsconfig.json",
     "setTestConfig": "cp-cli configs/tsconfig.test.json tsconfig.json",
     "runTest": "mocha --require ts-node/register --compilers ts:ts-node/register --recursive test/pages test/providers --reporter dot",
-    "test": "npm run setTestConfig && npm run runTest"
+    "test": "npm run setTestConfig && npm run runTest",
+    "runApi": "json-server --watch test/fixtures/tilesApi.json",
+    "api": "npm run runApi"
   },
   "dependencies": {
     "@angular/common": "2.2.1",
@@ -42,6 +44,7 @@
     "eslint-plugin-import": "^2.2.0",
     "mocha": "^3.2.0",
     "mocha-typescript": "^1.0.21",
+    "node-mock-server": "^0.10.0",
     "ts-node": "^2.1.0",
     "typescript": "^2.0.9"
   },
