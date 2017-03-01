@@ -1,0 +1,8 @@
+HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+
+{ "tiles":
+	[
+    {"_id":"F3:45:F7:CB:67:C0","__v":0,"timestamp":"2017-2-20T15:26:4.500","user":"Anders","active":false,"name":"Tile_c0"}
+  ]
+}
