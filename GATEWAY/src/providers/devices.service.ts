@@ -42,15 +42,24 @@ export class DevicesService {
    * Converts the device discovered by ble into a device on the tiles format
    * @param {any} bleDevice - the returned device from the ble scan
    */
-  convertBleDeviceToDevice = (bleDevice: any): Device  => {
-    const storedName = this.storage.getItem(bleDevice.id);
-    return {
-      id: bleDevice.id,
-      name: storedName !== null ? storedName : bleDevice.name,
-      connected: false, 
-      ledOn: false,
-      buttonPressed: false
-    };
+  convertBleDeviceToDevice = (bleDevice: any): Promise<Device>  => {
+    return this.storage.get(bleDevice.id).then( name => {
+      return {
+        id: bleDevice.id,
+        name: name !== null ? name : bleDevice.name,
+        connected: false, 
+        ledOn: false,
+        buttonPressed: false
+      };
+    }).catch(err => {
+      return {
+        id: bleDevice.id,
+        name: bleDevice.name,
+        connected: false, 
+        ledOn: false,
+        buttonPressed: false
+      };
+    })
   };
 
   /**
@@ -78,7 +87,7 @@ export class DevicesService {
    * @param {string} name - the new name for the device
    */
   setCustomDeviceName = (device: Device, name: string): void => {
-    this.storage.setItem(device.id, name);
+    this.storage.set(device.id, name);
   };
 
   /**
