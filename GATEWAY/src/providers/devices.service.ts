@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage';
+import { Events } from 'ionic-angular';
+
 
 /**
  * Class for the devices, this makes it possible to specify the
@@ -17,7 +19,8 @@ export class Device {
 export class DevicesService {
 	devices: Device[];
 
-  constructor(public storage: Storage) {
+  constructor(public storage: Storage,
+              public events: Events) {
     this.devices = [];
   };
 
@@ -88,6 +91,12 @@ export class DevicesService {
    */
   setCustomDeviceName = (device: Device, name: string): void => {
     this.storage.set(device.id, name);
+    for(let d of this.devices) {
+      if(d.id == device.id) {
+        d.name = name;
+      }
+    }
+    this.events.publish('updateDevices');
   };
 
   /**

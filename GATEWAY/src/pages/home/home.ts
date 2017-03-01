@@ -73,6 +73,10 @@ export class HomePage {
         }
       }
     });
+
+    this.events.subscribe('updateDevices', () => {
+      this.setDevices();
+    });
   };
 
   /**
