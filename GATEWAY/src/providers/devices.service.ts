@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Storage } from '@ionic/storage';
 
 /**
  * Class for the devices, this makes it possible to specify the
@@ -16,7 +17,7 @@ export class Device {
 export class DevicesService {
 	devices: Device[];
 
-  constructor() {
+  constructor(public storage: Storage) {
     this.devices = [];
   };
 
@@ -42,14 +43,14 @@ export class DevicesService {
    * @param {any} bleDevice - the returned device from the ble scan
    */
   convertBleDeviceToDevice = (bleDevice: any): Device  => {
-    const device: Device = {
+    const storedName = this.storage.getItem(bleDevice.id);
+    return {
       id: bleDevice.id,
-      name: (bleDevice.name ? bleDevice.name : 'NoName'),
+      name: storedName !== null ? storedName : bleDevice.name,
       connected: false, 
       ledOn: false,
       buttonPressed: false
     };
-    return device;
   };
 
   /**
@@ -65,10 +66,19 @@ export class DevicesService {
 
   /**
    * Check if a device already exists among the stored ones
-   * @param {Device} device - The device to check
+   * @param {any} device - The device to check
    */
-  isNewDevice = (device: Device): boolean => {
-    return !this.devices.map(function(a) {return a.id}).includes(device.id);
+  isNewDevice = (device: any): boolean => {
+    return !this.devices.map(storedDevice => storedDevice.id).includes(device.id);
+  };
+
+  /**
+   * Sets a custom name for the device
+   * @param {Device} device - a tile device
+   * @param {string} name - the new name for the device
+   */
+  setCustomDeviceName = (device: Device, name: string): void => {
+    this.storage.setItem(device.id, name);
   };
 
   /**

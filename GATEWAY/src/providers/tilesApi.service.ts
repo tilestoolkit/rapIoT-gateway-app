@@ -84,10 +84,10 @@ export class TilesApi {
 
   /** 
    * Tests if a device is a tile
-   * @param {Device} device - the device to test
+   * @param {any} device - the device to test
    */
-  isTilesDevice = (device: Device): boolean => {
-    return device.name != null && device.name.substring(0, 4) === 'Tile'
+  isTilesDevice = (device: any): boolean => {
+    return device.name != null && device.name.substring(0, 4) === 'Tile';
   };
 
   /** 

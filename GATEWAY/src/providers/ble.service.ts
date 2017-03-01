@@ -71,17 +71,16 @@ export class BleService {
     BLE.scan([], 30).subscribe(
       // function to be called for each new device discovered
       bleDevice => {
-        let device = this.devicesService.convertBleDeviceToDevice(bleDevice);
-
-        //test that we don't add the same device twice and only add tiles devices
-        if (!newDevices.map(function(a) {return a.id}).includes(device.id) &&
-                                   this.devicesService.isNewDevice(device) &&
-                                   this.tilesApi.isTilesDevice(device)) {
-          this.mqttClient.registerDevice(device);
-          this.devicesService.newDevice(device);
-          newDevices.push(device);
-          //TODO: temporary, until we get the completion function to run
-          this.events.publish('updateDevices');
+        if (this.tilesApi.isTilesDevice(bleDevice) && this.devicesService.isNewDevice(bleDevice)) {
+          const device = this.devicesService.convertBleDeviceToDevice(bleDevice);
+          //test that the discovered device is not in the list of new devices
+          if (!newDevices.map(discoveredDevice => discoveredDevice.id).includes(device.id)) {
+            this.mqttClient.registerDevice(device);
+            this.devicesService.newDevice(device);
+            newDevices.push(device);
+            //TODO: temporary, until we get the completion function to run
+            this.events.publish('updateDevices');
+          }
         }
       },
       // function to be called if an error occurs
@@ -222,14 +221,6 @@ export class BleService {
    * @param {string} newName - The new name
    */
   updateName = (device: Device, newName: string): void => {
-    BLE.disconnect(device.id)
-            .then( res => {
-               device.connected = false;
-               this.mqttClient.unregisterDevice(device);
-              tileNames[device.name] = newName;
-               device.name = newName;
-               this.connect(device);
-            })
-            .catch(err => console.log('Failed to update the name of device: ' + device.name));
+    this.devicesService.setCustomDeviceName(device, newName);
   };
 };
