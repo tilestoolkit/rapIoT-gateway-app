@@ -4,7 +4,7 @@
       <button ion-button icon-only menuToggle>
         <ion-icon name="menu"></ion-icon>
       </button>
-      <ion-title item-left>Tiles</ion-title>
+      <ion-title>Tiles</ion-title>
     </ion-navbar>
     <ion-toolbar>
       <!--
@@ -12,7 +12,7 @@
         this should be a button that triggers the showConnectMQTTPopup()
         from the old code
       -->
-      <ion-title item-left>{{serverConnectStatusMsg}}
+      <ion-title>{{serverConnectStatusMsg}}
         <button class="titleBttn" ion-button small color="positive" (click)="connectToServer()">CONNECT</button>
       </ion-title>
     </ion-toolbar>
