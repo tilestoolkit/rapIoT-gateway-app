@@ -120,8 +120,10 @@ export class BleService {
         },
         err => {
           device.connected = false;
+          this.devicesService.clearDisconnectedDevices();
+          this.events.publish('updateDevices');
           this.disconnect(device);
-          alert('Lost connection to ' + device.name)
+          //alert('Lost connection to ' + device.name)
         },
         () => {
           alert('Connection attempt completed')
