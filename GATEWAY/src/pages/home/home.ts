@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { AlertController, Events, NavController, Platform } from 'ionic-angular';
+import { Observable, Subscription } from 'rxjs';
 
 import { BleService } from '../../providers/ble.service';
 import { Device, DevicesService } from '../../providers/devices.service';
@@ -21,6 +22,7 @@ export class HomePage {
   devices: Device[];
   serverConnectStatusMsg: string;
   statusMsg: string;
+  bleScanner: Subscription;
 
   constructor(public alertCtrl: AlertController,
               public navCtrl: NavController,
@@ -38,12 +40,17 @@ export class HomePage {
   	// Subscriptions to events that can be emitted from other places in the code
     this.events.subscribe('serverConnected', () => {
       this.serverConnectStatusMsg = 'Connected to server';
+      // Scans for new devices once, and then every 30 seconds
       this.scanForNewBLEDevices();
+      this.bleScanner = Observable.interval(30000).subscribe(res => {
+        this.scanForNewBLEDevices();
+      });
     });
 
     this.events.subscribe('offline', () => {
       this.mqttClient.setServerConnectionStatus(false);
       this.serverConnectStatusMsg = 'Client gone offline';
+      this.bleScanner.unsubscribe();
     });
 
     this.events.subscribe('close', () => {

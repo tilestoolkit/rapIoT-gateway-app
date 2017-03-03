@@ -120,8 +120,10 @@ export class BleService {
         },
         err => {
           device.connected = false;
+          this.devicesService.clearDisconnectedDevices();
+          this.events.publish('updateDevices');
           this.disconnect(device);
-          alert('Lost connection to ' + device.name)
+          //alert('Lost connection to ' + device.name)
         },
         () => {
           alert('Connection attempt completed')
@@ -167,7 +169,8 @@ export class BleService {
           console.log('Failed to start notification');
         },
         () => {
-          console.log('Finished attempt to start getting notifications from device with id: ' + device.id);
+          //alert('Finished attempt to start getting notifications from device with id: ' + device.id);
+          device.connected = false;
         });
   };
 
