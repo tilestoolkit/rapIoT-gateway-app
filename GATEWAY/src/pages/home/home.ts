@@ -63,7 +63,7 @@ export class HomePage {
 
 	  this.events.subscribe('command', (deviceId: string, command: CommandObject) => {
 	    for (let device of this.devices) {
-	      if (device.id === deviceId) {
+	      if (device.tileId === deviceId) {
 	      	//alert('Recieved command from server: ' + JSON.stringify(command));
 	        device.ledOn = (command.name === 'led' && command.properties[0] === 'on');
 	        console.log('Device led on: ' + device.ledOn);
@@ -104,7 +104,7 @@ export class HomePage {
   };
 
 	fetchEventMappings = (device: Device): void => {
-		this.tilesApi.fetchEventMappings(device.id);
+		this.tilesApi.fetchEventMappings(device.tileId);
 	};
 
   /**

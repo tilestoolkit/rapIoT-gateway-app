@@ -117,19 +117,19 @@ export class MqttClient {
 	registerDevice = (device: Device): void => {
 		if (this.client) {
 			this.client.publish(
-				this.getDeviceSpecificTopic(device.id, true) + '/active',
+				this.getDeviceSpecificTopic(device.tileId, true) + '/active',
 				'true',
 				this.publishOpts
 			);
       this.client.publish(
-      	this.getDeviceSpecificTopic(device.id, true) + '/name',
+      	this.getDeviceSpecificTopic(device.tileId, true) + '/name',
       	device.name,
       	this.publishOpts
       );
       this.client.subscribe(
-      	this.getDeviceSpecificTopic(device.id, false)
+      	this.getDeviceSpecificTopic(device.tileId, false)
       );
-      console.log('Registered device: ' + device.name + ' (' + device.id + ')');
+      console.log('Registered device: ' + device.name + ' (' + device.tileId + ')');
     }
   };
 
@@ -140,12 +140,12 @@ export class MqttClient {
   unregisterDevice = (device: Device): void => {
     if (this.client) {
       this.client.publish(
-      	this.getDeviceSpecificTopic(device.id, true) + '/active',
+      	this.getDeviceSpecificTopic(device.tileId, true) + '/active',
       	'false',
       	this.publishOpts
       );
       this.client.unsubscribe(
-      	this.getDeviceSpecificTopic(device.id, false)
+      	this.getDeviceSpecificTopic(device.tileId, false)
       );
     }
   };
