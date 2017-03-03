@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { AlertController, Events, NavController, Platform } from 'ionic-angular';
-import { Observable } from 'rxjs';
+import { Observable, Subscriber } from 'rxjs';
 
 import { BleService } from '../../providers/ble.service';
 import { Device, DevicesService } from '../../providers/devices.service';
@@ -22,7 +22,7 @@ export class HomePage {
   devices: Device[];
   serverConnectStatusMsg: string;
   statusMsg: string;
-  bleScanner: any; //TODO: observable subscription, find type 
+  bleScanner: Subscriber<any>;
 
   constructor(public alertCtrl: AlertController,
               public navCtrl: NavController,
