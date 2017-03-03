@@ -52,6 +52,7 @@
           </div>
           <div class="col">
             <button class="bttn" ion-button small color="positive" (click)="changeNamePop(device)">Rename Tile</button>
+            <button class="bttn" ion-button small color="positive" (click)="devicesService.resetName(device)" [hidden]="!device.connected">Reset name</button>
           </div>
         </div>
       </ion-list>
