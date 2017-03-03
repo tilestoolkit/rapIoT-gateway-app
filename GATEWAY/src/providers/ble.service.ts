@@ -169,7 +169,8 @@ export class BleService {
           console.log('Failed to start notification');
         },
         () => {
-          console.log('Finished attempt to start getting notifications from device with id: ' + device.id);
+          //alert('Finished attempt to start getting notifications from device with id: ' + device.id);
+          device.connected = false;
         });
   };
 
