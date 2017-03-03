@@ -7,13 +7,8 @@
       <ion-title>Tiles</ion-title>
     </ion-navbar>
     <ion-toolbar>
-      <!--
-        TODO
-        this should be a button that triggers the showConnectMQTTPopup()
-        from the old code
-      -->
-      <ion-title>{{serverConnectStatusMsg}}
-        <button class="titleBttn" ion-button small color="positive" (click)="connectToServer()">CONNECT</button>
+      <ion-title style="padding: 0;" left>{{serverConnectStatusMsg}}
+        <button right class="titleBttn" ion-button small color="positive" (click)="connectToServer()">CONNECT</button>
       </ion-title>
     </ion-toolbar>
   </ion-header>
