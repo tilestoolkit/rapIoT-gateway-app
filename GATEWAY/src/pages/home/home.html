@@ -32,21 +32,21 @@
         <div class="col">
           <button class="bttn" ion-button small color="positive" (click)="bleService.connect(device)" [hidden]="device.connected">CONNECT</button>
           <button class="bttn" ion-button small color="positive" id="disconnectButton" (click)="bleService.disconnect(device)" [hidden]="!device.connected">DISCONNECT</button>
-          <button class="bttn" ion-button small color="positive" id="fetchEventMappingsButton" (click)="fetchEventMappings(device)" [hidden]="!device.connected">FETCH EVT</button>
+          <!--button class="bttn" ion-button small color="positive" id="fetchEventMappingsButton" (click)="fetchEventMappings(device)" [hidden]="!device.connected">FETCH EVT</button-->
         </div>
       </div>
       <ion-list [hidden]="!device.connected" no-lines>
         <div class="row row-center">
           <div class="col col-75">
-            <ion-badge class="bttnRel" badge-stable [hidden]="device.buttonPressed">Button released</ion-badge>
-            <ion-badge class="bttnRel" badge-balanced [hidden]="!device.buttonPressed">Button pressed</ion-badge>
-            <ion-item class="toggleIonItem" color="light">
+            <!--ion-badge class="bttnRel" badge-stable [hidden]="device.buttonPressed">Button released</ion-badge>
+            <ion-badge class="bttnRel" badge-balanced [hidden]="!device.buttonPressed">Button pressed</ion-badge-->
+            <!--ion-item class="toggleIonItem" color="light">
               <ion-item class="toggleText" color="light" item-left>LED</ion-item>
               <ion-toggle class="tgle" item-left [(ngModel)]="device.ledOn" (ionChange)="bleService.sendData(device, 'led,on,red')"></ion-toggle>
-            </ion-item>
+            </ion-item-->
           </div>
           <div class="col">
-            <button class="bttn" ion-button small color="positive" (click)="changeNamePop(device)">RENAME TILE</button>
+            <button class="bttn" ion-button small color="positive" (click)="changeNamePop(device)">CHANGE NAME</button>
           </div>
         </div>
       </ion-list>
