@@ -31,7 +31,7 @@ export class TilesApi {
   eventMappings = {};
   username: string = 'TestUser';
   hostAddress: string = '138.68.144.206';
-  mqttPort: number = 8080;
+  mqttPort: number = 1883;
   apiPort: number = 3000;
 
   constructor(private http: Http,
