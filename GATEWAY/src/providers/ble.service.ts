@@ -111,7 +111,7 @@ export class BleService {
   	  		 	device.ledOn = false;
   	  		 	device.connected = true;
             device.buttonPressed = false;
-  	        this.tilesApi.loadEventMappings(device.id);
+  	        this.tilesApi.loadEventMappings(device.tileId);
             this.mqttClient.registerDevice(device);
             this.startDeviceNotification(device);
             if (device.name in tileNames){
@@ -162,7 +162,7 @@ export class BleService {
                 alert('No response for ' + message.properties[0])
                 break;
             }
-            this.mqttClient.sendEvent(device.id, message);
+            this.mqttClient.sendEvent(device.tileId, message);
           }
         },
         err => {

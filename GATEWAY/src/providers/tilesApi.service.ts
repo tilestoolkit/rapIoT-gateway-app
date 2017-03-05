@@ -116,47 +116,47 @@ export class TilesApi {
 
   /**
    * Set the eventmapprings for a tile
-   * @param {string} tileID - The target tile
+   * @param {string} deviceId - The target tile
    * @param {any} - eventmappings to store for the tile
    */
-  setEventMappings = (tileId: string, eventMappings: any): void => {
+  setEventMappings = (deviceId: string, eventMappings: any): void => {
     // TODO: Set an interface for the eventMappings 
-    this.storage.set(this.username + '_' + tileId, eventMappings);
+    this.storage.set(this.username + '_' + deviceId, eventMappings);
   };
 
   /** 
    * Gets the mappings for a specific event for a tile
-   * @param {string} tileId - a tile 
+   * @param {string} deviceId - a tile 
    * @param {string} eventAsString - a string representation of the event
    */
-  getEventMapping = (tileId: string, eventAsString: string): any => {
+  getEventMapping = (deviceId: string, eventAsString: string): any => {
     if (this.eventMappings[this.username] == null ||
-        this.eventMappings[this.username][tileId] == null) {
-      this.loadEventMappings(tileId);
+        this.eventMappings[this.username][deviceId] == null) {
+      this.loadEventMappings(deviceId);
     }
-    return this.eventMappings[this.username][tileId][eventAsString];
+    return this.eventMappings[this.username][deviceId][eventAsString];
   };
 
   /**
    * Get the eventmappings that are stored in the apps storage
-   * @param {string} tileId - the tile to get events for
+   * @param {string} deviceId - the tile to get events for
    */
-  loadEventMappings = (tileId: string): void => {
-    const storedEventMappings = this.storage.get(`eventMappings_${this.username}_${tileId}`)
+  loadEventMappings = (deviceId: string): void => {
+    const storedEventMappings = this.storage.get(`eventMappings_${this.username}_${deviceId}`)
                                             .then( res => res);
     if (this.eventMappings[this.username] == null) {
       this.eventMappings[this.username] = {};
     }
-    this.eventMappings[this.username][tileId] =
+    this.eventMappings[this.username][deviceId] =
             this.extend(this.defaultEventMappings, storedEventMappings);
   };
 
   /**
    * Fetch the event mappings for the given tile from the web-server
-   * @param {string} tileId - The ID of the tile
+   * @param {string} deviceId - The ID of the tile
    */
-  fetchEventMappings = (tileId: string): void => {
-    const url = `http://${this.hostAddress}:${this.apiPort}/eventmappings/${this.username}/${tileId}`;
+  fetchEventMappings = (deviceId: string): void => {
+    const url = `http://${this.hostAddress}:${this.apiPort}/eventmappings/${this.username}/${deviceId}`;
     //alert(url)
     this.http.get(url)
             .toPromise()
@@ -167,9 +167,9 @@ export class TilesApi {
               this.eventMappings[this.username] =
                     this.eventMappings[this.username] == null ?
                     {} : this.eventMappings[this.username];
-              this.eventMappings[this.username][tileId] =
+              this.eventMappings[this.username][deviceId] =
                     this.extend(this.defaultEventMappings, fetchedEventMappings);
-              this.setEventMappings(tileId, this.eventMappings[this.username][tileId]);
+              this.setEventMappings(deviceId, this.eventMappings[this.username][deviceId]);
             })
             .catch(err => alert('failed fetching data with error: ' + err));
   };
