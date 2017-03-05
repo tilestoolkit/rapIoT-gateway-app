@@ -8,6 +8,7 @@ import { TabsPage } from '../pages/tabs/tabs';
 @Component({
   templateUrl: 'app.html'
 })
+
 export class Tiles {
   rootPage = TabsPage;
   appVersion: any;
@@ -16,7 +17,7 @@ export class Tiles {
     platform.ready().then(() => {
       // Okay, so the platform is ready and our plugins are available.
       // Here you can do any higher level native things you might need.
-      
+
       // Copy-pasted code from the old version (www/js/app.js)
       /*
       if(window.cordova && window.cordova.plugins.Keyboard) {
@@ -25,7 +26,7 @@ export class Tiles {
       if(window.StatusBar) {
         StatusBar.styleDefault();
       }
-      
+
       cordova.plugins.backgroundMode.setDefaults({
         title:  'Tiles Mobile',
         ticker: 'Tiles Mobile',
