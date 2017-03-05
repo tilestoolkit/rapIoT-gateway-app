@@ -2,12 +2,13 @@ import { Injectable } from '@angular/core';
 import { Events } from 'ionic-angular';
 import mqtt from 'mqtt';
 
-import { TilesApi, CommandObject } from './tilesApi.service';
 import { Device } from './devices.service';
+import { TilesApi, CommandObject } from './tilesApi.service';
 
 
 @Injectable()
 export class MqttClient {
+  
   publishOpts = { retain: true };
   serverConnectionTimeout: number = 10000; // 10 seconds
   connectedToServer: boolean = false;
@@ -36,7 +37,7 @@ export class MqttClient {
    * Set the connection status for the server
    * @param {boolean} connected - The new status of the connection
    */
-  setServerConnectionStatus = (connected: boolean) => {
+  setServerConnectionStatus = (connected: boolean): void => {
     this.connectedToServer = connected;
   };
 
@@ -45,8 +46,7 @@ export class MqttClient {
    * @param {string} host - the host url / ip
    * @param {number} port - the port to send to
    */
-  connect = (host: string, port: number) => {
-
+  connect = (host: string, port: number): void => {
 		// Check if a previous server connection exists
 		// and end it if it does
 		if (this.client) {
@@ -54,14 +54,11 @@ export class MqttClient {
     }
 
     // Instantiate a mqtt-client from the host and port
-		// keepalive 0 disables keepalive
-		this.client = mqtt.connect({
-			host: host,
-			port: port,
-			keepalive: 0
+    this.client = mqtt.connect({
+      host: host,
+      port: port,
+			keepalive: 0 // disables keepalive
 		});
-
-		// Handlers for different types of responses from the server:
 
 		// Handlers for different types of responses from the server:
 
@@ -117,22 +114,22 @@ export class MqttClient {
    * Register a device at the server
    * @param {Device} device - the device to register
    */
-	registerDevice = (device: Device) => {
+	registerDevice = (device: Device): void => {
 		if (this.client) {
 			this.client.publish(
-				this.getDeviceSpecificTopic(device.id, true) + '/active',
+				this.getDeviceSpecificTopic(device.tileId, true) + '/active',
 				'true',
 				this.publishOpts
 			);
       this.client.publish(
-      	this.getDeviceSpecificTopic(device.id, true) + '/name',
+      	this.getDeviceSpecificTopic(device.tileId, true) + '/name',
       	device.name,
       	this.publishOpts
       );
       this.client.subscribe(
-      	this.getDeviceSpecificTopic(device.id, false)
+      	this.getDeviceSpecificTopic(device.tileId, false)
       );
-      console.log('Registered device: ' + device.name + ' (' + device.id + ')');
+      console.log('Registered device: ' + device.name + ' (' + device.tileId + ')');
     }
   };
 
@@ -140,26 +137,25 @@ export class MqttClient {
    * Unregister a device at the server
    * @param {Device} device - the device to register
    */
-  unregisterDevice = (device: Device) => {
+  unregisterDevice = (device: Device): void => {
     if (this.client) {
       this.client.publish(
-      	this.getDeviceSpecificTopic(device.id, true) + '/active',
+      	this.getDeviceSpecificTopic(device.tileId, true) + '/active',
       	'false',
       	this.publishOpts
       );
       this.client.unsubscribe(
-      	this.getDeviceSpecificTopic(device.id, false)
+      	this.getDeviceSpecificTopic(device.tileId, false)
       );
     }
   };
 
-// TODO: Look at server code to understand handling
   /**
    * Send an event to the server
    * @param {string} deviceId - the ID of the device to register
    * @param {CommandObject} event - An event represented as a CommandObject (name, params...)
    */
-  sendEvent = (deviceId: string, event: CommandObject) => {
+  sendEvent = (deviceId: string, event: CommandObject): void => {
     //alert('Sending message to mqtt: ' + JSON.stringify(event));
     if (this.client) {
     	this.client.publish(
@@ -181,11 +177,9 @@ export class MqttClient {
    * @param {string} deviceId - the ID of the device to register
    * @param event - ??
    */
-  endConnection = (deviceId: string, event: any) => {
+  endConnection = (deviceId: string, event: any): void => {
     if (this.client) {
     	this.client.end()
     }
   };
-}
-
-export default { MqttClient }
+};

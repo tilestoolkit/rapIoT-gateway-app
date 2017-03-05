@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { AlertController, Events, NavController, Platform } from 'ionic-angular';
+import { Observable, Subscription } from 'rxjs';
+
 import { BleService } from '../../providers/ble.service';
 import { Device, DevicesService } from '../../providers/devices.service';
 import { MqttClient } from '../../providers/mqttClient';
@@ -17,34 +19,38 @@ import { TilesApi, CommandObject } from '../../providers/tilesApi.service';
 })
 
 export class HomePage {
-  public devices: Device[];
+  devices: Device[];
   serverConnectStatusMsg: string;
   statusMsg: string;
+  bleScanner: Subscription;
 
-  constructor(public navCtrl: NavController,
-              public events: Events,
+  constructor(public alertCtrl: AlertController,
+              public navCtrl: NavController,
               public platform: Platform,
+              private events: Events,
               private bleService: BleService,
               private devicesService: DevicesService,
-              public tilesApi: TilesApi,
-              private mqttClient: MqttClient,
-              private alertCtrl: AlertController)
+              private tilesApi: TilesApi,
+              private mqttClient: MqttClient)
   {
 
   	this.setDevices();
   	this.serverConnectStatusMsg = 'Click to connect to server';
 
-
   	// Subscriptions to events that can be emitted from other places in the code
-
     this.events.subscribe('serverConnected', () => {
       this.serverConnectStatusMsg = 'Connected to server';
+      // Scans for new devices once, and then every 30 seconds
       this.scanForNewBLEDevices();
+      this.bleScanner = Observable.interval(30000).subscribe(res => {
+        this.scanForNewBLEDevices();
+      });
     });
 
     this.events.subscribe('offline', () => {
       this.mqttClient.setServerConnectionStatus(false);
       this.serverConnectStatusMsg = 'Client gone offline';
+      this.bleScanner.unsubscribe();
     });
 
     this.events.subscribe('close', () => {
@@ -62,10 +68,9 @@ export class HomePage {
       this.serverConnectStatusMsg = 'Error: ${err}';
     });
 
-  	//TODO: Dunno if these should be in the constructor or if that was a mistake
 	  this.events.subscribe('command', (deviceId: string, command: CommandObject) => {
 	    for (let device of this.devices) {
-	      if (device.id === deviceId) {
+	      if (device.tileId === deviceId) {
 	      	//alert('Recieved command from server: ' + JSON.stringify(command));
 	        device.ledOn = (command.name === 'led' && command.properties[0] === 'on');
 	        console.log('Device led on: ' + device.ledOn);
@@ -75,19 +80,23 @@ export class HomePage {
         }
       }
     });
+
+    this.events.subscribe('updateDevices', () => {
+      this.setDevices();
+    });
   };
 
   /**
    * Set the devices equal to the devices from devicesservice
    */
-  setDevices = () => {
+  setDevices = (): void => {
     this.devices = this.devicesService.getDevices();
   }
 
   /**
    * Use ble to discover new devices
    */
-  scanForNewBLEDevices = () => {
+  scanForNewBLEDevices = (): void => {
     this.statusMsg = 'Searching for devices...';
     this.devicesService.clearDisconnectedDevices();
     this.bleService.scanForDevices();
@@ -97,19 +106,19 @@ export class HomePage {
   /**
    * Connect to the mqttServer
    */
-  connectToServer = () => {
+  connectToServer = (): void => {
     this.mqttClient.connect(this.tilesApi.hostAddress, this.tilesApi.mqttPort);
   };
 
-	fetchEventMappings = (device: Device) => {
-		this.tilesApi.fetchEventMappings(device.id);
+	fetchEventMappings = (device: Device): void => {
+		this.tilesApi.fetchEventMappings(device.tileId);
 	};
 
   /**
    * Called when the refresher is triggered by pulling down on the view of 
 	 * the devices. 
 	 */
-	refreshDevices = (refresher) => {
+	refreshDevices = (refresher): void => {
 		console.log('Scanning for more devices...');
 		this.scanForNewBLEDevices();
 		//Makes the refresher run for 2 secs
@@ -124,7 +133,7 @@ export class HomePage {
    * the devices.
    * @param {Device} device - the target device
    */
-  changeNamePop = (device: Device) => {
+  changeNamePop = (device: Device): void => {
     let alert = this.alertCtrl.create({
       title: 'Change tile name',
       inputs: [
@@ -141,7 +150,7 @@ export class HomePage {
         {
           text: 'Rename',
           handler: data => {
-            this.bleService.updateName(device, data.newName);
+            this.devicesService.setCustomDeviceName(device, data.newName);
           }
         }
       ]

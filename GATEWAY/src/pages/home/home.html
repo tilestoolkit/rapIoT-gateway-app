@@ -27,7 +27,7 @@
     <ion-item class="devices" color="light" *ngFor="let device of devices">
       <div class="row row-center">
         <div class="col col-75">
-          <b>{{device.name}}</b><br>ID: {{device.id}}
+          <b>{{device.name}}</b><br>ID: {{device.tileId}}
         </div>
         <div class="col">
           <button class="bttn" ion-button small color="positive" (click)="bleService.connect(device)" [hidden]="device.connected">CONNECT</button>
@@ -47,6 +47,7 @@
           </div>
           <div class="col">
             <button class="bttn" ion-button small color="positive" (click)="changeNamePop(device)">CHANGE NAME</button>
+            <button class="bttn" ion-button small color="positive" (click)="devicesService.resetName(device)">Reset name</button>
           </div>
         </div>
       </ion-list>
