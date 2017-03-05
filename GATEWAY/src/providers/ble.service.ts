@@ -102,24 +102,28 @@ export class BleService {
 	 * @param {Device} device - the target device
 	 */
   connect = (device: Device): void => {
-    //TODO: unsubscribe at some point ? 
+    device.loading = true;
+    //TODO: unsubscribe at some point ?
     //alert('connecting to device: ' + device.name)
   	BLE.connect(device.id)
   		  .subscribe(
           res => {
     		  	// Setting information about the device
   	  		 	device.ledOn = false;
-  	  		 	device.connected = true;
+            device.connected = true;
             device.buttonPressed = false;
   	        this.tilesApi.loadEventMappings(device.tileId);
             this.mqttClient.registerDevice(device);
             this.startDeviceNotification(device);
             if (device.name in tileNames){
               device.name = tileNames[device.name];
+
             }
+            device.loading = false;
         },
         err => {
           device.connected = false;
+          device.loading = false;
           this.devicesService.clearDisconnectedDevices();
           this.events.publish('updateDevices');
           this.disconnect(device);
