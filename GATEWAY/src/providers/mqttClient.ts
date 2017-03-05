@@ -55,9 +55,8 @@ export class MqttClient {
 
     // Instantiate a mqtt-client from the host and port
     this.client = mqtt.connect({
-      host: host,
-      port: port,
-			keepalive: 0 // disables keepalive
+      host: host || this.mqttConnectionData.host,
+      port: port || this.mqttConnectionData.port
 		});
 
     // Handle a message from the broker
