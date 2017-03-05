@@ -3,8 +3,6 @@ import { Http }    from '@angular/http';
 import { Storage } from '@ionic/storage';
 import 'rxjs/add/operator/toPromise';
 
-import { Device } from './devices.service';
-
 /** 
  * Class to describe the structure of a command 
  */
