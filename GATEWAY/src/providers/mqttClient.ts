@@ -30,7 +30,7 @@ export class MqttClient {
    */
   getDeviceSpecificTopic = (deviceId: string, isEvent: boolean): string => {
   	const type = isEvent ? 'evt' : 'cmd';
-  	return 'tiles/' + type + '/' + this.tilesApi.username + '/' + deviceId;
+  	return `tiles/${type}/${this.tilesApi.username}/${deviceId}`;
   };
 
   /**
@@ -60,11 +60,8 @@ export class MqttClient {
 			keepalive: 0 // disables keepalive
 		});
 
-		// Handlers for different types of responses from the server:
-
-    // Handle a message from the server
+    // Handle a message from the broker
     this.client.on('message', (topic, message) => {
-      //alert('Received message from server: ' + message);
       try {
         const command: CommandObject = JSON.parse(message);
         if (command) {
@@ -106,9 +103,6 @@ export class MqttClient {
       this.client.end();
     }, this.serverConnectionTimeout);
   };
-
-  // The functions called on the client comes from the mqtt-library,
-  // API reference can be found at https://github.com/mqttjs/MQTT.js
 
   /**
    * Register a device at the server
@@ -156,19 +150,12 @@ export class MqttClient {
    * @param {CommandObject} event - An event represented as a CommandObject (name, params...)
    */
   sendEvent = (deviceId: string, event: CommandObject): void => {
-    //alert('Sending message to mqtt: ' + JSON.stringify(event));
     if (this.client) {
     	this.client.publish(
     		this.getDeviceSpecificTopic(deviceId, true),
     		JSON.stringify(event),
     		this.publishOpts
     	);
-    }
-    //TODO: NB: Temporary, this should come as a message from the server!!
-    if (event.properties[0] === 'tilt') {
-      this.events.publish('command', deviceId, {name: 'led', properties: ['on', 'red']});
-    } else {
-      this.events.publish('command', deviceId, {name: 'led', properties: ['off']});
     }
   };
 
