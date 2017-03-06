@@ -45,20 +45,21 @@ export class MqttClient {
    * @param {number} port - the port to send to
    */
   connect = (host: string, port: number): void => {
+    const client = this.client;
 		// Check if a previous server connection exists
 		// and end it if it does
-		if (this.client) {
-			this.client.end();
+		if (client) {
+			client.end();
     }
 
     // Instantiate a mqtt-client from the host and port
-    this.client = mqtt.connect({
+    client = mqtt.connect({
       host: host || this.mqttConnectionData.host,
       port: port || this.mqttConnectionData.port
 		});
 
     // Handle a message from the broker
-    this.client.on('message', (topic, message) => {
+    client.on('message', (topic, message) => {
       try {
         const command: CommandObject = JSON.parse(message);
         if (command) {
@@ -68,27 +69,27 @@ export class MqttClient {
       } finally {}
     });
 
-    this.client.on('offline', () => {
+    client.on('offline', () => {
       this.connectedToServer = false;
       this.events.publish('offline');
     });
 
-    this.client.on('close', () => {
+    client.on('close', () => {
       this.connectedToServer = false;
       this.events.publish('close');
     });
 
-    this.client.on('reconnect', () => {
+    client.on('reconnect', () => {
       this.events.publish('reconnect');
     });
 
-    this.client.on('error', error => {
+    client.on('error', error => {
       this.connectedToServer = false;
       this.events.publish('error', error);
     });
 
     // Client is connected to the server
-		this.client.on('connect', () => {
+		client.on('connect', () => {
 			clearTimeout(failedConnectionTimeout);
       this.connectedToServer = true;
       this.events.publish('serverConnected');
@@ -96,7 +97,7 @@ export class MqttClient {
 
     // Ends the attempt tp connect if the timeout rus out
     const failedConnectionTimeout = setTimeout(function(){
-      this.client.end();
+      client.end();
     }, this.serverConnectionTimeout);
   };
 
