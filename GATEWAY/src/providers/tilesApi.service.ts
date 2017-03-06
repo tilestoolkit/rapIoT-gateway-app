@@ -14,8 +14,6 @@ export class CommandObject {
 
 @Injectable()
 export class TilesApi {
-
-  // Make this a global?
   defaultEventMappings = {
     btnON: {
       type: 'button_event',
@@ -26,9 +24,7 @@ export class TilesApi {
       event: 'released'
     }
   };
-
-  // {username: {tile: mappingsForTile}}
-  eventMappings = {};
+  eventMappings = {};// {username: {tile: mappingsForTile}}
   username: string = 'TestUser';
   hostAddress: string = '138.68.144.206';
   mqttPort: number = 1883;
@@ -58,7 +54,7 @@ export class TilesApi {
    * @param {CommansObject} cmdObj - the command to turn into a string
    */
   getCommandObjectAsString = (cmdObj: CommandObject): string => {
-    return cmdObj.name + ',' + cmdObj.properties.toString();
+    return `${cmdObj.name},${cmdObj.properties.toString()}`;
   };
 
   /** 
@@ -119,7 +115,7 @@ export class TilesApi {
    */
   setEventMappings = (deviceId: string, eventMappings: any): void => {
     // TODO: Set an interface for the eventMappings 
-    this.storage.set(this.username + '_' + deviceId, eventMappings);
+    this.storage.set(`${this.username}_${deviceId}`, eventMappings);
   };
 
   /** 
@@ -142,9 +138,7 @@ export class TilesApi {
   loadEventMappings = (deviceId: string): void => {
     const storedEventMappings = this.storage.get(`eventMappings_${this.username}_${deviceId}`)
                                             .then( res => res);
-    if (this.eventMappings[this.username] == null) {
-      this.eventMappings[this.username] = {};
-    }
+    this.eventMappings[this.username] = this.eventMappings[this.username] || {};
     this.eventMappings[this.username][deviceId] =
             this.extend(this.defaultEventMappings, storedEventMappings);
   };
@@ -155,21 +149,17 @@ export class TilesApi {
    */
   fetchEventMappings = (deviceId: string): void => {
     const url = `http://${this.hostAddress}:${this.apiPort}/eventmappings/${this.username}/${deviceId}`;
-    //alert(url)
     this.http.get(url)
             .toPromise()
             .then(res => {
               const fetchedEventMappings = res.json();
-              alert('Success. Fetched data:' + JSON.stringify(res.json()));
-              // Do we need to check for username? Isn't the user always the same? 
-              this.eventMappings[this.username] =
-                    this.eventMappings[this.username] == null ?
-                    {} : this.eventMappings[this.username];
+              //alert('Success. Fetched data:' + JSON.stringify(res.json()));
+              this.eventMappings[this.username] = this.eventMappings[this.username] || {};
               this.eventMappings[this.username][deviceId] =
                     this.extend(this.defaultEventMappings, fetchedEventMappings);
               this.setEventMappings(deviceId, this.eventMappings[this.username][deviceId]);
             })
-            .catch(err => alert('failed fetching data with error: ' + err));
+            .catch(err => alert('Failed fetching event mappings with error: ' + err));
   };
 }
 

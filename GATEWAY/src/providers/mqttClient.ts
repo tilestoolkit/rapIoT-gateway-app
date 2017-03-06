@@ -8,15 +8,13 @@ import { TilesApi, CommandObject } from './tilesApi.service';
 
 @Injectable()
 export class MqttClient {
-  
   publishOpts = { retain: true };
   serverConnectionTimeout: number = 10000; // 10 seconds
   connectedToServer: boolean = false;
   client;
-
   mqttConnectionData = {
     username: this.tilesApi.username,
-    host: this.tilesApi.hostAddress,
+    host: this.tilesApi.hostAddress,//'178.62.99.218',//
     port: this.tilesApi.mqttPort
   };
 
@@ -94,7 +92,6 @@ export class MqttClient {
 			clearTimeout(failedConnectionTimeout);
       this.connectedToServer = true;
       this.events.publish('serverConnected');
-			//console.log('Connected to server');
 		});
 
     // Ends the attempt tp connect if the timeout rus out

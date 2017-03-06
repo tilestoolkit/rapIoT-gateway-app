@@ -17,9 +17,10 @@ export class Device {
   loading: boolean;
 }
 
+
 @Injectable()
 export class DevicesService {
-	devices: Device[];
+	private devices: Device[];
 
   constructor(public storage: Storage,
               public events: Events) {
@@ -39,7 +40,6 @@ export class DevicesService {
    * Returns the list of devices currently stored
    */
   getDevices = (): Device[] => {
-    //alert('providing devices from devicesService: ' + this.devices.toString())
   	return this.devices;
   };
 
