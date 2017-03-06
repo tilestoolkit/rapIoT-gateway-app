@@ -63,15 +63,17 @@ export class TilesApi {
    * @param {any} obj2 - The second object
    */
   extend = (obj1: any, obj2: any): any => {
-    // TODO: Find out if the objects passed in are of a specific type
     let extended = {};
-    // TODO: if any attr has the same name obj 2 will overwrite obj1
-    // could be fixed by checking if the attrname exists and then renaming it
     for (let attrname of obj1) {
       extended[attrname] = obj1[attrname];
     }
     for (let attrname of obj2) {
-      extended[attrname] = obj2[attrname];
+      if (extended[attrname] !== undefined) {
+        extended[attrname] = obj2[attrname];
+      } else {
+        // Adds a 1 to the key if the key already exists
+        extended[attrname + '1'] = obj2[attrname];
+      }
     }
     return extended;
   };
