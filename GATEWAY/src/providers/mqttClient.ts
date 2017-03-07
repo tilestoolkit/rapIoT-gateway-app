@@ -54,11 +54,11 @@ export class MqttClient {
 
     // Instantiate a mqtt-client from the host and port
     client = mqtt.connect({
-      host: host || this.mqttConnectionData.host,
+      host: 'test.mosquitto.org', //host || this.mqttConnectionData.host,
       port: port || this.mqttConnectionData.port, 
       keepalive: 0
 		});
-
+    
     // Handle a message from the broker
     client.on('message', (topic, message) => {
       try {
@@ -91,9 +91,16 @@ export class MqttClient {
 
     // Client is connected to the server
 		client.on('connect', () => {
+      console.log(client)
 			clearTimeout(failedConnectionTimeout);
       this.connectedToServer = true;
       this.events.publish('serverConnected');
+      // NB: temporary testing only
+      client.publish(
+        'tiles/test', 
+        'testing',
+        this.publishOpts
+        );
 		});
 
     // Ends the attempt tp connect if the timeout rus out
@@ -155,7 +162,9 @@ export class MqttClient {
     	this.client.publish(
     		this.getDeviceSpecificTopic(deviceId, true),
     		JSON.stringify(event),
-    		this.publishOpts
+    		this.publishOpts, err => {
+          alert('error sending message: ' + err)
+        }
     	);
     }
   };

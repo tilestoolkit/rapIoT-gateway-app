@@ -150,10 +150,10 @@ export class BleService {
               case 'tap':
                 device.buttonPressed = device.buttonPressed !== undefined
                                       ? !device.buttonPressed : true;
-                alert('tappeti tap')
+                //alert('tappeti tap')
                 break;
               case 'tilt':
-                alert('You are tilting me!');
+                //alert('You are tilting me!');
                 break;
               default:
                 alert('No response for ' + message.properties[0])
