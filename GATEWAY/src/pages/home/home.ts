@@ -48,7 +48,9 @@ export class HomePage {
     this.events.subscribe('offline', () => {
       this.mqttClient.setServerConnectionStatus(false);
       this.serverConnectStatusMsg = 'Client gone offline';
-      this.bleScanner.unsubscribe();
+      if (this.bleScanner !== undefined) {
+        this.bleScanner.unsubscribe();
+      }
     });
 
     this.events.subscribe('close', () => {
