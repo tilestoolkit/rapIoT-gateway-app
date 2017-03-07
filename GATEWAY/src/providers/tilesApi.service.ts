@@ -27,7 +27,7 @@ export class TilesApi {
   eventMappings = {};// {username: {tile: mappingsForTile}}
   username: string = 'TestUser';
   hostAddress: string = '138.68.144.206';
-  mqttPort: number = 1883;
+  mqttPort: number = 8080;
   apiPort: number = 3000;
 
   constructor(private http: Http,
