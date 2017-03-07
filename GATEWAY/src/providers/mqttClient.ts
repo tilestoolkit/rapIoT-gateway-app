@@ -54,7 +54,7 @@ export class MqttClient {
 
     // Instantiate a mqtt-client from the host and port
     client = mqtt.connect({
-      host: 'test.mosquitto.org', //host || this.mqttConnectionData.host,
+      host: host || this.mqttConnectionData.host,//'test.mosquitto.org'
       port: port || this.mqttConnectionData.port, 
       keepalive: 0
 		});
@@ -98,7 +98,7 @@ export class MqttClient {
       // NB: temporary testing only
       client.publish(
         'tiles/test', 
-        'testing',
+        'connect',
         this.publishOpts
         );
 		});
@@ -114,9 +114,8 @@ export class MqttClient {
    * @param {Device} device - the device to register
    */
 	registerDevice = (device: Device): void => {
-    alert(device.name)
     const client = this.client;
-		if (client) {
+    if (client) {
 			client.publish(
 				this.getDeviceSpecificTopic(device.tileId, true) + '/active',
 				'true',
