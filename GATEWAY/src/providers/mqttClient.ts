@@ -45,7 +45,7 @@ export class MqttClient {
    * @param {number} port - the port to send to
    */
   connect = (host: string, port: number): void => {
-    const client = this.client;
+    let client = this.client;
 		// Check if a previous server connection exists
 		// and end it if it does
 		if (client) {
@@ -107,18 +107,20 @@ export class MqttClient {
    * @param {Device} device - the device to register
    */
 	registerDevice = (device: Device): void => {
-		if (this.client) {
-			this.client.publish(
+    alert(device.name)
+    const client = this.client;
+		if (client) {
+			client.publish(
 				this.getDeviceSpecificTopic(device.tileId, true) + '/active',
 				'true',
 				this.publishOpts
 			);
-      this.client.publish(
+      client.publish(
       	this.getDeviceSpecificTopic(device.tileId, true) + '/name',
       	device.name,
       	this.publishOpts
       );
-      this.client.subscribe(
+      client.subscribe(
       	this.getDeviceSpecificTopic(device.tileId, false)
       );
       console.log('Registered device: ' + device.name + ' (' + device.tileId + ')');
@@ -130,13 +132,14 @@ export class MqttClient {
    * @param {Device} device - the device to register
    */
   unregisterDevice = (device: Device): void => {
-    if (this.client) {
-      this.client.publish(
+    const client = this.client;
+    if (client) {
+      client.publish(
       	this.getDeviceSpecificTopic(device.tileId, true) + '/active',
       	'false',
       	this.publishOpts
       );
-      this.client.unsubscribe(
+      client.unsubscribe(
       	this.getDeviceSpecificTopic(device.tileId, false)
       );
     }
