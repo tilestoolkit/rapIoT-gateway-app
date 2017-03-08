@@ -127,6 +127,14 @@ export class HomePage {
 		}, 2000);
 	};
 
+  /**
+   * Triggers an event on a tile to identify which tile is which
+   * @param {Device} device - A tile
+   */
+  identifyTile = (device: Device): void => {
+    this.bleService.sendData(device, 'led,on,red');
+    setTimeout(()=> (this.bleService.sendData(device, 'led,on,red')), 3000);
+  };
 
   /**
    * Called when the rename button is pushed on the view of the the
