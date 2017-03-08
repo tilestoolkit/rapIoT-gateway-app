@@ -110,6 +110,52 @@ export class TilesApi {
     this.mqttPort = hostMqttPort;
   };
 
+  /** 
+   * Get all registered applications for all users
+   */
+  getAllApplications = (applicationId: string): void => {
+    const url = `http://${this.hostAddress}:${this.apiPort}/applications`;
+    this.http.get(url)
+            .toPromise()
+            .then(res => {
+              // TODO: do something with the applications here
+            })
+            .catch(err => alert('failed getting applications with error: ' + err));
+  };
+
+  /** 
+   * Get the details of an application
+   * @param {string} applicationId - The application ID
+   */
+  getApplicationDetails = (applicationId: string): void => {
+    const url = `http://${this.hostAddress}:${this.apiPort}/applications/${applicationId}`;
+    this.http.get(url)
+            .toPromise()
+            .then(res => {
+              // TODO: do something with the application here
+            })
+            .catch(err => alert('failed getting applications with error: ' + err));
+  };
+
+  /**
+   * Pair a physical tile with a virtual tile registered on the app
+   * @param {string} deviceId - The physical tile
+   * @param {string} virtualTileId - The virtual tile
+   * @param {string} applicationId - The application the virtual tile is registered to
+   */
+  pairDeviceToVirualTile = (deviceId: string, virtualTileId: string, applicationId: string): void => {
+    const url = `http://${this.hostAddress}:${this.apiPort}/applications/${applicationId}/${virtualTileId}`;
+    const body = { tile: deviceId };
+    // TODO: Device name must be updated to match the name of the virtual tile
+    this.http.post(url, body).toPromise()
+             .then(res => {
+               // Do we even get a response? 
+             })
+             .catch(err => {
+               alert('An error occured preventing the pairing of the physical and virtual tile');
+             });
+  };
+
   /**
    * Set the eventmapprings for a tile
    * @param {string} deviceId - The target tile
