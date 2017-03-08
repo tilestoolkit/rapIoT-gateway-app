@@ -12,19 +12,16 @@ let tileNames = {};
 
 @Injectable()
 export class BleService {
-
 	rfduino = {
     serviceUUID: '2220',
     receiveCharacteristicUUID: '2221',
     sendCharacteristicUUID: '2222',
     disconnectCharacteristicUUID: '2223'
-  };
-
+  };/*
   mockDevices = [
   	{'name': 'TI SensorTag','id': '01:23:45:67:89:AB', 'rssi': -79, 'advertising': null},
   	{'name': 'Some OtherDevice', 'id': 'A1:B2:5C:87:2D:36', 'rssi': -52, 'advertising': null}
-  ];
-
+  ];*/
 
   constructor(private events: Events,
               private devicesService: DevicesService,
@@ -34,7 +31,6 @@ export class BleService {
 
   /**
    * Checking if bluetooth is enabled and enable on android if not
-   * never used atm
    */
   scanForDevices = (): void => {
     BLE.isEnabled()
@@ -82,11 +78,9 @@ export class BleService {
           }).catch(err => alert(err));
         }
       },
-      // function to be called if an error occurs
       err => {
         alert('Error when scanning for devices: ' + err);
       },
-      // function to be called when the scan is complete
       () => {
         alert('No more devices');
         // If we found any devices we should update the device list
@@ -104,7 +98,6 @@ export class BleService {
   connect = (device: Device): void => {
     device.loading = true;
     //TODO: unsubscribe at some point ?
-    //alert('connecting to device: ' + device.name)
   	BLE.connect(device.id)
   		  .subscribe(
           res => {
@@ -117,21 +110,20 @@ export class BleService {
             this.startDeviceNotification(device);
             if (device.name in tileNames){
               device.name = tileNames[device.name];
-
             }
             device.loading = false;
-        },
-        err => {
-          device.connected = false;
-          device.loading = false;
-          this.devicesService.clearDisconnectedDevices();
-          this.events.publish('updateDevices');
-          this.disconnect(device);
-          //alert('Lost connection to ' + device.name)
-        },
-        () => {
-          alert('Connection attempt completed')
-        });
+          },
+          err => {
+            device.connected = false;
+            device.loading = false;
+            this.devicesService.clearDisconnectedDevices();
+            this.events.publish('updateDevices');
+            this.disconnect(device);
+            //alert('Lost connection to ' + device.name)
+          },
+          () => {
+            alert('Connection attempt completed')
+          });
   };
 
   /**
@@ -152,15 +144,16 @@ export class BleService {
             alert('Found no mapping for event: ' + responseString);
           } else {
             // Switch on the event type of the message
+            // for testing purposes only
             const eventType = message.properties[0];
             switch (eventType){
               case 'tap':
                 device.buttonPressed = device.buttonPressed !== undefined
                                       ? !device.buttonPressed : true;
-                alert('tappeti tap')
+                //alert('tappeti tap')
                 break;
               case 'tilt':
-                alert('You are tilting me!');
+                //alert('You are tilting me!');
                 break;
               default:
                 alert('No response for ' + message.properties[0])
@@ -173,7 +166,7 @@ export class BleService {
           console.log('Failed to start notification');
         },
         () => {
-          //alert('Finished attempt to start getting notifications from device with id: ' + device.id);
+          // called when the device disconnects
           device.connected = false;
         });
   };
@@ -189,10 +182,26 @@ export class BleService {
   						this.mqttClient.unregisterDevice(device);
   					})
   					.catch( err => {
-              console.log('Failed to disconnect')
-              device.connected = false;
+              console.log('Failed to disconnect');
             });
   };
+
+  /**
+   * Convert a string to an attay of bytes
+   */
+  convertStringtoBytes = (str: String): any => {
+    try {
+      console.log('Attempting to send data to device via BLE.');
+      let dataArray = new Uint8Array(str.length);
+      for(let i = 0; i < str.length; i ++){
+        dataArray[i] = str.charCodeAt(i);
+      }
+      return dataArray;
+    } catch (err) {
+      console.log('Converting string of data to bytes unsuccessful!')
+      return null;
+    };
+  }
 
   /**
    * Send data to a device using BLE
@@ -202,21 +211,16 @@ export class BleService {
   sendData = (device: Device, dataString: string): void => {
     try {
       console.log('Attempting to send data to device via BLE.');
-
-        // Turns the dataString into an array of bytes
-        let dataArray = new Uint8Array(dataString.length);
-        for(let i = 0; i < dataString.length; i ++){
-          dataArray[i] = dataString.charCodeAt(i);
-        }
-      console.log('Bytes: ' + dataArray.length);
-
+      const dataArray = this.convertStringtoBytes(dataString);
       // Attempting to send the array of bytes to the device
       BLE.writeWithoutResponse(device.id,
                                this.rfduino.serviceUUID,
                                this.rfduino.sendCharacteristicUUID,
                                dataArray.buffer)
               .then( res => alert('Success sending the string: ' + dataString))
-              .catch( err => console.log('Failed when trying to send daata to the RFduino'));
-    } finally {}
+              .catch( err => alert('Failed when trying to send data to the device!'));
+    } catch (err) {
+      alert('Failed when trying to send data to the device!');
+    };
   };
 };

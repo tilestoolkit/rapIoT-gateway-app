@@ -31,9 +31,7 @@ export class HomePage {
               private bleService: BleService,
               private devicesService: DevicesService,
               private tilesApi: TilesApi,
-              private mqttClient: MqttClient)
-  {
-
+              private mqttClient: MqttClient) {
   	this.setDevices();
   	this.serverConnectStatusMsg = 'Click to connect to server';
 
@@ -50,7 +48,9 @@ export class HomePage {
     this.events.subscribe('offline', () => {
       this.mqttClient.setServerConnectionStatus(false);
       this.serverConnectStatusMsg = 'Client gone offline';
-      this.bleScanner.unsubscribe();
+      if (this.bleScanner !== undefined) {
+        this.bleScanner.unsubscribe();
+      }
     });
 
     this.events.subscribe('close', () => {
@@ -116,7 +116,7 @@ export class HomePage {
 
   /**
    * Called when the refresher is triggered by pulling down on the view of 
-	 * the devices. 
+	 * the devices. TODO: Not sure if needed when refresh is done every 30s anyways.
 	 */
 	refreshDevices = (refresher): void => {
 		console.log('Scanning for more devices...');
@@ -134,16 +134,13 @@ export class HomePage {
    * @param {Device} device - the target device
    */
   changeNamePop = (device: Device): void => {
-    let alert = this.alertCtrl.create({
+    this.alertCtrl.create({
       title: 'Change tile name',
-      inputs: [
-        {
+      inputs: [{
           name: 'newName',
           placeholder: 'new name'
-        }
-      ],
-      buttons: [
-        {
+      }],
+      buttons: [{
           text: 'Cancel',
           role: 'cancel',
         },
@@ -152,9 +149,7 @@ export class HomePage {
           handler: data => {
             this.devicesService.setCustomDeviceName(device, data.newName);
           }
-        }
-      ]
-    });
-    alert.present();
+      }]
+    }).present();
   };
 };

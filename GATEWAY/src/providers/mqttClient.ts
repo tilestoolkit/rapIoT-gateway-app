@@ -8,15 +8,13 @@ import { TilesApi, CommandObject } from './tilesApi.service';
 
 @Injectable()
 export class MqttClient {
-  
   publishOpts = { retain: true };
   serverConnectionTimeout: number = 10000; // 10 seconds
   connectedToServer: boolean = false;
   client;
-
   mqttConnectionData = {
     username: this.tilesApi.username,
-    host: this.tilesApi.hostAddress,
+    host: this.tilesApi.hostAddress,//'178.62.99.218',//
     port: this.tilesApi.mqttPort
   };
 
@@ -30,7 +28,7 @@ export class MqttClient {
    */
   getDeviceSpecificTopic = (deviceId: string, isEvent: boolean): string => {
   	const type = isEvent ? 'evt' : 'cmd';
-  	return 'tiles/' + type + '/' + this.tilesApi.username + '/' + deviceId;
+  	return `tiles/${type}/${this.tilesApi.username}/${deviceId}`;
   };
 
   /**
@@ -47,24 +45,22 @@ export class MqttClient {
    * @param {number} port - the port to send to
    */
   connect = (host: string, port: number): void => {
+    let client = this.client;
 		// Check if a previous server connection exists
 		// and end it if it does
-		if (this.client) {
-			this.client.end();
+		if (client) {
+			client.end();
     }
 
     // Instantiate a mqtt-client from the host and port
-    this.client = mqtt.connect({
-      host: host,
-      port: port,
-			keepalive: 0 // disables keepalive
+    client = mqtt.connect({
+      host: host || this.mqttConnectionData.host,//'test.mosquitto.org'
+      port: port || this.mqttConnectionData.port, 
+      keepalive: 0
 		});
-
-		// Handlers for different types of responses from the server:
-
-    // Handle a message from the server
-    this.client.on('message', (topic, message) => {
-      //alert('Received message from server: ' + message);
+    
+    // Handle a message from the broker
+    client.on('message', (topic, message) => {
       try {
         const command: CommandObject = JSON.parse(message);
         if (command) {
@@ -74,59 +70,63 @@ export class MqttClient {
       } finally {}
     });
 
-    this.client.on('offline', () => {
+    client.on('offline', () => {
       this.connectedToServer = false;
       this.events.publish('offline');
     });
 
-    this.client.on('close', () => {
+    client.on('close', () => {
       this.connectedToServer = false;
       this.events.publish('close');
     });
 
-    this.client.on('reconnect', () => {
+    client.on('reconnect', () => {
       this.events.publish('reconnect');
     });
 
-    this.client.on('error', error => {
+    client.on('error', error => {
       this.connectedToServer = false;
       this.events.publish('error', error);
     });
 
     // Client is connected to the server
-		this.client.on('connect', () => {
+		client.on('connect', () => {
+      console.log(client)
 			clearTimeout(failedConnectionTimeout);
       this.connectedToServer = true;
       this.events.publish('serverConnected');
-			//console.log('Connected to server');
+      // NB: temporary testing only
+      client.publish(
+        'tiles/test', 
+        'connect',
+        this.publishOpts
+        );
 		});
 
     // Ends the attempt tp connect if the timeout rus out
     const failedConnectionTimeout = setTimeout(function(){
-      this.client.end();
+      client.end();
     }, this.serverConnectionTimeout);
   };
-
-  // The functions called on the client comes from the mqtt-library,
-  // API reference can be found at https://github.com/mqttjs/MQTT.js
 
   /**
    * Register a device at the server
    * @param {Device} device - the device to register
    */
 	registerDevice = (device: Device): void => {
-		if (this.client) {
-			this.client.publish(
+    const client = this.client;
+    if (client) {
+			client.publish(
 				this.getDeviceSpecificTopic(device.tileId, true) + '/active',
 				'true',
 				this.publishOpts
 			);
-      this.client.publish(
+      client.publish(
       	this.getDeviceSpecificTopic(device.tileId, true) + '/name',
       	device.name,
       	this.publishOpts
       );
-      this.client.subscribe(
+      client.subscribe(
       	this.getDeviceSpecificTopic(device.tileId, false)
       );
       console.log('Registered device: ' + device.name + ' (' + device.tileId + ')');
@@ -138,13 +138,14 @@ export class MqttClient {
    * @param {Device} device - the device to register
    */
   unregisterDevice = (device: Device): void => {
-    if (this.client) {
-      this.client.publish(
+    const client = this.client;
+    if (client) {
+      client.publish(
       	this.getDeviceSpecificTopic(device.tileId, true) + '/active',
       	'false',
       	this.publishOpts
       );
-      this.client.unsubscribe(
+      client.unsubscribe(
       	this.getDeviceSpecificTopic(device.tileId, false)
       );
     }
@@ -156,19 +157,14 @@ export class MqttClient {
    * @param {CommandObject} event - An event represented as a CommandObject (name, params...)
    */
   sendEvent = (deviceId: string, event: CommandObject): void => {
-    //alert('Sending message to mqtt: ' + JSON.stringify(event));
     if (this.client) {
     	this.client.publish(
     		this.getDeviceSpecificTopic(deviceId, true),
     		JSON.stringify(event),
-    		this.publishOpts
+    		this.publishOpts, err => {
+          alert('error sending message: ' + err)
+        }
     	);
-    }
-    //TODO: NB: Temporary, this should come as a message from the server!!
-    if (event.properties[0] === 'tilt') {
-      this.events.publish('command', deviceId, {name: 'led', properties: ['on', 'red']});
-    } else {
-      this.events.publish('command', deviceId, {name: 'led', properties: ['off']});
     }
   };
 
