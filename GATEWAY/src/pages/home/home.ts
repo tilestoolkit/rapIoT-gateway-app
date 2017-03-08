@@ -131,9 +131,9 @@ export class HomePage {
    * Triggers an event on a tile to identify which tile is which
    * @param {Device} device - A tile
    */
-  identifyTile = (device: Device): void => {
+  identifyDevice = (device: Device): void => {
     this.bleService.sendData(device, 'led,on,red');
-    setTimeout(()=> (this.bleService.sendData(device, 'led,on,red')), 3000);
+    setTimeout(()=> (this.bleService.sendData(device, 'led,off')), 3000);
   };
 
   /**
