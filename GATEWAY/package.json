@@ -5,14 +5,11 @@
   "repository": "https://github.com/nornes/tiles-rapIoT/",
   "licence": "Apache",
   "scripts": {
-    "clean": "npm run setProdConfig && ionic-app-scripts clean",
-    "build": "npm run setProdConfig && ionic-app-scripts build",
-    "ionic:build": "npm run setProdConfig && ionic-app-scripts build",
-    "ionic:serve": "npm run setProdConfig && ionic-app-scripts serve",
-    "setProdConfig": "cp-cli configs/tsconfig.prod.json tsconfig.json",
-    "setTestConfig": "cp-cli configs/tsconfig.test.json tsconfig.json",
-    "runTest": "mocha --require ts-node/register --compilers ts:ts-node/register --recursive test/pages test/providers --reporter dot",
-    "test": "npm run setTestConfig && npm run runTest"
+    "clean": "ionic-app-scripts clean --tsconfig ./configs/tsconfig.prod.json",
+    "build": "ionic-app-scripts build --tsconfig ./configs/tsconfig.prod.json",
+    "ionic:build": "ionic-app-scripts build --tsconfig ./configs/tsconfig.prod.json",
+    "ionic:serve": "ionic-app-scripts serve --tsconfig ./configs/tsconfig.prod.json",
+    "test": "mocha --require ts-node/register --compilers ts:ts-node/register --recursive test/pages test/providers --reporter dot"
   },
   "dependencies": {
     "@angular/common": "2.2.1",
