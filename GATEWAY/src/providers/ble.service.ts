@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Inject } from '@angular/core';
 import { BLE } from 'ionic-native';
 import { Events } from 'ionic-angular';
 import 'rxjs/add/operator/toPromise';
@@ -25,9 +25,9 @@ export class BleService {
   ];
 
 
-  constructor(public events: Events,
-              private mqttClient: MqttClient,
-  						private tilesApi: TilesApi) {
+  constructor(@Inject(Events) public events: Events,
+              @Inject(MqttClient) private mqttClient: MqttClient,
+  						@Inject(TilesApi) private tilesApi: TilesApi) {
   };
 
   /**

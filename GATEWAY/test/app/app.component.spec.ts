@@ -1,25 +1,14 @@
-import 'reflect-metadata';
-import 'mocha';
-import 'zone.js';
-import { assert, expect } from 'chai';
-import { Component } from '@angular/core';
-import { Platform } from 'ionic-angular';
-import { PlatformMock } from '../fixtures/mocks/mock';
-import { AppVersion, StatusBar, Splashscreen } from 'ionic-native';
-import { TestBed, ComponentFixture, async, inject } from '@angular/core/testing';
-//import { IonicModule } from 'ionic-angular';
-
+import { TestBed, ComponentFixture, async } from '@angular/core/testing';
+import { IonicModule } from 'ionic-angular';
 import { Tiles } from '../../src/app/app.component';
+import { TabsPage } from '../../src/pages/tabs/tabs';
+
 let comp: Tiles;
 let fixture: ComponentFixture<Tiles>;
-let window;
  
 describe('test import of platform', () => {
  
-    beforeEach(() => {
-        this.window = { location : { host : 'example.com' } };
-        const platformMock = new PlatformMock();
-        /*
+    beforeEach(async(() => {
         TestBed.configureTestingModule({
  
             declarations: [
@@ -27,14 +16,35 @@ describe('test import of platform', () => {
             ],
              
             providers: [
-
+                
+            ],
+            imports: [
+                IonicModule.forRoot(Tiles)
             ]
  
         }).compileComponents();
-        */
+    }));
+ 
+    beforeEach(() => {
+ 
+        fixture = TestBed.createComponent(Tiles);
+        comp    = fixture.componentInstance;
+ 
     });
-        
-    it('should work', () => {
-            assert.equal(true, true);
+ 
+    afterEach(() => {
+        fixture.destroy();
+        comp = null;
+    });
+ 
+    it('is created', () => {
+ 
+        expect(fixture).toBeTruthy();
+        expect(comp).toBeTruthy();
+ 
+    });
+ 
+    it('initialises with a root page of TabsPage', () => {
+        expect(comp['rootPage']).toBe(TabsPage);
     });
 });

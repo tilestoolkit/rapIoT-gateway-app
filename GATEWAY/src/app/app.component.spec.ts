@@ -1,36 +1,36 @@
-import { TabsPage } from './tabs';
-import { Tiles } from '../../app/app.component';
 import { TestBed, ComponentFixture, async } from '@angular/core/testing';
-import { IonicModule, NavController } from 'ionic-angular';
-import { Storage } from '@ionic/storage';
-
-let comp: TabsPage;
-let fixture: ComponentFixture<TabsPage>;
+import { IonicModule } from 'ionic-angular';
+import { Tiles } from './app.component';
+import { TabsPage } from '../pages/tabs/tabs';
  
-describe('TabsPage', () => {
+let comp: Tiles;
+let fixture: ComponentFixture<Tiles>;
+ 
+describe('Component: Root Component', () => {
  
     beforeEach(async(() => {
+ 
         TestBed.configureTestingModule({
  
-            declarations: [
-                Tiles,
-                TabsPage
-            ],
-             
+            declarations: [Tiles],
+ 
             providers: [
-                
+ 
             ],
+ 
             imports: [
                 IonicModule.forRoot(Tiles)
             ]
  
         }).compileComponents();
+ 
     }));
  
     beforeEach(() => {
  
-        fixture = TestBed.createComponent(TabsPage);
+        fixture = TestBed.createComponent(Tiles);
         comp    = fixture.componentInstance;
+ 
     });
  
     afterEach(() => {
@@ -44,4 +44,9 @@ describe('TabsPage', () => {
         expect(comp).toBeTruthy();
  
     });
+ 
+    it('initialises with a root page of TabsPage', () => {
+        expect(comp['rootPage']).toBe(TabsPage);
+    });
+ 
 });
