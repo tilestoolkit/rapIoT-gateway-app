@@ -35,7 +35,7 @@ export class TilesApi {
   };
   eventMappings = {};// {username: {tile: mappingsForTile}}
   username: string = 'TestUser';
-  hostAddress: string = '138.68.144.206';
+  hostAddress: string = '178.62.99.218';//'138.68.144.206';
   mqttPort: number = 8080;
   apiPort: number = 3000;
 
@@ -129,21 +129,34 @@ export class TilesApi {
             .then(res => {
               // TODO: do something with the applications here
             })
-            .catch(err => alert('failed getting applications with error: ' + err));
+            //.catch(err => alert('failed getting applications with error: ' + err));
   };
 
   /** 
    * Get the details of an application
    * @param {string} applicationId - The application ID
    */
-  getApplicationDetails = (applicationId: string): void => {
+  getApplicationDetails = (applicationId: string): Promise<any> => {
+    //const url = `http://${this.hostAddress}:${this.apiPort}/applications/${applicationId}`;
     const url = `http://${this.hostAddress}:${this.apiPort}/applications/${applicationId}`;
-    this.http.get(url)
+    return this.http.get(url)
             .toPromise()
             .then(res => {
-              // TODO: do something with the application here
+              return res.json();
             })
-            .catch(err => alert('failed getting applications with error: ' + err));
+            .catch(err => {
+              console.log('failed getting applications with error: ' + err);
+              console.log('url '+url)
+              return null;
+            });
+  };
+
+  /** 
+   * Get the tiles belonging to an application
+   * @param {string} applicationId - The application ID
+   */
+  getApplicationTiles = (applicationId: string): Promise<any> => {
+    return this.getApplicationDetails(applicationId).then(res => res.virtualTiles);
   };
 
   /**
