@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Http }    from '@angular/http';
+import { Headers, Http }    from '@angular/http';
 import { Storage } from '@ionic/storage';
 import 'rxjs/add/operator/toPromise';
 
@@ -167,14 +167,17 @@ export class TilesApi {
    */
   pairDeviceToVirualTile = (deviceId: string, virtualTileId: string, applicationId: string): void => {
     const url = `http://${this.hostAddress}:${this.apiPort}/applications/${applicationId}/${virtualTileId}`;
-    const body = { tile: deviceId };
+    const body = JSON.stringify({ tile: deviceId });
+    const headerFields = new Headers({'Content-Type': 'application/json'});
+
+    console.log('url: ' + url + ' body: ' + body)
     // TODO: Device name must be updated to match the name of the virtual tile
-    this.http.post(url, body).toPromise()
+    this.http.post(url, body, {headers: headerFields}).toPromise()
              .then(res => {
-               // Do we even get a response? 
+               // Do we even get or need a response? 
              })
              .catch(err => {
-               alert('An error occured preventing the pairing of the physical and virtual tile');
+               console.log('An error occured preventing the pairing of the physical and virtual tile');
              });
   };
 
