@@ -217,7 +217,7 @@ export class BleService {
                                this.rfduino.serviceUUID,
                                this.rfduino.sendCharacteristicUUID,
                                dataArray.buffer)
-              .then( res => alert('Success sending the string: ' + dataString))
+              //.then( res => alert('Success sending the string: ' + dataString))
               .catch( err => alert('Failed when trying to send data to the device!'));
     } catch (err) {
       alert('Failed when trying to send data to the device!');
