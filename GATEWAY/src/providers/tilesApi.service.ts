@@ -11,6 +11,15 @@ export class CommandObject {
   properties: string;
 }
 
+export class VirtualTile {
+  _id: string;
+  virtualName: string;
+  application: string;
+  tile: any;
+  __v: number;
+}
+
+
 
 @Injectable()
 export class TilesApi {

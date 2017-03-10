@@ -5,7 +5,7 @@ import { Observable, Subscription } from 'rxjs';
 import { BleService } from '../../providers/ble.service';
 import { Device, DevicesService } from '../../providers/devices.service';
 import { MqttClient } from '../../providers/mqttClient';
-import { TilesApi, CommandObject } from '../../providers/tilesApi.service';
+import { TilesApi, CommandObject, VirtualTile } from '../../providers/tilesApi.service';
 
 @Component({
   selector: 'page-home',
@@ -23,6 +23,7 @@ export class HomePage {
   serverConnectStatusMsg: string;
   statusMsg: string;
   bleScanner: Subscription;
+  virtualTiles: VirtualTile[];
 
   constructor(public alertCtrl: AlertController,
               public navCtrl: NavController,
