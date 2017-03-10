@@ -58,10 +58,10 @@
       <div class="row row-center">
         <div id="devName" class="col col-75">
           <b>{{tile.virtualName}}</b><br>
+        </div>
         <div class="col">
-        <!--TODO: Change first parameter to a physical tile we want to pair to the virtual one-->
-          <button class="bttn" ion-button small color="positive" (
-          click)="tilesApi.pairDeviceToVirualTile('Tile_da', tile._id, 'test3')" >PAIR</button>
+          <!--TODO: Change first parameter to a physical tile we want to pair to the virtual one-->
+          <button class="bttn" ion-button small color="positive" (click)="tilesApi.pairDeviceToVirualTile('Tile_da', tile._id, 'test3')" >PAIR</button>
         </div>
       </div>
     </ion-item>
