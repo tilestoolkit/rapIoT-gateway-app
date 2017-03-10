@@ -34,6 +34,7 @@ export class HomePage {
               private tilesApi: TilesApi,
               private mqttClient: MqttClient) {
   	this.setDevices();
+    this.setVirtualTiles();
   	this.serverConnectStatusMsg = 'Click to connect to server';
 
   	// Subscriptions to events that can be emitted from other places in the code
@@ -92,6 +93,13 @@ export class HomePage {
    */
   setDevices = (): void => {
     this.devices = this.devicesService.getDevices();
+  }
+
+  setVirtualTiles = (): void => {
+    this.tilesApi.getApplicationTiles('test3').then(res => {
+      this.virtualTiles = res; 
+      console.log('tiles: ' + JSON.stringify(this.virtualTiles));
+    });
   }
 
   /**
