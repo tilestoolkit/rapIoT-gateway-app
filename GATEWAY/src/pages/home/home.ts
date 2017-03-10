@@ -95,7 +95,11 @@ export class HomePage {
     this.devices = this.devicesService.getDevices();
   }
 
+  /**
+   * Set the virtual tiles equal to the ones stores for the app
+   */
   setVirtualTiles = (): void => {
+    //TODO: Use the appname for the chosen app when implemented
     this.tilesApi.getApplicationTiles('test3').then(res => {
       this.virtualTiles = res; 
       console.log('tiles: ' + JSON.stringify(this.virtualTiles));

@@ -169,13 +169,8 @@ export class TilesApi {
     const url = `http://${this.hostAddress}:${this.apiPort}/applications/${applicationId}/${virtualTileId}`;
     const body = JSON.stringify({ tile: deviceId });
     const headerFields = new Headers({'Content-Type': 'application/json'});
-
     console.log('url: ' + url + ' body: ' + body)
-    // TODO: Device name must be updated to match the name of the virtual tile
     this.http.post(url, body, {headers: headerFields}).toPromise()
-             .then(res => {
-               // Do we even get or need a response? 
-             })
              .catch(err => {
                console.log('An error occured preventing the pairing of the physical and virtual tile');
              });
