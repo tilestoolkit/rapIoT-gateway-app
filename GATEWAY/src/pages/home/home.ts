@@ -165,4 +165,29 @@ export class HomePage {
       }]
     }).present();
   };
+
+  /**
+   * Called when the pair button is pushed on the view of the the
+   * the virtual tiles.
+   * @param {VirtualTile} virtualTile - the target device
+   */
+  pairTilePopUp = (virtualTile: VirtualTile): void => {
+    const deviceRadioButtons = this.devices.map(device => {
+      return {type: 'radio', name: 'deviceId', value: device.tileId, label: device.name}
+    });
+    this.alertCtrl.create({
+      title: 'Pair to physical tile',
+      inputs: deviceRadioButtons,
+      buttons: [{
+          text: 'Cancel',
+          role: 'cancel',
+        },
+        {
+          text: 'Pair',
+          handler: data => {
+            this.tilesApi.pairDeviceToVirualTile(data, virtualTile._id, 'test3');
+          }
+      }]
+    }).present();
+  };
 };
