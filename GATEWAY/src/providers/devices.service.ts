@@ -11,7 +11,7 @@ export class DevicesService {
   constructor(public storage: Storage,
               public events: Events) {
     this.devices = [];
-  };
+  }
 
   /**
    * Returns mock devices for testing purposes
@@ -42,7 +42,7 @@ export class DevicesService {
         connected: false,
         loading: false,
         ledOn: false,
-        buttonPressed: false
+        buttonPressed: false,
       };
     }).catch(err => {
       return {
@@ -52,7 +52,7 @@ export class DevicesService {
         connected: false,
         loading: false,
         ledOn: false,
-        buttonPressed: false
+        buttonPressed: false,
       };
     })
   };
@@ -110,6 +110,4 @@ export class DevicesService {
       }
     }
   };
-};
-
-export default { DevicesService };
+}

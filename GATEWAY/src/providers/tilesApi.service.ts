@@ -9,12 +9,12 @@ export class TilesApi {
   defaultEventMappings = {
     btnON: {
       type: 'button_event',
-      event: 'pressed'
+      event: 'pressed',
     },
     btnOFF: {
       type: 'button_event',
-      event: 'released'
-    }
+      event: 'released',
+    },
   };
   eventMappings = {};// {username: {tile: mappingsForTile}}
   username: string = 'TestUser';
@@ -24,7 +24,7 @@ export class TilesApi {
 
   constructor(private http: Http,
               private storage: Storage) {
-  };
+  }
 
   /** 
    * Tests if a device is a tile
@@ -169,5 +169,3 @@ export class TilesApi {
             .catch(err => alert('Failed fetching event mappings with error: ' + err));
   };*/
 }
-
-export default { TilesApi }

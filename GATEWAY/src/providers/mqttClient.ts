@@ -15,11 +15,12 @@ export class MqttClient {
   private mqttConnectionData = {
     username: this.tilesApi.username,
     host: this.tilesApi.hostAddress,//'178.62.99.218',//
-    port: this.tilesApi.mqttPort
+    port: this.tilesApi.mqttPort,
   };
 
   constructor(private events: Events,
-              private tilesApi: TilesApi) { };
+              private tilesApi: TilesApi) { 
+  }
 
   /**
    * Returns a url for the specific device
@@ -53,8 +54,8 @@ export class MqttClient {
     // Instantiate a mqtt-client from the host and port
     this.client = mqtt.connect({
       host: host || this.mqttConnectionData.host,//'test.mosquitto.org'
-      port: port || this.mqttConnectionData.port, 
-      keepalive: 0
+      port: port || this.mqttConnectionData.port,
+      keepalive: 0,
 		});
     
     // Handle events from the broker
@@ -97,7 +98,7 @@ export class MqttClient {
       this.client.publish(
         'tiles/test', 
         'connect' + (new Date).getTime(),
-        this.publishOpts
+        this.publishOpts,
         );
 		});
 
@@ -116,15 +117,15 @@ export class MqttClient {
 			this.client.publish(
 				this.getDeviceSpecificTopic(device.tileId, true) + '/active',
 				'true',
-				this.publishOpts
+				this.publishOpts,
 			);
       this.client.publish(
       	this.getDeviceSpecificTopic(device.tileId, true) + '/name',
       	device.name,
-      	this.publishOpts
+      	this.publishOpts,
       );
       this.client.subscribe(
-      	this.getDeviceSpecificTopic(device.tileId, false)
+      	this.getDeviceSpecificTopic(device.tileId, false),
       );
       console.log('Registered device: ' + device.name + ' (' + device.tileId + ')');
     }
@@ -139,10 +140,10 @@ export class MqttClient {
       this.client.publish(
       	this.getDeviceSpecificTopic(device.tileId, true) + '/active',
       	'false',
-      	this.publishOpts
+      	this.publishOpts,
       );
       this.client.unsubscribe(
-      	this.getDeviceSpecificTopic(device.tileId, false)
+      	this.getDeviceSpecificTopic(device.tileId, false),
       );
     }
   };
@@ -161,7 +162,7 @@ export class MqttClient {
           if (err !== undefined) {
             alert('error sending message: ' + err);
           }
-        }
+        },
     	);
     }
   };
@@ -173,7 +174,7 @@ export class MqttClient {
    */
   endConnection = (deviceId: string, event: any): void => {
     if (this.client) {
-    	this.client.end()
+    	this.client.end();
     }
   };
-};
+}

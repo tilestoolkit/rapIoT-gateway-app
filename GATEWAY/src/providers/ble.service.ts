@@ -17,7 +17,7 @@ export class BleService {
     serviceUUID: '2220',
     receiveCharacteristicUUID: '2221',
     sendCharacteristicUUID: '2222',
-    disconnectCharacteristicUUID: '2223'
+    disconnectCharacteristicUUID: '2223',
   };/*
   mockDevices = [
   	{'name': 'TI SensorTag','id': '01:23:45:67:89:AB', 'rssi': -79, 'advertising': null},
@@ -29,7 +29,7 @@ export class BleService {
               private mqttClient: MqttClient,
   						private tilesApi: TilesApi,
               private utils: UtilsService) {
-  };
+  }
 
   /**
    * Checking if bluetooth is enabled and enable on android if not
@@ -206,6 +206,6 @@ export class BleService {
               .catch( err => alert('Failed when trying to send data to the device!'));
     } catch (err) {
       alert('Failed when trying to send data to the device!');
-    };
+    }
   };
-};
+}
