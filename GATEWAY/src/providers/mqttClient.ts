@@ -45,22 +45,21 @@ export class MqttClient {
    * @param {number} port - the port to send to
    */
   connect = (host: string, port: number): void => {
-    let client = this.client;
 		// Check if a previous server connection exists
 		// and end it if it does
-		if (client) {
-			client.end();
+		if (this.client) {
+			this.client.end();
     }
 
     // Instantiate a mqtt-client from the host and port
-    client = mqtt.connect({
+    this.client = mqtt.connect({
       host: host || this.mqttConnectionData.host,//'test.mosquitto.org'
       port: port || this.mqttConnectionData.port, 
       keepalive: 0
 		});
     
     // Handle a message from the broker
-    client.on('message', (topic, message) => {
+    this.client.on('message', (topic, message) => {
       try {
         const command: CommandObject = JSON.parse(message);
         if (command) {
@@ -70,42 +69,42 @@ export class MqttClient {
       } finally {}
     });
 
-    client.on('offline', () => {
+    this.client.on('offline', () => {
       this.connectedToServer = false;
       this.events.publish('offline');
     });
 
-    client.on('close', () => {
+    this.client.on('close', () => {
       this.connectedToServer = false;
       this.events.publish('close');
     });
 
-    client.on('reconnect', () => {
+    this.client.on('reconnect', () => {
       this.events.publish('reconnect');
     });
 
-    client.on('error', error => {
+    this.client.on('error', error => {
       this.connectedToServer = false;
       this.events.publish('error', error);
     });
 
     // Client is connected to the server
-		client.on('connect', () => {
-      console.log(client)
+		this.client.on('connect', () => {
+      console.log(this.client)
 			clearTimeout(failedConnectionTimeout);
       this.connectedToServer = true;
       this.events.publish('serverConnected');
       // NB: temporary testing only
-      client.publish(
+      this.client.publish(
         'tiles/test', 
-        'connect',
+        'connect' + (new Date).getTime(),
         this.publishOpts
         );
 		});
 
     // Ends the attempt tp connect if the timeout rus out
     const failedConnectionTimeout = setTimeout(function(){
-      client.end();
+      this.client.end();
     }, this.serverConnectionTimeout);
   };
 
@@ -114,19 +113,18 @@ export class MqttClient {
    * @param {Device} device - the device to register
    */
 	registerDevice = (device: Device): void => {
-    const client = this.client;
-    if (client) {
-			client.publish(
+    if (this.client) {
+			this.client.publish(
 				this.getDeviceSpecificTopic(device.tileId, true) + '/active',
 				'true',
 				this.publishOpts
 			);
-      client.publish(
+      this.client.publish(
       	this.getDeviceSpecificTopic(device.tileId, true) + '/name',
       	device.name,
       	this.publishOpts
       );
-      client.subscribe(
+      this.client.subscribe(
       	this.getDeviceSpecificTopic(device.tileId, false)
       );
       console.log('Registered device: ' + device.name + ' (' + device.tileId + ')');
@@ -138,14 +136,13 @@ export class MqttClient {
    * @param {Device} device - the device to register
    */
   unregisterDevice = (device: Device): void => {
-    const client = this.client;
-    if (client) {
-      client.publish(
+    if (this.client) {
+      this.client.publish(
       	this.getDeviceSpecificTopic(device.tileId, true) + '/active',
       	'false',
       	this.publishOpts
       );
-      client.unsubscribe(
+      this.client.unsubscribe(
       	this.getDeviceSpecificTopic(device.tileId, false)
       );
     }
@@ -162,7 +159,9 @@ export class MqttClient {
     		this.getDeviceSpecificTopic(deviceId, true),
     		JSON.stringify(event),
     		this.publishOpts, err => {
-          alert('error sending message: ' + err)
+          if (err !== undefined) {
+            alert('error sending message: ' + err);
+          }
         }
     	);
     }
