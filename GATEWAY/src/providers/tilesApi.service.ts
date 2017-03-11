@@ -3,8 +3,6 @@ import { Headers, Http }    from '@angular/http';
 import { Storage } from '@ionic/storage';
 import 'rxjs/add/operator/toPromise';
 
-import { CommandObject, UtilsService, VirtualTile } from './utils.service';
-
 
 @Injectable()
 export class TilesApi {
@@ -25,8 +23,7 @@ export class TilesApi {
   apiPort: number = 3000;
 
   constructor(private http: Http,
-              private storage: Storage,
-              private utils: UtilsService) {
+              private storage: Storage) {
   };
 
   /** 
@@ -122,7 +119,7 @@ export class TilesApi {
    * Set the eventmapprings for a tile
    * @param {string} deviceId - The target tile
    * @param {any} - eventmappings to store for the tile
-   */
+   *
   setEventMappings = (deviceId: string, eventMappings: any): void => {
     // TODO: Set an interface for the eventMappings 
     this.storage.set(`${this.username}_${deviceId}`, eventMappings);
@@ -132,7 +129,7 @@ export class TilesApi {
    * Gets the mappings for a specific event for a tile
    * @param {string} deviceId - a tile 
    * @param {string} eventAsString - a string representation of the event
-   */
+   *
   getEventMapping = (deviceId: string, eventAsString: string): any => {
     if (this.eventMappings[this.username] == null ||
         this.eventMappings[this.username][deviceId] == null) {
@@ -144,7 +141,7 @@ export class TilesApi {
   /**
    * Get the eventmappings that are stored in the apps storage
    * @param {string} deviceId - the tile to get events for
-   */
+   *
   loadEventMappings = (deviceId: string): void => {
     const storedEventMappings = this.storage.get(`eventMappings_${this.username}_${deviceId}`)
                                             .then( res => res);
@@ -156,7 +153,7 @@ export class TilesApi {
   /**
    * Fetch the event mappings for the given tile from the web-server
    * @param {string} deviceId - The ID of the tile
-   */
+   *
   fetchEventMappings = (deviceId: string): void => {
     const url = `http://${this.hostAddress}:${this.apiPort}/eventmappings/${this.username}/${deviceId}`;
     this.http.get(url)
@@ -170,7 +167,7 @@ export class TilesApi {
               this.setEventMappings(deviceId, this.eventMappings[this.username][deviceId]);
             })
             .catch(err => alert('Failed fetching event mappings with error: ' + err));
-  };
+  };*/
 }
 
 export default { TilesApi }
