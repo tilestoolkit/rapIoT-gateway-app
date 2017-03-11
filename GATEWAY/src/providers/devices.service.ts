@@ -109,7 +109,7 @@ export class DevicesService {
    * Sets the device name to the ble name
    * @param {Device} device - a tile device
    */
-  resetName = (device: Device): void => {
+  resetDeviceName = (device: Device): void => {
     this.setCustomDeviceName(device, device.tileId);
   };
 

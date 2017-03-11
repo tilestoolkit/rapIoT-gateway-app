@@ -48,7 +48,7 @@ export class HomePage {
     });
 
     this.events.subscribe('offline', () => {
-      this.mqttClient.setServerConnectionStatus(false);
+      this.mqttClient.setMqttConnectionStatus(false);
       this.serverConnectStatusMsg = 'Client gone offline';
       if (this.bleScanner !== undefined) {
         this.bleScanner.unsubscribe();
@@ -56,17 +56,17 @@ export class HomePage {
     });
 
     this.events.subscribe('close', () => {
-      this.mqttClient.setServerConnectionStatus(false);
+      this.mqttClient.setMqttConnectionStatus(false);
       this.serverConnectStatusMsg = 'Disconnected from server';
     });
 
     this.events.subscribe('reconnect', () => {
-      this.mqttClient.setServerConnectionStatus(false);
+      this.mqttClient.setMqttConnectionStatus(false);
       this.serverConnectStatusMsg = 'A reconnect is started';
     });
 
     this.events.subscribe('error', (err) => {
-      this.mqttClient.setServerConnectionStatus(false);
+      this.mqttClient.setMqttConnectionStatus(false);
       this.serverConnectStatusMsg = 'Error: ${err}';
     });
 

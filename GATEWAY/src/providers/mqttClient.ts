@@ -8,17 +8,17 @@ import { TilesApi, CommandObject } from './tilesApi.service';
 
 @Injectable()
 export class MqttClient {
-  publishOpts = { retain: true };
-  serverConnectionTimeout: number = 10000; // 10 seconds
-  connectedToServer: boolean = false;
-  client;
-  mqttConnectionData = {
+  private publishOpts = { retain: true };
+  private connectionTimeout: number = 10000; // 10 seconds
+  private connectedToBroker: boolean = false;
+  private client;
+  private mqttConnectionData = {
     username: this.tilesApi.username,
     host: this.tilesApi.hostAddress,//'178.62.99.218',//
     port: this.tilesApi.mqttPort
   };
 
-  constructor(public events: Events,
+  constructor(private events: Events,
               private tilesApi: TilesApi) { };
 
   /**
@@ -35,8 +35,8 @@ export class MqttClient {
    * Set the connection status for the server
    * @param {boolean} connected - The new status of the connection
    */
-  setServerConnectionStatus = (connected: boolean): void => {
-    this.connectedToServer = connected;
+  setMqttConnectionStatus = (connected: boolean): void => {
+    this.connectedToBroker = connected;
   };
 
   /**
@@ -58,7 +58,7 @@ export class MqttClient {
       keepalive: 0
 		});
     
-    // Handle a message from the broker
+    // Handle events from the broker
     this.client.on('message', (topic, message) => {
       try {
         const command: CommandObject = JSON.parse(message);
@@ -70,12 +70,12 @@ export class MqttClient {
     });
 
     this.client.on('offline', () => {
-      this.connectedToServer = false;
+      this.connectedToBroker = false;
       this.events.publish('offline');
     });
 
     this.client.on('close', () => {
-      this.connectedToServer = false;
+      this.connectedToBroker = false;
       this.events.publish('close');
     });
 
@@ -84,7 +84,7 @@ export class MqttClient {
     });
 
     this.client.on('error', error => {
-      this.connectedToServer = false;
+      this.connectedToBroker = false;
       this.events.publish('error', error);
     });
 
@@ -92,9 +92,9 @@ export class MqttClient {
 		this.client.on('connect', () => {
       console.log(this.client)
 			clearTimeout(failedConnectionTimeout);
-      this.connectedToServer = true;
+      this.connectedToBroker = true;
       this.events.publish('serverConnected');
-      // NB: temporary testing only
+      // NB: temporary for testing only
       this.client.publish(
         'tiles/test', 
         'connect' + (new Date).getTime(),
@@ -102,10 +102,10 @@ export class MqttClient {
         );
 		});
 
-    // Ends the attempt tp connect if the timeout rus out
+    // Ends the connection attempt if the timeout rus out
     const failedConnectionTimeout = setTimeout(function(){
       this.client.end();
-    }, this.serverConnectionTimeout);
+    }, this.connectionTimeout);
   };
 
   /**
