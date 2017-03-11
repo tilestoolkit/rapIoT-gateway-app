@@ -19,7 +19,6 @@ import { CommandObject, Device, VirtualTile } from '../../providers/utils.servic
     BleService
   ]
 })
-
 export class HomePage {
   devices: Device[];
   serverConnectStatusMsg: string;
@@ -95,7 +94,7 @@ export class HomePage {
    */
   setDevices = (): void => {
     this.devices = this.devicesService.getDevices();
-  }
+  };
 
   /**
    * Set the virtual tiles equal to the ones stores for the app
@@ -106,7 +105,7 @@ export class HomePage {
       this.virtualTiles = res; 
       console.log('tiles: ' + JSON.stringify(this.virtualTiles));
     });
-  }
+  };
 
   /**
    * Use ble to discover new devices
@@ -124,10 +123,6 @@ export class HomePage {
   connectToServer = (): void => {
     this.mqttClient.connect(this.tilesApi.hostAddress, this.tilesApi.mqttPort);
   };
-
-	fetchEventMappings = (device: Device): void => {
-		this.tilesApi.fetchEventMappings(device.tileId);
-	};
 
   /**
    * Called when the refresher is triggered by pulling down on the view of 
