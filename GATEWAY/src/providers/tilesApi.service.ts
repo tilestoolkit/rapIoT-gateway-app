@@ -3,6 +3,8 @@ import { Headers, Http }    from '@angular/http';
 import { Storage } from '@ionic/storage';
 import 'rxjs/add/operator/toPromise';
 
+import { UtilsService } from './utils.service';
+
 /** 
  * Class to describe the structure of a command 
  */
@@ -40,7 +42,8 @@ export class TilesApi {
   apiPort: number = 3000;
 
   constructor(private http: Http,
-              private storage: Storage) {
+              private storage: Storage,
+              private utils: UtilsService) {
   };
 
   /** 
@@ -64,27 +67,6 @@ export class TilesApi {
    */
   getCommandObjectAsString = (cmdObj: CommandObject): string => {
     return `${cmdObj.name},${cmdObj.properties.toString()}`;
-  };
-
-  /** 
-   * Create a new object that has all the attributes from both inputobjects
-   * @param {any} obj1 - The first object
-   * @param {any} obj2 - The second object
-   */
-  extend = (obj1: any, obj2: any): any => {
-    let extended = {};
-    for (let attrname of obj1) {
-      extended[attrname] = obj1[attrname];
-    }
-    for (let attrname of obj2) {
-      if (extended[attrname] !== undefined) {
-        extended[attrname] = obj2[attrname];
-      } else {
-        // Adds a 1 to the key if the key already exists
-        extended[attrname + '1'] = obj2[attrname];
-      }
-    }
-    return extended;
   };
 
   /** 
@@ -208,7 +190,7 @@ export class TilesApi {
                                             .then( res => res);
     this.eventMappings[this.username] = this.eventMappings[this.username] || {};
     this.eventMappings[this.username][deviceId] =
-            this.extend(this.defaultEventMappings, storedEventMappings);
+            this.utils.extendObject(this.defaultEventMappings, storedEventMappings);
   };
 
   /**
@@ -224,7 +206,7 @@ export class TilesApi {
               //alert('Success. Fetched data:' + JSON.stringify(res.json()));
               this.eventMappings[this.username] = this.eventMappings[this.username] || {};
               this.eventMappings[this.username][deviceId] =
-                    this.extend(this.defaultEventMappings, fetchedEventMappings);
+                    this.utils.extendObject(this.defaultEventMappings, fetchedEventMappings);
               this.setEventMappings(deviceId, this.eventMappings[this.username][deviceId]);
             })
             .catch(err => alert('Failed fetching event mappings with error: ' + err));

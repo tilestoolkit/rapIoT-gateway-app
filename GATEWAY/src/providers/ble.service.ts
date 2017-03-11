@@ -3,9 +3,10 @@ import { Events } from 'ionic-angular';
 import { BLE } from 'ionic-native';
 import 'rxjs/add/operator/toPromise';
 
-import { MqttClient } from './mqttClient';
-import { TilesApi, CommandObject } from './tilesApi.service';
 import { Device, DevicesService }from './devices.service';
+import { MqttClient } from './mqttClient';
+import { CommandObject, TilesApi  } from './tilesApi.service';
+import { UtilsService } from './utils.service';
 
 // A dictionary of new device names set by user
 let tileNames = {};
@@ -26,7 +27,8 @@ export class BleService {
   constructor(private events: Events,
               private devicesService: DevicesService,
               private mqttClient: MqttClient,
-  						private tilesApi: TilesApi) {
+  						private tilesApi: TilesApi,
+              private utils: UtilsService) {
   };
 
   /**
@@ -187,23 +189,6 @@ export class BleService {
   };
 
   /**
-   * Convert a string to an attay of bytes
-   */
-  convertStringtoBytes = (str: String): any => {
-    try {
-      console.log('Attempting to send data to device via BLE.');
-      let dataArray = new Uint8Array(str.length);
-      for(let i = 0; i < str.length; i ++){
-        dataArray[i] = str.charCodeAt(i);
-      }
-      return dataArray;
-    } catch (err) {
-      console.log('Converting string of data to bytes unsuccessful!')
-      return null;
-    };
-  }
-
-  /**
    * Send data to a device using BLE
    * @param {Device} device - the target device
    * @param {string} dataString - the string of data to send to the device
@@ -211,7 +196,7 @@ export class BleService {
   sendData = (device: Device, dataString: string): void => {
     try {
       console.log('Attempting to send data to device via BLE.');
-      const dataArray = this.convertStringtoBytes(dataString);
+      const dataArray = this.utils.convertStringtoBytes(dataString);
       // Attempting to send the array of bytes to the device
       BLE.writeWithoutResponse(device.id,
                                this.rfduino.serviceUUID,
