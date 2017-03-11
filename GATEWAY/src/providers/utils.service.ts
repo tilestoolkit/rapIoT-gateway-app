@@ -60,6 +60,31 @@ export class UtilsService {
     };
   };
 
+  
+  /** 
+   * Returns an object with name and properties from the inputstring
+   * @param {string} eventString - A string on the format eventName,properties...
+   */
+  getEventStringAsObject = (eventString: string): CommandObject => {
+    const params = eventString.split(',');
+    if (params.length > 1){
+      return {
+          name: params[0],
+          properties: Array.prototype.slice.call(params, 1)
+      };
+    }
+    return null;
+  };
+
+  /** 
+   * Returns a string from the given commandObject
+   * @param {CommansObject} cmdObj - the command to turn into a string
+   */
+  getCommandObjectAsString = (cmdObj: CommandObject): string => {
+    return `${cmdObj.name},${cmdObj.properties.toString()}`;
+  };
+
+
   /** 
    * Create a new object that has all the attributes from both inputobjects
    * @param {any} obj1 - The first object

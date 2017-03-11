@@ -6,7 +6,7 @@ import { BleService } from '../../providers/ble.service';
 import { DevicesService } from '../../providers/devices.service';
 import { MqttClient } from '../../providers/mqttClient';
 import { TilesApi } from '../../providers/tilesApi.service';
-import { CommandObject, Device, VirtualTile } from '../../providers/utils.service';
+import { CommandObject, Device, UtilsService, VirtualTile } from '../../providers/utils.service';
 
 
 @Component({
@@ -32,8 +32,9 @@ export class HomePage {
               private events: Events,
               private bleService: BleService,
               private devicesService: DevicesService,
+              private mqttClient: MqttClient,
               private tilesApi: TilesApi,
-              private mqttClient: MqttClient) {
+              private utils: UtilsService) {
   	this.setDevices();
     this.setVirtualTiles();
   	this.serverConnectStatusMsg = 'Click to connect to server';
@@ -77,7 +78,7 @@ export class HomePage {
 	      	//alert('Recieved command from server: ' + JSON.stringify(command));
 	        device.ledOn = (command.name === 'led' && command.properties[0] === 'on');
 	        console.log('Device led on: ' + device.ledOn);
-	        const commandString = this.tilesApi.getCommandObjectAsString(command);
+	        const commandString = this.utils.getCommandObjectAsString(command);
 	        this.bleService.sendData(device, commandString);
 
         }

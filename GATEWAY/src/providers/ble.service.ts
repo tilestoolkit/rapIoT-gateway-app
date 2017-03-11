@@ -140,7 +140,7 @@ export class BleService {
         res => {
           // Convert the bytes sent from the device into a string
           const responseString = ((String.fromCharCode.apply(null, new Uint8Array(res))).slice(0, -1)).trim();
-          let message: CommandObject = this.tilesApi.getEventStringAsObject(responseString);
+          let message: CommandObject = this.utils.getEventStringAsObject(responseString);
           //alert('Recieved event: ' + message.name + ' with properties: ' + message.properties);
           if (message === null) {
             alert('Found no mapping for event: ' + responseString);
