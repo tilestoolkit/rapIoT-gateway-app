@@ -3,10 +3,10 @@ import { Events } from 'ionic-angular';
 import { BLE } from 'ionic-native';
 import 'rxjs/add/operator/toPromise';
 
-import { Device, DevicesService }from './devices.service';
+import { DevicesService }from './devices.service';
 import { MqttClient } from './mqttClient';
-import { CommandObject, TilesApi  } from './tilesApi.service';
-import { UtilsService } from './utils.service';
+import { TilesApi  } from './tilesApi.service';
+import { CommandObject, Device, UtilsService } from './utils.service';
 
 // A dictionary of new device names set by user
 let tileNames = {};

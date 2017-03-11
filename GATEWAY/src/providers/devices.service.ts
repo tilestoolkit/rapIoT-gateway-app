@@ -2,21 +2,7 @@ import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage';
 import { Events } from 'ionic-angular';
 
-
-/**
- * Class for the devices, this makes it possible to specify the
- * device type in typescript to avoid getting invalid device-objects
- */
-export class Device {
-  id: string;
-  tileId: string; // IOS and android gets different id from the ble, so we use the tilename as a seond id
-  name: string;
-  connected: boolean;
-  ledOn: boolean;
-  buttonPressed?: boolean;
-  loading: boolean;
-}
-
+import { Device } from './utils.service';
 
 @Injectable()
 export class DevicesService {
@@ -126,4 +112,4 @@ export class DevicesService {
   };
 };
 
-export default {DevicesService, Device};
+export default { DevicesService };

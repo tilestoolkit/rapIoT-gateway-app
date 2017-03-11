@@ -3,24 +3,7 @@ import { Headers, Http }    from '@angular/http';
 import { Storage } from '@ionic/storage';
 import 'rxjs/add/operator/toPromise';
 
-import { UtilsService } from './utils.service';
-
-/** 
- * Class to describe the structure of a command 
- */
-export class CommandObject {
-  name: string;
-  properties: string;
-}
-
-export class VirtualTile {
-  _id: string;
-  virtualName: string;
-  application: string;
-  tile: any;
-  __v: number;
-}
-
+import { CommandObject, UtilsService, VirtualTile } from './utils.service';
 
 
 @Injectable()
@@ -213,4 +196,4 @@ export class TilesApi {
   };
 }
 
-export default { CommandObject, TilesApi }
+export default { TilesApi }

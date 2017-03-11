@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { Events } from 'ionic-angular';
 import mqtt from 'mqtt';
 
-import { Device } from './devices.service';
-import { TilesApi, CommandObject } from './tilesApi.service';
+import { CommandObject, Device } from './utils.service';
+import { TilesApi } from './tilesApi.service';
 
 
 @Injectable()

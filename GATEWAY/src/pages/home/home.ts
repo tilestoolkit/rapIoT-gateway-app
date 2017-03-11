@@ -3,9 +3,11 @@ import { AlertController, Events, NavController, Platform } from 'ionic-angular'
 import { Observable, Subscription } from 'rxjs';
 
 import { BleService } from '../../providers/ble.service';
-import { Device, DevicesService } from '../../providers/devices.service';
+import { DevicesService } from '../../providers/devices.service';
 import { MqttClient } from '../../providers/mqttClient';
-import { TilesApi, CommandObject, VirtualTile } from '../../providers/tilesApi.service';
+import { TilesApi } from '../../providers/tilesApi.service';
+import { CommandObject, Device, VirtualTile } from '../../providers/utils.service';
+
 
 @Component({
   selector: 'page-home',
