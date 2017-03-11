@@ -5,7 +5,7 @@ import { Observable, Subscription } from 'rxjs';
 import { BleService } from '../../providers/ble.service';
 import { Device, DevicesService } from '../../providers/devices.service';
 import { MqttClient } from '../../providers/mqttClient';
-import { TilesApi, CommandObject } from '../../providers/tilesApi.service';
+import { TilesApi, CommandObject, VirtualTile } from '../../providers/tilesApi.service';
 
 @Component({
   selector: 'page-home',
@@ -23,6 +23,7 @@ export class HomePage {
   serverConnectStatusMsg: string;
   statusMsg: string;
   bleScanner: Subscription;
+  virtualTiles: VirtualTile[];
 
   constructor(public alertCtrl: AlertController,
               public navCtrl: NavController,
@@ -33,6 +34,7 @@ export class HomePage {
               private tilesApi: TilesApi,
               private mqttClient: MqttClient) {
   	this.setDevices();
+    this.setVirtualTiles();
   	this.serverConnectStatusMsg = 'Click to connect to server';
 
   	// Subscriptions to events that can be emitted from other places in the code
@@ -91,6 +93,17 @@ export class HomePage {
    */
   setDevices = (): void => {
     this.devices = this.devicesService.getDevices();
+  }
+
+  /**
+   * Set the virtual tiles equal to the ones stores for the app
+   */
+  setVirtualTiles = (): void => {
+    //TODO: Use the appname for the chosen app when implemented
+    this.tilesApi.getApplicationTiles('test3').then(res => {
+      this.virtualTiles = res; 
+      console.log('tiles: ' + JSON.stringify(this.virtualTiles));
+    });
   }
 
   /**
@@ -156,6 +169,31 @@ export class HomePage {
           text: 'Rename',
           handler: data => {
             this.devicesService.setCustomDeviceName(device, data.newName);
+          }
+      }]
+    }).present();
+  };
+
+  /**
+   * Called when the pair button is pushed on the view of the the
+   * the virtual tiles.
+   * @param {VirtualTile} virtualTile - the target device
+   */
+  pairTilePopUp = (virtualTile: VirtualTile): void => {
+    const deviceRadioButtons = this.devices.map(device => {
+      return {type: 'radio', name: 'deviceId', value: device.tileId, label: device.name}
+    });
+    this.alertCtrl.create({
+      title: 'Pair to physical tile',
+      inputs: deviceRadioButtons,
+      buttons: [{
+          text: 'Cancel',
+          role: 'cancel',
+        },
+        {
+          text: 'Pair',
+          handler: data => {
+            this.tilesApi.pairDeviceToVirualTile(data, virtualTile._id, 'test3');
           }
       }]
     }).present();

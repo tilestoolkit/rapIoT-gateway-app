@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Http }    from '@angular/http';
+import { Headers, Http }    from '@angular/http';
 import { Storage } from '@ionic/storage';
 import 'rxjs/add/operator/toPromise';
 
@@ -10,6 +10,15 @@ export class CommandObject {
   name: string;
   properties: string;
 }
+
+export class VirtualTile {
+  _id: string;
+  virtualName: string;
+  application: string;
+  tile: any;
+  __v: number;
+}
+
 
 
 @Injectable()
@@ -26,7 +35,7 @@ export class TilesApi {
   };
   eventMappings = {};// {username: {tile: mappingsForTile}}
   username: string = 'TestUser';
-  hostAddress: string = '138.68.144.206';
+  hostAddress: string = '178.62.99.218';//'138.68.144.206';
   mqttPort: number = 8080;
   apiPort: number = 3000;
 
@@ -120,21 +129,34 @@ export class TilesApi {
             .then(res => {
               // TODO: do something with the applications here
             })
-            .catch(err => alert('failed getting applications with error: ' + err));
+            //.catch(err => alert('failed getting applications with error: ' + err));
   };
 
   /** 
    * Get the details of an application
    * @param {string} applicationId - The application ID
    */
-  getApplicationDetails = (applicationId: string): void => {
+  getApplicationDetails = (applicationId: string): Promise<any> => {
+    //const url = `http://${this.hostAddress}:${this.apiPort}/applications/${applicationId}`;
     const url = `http://${this.hostAddress}:${this.apiPort}/applications/${applicationId}`;
-    this.http.get(url)
+    return this.http.get(url)
             .toPromise()
             .then(res => {
-              // TODO: do something with the application here
+              return res.json();
             })
-            .catch(err => alert('failed getting applications with error: ' + err));
+            .catch(err => {
+              console.log('failed getting applications with error: ' + err);
+              console.log('url '+url)
+              return null;
+            });
+  };
+
+  /** 
+   * Get the tiles belonging to an application
+   * @param {string} applicationId - The application ID
+   */
+  getApplicationTiles = (applicationId: string): Promise<any> => {
+    return this.getApplicationDetails(applicationId).then(res => res.virtualTiles);
   };
 
   /**
@@ -145,14 +167,12 @@ export class TilesApi {
    */
   pairDeviceToVirualTile = (deviceId: string, virtualTileId: string, applicationId: string): void => {
     const url = `http://${this.hostAddress}:${this.apiPort}/applications/${applicationId}/${virtualTileId}`;
-    const body = { tile: deviceId };
-    // TODO: Device name must be updated to match the name of the virtual tile
-    this.http.post(url, body).toPromise()
-             .then(res => {
-               // Do we even get a response? 
-             })
+    const body = JSON.stringify({ tile: deviceId });
+    const headerFields = new Headers({'Content-Type': 'application/json'});
+    console.log('url: ' + url + ' body: ' + body)
+    this.http.post(url, body, {headers: headerFields}).toPromise()
              .catch(err => {
-               alert('An error occured preventing the pairing of the physical and virtual tile');
+               console.log('An error occured preventing the pairing of the physical and virtual tile');
              });
   };
 

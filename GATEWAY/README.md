@@ -24,3 +24,4 @@ There are a lot of possible platforms to choose from, but for this projects we u
 With the platform added run 
 `$ ionic run <platform>`
 
+When using `ionic serve` or `ionic run <platform> -l` you might run into troubles with the api not working. This is because of CORS and can be solved by using onli `ionic run <platform>` withour the live reloading for running it on a simulator/mobile or by downloading the chrome extension [Allow-Control-Allow-Origin: *](https://chrome.google.com/webstore/detail/allow-control-allow-origi/nlfbmbojpeacfghkpbjhddihlkkiljbi)

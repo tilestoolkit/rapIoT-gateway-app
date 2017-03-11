@@ -23,6 +23,7 @@
     </ion-refresher-content>
   </ion-refresher>
   <ion-item no-lines>{{statusMsg}}</ion-item>
+  <ion-title left style="padding-left: 0;">PHYSICAL TILES</ion-title>
   <ion-list class="mainList">
     <ion-item class="devices" color="light" *ngFor="let device of devices">
       <div class="row row-center">
@@ -54,6 +55,17 @@
           </div>
         </div>
       </ion-list>
+    </ion-item>
+    <ion-title left style="padding-left: 0;">VIRTUAL TILES</ion-title>
+    <ion-item class="devices" color="light" *ngFor="let tile of virtualTiles">
+      <div class="row row-center">
+        <div id="devName" class="col col-75">
+          <b>{{tile.virtualName}}</b><br>
+        </div>
+        <div class="col">
+          <button class="bttn" ion-button small color="positive" (click)="pairTilePopUp(tile)" >PAIR</button>
+        </div>
+      </div>
     </ion-item>
   </ion-list>
 </ion-content>
