@@ -40,4 +40,5 @@ import { DevicesService } from '../providers/devices.service';
     DevicesService
   ]
 })
+
 export class AppModule {}

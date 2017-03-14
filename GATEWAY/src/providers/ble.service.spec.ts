@@ -6,6 +6,7 @@ import { Storage } from '@ionic/storage';
 import { TilesApi } from './tilesApi.service';
 import { MqttClient } from './mqttClient';
 import { BleService } from './ble.service';
+import { Device, DevicesService }from './devices.service';
 
 describe('bleService', () => {
 
@@ -14,8 +15,6 @@ describe('bleService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
-        TilesApi,
-        MqttClient,
         Events,
         Storage,
         MockBackend,
@@ -27,6 +26,9 @@ describe('bleService', () => {
           },
           deps: [MockBackend, BaseRequestOptions]
         },
+        DevicesService,
+        TilesApi,
+        MqttClient,
         BleService
       ]
     });

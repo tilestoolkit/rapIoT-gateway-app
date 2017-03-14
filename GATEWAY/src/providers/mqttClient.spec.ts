@@ -31,7 +31,7 @@ describe('mqttClient', () => {
     });
   });
 
-  it('should make an instance of the BleService', inject([MqttClient], (temp: MqttClient) => {
+  it('should make an instance of the MqttClient', inject([MqttClient], (temp: MqttClient) => {
     mqttClient = temp;
     expect(mqttClient).toBeTruthy;
   }));

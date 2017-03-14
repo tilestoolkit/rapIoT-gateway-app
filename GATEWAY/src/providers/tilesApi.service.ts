@@ -1,9 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Http }    from '@angular/http';
+import { Headers, Http }    from '@angular/http';
 import { Storage } from '@ionic/storage';
 import 'rxjs/add/operator/toPromise';
-
-import { Device } from './devices.service';
 
 /** 
  * Class to describe the structure of a command 
@@ -13,11 +11,18 @@ export class CommandObject {
   properties: string;
 }
 
+export class VirtualTile {
+  _id: string;
+  virtualName: string;
+  application: string;
+  tile: any;
+  __v: number;
+}
+
+
 
 @Injectable()
 export class TilesApi {
-
-  // Make this a global?
   defaultEventMappings = {
     btnON: {
       type: 'button_event',
@@ -28,29 +33,21 @@ export class TilesApi {
       event: 'released'
     }
   };
-
-  // {username: {tile: mappingsForTile}}
-  eventMappings = {};
-
-  // TODO: Move these back into the constructor. This caused a runtime-error saying
-  // 'No provider for String!'. It seems the angular2 @Inject() will solve it
+  eventMappings = {};// {username: {tile: mappingsForTile}}
   username: string = 'TestUser';
-  hostAddress: string = '138.68.144.206';
+  hostAddress: string = '178.62.99.218';//'138.68.144.206';
   mqttPort: number = 8080;
   apiPort: number = 3000;
 
-  constructor(//public username: string = 'TestUser',
-              //public hostAddress: string = 'cloud.tilestoolkit.io',
-              //public mqttPort: number = 8080,
-              public storage: Storage,
-              private http: Http) {
+  constructor(private http: Http,
+              private storage: Storage) {
   };
 
   /** 
    * Returns an object with name and properties from the inputstring
    * @param {string} eventString - A string on the format eventName,properties...
    */
-  getEventStringAsObject = (eventString: string) => {
+  getEventStringAsObject = (eventString: string): CommandObject => {
     const params = eventString.split(',');
     if (params.length > 1){
       return {
@@ -65,8 +62,8 @@ export class TilesApi {
    * Returns a string from the given commandObject
    * @param {CommansObject} cmdObj - the command to turn into a string
    */
-  getCommandObjectAsString = (cmdObj: CommandObject) => {
-    return cmdObj.name + ',' + cmdObj.properties.toString();
+  getCommandObjectAsString = (cmdObj: CommandObject): string => {
+    return `${cmdObj.name},${cmdObj.properties.toString()}`;
   };
 
   /** 
@@ -74,31 +71,35 @@ export class TilesApi {
    * @param {any} obj1 - The first object
    * @param {any} obj2 - The second object
    */
-  extend = (obj1: any, obj2: any) => {
-    // TODO: Find out if the objects passed in are of a specific type
+  extend = (obj1: any, obj2: any): any => {
     let extended = {};
-    // TODO: if any attr has the same name obj 2 will overwrite obj1
-    // could be fixed by checking if the attrname exists and then renaming it
     for (let attrname of obj1) {
       extended[attrname] = obj1[attrname];
     }
     for (let attrname of obj2) {
-      extended[attrname] = obj2[attrname];
+      if (extended[attrname] !== undefined) {
+        extended[attrname] = obj2[attrname];
+      } else {
+        // Adds a 1 to the key if the key already exists
+        extended[attrname + '1'] = obj2[attrname];
+      }
     }
     return extended;
   };
 
   /** 
    * Tests if a device is a tile
-   * @param {Device} device - the device to test
+   * @param {any} device - the device to test
    */
-  isTilesDevice = (device: Device) => (device.name != null && device.name.substring(0, 4) === 'Tile');
+  isTilesDevice = (device: any): boolean => {
+    return device.name != null && device.name.substring(0, 4) === 'Tile';
+  };
 
   /** 
    * Set a username for the tile owner/user
    * @param {string} username - The new username
    */
-  setUsername = (username: string) => {
+  setUsername = (username: string): void => {
     this.username = username;
   };
 
@@ -106,7 +107,7 @@ export class TilesApi {
    * Set the host address
    * @param {string} hostAddress - The url/ip address of the host
    */
-  setHostAddress = (hostAddress: string) => {
+  setHostAddress = (hostAddress: string): void => {
     this.hostAddress = hostAddress;
   };
 
@@ -114,68 +115,119 @@ export class TilesApi {
    * Set the port for connecting to the server
    * @param {number} hostMqttPort - the port number 
    */
-  setHostMqttPort = (hostMqttPort: number) => {
+  setHostMqttPort = (hostMqttPort: number): void => {
     this.mqttPort = hostMqttPort;
+  };
+
+  /** 
+   * Get all registered applications for all users
+   */
+  getAllApplications = (applicationId: string): void => {
+    const url = `http://${this.hostAddress}:${this.apiPort}/applications`;
+    this.http.get(url)
+            .toPromise()
+            .then(res => {
+              // TODO: do something with the applications here
+            })
+            //.catch(err => alert('failed getting applications with error: ' + err));
+  };
+
+  /** 
+   * Get the details of an application
+   * @param {string} applicationId - The application ID
+   */
+  getApplicationDetails = (applicationId: string): Promise<any> => {
+    //const url = `http://${this.hostAddress}:${this.apiPort}/applications/${applicationId}`;
+    const url = `http://${this.hostAddress}:${this.apiPort}/applications/${applicationId}`;
+    return this.http.get(url)
+            .toPromise()
+            .then(res => {
+              return res.json();
+            })
+            .catch(err => {
+              console.log('failed getting applications with error: ' + err);
+              console.log('url '+url)
+              return null;
+            });
+  };
+
+  /** 
+   * Get the tiles belonging to an application
+   * @param {string} applicationId - The application ID
+   */
+  getApplicationTiles = (applicationId: string): Promise<any> => {
+    return this.getApplicationDetails(applicationId).then(res => res.virtualTiles);
+  };
+
+  /**
+   * Pair a physical tile with a virtual tile registered on the app
+   * @param {string} deviceId - The physical tile
+   * @param {string} virtualTileId - The virtual tile
+   * @param {string} applicationId - The application the virtual tile is registered to
+   */
+  pairDeviceToVirualTile = (deviceId: string, virtualTileId: string, applicationId: string): void => {
+    const url = `http://${this.hostAddress}:${this.apiPort}/applications/${applicationId}/${virtualTileId}`;
+    const body = JSON.stringify({ tile: deviceId });
+    const headerFields = new Headers({'Content-Type': 'application/json'});
+    console.log('url: ' + url + ' body: ' + body)
+    this.http.post(url, body, {headers: headerFields}).toPromise()
+             .catch(err => {
+               console.log('An error occured preventing the pairing of the physical and virtual tile');
+             });
   };
 
   /**
    * Set the eventmapprings for a tile
-   * @param {string} tileID - The target tile
+   * @param {string} deviceId - The target tile
    * @param {any} - eventmappings to store for the tile
    */
-  setEventMappings = (tileId: string, eventMappings: any) => {
+  setEventMappings = (deviceId: string, eventMappings: any): void => {
     // TODO: Set an interface for the eventMappings 
-    this.storage.set(this.username + '_' + tileId, eventMappings);
+    this.storage.set(`${this.username}_${deviceId}`, eventMappings);
   };
 
   /** 
    * Gets the mappings for a specific event for a tile
-   * @param {string} tileId - a tile 
+   * @param {string} deviceId - a tile 
    * @param {string} eventAsString - a string representation of the event
    */
-  getEventMapping = (tileId: string, eventAsString: string) => {
+  getEventMapping = (deviceId: string, eventAsString: string): any => {
     if (this.eventMappings[this.username] == null ||
-        this.eventMappings[this.username][tileId] == null) {
-      this.loadEventMappings(tileId);
+        this.eventMappings[this.username][deviceId] == null) {
+      this.loadEventMappings(deviceId);
     }
-    return this.eventMappings[this.username][tileId][eventAsString];
+    return this.eventMappings[this.username][deviceId][eventAsString];
   };
 
   /**
    * Get the eventmappings that are stored in the apps storage
-   * @param {string} tileId - the tile to get events for
+   * @param {string} deviceId - the tile to get events for
    */
-  loadEventMappings = (tileId: string) => {
-    const storedEventMappings = this.storage.get(`eventMappings_${this.username}_${tileId}`)
+  loadEventMappings = (deviceId: string): void => {
+    const storedEventMappings = this.storage.get(`eventMappings_${this.username}_${deviceId}`)
                                             .then( res => res);
-    if (this.eventMappings[this.username] == null) {
-      this.eventMappings[this.username] = {};
-    }
-    this.eventMappings[this.username][tileId] =
+    this.eventMappings[this.username] = this.eventMappings[this.username] || {};
+    this.eventMappings[this.username][deviceId] =
             this.extend(this.defaultEventMappings, storedEventMappings);
   };
 
   /**
    * Fetch the event mappings for the given tile from the web-server
-   * @param {string} tileId - The ID of the tile
+   * @param {string} deviceId - The ID of the tile
    */
-  fetchEventMappings = (tileId: string) => {
-    const url = `http://${this.hostAddress}:${this.apiPort}/eventmappings/${this.username}/${tileId}`;
-    //alert(url)
+  fetchEventMappings = (deviceId: string): void => {
+    const url = `http://${this.hostAddress}:${this.apiPort}/eventmappings/${this.username}/${deviceId}`;
     this.http.get(url)
             .toPromise()
             .then(res => {
               const fetchedEventMappings = res.json();
-              alert('Success. Fetched data:' + JSON.stringify(res.json()));
-              // Do we need to check for username? Isn't the user always the same? 
-              this.eventMappings[this.username] =
-                    this.eventMappings[this.username] == null ?
-                    {} : this.eventMappings[this.username];
-              this.eventMappings[this.username][tileId] =
+              //alert('Success. Fetched data:' + JSON.stringify(res.json()));
+              this.eventMappings[this.username] = this.eventMappings[this.username] || {};
+              this.eventMappings[this.username][deviceId] =
                     this.extend(this.defaultEventMappings, fetchedEventMappings);
-              this.setEventMappings(tileId, this.eventMappings[this.username][tileId]);
+              this.setEventMappings(deviceId, this.eventMappings[this.username][deviceId]);
             })
-            .catch(err => alert('failed fetching data with error: ' + err));
+            .catch(err => alert('Failed fetching event mappings with error: ' + err));
   };
 }
 

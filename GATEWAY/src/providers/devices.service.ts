@@ -1,4 +1,7 @@
 import { Injectable } from '@angular/core';
+import { Storage } from '@ionic/storage';
+import { Events } from 'ionic-angular';
+
 
 /**
  * Class for the devices, this makes it possible to specify the
@@ -6,17 +9,21 @@ import { Injectable } from '@angular/core';
  */
 export class Device {
   id: string;
+  tileId: string; // IOS and android gets different id from the ble, so we use the tilename as a seond id
   name: string;
   connected: boolean;
   ledOn: boolean;
   buttonPressed?: boolean;
+  loading: boolean;
 }
+
 
 @Injectable()
 export class DevicesService {
-	devices: Device[];
+	private devices: Device[];
 
-  constructor() {
+  constructor(public storage: Storage,
+              public events: Events) {
     this.devices = [];
   };
 
@@ -24,17 +31,44 @@ export class DevicesService {
    * Returns mock devices for testing purposes
    */
   getMockDevices = (): Device[] => ([
-  	{id: '01:23:45:67:89:AB', name: 'TI SensorTag1', connected: false, ledOn: false, buttonPressed: true},
-  	{id: '01:23:45:67:89:AC', name: 'TI SensorTag2', connected: true, ledOn: true, buttonPressed: true},
-  	{id: '01:23:45:67:89:AD', name: 'TI SensorTag3', connected: false, ledOn: false, buttonPressed: true},
+  	{id: '01:23:45:67:89:AB', tileId: 'Tile1', name: 'TI SensorTag1', connected: false, loading: false, ledOn: false, buttonPressed: true},
+  	{id: '01:23:45:67:89:AC', tileId: 'Tile2', name: 'TI SensorTag2', connected: true, loading: false, ledOn: true, buttonPressed: true},
+  	{id: '01:23:45:67:89:AD', tileId: 'Tile3', name: 'TI SensorTag3', connected: false, loading: false, ledOn: false, buttonPressed: true},
   ]);
 
   /**
    * Returns the list of devices currently stored
    */
   getDevices = (): Device[] => {
-    //alert('providing devices from devicesService: ' + this.devices.toString())
   	return this.devices;
+  };
+
+  /**
+   * Converts the device discovered by ble into a device on the tiles format
+   * @param {any} bleDevice - the returned device from the ble scan
+   */
+  convertBleDeviceToDevice = (bleDevice: any): Promise<Device>  => {
+    return this.storage.get(bleDevice.name).then( name => {
+      return {
+        id: bleDevice.id,
+        tileId: bleDevice.name,
+        name: name !== null ? name : bleDevice.name,
+        connected: false,
+        loading: false,
+        ledOn: false,
+        buttonPressed: false
+      };
+    }).catch(err => {
+      return {
+        id: bleDevice.id,
+        tileId: bleDevice.name,
+        name: bleDevice.name,
+        connected: false,
+        loading: false,
+        ledOn: false,
+        buttonPressed: false
+      };
+    })
   };
 
   /**
@@ -49,42 +83,47 @@ export class DevicesService {
   };
 
   /**
-   * Converts the device discovered by ble into a device on the tiles format
-   * @param {any} bleDevice - the returned device from the ble scan
+   * Check if a device already exists among the stored ones
+   * @param {any} device - The device to check
    */
-  convertBleDeviceToDevice = (bleDevice: any): Device  => {
-    /*
-    bleDevice = {
-      "id" : "01:23:45:67:89:AB",
-      "advertising" : {},
-      "rssi" : -99
-    }
-    */
-    /*const device: Device = {
-      id: '01:23:45:67:89:AB',
-      name: 'TI SensorTag1',
-      connected: false,
-      ledOn: false
-    };*/
-    const device: Device = {
-      id: bleDevice.id,
-      name: (bleDevice.name ? bleDevice.name : 'NoName'),
-      connected: false,
-      ledOn: false,
-      buttonPressed: false
-    };
-
-    return device;
+  isNewDevice = (device: any): boolean => {
+    return !this.devices.map(storedDevice => storedDevice.tileId).includes(device.tileId);
   };
-
 
   /**
-   * Check if a device already exists among the stored ones
-   * @param {Device} device - The device to check
+   * Sets a custom name for the device
+   * @param {Device} device - a tile device
+   * @param {string} name - the new name for the device
    */
-  isNewDevice = (device: Device) => {
-    return !this.devices.map(function(a) {return a.id}).includes(device.id);
+  setCustomDeviceName = (device: Device, name: string): void => {
+    this.storage.set(device.tileId, name);
+    for(let d of this.devices) {
+      if(d.tileId == device.tileId) {
+        d.name = name;
+      }
+    }
+    this.events.publish('updateDevices');
   };
-}
+
+  /**
+   * Sets the device name to the ble name
+   * @param {Device} device - a tile device
+   */
+  resetName = (device: Device): void => {
+    this.setCustomDeviceName(device, device.tileId);
+  };
+
+  /**
+   * Go through the list of registered devices and keep only those connected
+   */
+  clearDisconnectedDevices = (): void => {
+    for(let i = 0; i < this.devices.length; i++) {
+      const device = this.devices[i];
+      if (device.connected == false) {
+        this.devices.splice(i, 1);
+      }
+    }
+  };
+};
 
 export default {DevicesService, Device};
