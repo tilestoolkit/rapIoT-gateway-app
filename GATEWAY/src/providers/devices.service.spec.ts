@@ -1,7 +1,7 @@
 import { inject, TestBed } from '@angular/core/testing';
 import { Storage } from '@ionic/storage';
 import { Events } from 'ionic-angular';
-import { Device, DevicesService }from './devices.service';
+import { DevicesService }from './devices.service';
 
 describe('devicesService', () => {
 

@@ -2,7 +2,7 @@ import { inject, TestBed } from '@angular/core/testing';
 import { Http, BaseRequestOptions } from '@angular/http';
 import { Storage } from '@ionic/storage';
 import { MockBackend } from '@angular/http/testing';
-import { Device } from './devices.service';
+import { Device } from './utils.service';
 import { TilesApi } from './tilesApi.service';
 
 describe('tilesAPI', () => {

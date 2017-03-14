@@ -2,24 +2,25 @@ import { Injectable } from '@angular/core';
 import { Events } from 'ionic-angular';
 import mqtt from 'mqtt';
 
-import { Device } from './devices.service';
-import { TilesApi, CommandObject } from './tilesApi.service';
+import { CommandObject, Device } from './utils.service';
+import { TilesApi } from './tilesApi.service';
 
 
 @Injectable()
 export class MqttClient {
-  publishOpts = { retain: true };
-  serverConnectionTimeout: number = 10000; // 10 seconds
-  connectedToServer: boolean = false;
-  client;
-  mqttConnectionData = {
+  private publishOpts = { retain: true };
+  private connectionTimeout: number = 10000; // 10 seconds
+  private connectedToBroker: boolean = false;
+  private client;
+  private mqttConnectionData = {
     username: this.tilesApi.username,
     host: this.tilesApi.hostAddress,//'178.62.99.218',//
-    port: this.tilesApi.mqttPort
+    port: this.tilesApi.mqttPort,
   };
 
-  constructor(public events: Events,
-              private tilesApi: TilesApi) { };
+  constructor(private events: Events,
+              private tilesApi: TilesApi) { 
+  }
 
   /**
    * Returns a url for the specific device
@@ -35,8 +36,8 @@ export class MqttClient {
    * Set the connection status for the server
    * @param {boolean} connected - The new status of the connection
    */
-  setServerConnectionStatus = (connected: boolean): void => {
-    this.connectedToServer = connected;
+  setMqttConnectionStatus = (connected: boolean): void => {
+    this.connectedToBroker = connected;
   };
 
   /**
@@ -48,6 +49,8 @@ export class MqttClient {
   connect = (user: string, host: string, port: number): void => {
 		// Check if a previous server connection exists
 		// and end it if it does
+  //connect = (host: string, port: number): void => {
+		// Check if a previous server connection exists and end it if it does
 		if (this.client) {
 			this.client.end();
     }
@@ -55,11 +58,11 @@ export class MqttClient {
     // Instantiate a mqtt-client from the host and port
     this.client = mqtt.connect({
       host: host || this.mqttConnectionData.host,//'test.mosquitto.org'
-      port: port || this.mqttConnectionData.port, 
-      keepalive: 0
+      port: port || this.mqttConnectionData.port,
+      keepalive: 0,
 		});
     
-    // Handle a message from the broker
+    // Handle events from the broker
     this.client.on('message', (topic, message) => {
       try {
         const command: CommandObject = JSON.parse(message);
@@ -71,12 +74,12 @@ export class MqttClient {
     });
 
     this.client.on('offline', () => {
-      this.connectedToServer = false;
+      this.connectedToBroker = false;
       this.events.publish('offline');
     });
 
     this.client.on('close', () => {
-      this.connectedToServer = false;
+      this.connectedToBroker = false;
       this.events.publish('close');
     });
 
@@ -85,7 +88,7 @@ export class MqttClient {
     });
 
     this.client.on('error', error => {
-      this.connectedToServer = false;
+      this.connectedToBroker = false;
       this.events.publish('error', error);
     });
 
@@ -93,20 +96,20 @@ export class MqttClient {
 		this.client.on('connect', () => {
       console.log(this.client)
 			clearTimeout(failedConnectionTimeout);
-      this.connectedToServer = true;
+      this.connectedToBroker = true;
       this.events.publish('serverConnected');
-      // NB: temporary testing only
+      // NB: temporary for testing only
       this.client.publish(
         'tiles/test', 
         'connect' + (new Date).getTime(),
-        this.publishOpts
+        this.publishOpts,
         );
 		});
 
-    // Ends the attempt tp connect if the timeout rus out
+    // Ends the connection attempt if the timeout rus out
     const failedConnectionTimeout = setTimeout(function(){
       this.client.end();
-    }, this.serverConnectionTimeout);
+    }, this.connectionTimeout);
   };
 
   /**
@@ -118,15 +121,15 @@ export class MqttClient {
 			this.client.publish(
 				this.getDeviceSpecificTopic(device.tileId, true) + '/active',
 				'true',
-				this.publishOpts
+				this.publishOpts,
 			);
       this.client.publish(
       	this.getDeviceSpecificTopic(device.tileId, true) + '/name',
       	device.name,
-      	this.publishOpts
+      	this.publishOpts,
       );
       this.client.subscribe(
-      	this.getDeviceSpecificTopic(device.tileId, false)
+      	this.getDeviceSpecificTopic(device.tileId, false),
       );
       console.log('Registered device: ' + device.name + ' (' + device.tileId + ')');
     }
@@ -141,10 +144,10 @@ export class MqttClient {
       this.client.publish(
       	this.getDeviceSpecificTopic(device.tileId, true) + '/active',
       	'false',
-      	this.publishOpts
+      	this.publishOpts,
       );
       this.client.unsubscribe(
-      	this.getDeviceSpecificTopic(device.tileId, false)
+      	this.getDeviceSpecificTopic(device.tileId, false),
       );
     }
   };
@@ -163,7 +166,7 @@ export class MqttClient {
           if (err !== undefined) {
             alert('error sending message: ' + err);
           }
-        }
+        },
     	);
     }
   };
@@ -175,7 +178,7 @@ export class MqttClient {
    */
   endConnection = (deviceId: string, event: any): void => {
     if (this.client) {
-    	this.client.end()
+    	this.client.end();
     }
   };
-};
+}

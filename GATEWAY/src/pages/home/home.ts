@@ -3,9 +3,11 @@ import { AlertController, Events, NavController, Platform } from 'ionic-angular'
 import { Observable, Subscription } from 'rxjs';
 import { Http } from '@angular/http';
 import { BleService } from '../../providers/ble.service';
-import { Device, DevicesService } from '../../providers/devices.service';
+import { DevicesService } from '../../providers/devices.service';
 import { MqttClient } from '../../providers/mqttClient';
-import { TilesApi, CommandObject, VirtualTile } from '../../providers/tilesApi.service';
+import { TilesApi } from '../../providers/tilesApi.service';
+import { CommandObject, Device, UtilsService, VirtualTile } from '../../providers/utils.service';
+
 
 @Component({
   selector: 'page-home',
@@ -17,7 +19,6 @@ import { TilesApi, CommandObject, VirtualTile } from '../../providers/tilesApi.s
     BleService
   ]
 })
-
 export class HomePage {
   devices: Device[];
   serverConnectStatusMsg: string;
@@ -33,8 +34,9 @@ export class HomePage {
               private http: Http,
               private bleService: BleService,
               private devicesService: DevicesService,
+              private mqttClient: MqttClient,
               private tilesApi: TilesApi,
-              private mqttClient: MqttClient) {
+              private utils: UtilsService) {
   	this.setDevices();
     this.setVirtualTiles();
   	this.serverConnectStatusMsg = 'Click to connect to server';
@@ -50,7 +52,7 @@ export class HomePage {
     });
 
     this.events.subscribe('offline', () => {
-      this.mqttClient.setServerConnectionStatus(false);
+      this.mqttClient.setMqttConnectionStatus(false);
       this.serverConnectStatusMsg = 'Client gone offline';
       if (this.bleScanner !== undefined) {
         this.bleScanner.unsubscribe();
@@ -58,17 +60,17 @@ export class HomePage {
     });
 
     this.events.subscribe('close', () => {
-      this.mqttClient.setServerConnectionStatus(false);
+      this.mqttClient.setMqttConnectionStatus(false);
       this.serverConnectStatusMsg = 'Disconnected from server';
     });
 
     this.events.subscribe('reconnect', () => {
-      this.mqttClient.setServerConnectionStatus(false);
+      this.mqttClient.setMqttConnectionStatus(false);
       this.serverConnectStatusMsg = 'A reconnect is started';
     });
 
     this.events.subscribe('error', (err) => {
-      this.mqttClient.setServerConnectionStatus(false);
+      this.mqttClient.setMqttConnectionStatus(false);
       this.serverConnectStatusMsg = 'Error: ${err}';
     });
 
@@ -78,7 +80,7 @@ export class HomePage {
 	      	//alert('Recieved command from server: ' + JSON.stringify(command));
 	        device.ledOn = (command.name === 'led' && command.properties[0] === 'on');
 	        console.log('Device led on: ' + device.ledOn);
-	        const commandString = this.tilesApi.getCommandObjectAsString(command);
+	        const commandString = this.utils.getCommandObjectAsString(command);
 	        this.bleService.sendData(device, commandString);
 
         }
@@ -95,7 +97,7 @@ export class HomePage {
    */
   setDevices = (): void => {
     this.devices = this.devicesService.getDevices();
-  }
+  };
 
   /**
    * Set the virtual tiles equal to the ones stores for the app
@@ -106,7 +108,7 @@ export class HomePage {
       this.virtualTiles = res; 
       console.log('tiles: ' + JSON.stringify(this.virtualTiles));
     });
-  }
+  };
 
   /**
    * Use ble to discover new devices
@@ -149,10 +151,6 @@ export class HomePage {
     this.mqttClient.connect(this.tilesApi.hostAddress, this.tilesApi.mqttPort);
   };
   */
-
-	fetchEventMappings = (device: Device): void => {
-		this.tilesApi.fetchEventMappings(device.tileId);
-	};
 
   /**
    * Called when the refresher is triggered by pulling down on the view of 

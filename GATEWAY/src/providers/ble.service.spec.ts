@@ -6,7 +6,7 @@ import { Storage } from '@ionic/storage';
 import { TilesApi } from './tilesApi.service';
 import { MqttClient } from './mqttClient';
 import { BleService } from './ble.service';
-import { Device, DevicesService }from './devices.service';
+import { DevicesService }from './devices.service';
 
 describe('bleService', () => {
 
