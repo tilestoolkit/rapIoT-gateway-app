@@ -17,7 +17,7 @@ describe('utilsService', () => {
     });
   });
 
-  beforeEach( inject([utilsService], (temp: UtilsService) => {
+  beforeEach( inject([UtilsService], (temp: UtilsService) => {
     utilsService = temp;
   }));
 
