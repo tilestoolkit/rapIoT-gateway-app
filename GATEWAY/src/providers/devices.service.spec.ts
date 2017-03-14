@@ -17,9 +17,12 @@ describe('devicesService', () => {
     });
   });
 
-  it('should make an instance of the DevicesService', inject([DevicesService], (temp: DevicesService) => {
+  beforeEach( inject([DevicesService], (temp: DevicesService) => {
     devicesService = temp;
-    expect(devicesService).toBeTruthy;
   }));
+
+  it('should create an instance of the DevicesService', () => {
+    expect(devicesService).toBeTruthy;
+  });
 
 });

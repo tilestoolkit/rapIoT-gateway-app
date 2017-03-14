@@ -28,9 +28,11 @@ describe('tilesAPI', () => {
     });
   });
 
-  it('should make an instance of the TilesApi', inject([TilesApi], (temp: TilesApi) => {
+  beforeEach(inject([TilesApi], (temp: TilesApi) => {
     tilesApi = temp;
-    expect(tilesApi).toBeTruthy;
   }));
 
+  it('should create an instance of the TilesApi', () => {
+    expect(tilesApi).toBeTruthy;
+  });
 });

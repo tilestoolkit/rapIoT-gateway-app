@@ -34,9 +34,12 @@ describe('bleService', () => {
     });
   });
 
-  it('should make an instance of the BleService', inject([BleService], (temp: BleService) => {
+  beforeEach(inject([BleService], (temp: BleService) => {
     bleService = temp;
-    expect(bleService).toBeTruthy;
   }));
+
+  it('should create an instance of the BleService', () => {
+    expect(bleService).toBeTruthy;
+  });
 
 });

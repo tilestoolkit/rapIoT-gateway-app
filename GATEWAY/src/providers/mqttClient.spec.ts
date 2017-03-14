@@ -31,9 +31,12 @@ describe('mqttClient', () => {
     });
   });
 
-  it('should make an instance of the MqttClient', inject([MqttClient], (temp: MqttClient) => {
+  beforeEach(inject([MqttClient], (temp: MqttClient) => {
     mqttClient = temp;
-    expect(mqttClient).toBeTruthy;
   }));
+
+  it('should create an instance of the MqttClient', () => {
+    expect(mqttClient).toBeTruthy;
+  });
 
 });
