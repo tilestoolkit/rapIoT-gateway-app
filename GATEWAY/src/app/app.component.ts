@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Injectable, Inject } from '@angular/core';
 import { Platform } from 'ionic-angular';
 import { AppVersion, StatusBar, Splashscreen } from 'ionic-native';
 
@@ -11,8 +11,10 @@ import { TabsPage } from '../pages/tabs/tabs';
 
 export class Tiles {
   rootPage = TabsPage;
+  /*
   appVersion: any;
-
+  applications: Object[];
+  */
   constructor(platform: Platform) {
     platform.ready().then(() => {
       // Okay, so the platform is ready and our plugins are available.
@@ -33,9 +35,6 @@ export class Tiles {
         text:   'Running in background'
       });
       */
-
-      this.appVersion = AppVersion.getVersionNumber().then(res => JSON.stringify(res));
-
       StatusBar.styleDefault();
       Splashscreen.hide();
     });

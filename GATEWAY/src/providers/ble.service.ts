@@ -1,3 +1,4 @@
+
 import { Injectable } from '@angular/core';
 import { Events } from 'ionic-angular';
 import { BLE } from 'ionic-native';
@@ -23,7 +24,6 @@ export class BleService {
   	{'name': 'TI SensorTag','id': '01:23:45:67:89:AB', 'rssi': -79, 'advertising': null},
   	{'name': 'Some OtherDevice', 'id': 'A1:B2:5C:87:2D:36', 'rssi': -52, 'advertising': null}
   ];*/
-
   constructor(private events: Events,
               private devicesService: DevicesService,
               private mqttClient: MqttClient,

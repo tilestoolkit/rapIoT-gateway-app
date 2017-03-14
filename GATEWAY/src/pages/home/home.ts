@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { AlertController, Events, NavController, Platform } from 'ionic-angular';
 import { Observable, Subscription } from 'rxjs';
-
+import { Http } from '@angular/http';
 import { BleService } from '../../providers/ble.service';
 import { DevicesService } from '../../providers/devices.service';
 import { MqttClient } from '../../providers/mqttClient';
@@ -25,11 +25,13 @@ export class HomePage {
   statusMsg: string;
   bleScanner: Subscription;
   virtualTiles: VirtualTile[];
+  applications: Object[];
 
   constructor(public alertCtrl: AlertController,
               public navCtrl: NavController,
               public platform: Platform,
               private events: Events,
+              private http: Http,
               private bleService: BleService,
               private devicesService: DevicesService,
               private mqttClient: MqttClient,
@@ -118,12 +120,36 @@ export class HomePage {
     this.setDevices();
   };
 
+
+	/**
+	* Verify that input of user login is valid
+	*/
+	verifyLoginCredentials = (user:string, host:string, port:string) => {
+		var validUsername = user.match(/^[a-zA-Z0-9\_\-\.]+$/);
+		var validHost = host.match(/^([0-9]{1,3}.){3}[0-9]{1,3}/);
+
+		if (validUsername != null && validHost != null) {
+			return true;
+		} else { 
+			return false;
+		}
+	};
+
   /**
    * Connect to the mqttServer
-   */
+	 */
+	connectToServer = (user, host, port) => {
+		if (this.verifyLoginCredentials(user, host, port)) {
+			this.mqttClient.connect(user, host, port);
+		} else {
+			alert("Invalid login credentials.");
+		}
+	};
+   /*
   connectToServer = (): void => {
     this.mqttClient.connect(this.tilesApi.hostAddress, this.tilesApi.mqttPort);
   };
+  */
 
   /**
    * Called when the refresher is triggered by pulling down on the view of 
@@ -136,8 +162,52 @@ export class HomePage {
 		setTimeout(() => {
 			refresher.complete();
 		}, 2000);
+	}
+
+	showConnectMQTTPopup = () => {
+		let alertPopup = this.alertCtrl.create({
+			title: 'Connect to server',
+			inputs: [
+				{
+					name: 'username',
+					placeholder: 'Username'
+				},
+				{
+					name: 'host',
+					placeholder: 'Host'
+				},
+				{
+					name: 'port',
+					placeholder: 'Port',
+					type: 'number'
+				}
+			],
+			buttons: [
+				{
+					text: 'Cancel',
+					role: 'cancel',
+					handler: data => {
+						console.log('Cancel clicked');
+					}
+				},
+				{
+					text: 'Connect',
+					handler: data => {
+						this.connectToServer(data.username, data.host, parseInt(data.port));
+            this.getApplicationData(data.username, data.host, parseInt(data.port));
+					}
+				}
+			]
+		});
+		alertPopup.present();
 	};
 
+  getApplicationData(user, host, port){
+    this.http.get('http://' + host + ':' + this.tilesApi.apiPort + '/applications').map(res => res.json()).subscribe(data => {
+      alert(JSON.stringify(data));
+      this.applications = data;
+    });
+  }
   /**
    * Triggers an event on a tile to identify which tile is which
    * @param {Device} device - A tile

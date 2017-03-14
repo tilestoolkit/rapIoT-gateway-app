@@ -1,0 +1,21 @@
+HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+
+{ "users" = [
+  {
+    "_id": "TestUser",
+    "__v": 2,
+    "tiles": [
+      "F3:45:F7:CB:67:C0",
+      "00:12:AA:BB:CC:FF"
+    ]
+  },
+  {
+    "_id": "Anders",
+    "__v": 2,
+    "tiles": [
+      "F3:45:F7:CB:67:C0"
+    ]
+  }
+]
+}
