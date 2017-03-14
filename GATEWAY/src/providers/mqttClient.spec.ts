@@ -7,9 +7,9 @@ import { TilesApi } from './tilesApi.service';
 import { MqttClient } from './mqttClient';
 import { BleService } from './ble.service';
 
-describe('bleService', () => {
+describe('mqttClient', () => {
 
-  let bleService: BleService = null;
+  let mqttClient: MqttClient = null;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -26,15 +26,14 @@ describe('bleService', () => {
             return new Http(backendInstance, defaultOptions);
           },
           deps: [MockBackend, BaseRequestOptions]
-        },
-        BleService
+        }
       ]
     });
   });
 
-  it('should make an instance of the BleService', inject([BleService], (temp: BleService) => {
-    bleService = temp;
-    expect(bleService).toBeTruthy;
+  it('should make an instance of the BleService', inject([MqttClient], (temp: MqttClient) => {
+    mqttClient = temp;
+    expect(mqttClient).toBeTruthy;
   }));
 
 });

@@ -1,23 +1,17 @@
 import { inject, TestBed } from '@angular/core/testing';
 import { Http, BaseRequestOptions } from '@angular/http';
-import { MockBackend } from '@angular/http/testing';
-import { Events } from 'ionic-angular';
 import { Storage } from '@ionic/storage';
+import { MockBackend } from '@angular/http/testing';
+import { Device } from './devices.service';
 import { TilesApi } from './tilesApi.service';
-import { MqttClient } from './mqttClient';
-import { BleService } from './ble.service';
 
-describe('bleService', () => {
+describe('tilesAPI', () => {
 
-  let bleService: BleService = null;
+  let tilesApi: TilesApi = null;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
-        TilesApi,
-        MqttClient,
-        Events,
-        Storage,
         MockBackend,
         BaseRequestOptions,
         {
@@ -27,14 +21,16 @@ describe('bleService', () => {
           },
           deps: [MockBackend, BaseRequestOptions]
         },
-        BleService
+        Device,
+        Storage,
+        TilesApi
       ]
     });
   });
 
-  it('should make an instance of the BleService', inject([BleService], (temp: BleService) => {
-    bleService = temp;
-    expect(bleService).toBeTruthy;
+  it('should make an instance of the TilesApi', inject([TilesApi], (temp: TilesApi) => {
+    tilesApi = temp;
+    expect(tilesApi).toBeTruthy;
   }));
 
 });

@@ -1,5 +1,5 @@
-import { HomePage } from '../../../src/pages/home/home';
-import { Tiles } from '../../../src/app/app.component';
+import { HomePage } from './home';
+import { Tiles } from '../../app/app.component';
 import { TestBed, ComponentFixture, async } from '@angular/core/testing';
 import { IonicModule, NavController } from 'ionic-angular';
 import { Storage } from '@ionic/storage';
