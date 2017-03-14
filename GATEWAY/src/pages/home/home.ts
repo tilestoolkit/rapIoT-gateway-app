@@ -137,7 +137,6 @@ export class HomePage {
 
   /**
    * Connect to the mqttServer
-<<<<<<< HEAD
 	 */
 	connectToServer = (user, host, port) => {
 		if (this.verifyLoginCredentials(user, host, port)) {
