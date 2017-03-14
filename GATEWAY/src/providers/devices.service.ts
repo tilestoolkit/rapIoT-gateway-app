@@ -2,21 +2,7 @@ import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage';
 import { Events } from 'ionic-angular';
 
-
-/**
- * Class for the devices, this makes it possible to specify the
- * device type in typescript to avoid getting invalid device-objects
- */
-export class Device {
-  id: string;
-  tileId: string; // IOS and android gets different id from the ble, so we use the tilename as a seond id
-  name: string;
-  connected: boolean;
-  ledOn: boolean;
-  buttonPressed?: boolean;
-  loading: boolean;
-}
-
+import { Device } from './utils.service';
 
 @Injectable()
 export class DevicesService {
@@ -25,7 +11,7 @@ export class DevicesService {
   constructor(public storage: Storage,
               public events: Events) {
     this.devices = [];
-  };
+  }
 
   /**
    * Returns mock devices for testing purposes
@@ -56,7 +42,7 @@ export class DevicesService {
         connected: false,
         loading: false,
         ledOn: false,
-        buttonPressed: false
+        buttonPressed: false,
       };
     }).catch(err => {
       return {
@@ -66,7 +52,7 @@ export class DevicesService {
         connected: false,
         loading: false,
         ledOn: false,
-        buttonPressed: false
+        buttonPressed: false,
       };
     })
   };
@@ -109,7 +95,7 @@ export class DevicesService {
    * Sets the device name to the ble name
    * @param {Device} device - a tile device
    */
-  resetName = (device: Device): void => {
+  resetDeviceName = (device: Device): void => {
     this.setCustomDeviceName(device, device.tileId);
   };
 
@@ -124,6 +110,4 @@ export class DevicesService {
       }
     }
   };
-};
-
-export default {DevicesService, Device};
+}

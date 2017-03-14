@@ -3,9 +3,10 @@ import { Events } from 'ionic-angular';
 import { BLE } from 'ionic-native';
 import 'rxjs/add/operator/toPromise';
 
+import { DevicesService }from './devices.service';
 import { MqttClient } from './mqttClient';
-import { TilesApi, CommandObject } from './tilesApi.service';
-import { Device, DevicesService }from './devices.service';
+import { TilesApi  } from './tilesApi.service';
+import { CommandObject, Device, UtilsService } from './utils.service';
 
 // A dictionary of new device names set by user
 let tileNames = {};
@@ -16,7 +17,7 @@ export class BleService {
     serviceUUID: '2220',
     receiveCharacteristicUUID: '2221',
     sendCharacteristicUUID: '2222',
-    disconnectCharacteristicUUID: '2223'
+    disconnectCharacteristicUUID: '2223',
   };/*
   mockDevices = [
   	{'name': 'TI SensorTag','id': '01:23:45:67:89:AB', 'rssi': -79, 'advertising': null},
@@ -26,8 +27,9 @@ export class BleService {
   constructor(private events: Events,
               private devicesService: DevicesService,
               private mqttClient: MqttClient,
-  						private tilesApi: TilesApi) {
-  };
+  						private tilesApi: TilesApi,
+              private utils: UtilsService) {
+  }
 
   /**
    * Checking if bluetooth is enabled and enable on android if not
@@ -105,7 +107,7 @@ export class BleService {
   	  		 	device.ledOn = false;
             device.connected = true;
             device.buttonPressed = false;
-  	        this.tilesApi.loadEventMappings(device.tileId);
+  	        //this.tilesApi.loadEventMappings(device.tileId);
             this.mqttClient.registerDevice(device);
             this.startDeviceNotification(device);
             if (device.name in tileNames){
@@ -138,7 +140,7 @@ export class BleService {
         res => {
           // Convert the bytes sent from the device into a string
           const responseString = ((String.fromCharCode.apply(null, new Uint8Array(res))).slice(0, -1)).trim();
-          let message: CommandObject = this.tilesApi.getEventStringAsObject(responseString);
+          let message: CommandObject = this.utils.getEventStringAsObject(responseString);
           //alert('Recieved event: ' + message.name + ' with properties: ' + message.properties);
           if (message === null) {
             alert('Found no mapping for event: ' + responseString);
@@ -187,23 +189,6 @@ export class BleService {
   };
 
   /**
-   * Convert a string to an attay of bytes
-   */
-  convertStringtoBytes = (str: String): any => {
-    try {
-      console.log('Attempting to send data to device via BLE.');
-      let dataArray = new Uint8Array(str.length);
-      for(let i = 0; i < str.length; i ++){
-        dataArray[i] = str.charCodeAt(i);
-      }
-      return dataArray;
-    } catch (err) {
-      console.log('Converting string of data to bytes unsuccessful!')
-      return null;
-    };
-  }
-
-  /**
    * Send data to a device using BLE
    * @param {Device} device - the target device
    * @param {string} dataString - the string of data to send to the device
@@ -211,7 +196,7 @@ export class BleService {
   sendData = (device: Device, dataString: string): void => {
     try {
       console.log('Attempting to send data to device via BLE.');
-      const dataArray = this.convertStringtoBytes(dataString);
+      const dataArray = this.utils.convertStringtoBytes(dataString);
       // Attempting to send the array of bytes to the device
       BLE.writeWithoutResponse(device.id,
                                this.rfduino.serviceUUID,
@@ -221,6 +206,6 @@ export class BleService {
               .catch( err => alert('Failed when trying to send data to the device!'));
     } catch (err) {
       alert('Failed when trying to send data to the device!');
-    };
+    }
   };
-};
+}
