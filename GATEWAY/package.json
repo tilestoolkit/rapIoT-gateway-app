@@ -46,6 +46,8 @@
     "karma-remap-istanbul": "^0.6.0",
     "phantomjs": "^2.1.7",
     "ts-node": "^2.1.0",
+    "eslint": "^3.14.1",
+    "eslint-plugin-import": "^2.2.0",
     "tslint": "^4.5.1",
     "tslint-eslint-rules": "^3.4.0",
     "typescript": "2.0.9"
