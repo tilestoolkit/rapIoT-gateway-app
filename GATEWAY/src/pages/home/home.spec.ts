@@ -5,7 +5,7 @@ import { IonicModule, NavController } from 'ionic-angular';
 import { Storage } from '@ionic/storage';
 import { UtilsService }from '../../providers/utils.service';
 
-let comp: HomePage;
+let homePage: HomePage;
 let fixture: ComponentFixture<HomePage>;
  
 describe('HomePage', () => {
@@ -29,17 +29,17 @@ describe('HomePage', () => {
  
     beforeEach(() => {
         fixture = TestBed.createComponent(HomePage);
-        comp    = fixture.componentInstance;
+        homePage    = fixture.componentInstance;
     });
  
     afterEach(() => {
         fixture.destroy();
-        comp = null;
+        homePage = null;
     });
  
     it('is created', () => {
         expect(fixture).toBeTruthy();
-        expect(comp).toBeTruthy();
+        expect(homePage).toBeTruthy();
     });
 
 

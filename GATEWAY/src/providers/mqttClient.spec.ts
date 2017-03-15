@@ -35,6 +35,10 @@ describe('mqttClient', () => {
     mqttClient = temp;
   }));
 
+  afterEach(() => {
+    mqttClient = null;
+  });
+
   it('should create an instance of the MqttClient', () => {
     expect(mqttClient).toBeTruthy;
   });

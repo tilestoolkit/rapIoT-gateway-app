@@ -21,6 +21,10 @@ describe('devicesService', () => {
     devicesService = temp;
   }));
 
+  afterEach(() => {
+    devicesService = null;
+  });
+
   it('should create an instance of the DevicesService', () => {
     expect(devicesService).toBeTruthy;
   });

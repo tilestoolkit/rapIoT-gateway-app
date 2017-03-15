@@ -32,6 +32,10 @@ describe('tilesAPI', () => {
     tilesApi = temp;
   }));
 
+  afterEach(() => {
+    tilesApi = null;
+  });
+
   it('should create an instance of the TilesApi', () => {
     expect(tilesApi).toBeTruthy;
   });

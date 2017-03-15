@@ -40,6 +40,10 @@ describe('bleService', () => {
     bleService = temp;
   }));
 
+  afterEach(() => {
+    bleService = null;
+  });
+
   it('should create an instance of the BleService', () => {
     expect(bleService).toBeTruthy;
   });
