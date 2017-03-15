@@ -19,12 +19,12 @@ describe('tilesAPI', () => {
           useFactory: (backendInstance: MockBackend, defaultOptions: BaseRequestOptions) => {
             return new Http(backendInstance, defaultOptions);
           },
-          deps: [MockBackend, BaseRequestOptions]
+          deps: [MockBackend, BaseRequestOptions],
         },
         Device,
         Storage,
-        TilesApi
-      ]
+        TilesApi,
+      ],
     });
   });
 
