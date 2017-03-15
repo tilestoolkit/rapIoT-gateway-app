@@ -12,8 +12,8 @@ describe('utilsService', () => {
       providers: [
         Events,
         Storage,
-        UtilsService
-      ]
+        UtilsService,
+      ],
     });
   });
 

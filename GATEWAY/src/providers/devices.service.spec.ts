@@ -12,8 +12,8 @@ describe('devicesService', () => {
       providers: [
         Events,
         Storage,
-        DevicesService
-      ]
+        DevicesService,
+      ],
     });
   });
 
