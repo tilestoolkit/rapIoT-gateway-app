@@ -14,16 +14,16 @@ describe('HomePage', () => {
         TestBed.configureTestingModule({
             declarations: [
                 Tiles,
-                HomePage
+                HomePage,
             ],
             providers: [
                 Storage,
                 NavController,
-                UtilsService
+                UtilsService,
             ],
             imports: [
-                IonicModule.forRoot(Tiles)
-            ]
+                IonicModule.forRoot(Tiles),
+            ],
         }).compileComponents();
     }));
  

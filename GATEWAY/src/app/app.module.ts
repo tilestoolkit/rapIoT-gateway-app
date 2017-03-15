@@ -12,33 +12,35 @@ import { BleService } from '../providers/ble.service';
 import { MqttClient } from '../providers/mqttClient';
 import { TilesApi } from '../providers/tilesApi.service';
 import { DevicesService } from '../providers/devices.service';
+import { UtilsService } from '../providers/utils.service';
 
 
 @NgModule({
   declarations: [
     Tiles,
     HomePage,
-    TabsPage
+    TabsPage,
   ],
   imports: [
     FormsModule,
     HttpModule,
-    IonicModule.forRoot(Tiles)
+    IonicModule.forRoot(Tiles),
   ],
   bootstrap: [IonicApp],
   entryComponents: [
     Tiles,
     HomePage,
-    TabsPage
+    TabsPage,
   ],
   providers: [
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     Storage,
     BleService,
+    DevicesService,
     MqttClient,
     TilesApi,
-    DevicesService
-  ]
+    UtilsService,
+  ],
 })
 
 export class AppModule {}
