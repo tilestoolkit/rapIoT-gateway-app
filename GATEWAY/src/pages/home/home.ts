@@ -16,8 +16,8 @@ import { CommandObject, Device, UtilsService, VirtualTile } from '../../provider
     TilesApi,
     MqttClient,
     DevicesService,
-    BleService
-  ]
+    BleService,
+  ],
 })
 export class HomePage {
   devices: Device[];
@@ -90,14 +90,14 @@ export class HomePage {
     this.events.subscribe('updateDevices', () => {
       this.setDevices();
     });
-  };
+  }
 
   /**
    * Set the devices equal to the devices from devicesservice
    */
   setDevices = (): void => {
     this.devices = this.devicesService.getDevices();
-  };
+  }
 
   /**
    * Set the virtual tiles equal to the ones stores for the app
@@ -106,9 +106,9 @@ export class HomePage {
     //TODO: Use the appname for the chosen app when implemented
     this.tilesApi.getApplicationTiles('test3').then(res => {
       this.virtualTiles = res; 
-      console.log('tiles: ' + JSON.stringify(this.virtualTiles));
+      alert('tiles: ' + JSON.stringify(this.virtualTiles));
     });
-  };
+  }
 
   /**
    * Use ble to discover new devices
@@ -118,38 +118,39 @@ export class HomePage {
     this.devicesService.clearDisconnectedDevices();
     this.bleService.scanForDevices(this.virtualTiles);
     this.setDevices();
-  };
+  }
 
 
 	/**
-	* Verify that input of user login is valid
-	*/
-	verifyLoginCredentials = (user:string, host:string, port:string) => {
-		var validUsername = user.match(/^[a-zA-Z0-9\_\-\.]+$/);
-		var validHost = host.match(/^([0-9]{1,3}.){3}[0-9]{1,3}/);
+	 * Verify that input of user login is valid
+   * @param {string} user - username
+   * @param {string} host - api host address
+   * @param {number} port - mqtt port number
+	 */
+	verifyLoginCredentials = (user: string, host: string, port: number): boolean => {
+		const validUsername = user.match(/^[a-zA-Z0-9\_\-\.]+$/);
+		const validHost = host.match(/^([0-9]{1,3}.){3}[0-9]{1,3}/);
 
 		if (validUsername != null && validHost != null) {
 			return true;
 		} else { 
 			return false;
 		}
-	};
+	}
 
   /**
    * Connect to the mqttServer
+   * @param {string} user - username
+   * @param {string} host - api host address
+   * @param {number} port - mqtt port number
 	 */
-	connectToServer = (user, host, port) => {
+	connectToServer = (user: string, host: string, port: number): void => {
 		if (this.verifyLoginCredentials(user, host, port)) {
 			this.mqttClient.connect(user, host, port);
 		} else {
 			alert("Invalid login credentials.");
 		}
-	};
-   /*
-  connectToServer = (): void => {
-    this.mqttClient.connect(this.tilesApi.hostAddress, this.tilesApi.mqttPort);
-  };
-  */
+	}
 
   /**
    * Called when the refresher is triggered by pulling down on the view of 
@@ -164,50 +165,19 @@ export class HomePage {
 		}, 2000);
 	}
 
-	showConnectMQTTPopup = () => {
-		let alertPopup = this.alertCtrl.create({
-			title: 'Connect to server',
-			inputs: [
-				{
-					name: 'username',
-					placeholder: 'Username'
-				},
-				{
-					name: 'host',
-					placeholder: 'Host'
-				},
-				{
-					name: 'port',
-					placeholder: 'Port',
-					type: 'number'
-				}
-			],
-			buttons: [
-				{
-					text: 'Cancel',
-					role: 'cancel',
-					handler: data => {
-						console.log('Cancel clicked');
-					}
-				},
-				{
-					text: 'Connect',
-					handler: data => {
-						this.connectToServer(data.username, data.host, parseInt(data.port));
-            this.getApplicationData(data.username, data.host, parseInt(data.port));
-					}
-				}
-			]
-		});
-		alertPopup.present();
-	};
-
-  getApplicationData(user, host, port){
+  /**
+   * Get data for applications
+   * @param {string} user - username
+   * @param {string} host - api host address
+   * @param {number} port - mqtt port number
+   */
+  getApplicationData = (user: string, host: string, port: number): void => {
     this.http.get('http://' + host + ':' + this.tilesApi.apiPort + '/applications').map(res => res.json()).subscribe(data => {
-      alert(JSON.stringify(data));
+      //alert(JSON.stringify(data));
       this.applications = data;
     });
   }
+
   /**
    * Triggers an event on a tile to identify which tile is which
    * @param {Device} device - A tile
@@ -215,7 +185,48 @@ export class HomePage {
   identifyDevice = (device: Device): void => {
     this.bleService.sendData(device, 'led,on,red');
     setTimeout(()=> (this.bleService.sendData(device, 'led,off')), 3000);
-  };
+  }
+
+  /**
+   * Show the popup to connect to broker
+   */
+	showConnectMQTTPopup = () => {
+		let alertPopup = this.alertCtrl.create({
+			title: 'Connect to server',
+			inputs: [
+				{
+					name: 'username',
+					placeholder: 'Username',
+				},
+				{
+					name: 'host',
+					placeholder: 'Host',
+				},
+				{
+					name: 'port',
+					placeholder: 'MQTT-Port',
+					type: 'number',
+				},
+			],
+			buttons: [
+				{
+					text: 'Cancel',
+					role: 'cancel',
+					handler: data => {
+						console.log('Cancel clicked');
+					},
+				},
+				{
+					text: 'Connect',
+					handler: data => {
+						this.connectToServer(data.username, data.host, parseInt(data.port));
+            this.getApplicationData(data.username, data.host, parseInt(data.port));
+					},
+				},
+			],
+		});
+		alertPopup.present();
+	};
 
   /**
    * Called when the rename button is pushed on the view of the the
@@ -227,7 +238,7 @@ export class HomePage {
       title: 'Change tile name',
       inputs: [{
           name: 'newName',
-          placeholder: 'new name'
+          placeholder: 'new name',
       }],
       buttons: [{
           text: 'Cancel',
@@ -237,10 +248,10 @@ export class HomePage {
           text: 'Rename',
           handler: data => {
             this.devicesService.setCustomDeviceName(device, data.newName);
-          }
-      }]
+          },
+      }],
     }).present();
-  };
+  }
 
   /**
    * Called when the pair button is pushed on the view of the the
@@ -262,8 +273,8 @@ export class HomePage {
           text: 'Pair',
           handler: data => {
             this.tilesApi.pairDeviceToVirualTile(data, virtualTile._id, 'test3');
-          }
-      }]
+          },
+      }],
     }).present();
-  };
-};
+  }
+}
