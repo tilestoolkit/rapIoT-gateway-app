@@ -7,22 +7,19 @@
 </ion-header>
 
 <ion-content padding>
-  <form class="list">
-    <ion-list id="login-list1">
-      <label class="item item-input">
-        <span class="input-label">Username</span>
-        <input type="text" placeholder="">
-      </label>
-      <label class="item item-input">
-        <span class="input-label">Host</span>
-        <input type="text" placeholder="">
-      </label>
-      <label class="item item-input">
-        <span class="input-label">Port</span>
-        <input type="number" placeholder="">
-      </label>
-    </ion-list>
-    <div class="spacer" style="height: 40px;"></div>
-    <a class="button button-stable  button-block" (click)="showConnectMQTTPopup()">Log in</a>
+  <form (ngSubmit)="loginForm()">
+    <ion-item>
+      <ion-label>Username</ion-label>
+      <ion-input type="text" [(ngModel)]="loginInfo.username" name="username"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label>Host</ion-label>
+      <ion-input type="text" [(ngModel)]="loginInfo.host" name="host"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label>Port</ion-label>
+      <ion-input type="number" [(ngModel)]="loginInfo.port" name="port"></ion-input>
+    </ion-item>
+    <button ion-button type="submit" block>Log In!</button>
   </form>
 </ion-content>
