@@ -6,13 +6,22 @@ import { Device } from './utils.service';
 
 import * as tilesDevice from '../fixtures/tilesDevice.json';
 import * as bleDevice from '../fixtures/bleDevice.json';
-import * as convertedDevice from '../fixtures/convertedBLEdevice.json';
+//import * as convertedDevice from '../fixtures/convertedBLEdevice.json';
 
 describe('devicesService:', () => {
 
   let devicesService: DevicesService = null;
   let deviceOne: Device = null;
   let deviceTwo: Device = null;
+  const convertedDevice = {
+  "tileId": "TI SensorTag",
+  "name": "TI SensorTag",
+  "id": "01:23:45:67:89:AB",
+  "connected": false,
+  "loading": false,
+  "ledOn": false,
+  "buttonPressed": false
+}
 
   beforeEach(() => {
     TestBed.configureTestingModule({
