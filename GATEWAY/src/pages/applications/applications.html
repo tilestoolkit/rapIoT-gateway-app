@@ -12,11 +12,21 @@
 
 </ion-header>
 
-
 <ion-content padding>
-  <h3>Hello from Applications</h3>
+  <ion-refresher (ionRefresh)="refreshDevices($event)">
+    <ion-refresher-content
+      pullingIcon="arrow-dropdown"
+      pullingText="Pull to refresh"
+      refreshingSpinner="circles"
+      refreshingText="Refreshing...">
+    </ion-refresher-content>
+  </ion-refresher>
+
+  <ion-title left>Applications</ion-title>
   <ion-list>
-    <ion-item  *ngFor="let device of devices">
+    <button (click)="setApplications()">gettem</button>
+    <ion-item *ngFor="let app of applications" (click)="setActiveApp(app)">
+      <b>{{app._id}}</b>
     </ion-item>
   </ion-list>
 </ion-content>
