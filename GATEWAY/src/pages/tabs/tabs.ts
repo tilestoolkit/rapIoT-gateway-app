@@ -1,14 +1,14 @@
 import { Component } from '@angular/core';
-
-import { HomePage } from '../home/home';
+import { LoginPage } from '../login/login';
+import { NavController } from 'ionic-angular';
 
 @Component({
-  templateUrl: 'tabs.html'
+  templateUrl: `<ion-nav [root]="rootPage"></ion-nav>`
 })
 export class TabsPage {
   // this tells the tabs component which Pages
   // should be each tab's root Page
-  tab1Root: any = HomePage;
+  public rootPage: any = LoginPage;
 
   constructor() {
 
