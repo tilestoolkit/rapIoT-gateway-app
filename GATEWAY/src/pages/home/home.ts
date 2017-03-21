@@ -120,24 +120,6 @@ export class HomePage {
     this.setDevices();
   }
 
-
-	/**
-	 * Verify that input of user login is valid
-   * @param {string} user - username
-   * @param {string} host - api host address
-   * @param {number} port - mqtt port number
-	 */
-	verifyLoginCredentials = (user: string, host: string, port: number): boolean => {
-		const validUsername = user.match(/^[a-zA-Z0-9\_\-\.]+$/);
-		const validHost = host.match(/^([0-9]{1,3}.){3}[0-9]{1,3}/);
-
-		if (validUsername != null && validHost != null) {
-			return true;
-		} else { 
-			return false;
-		}
-	}
-
   /**
    * Connect to the mqttServer
    * @param {string} user - username
@@ -145,7 +127,7 @@ export class HomePage {
    * @param {number} port - mqtt port number
 	 */
 	connectToServer = (user: string, host: string, port: number): void => {
-		if (this.verifyLoginCredentials(user, host, port)) {
+		if (this.utils.verifyLoginCredentials(user, host, port)) {
 			this.mqttClient.connect(user, host, port);
 		} else {
 			alert("Invalid login credentials.");
@@ -165,18 +147,6 @@ export class HomePage {
 		}, 2000);
 	}
 
-  /**
-   * Get data for applications
-   * @param {string} user - username
-   * @param {string} host - api host address
-   * @param {number} port - mqtt port number
-   */
-  getApplicationData = (user: string, host: string, port: number): void => {
-    this.http.get('http://' + host + ':' + this.tilesApi.apiPort + '/applications').map(res => res.json()).subscribe(data => {
-      //alert(JSON.stringify(data));
-      this.applications = data;
-    });
-  }
 
   /**
    * Triggers an event on a tile to identify which tile is which
@@ -220,7 +190,9 @@ export class HomePage {
 					text: 'Connect',
 					handler: data => {
 						this.connectToServer(data.username, data.host, parseInt(data.port));
-            this.getApplicationData(data.username, data.host, parseInt(data.port));
+            this.tilesApi.getAllApplications().then( data => {
+              this.applications = data;
+            });
 					},
 				},
 			],
