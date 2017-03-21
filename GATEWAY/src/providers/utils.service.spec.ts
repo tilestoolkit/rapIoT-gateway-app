@@ -1,7 +1,7 @@
 import { inject, TestBed } from '@angular/core/testing';
 import { Storage } from '@ionic/storage';
 import { Events } from 'ionic-angular';
-import { UtilsService }from './utils.service';
+import { UtilsService, CommandObject, Device, VirtualTile }from './utils.service';
 
 describe('utilsService', () => {
 
@@ -37,10 +37,18 @@ describe('utilsService', () => {
       let returnArray: Uint8Array = utilsService.convertStringtoBytes(stringParameter);
       expect(returnArray).toEqual(comparisonArray);
     });
+
+    it('should return null if the method is not able to convert the string', () => {
+      let returnArray: Uint8Array = utilsService.convertStringtoBytes(null);
+      expect(returnArray).toBeNull;
+    });
   });
 
   describe('getEventStringAsObject(eventString: string): CommandObject', () => {
-
+    it('should return ´null´ if the string parameter does not contain any properties', () => {
+      let cmdObj: CommandObject = utilsService.getEventStringAsObject('test');
+      expect(cmdObj).toBeNull;
+    });
   });
 
   describe('getCommandObjectAsString(cmdObj: CommandObject): string', () => {
