@@ -1,7 +1,6 @@
 import { Component, Injectable, Inject } from '@angular/core';
 import { Platform } from 'ionic-angular';
 import { AppVersion, StatusBar, Splashscreen } from 'ionic-native';
-
 import { TabsPage } from '../pages/tabs/tabs';
 
 //TODO: Update this to match the app.js from the old version
