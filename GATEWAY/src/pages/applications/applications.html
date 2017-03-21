@@ -17,6 +17,10 @@
   </ion-refresher>
 
   <ion-list>
+    <button (click)="goToApplicationView()">
+      Go to OtherPage
+    </button>
+
     <button (click)="setApplications()">gettem</button>
     <ion-item *ngFor="let app of applications" (click)="setActiveApp(app)">
       <b>{{app._id}}</b>
