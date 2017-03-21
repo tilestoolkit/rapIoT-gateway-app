@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 
-import { HomePage } from '../home/home';
+import { ApplicationsPage } from '../applications/applications';
 import { PhysicalTilesPage } from '../physical-tiles/physical-tiles';
 import { DevTermPage } from '../dev-term/dev-term';
 
@@ -10,7 +10,7 @@ import { DevTermPage } from '../dev-term/dev-term';
 export class TabsPage {
   // this tells the tabs component which Pages
   // should be each tab's root Page
-  rootPage: any = HomePage;
+  rootPage: any = ApplicationsPage;
   physicalPage: any = PhysicalTilesPage;
   devPage: any = DevTermPage;
 
