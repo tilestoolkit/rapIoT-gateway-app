@@ -105,7 +105,7 @@ export class HomePage {
   setVirtualTiles = (): void => {
     //TODO: Use the appname for the chosen app when implemented
     this.tilesApi.getApplicationTiles('test3').then(res => {
-      this.virtualTiles = res; 
+      this.virtualTiles = res;
       alert('tiles: ' + JSON.stringify(this.virtualTiles));
     });
   }
@@ -133,7 +133,7 @@ export class HomePage {
 
 		if (validUsername != null && validHost != null) {
 			return true;
-		} else { 
+		} else {
 			return false;
 		}
 	}
@@ -153,7 +153,7 @@ export class HomePage {
 	}
 
   /**
-   * Called when the refresher is triggered by pulling down on the view of 
+   * Called when the refresher is triggered by pulling down on the view of
 	 * the devices. TODO: Not sure if needed when refresh is done every 30s anyways.
 	 */
 	refreshDevices = (refresher): void => {
@@ -163,7 +163,7 @@ export class HomePage {
 		setTimeout(() => {
 			refresher.complete();
 		}, 2000);
-	}
+	};
 
   /**
    * Get data for applications
