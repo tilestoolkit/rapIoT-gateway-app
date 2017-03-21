@@ -109,14 +109,12 @@ export class HomePage {
     if (this.activeApp !== undefined){
       this.tilesApi.getApplicationTiles(this.activeApp._id).then(res => {
         this.virtualTiles = res; 
-        console.log(res)
       });
     }
     else {
       this.tilesApi.getApplicationTiles('test3').then(res => {
         this.virtualTiles = res; 
       });
-
     }
   }
 
@@ -126,8 +124,6 @@ export class HomePage {
   setApplications = (): void => {
     this.tilesApi.getAllApplications().then( data => {
       this.applications = data;
-      console.log(data)
-      console.log(this.applications)
     }).catch (err => console.log(err));
   }
 
@@ -137,7 +133,6 @@ export class HomePage {
    */
   setActiveApp = (application: Application): void => {
     this.activeApp = application;
-    console.log(this.activeApp._id)
     this.setVirtualTiles();
   } 
 
