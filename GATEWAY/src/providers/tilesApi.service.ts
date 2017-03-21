@@ -63,10 +63,11 @@ export class TilesApi {
    */
   getAllApplications = (): Promise<any> => {
     const url = `http://${this.hostAddress}:${this.apiPort}/applications`;
+    console.log(url)
     return this.http.get(url)
             .toPromise()
             .then(res => {
-              res.json();
+              return res.json();
             })
             //.catch(err => alert('failed getting applications with error: ' + err));
   };
