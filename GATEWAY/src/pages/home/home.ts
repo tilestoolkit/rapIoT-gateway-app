@@ -6,7 +6,7 @@ import { BleService } from '../../providers/ble.service';
 import { DevicesService } from '../../providers/devices.service';
 import { MqttClient } from '../../providers/mqttClient';
 import { TilesApi } from '../../providers/tilesApi.service';
-import { CommandObject, Device, UtilsService, VirtualTile } from '../../providers/utils.service';
+import { Application, CommandObject, Device, UtilsService, VirtualTile } from '../../providers/utils.service';
 
 
 @Component({
@@ -25,7 +25,8 @@ export class HomePage {
   statusMsg: string;
   bleScanner: Subscription;
   virtualTiles: VirtualTile[];
-  applications: Object[];
+  applications: Application[];
+  activeApp: Application;
 
   constructor(public alertCtrl: AlertController,
               public navCtrl: NavController,
@@ -39,7 +40,8 @@ export class HomePage {
               private utils: UtilsService) {
   	this.setDevices();
     this.setVirtualTiles();
-  	this.serverConnectStatusMsg = 'Click to connect to server';
+    this.serverConnectStatusMsg = 'Click to connect to server';
+
 
   	// Subscriptions to events that can be emitted from other places in the code
     this.events.subscribe('serverConnected', () => {
@@ -104,11 +106,35 @@ export class HomePage {
    */
   setVirtualTiles = (): void => {
     //TODO: Use the appname for the chosen app when implemented
-    this.tilesApi.getApplicationTiles('test3').then(res => {
-      this.virtualTiles = res;
-      alert('tiles: ' + JSON.stringify(this.virtualTiles));
-    });
+    if (this.activeApp !== undefined){
+      this.tilesApi.getApplicationTiles(this.activeApp._id).then(res => {
+        this.virtualTiles = res; 
+      });
+    }
+    else {
+      this.tilesApi.getApplicationTiles('test3').then(res => {
+        this.virtualTiles = res; 
+      });
+    }
   }
+
+  /**
+   * Set the list of applications from the api
+   */
+  setApplications = (): void => {
+    this.tilesApi.getAllApplications().then( data => {
+      this.applications = data;
+    }).catch (err => console.log(err));
+  }
+
+  /**
+   * Set the active application
+   * @param {Application} application - a tiles application
+   */
+  setActiveApp = (application: Application): void => {
+    this.activeApp = application;
+    this.setVirtualTiles();
+  } 
 
   /**
    * Use ble to discover new devices
@@ -120,24 +146,6 @@ export class HomePage {
     this.setDevices();
   }
 
-
-	/**
-	 * Verify that input of user login is valid
-   * @param {string} user - username
-   * @param {string} host - api host address
-   * @param {number} port - mqtt port number
-	 */
-	verifyLoginCredentials = (user: string, host: string, port: number): boolean => {
-		const validUsername = user.match(/^[a-zA-Z0-9\_\-\.]+$/);
-		const validHost = host.match(/^([0-9]{1,3}.){3}[0-9]{1,3}/);
-
-		if (validUsername != null && validHost != null) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-
   /**
    * Connect to the mqttServer
    * @param {string} user - username
@@ -145,7 +153,7 @@ export class HomePage {
    * @param {number} port - mqtt port number
 	 */
 	connectToServer = (user: string, host: string, port: number): void => {
-		if (this.verifyLoginCredentials(user, host, port)) {
+		if (this.utils.verifyLoginCredentials(user, host, port)) {
 			this.mqttClient.connect(user, host, port);
 		} else {
 			alert("Invalid login credentials.");
@@ -163,20 +171,8 @@ export class HomePage {
 		setTimeout(() => {
 			refresher.complete();
 		}, 2000);
-	};
+	}
 
-  /**
-   * Get data for applications
-   * @param {string} user - username
-   * @param {string} host - api host address
-   * @param {number} port - mqtt port number
-   */
-  getApplicationData = (user: string, host: string, port: number): void => {
-    this.http.get('http://' + host + ':' + this.tilesApi.apiPort + '/applications').map(res => res.json()).subscribe(data => {
-      //alert(JSON.stringify(data));
-      this.applications = data;
-    });
-  }
 
   /**
    * Triggers an event on a tile to identify which tile is which
@@ -220,7 +216,7 @@ export class HomePage {
 					text: 'Connect',
 					handler: data => {
 						this.connectToServer(data.username, data.host, parseInt(data.port));
-            this.getApplicationData(data.username, data.host, parseInt(data.port));
+            this.setApplications();
 					},
 				},
 			],
