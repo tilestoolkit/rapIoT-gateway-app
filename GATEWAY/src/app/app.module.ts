@@ -7,6 +7,12 @@ import { Storage } from '@ionic/storage';
 import { Tiles } from './app.component';
 import { TabsPage } from '../pages/tabs/tabs';
 import { HomePage } from '../pages/home/home';
+import { LoginPage } from '../pages/login/login';
+import { ApplicationsPage } from '../pages/applications/applications'
+import { DevTermPage } from '../pages/dev-term/dev-term'
+import { VirtualTilesPage } from '../pages/virtual-tiles/virtual-tiles'
+import { PhysicalTilesPage } from '../pages/physical-tiles/physical-tiles'
+
 
 import { BleService } from '../providers/ble.service';
 import { MqttClient } from '../providers/mqttClient';
@@ -20,6 +26,12 @@ import { UtilsService } from '../providers/utils.service';
     Tiles,
     HomePage,
     TabsPage,
+    LoginPage,
+    DevTermPage,
+    ApplicationsPage,
+    VirtualTilesPage,
+    PhysicalTilesPage,
+
   ],
   imports: [
     FormsModule,
@@ -31,6 +43,11 @@ import { UtilsService } from '../providers/utils.service';
     Tiles,
     HomePage,
     TabsPage,
+    LoginPage,
+    DevTermPage,
+    ApplicationsPage,
+    VirtualTilesPage,
+    PhysicalTilesPage,
   ],
   providers: [
     {provide: ErrorHandler, useClass: IonicErrorHandler},
