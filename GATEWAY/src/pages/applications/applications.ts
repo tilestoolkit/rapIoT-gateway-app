@@ -15,7 +15,7 @@ import { LoginPage } from '../login/login';
   templateUrl: 'applications.html'
 })
 export class ApplicationsPage {
-  loggedIn = false;
+  loggedIn = true;
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public modalCtrl: ModalController) {}
 
