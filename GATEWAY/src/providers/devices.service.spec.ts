@@ -6,6 +6,7 @@ import { Device } from './utils.service';
 
 import * as tilesDevice from '../fixtures/tilesDevice.json';
 import * as bleDevice from '../fixtures/bleDevice.json';
+import * as convertedDevice from '../fixtures/convertedBLEdevice.json';
 
 describe('devicesService:', () => {
 
@@ -48,8 +49,14 @@ describe('devicesService:', () => {
     });
 
   });
-
+  //Needs to be changed. not an aqurate test.
   describe('convertBleDeviceToDevice(bleDevice: any): Promise<Device>', () => {
+    it('should convert a given BLE Device parameter to a Device', () => {
+      const testBLE = bleDevice;
+      let returnedDevice = devicesService.convertBleDeviceToDevice(testBLE);
+      expect(returnedDevice).toBe(convertedDevice);
+
+    });
 
   });
 

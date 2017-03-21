@@ -1,0 +1,9 @@
+{
+  "tileId": "TI SensorTag",
+  "name": "TI SensorTag",
+  "id": "01:23:45:67:89:AB",
+  "connected": false,
+  "loading": false,
+  "ledOn": false,
+  "buttonPressed": false,
+}

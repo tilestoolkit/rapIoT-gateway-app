@@ -1,5 +1,6 @@
 {
-    "id" : "01:23:45:67:89:AB",
-     "advertising" : {},
-      "rssi" : -99
+  "name": "TI SensorTag",
+  "id": "01:23:45:67:89:AB",
+  "rssi": -79,
+  "advertising": null
 }
