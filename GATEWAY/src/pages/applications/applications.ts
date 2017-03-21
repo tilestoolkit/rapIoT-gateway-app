@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
 
+import { VirtualTilesPage } from '../virtual-tiles/virtual-tiles';
+
 /*
   Generated class for the Applications page.
 
@@ -19,5 +21,10 @@ export class ApplicationsPage {
     console.log('ionViewDidLoad ApplicationsPage');
   }
 
+  goToApplicationView() {
+    //push another page onto the history stack
+    //causing the nav controller to animate the new page in
+    this.navCtrl.push(VirtualTilesPage);
+  }
 }
 
