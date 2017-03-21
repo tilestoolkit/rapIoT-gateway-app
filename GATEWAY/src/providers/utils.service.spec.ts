@@ -29,4 +29,30 @@ describe('utilsService', () => {
     expect(utilsService).toBeTruthy;
   });
 
+  describe('convertStringToBytes(str: String): any', () => {
+    it('should convert the string parameter to an array og bytes', () => {
+      let stringParameter = 'test';
+      let comparisonArray = new Uint8Array(4);
+      comparisonArray[0] = 116;comparisonArray[1] = 101;comparisonArray[2] = 115;comparisonArray[3] = 116;
+      let returnArray: Uint8Array = utilsService.convertStringtoBytes(stringParameter);
+      expect(returnArray).toEqual(comparisonArray);
+    });
+  });
+
+  describe('getEventStringAsObject(eventString: string): CommandObject', () => {
+
+  });
+
+  describe('getCommandObjectAsString(cmdObj: CommandObject): string', () => {
+
+  });
+
+  describe('extendObject(obj1: any, obj2: any): any', () => {
+
+  });
+
+  describe('verifyLoginCredentials(user: string, host: string, port: number): boolean', () => {
+
+  });
+
 });

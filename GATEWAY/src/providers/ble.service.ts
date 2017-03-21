@@ -7,7 +7,7 @@ import 'rxjs/add/operator/toPromise';
 import { DevicesService }from './devices.service';
 import { MqttClient } from './mqttClient';
 import { TilesApi  } from './tilesApi.service';
-import { CommandObject, Device, UtilsService } from './utils.service';
+import { CommandObject, Device, UtilsService, VirtualTile } from './utils.service';
 
 // A dictionary of new device names set by user
 let tileNames = {};
@@ -34,10 +34,10 @@ export class BleService {
   /**
    * Checking if bluetooth is enabled and enable on android if not
    */
-  scanForDevices = (): void => {
+  scanForDevices = (virtualTiles: VirtualTile[]): void => {
     BLE.isEnabled()
 		  		  .then( res => {
-		   		 		this.scanBLE();
+		   		 		this.scanBLE(virtualTiles);
 		   		 	})
 		  		  .catch( err => {
 		  		 		alert('Bluetooth not enabled!');
@@ -45,7 +45,7 @@ export class BleService {
 		  		 		BLE.enable()
 				  		 	 .then( res => {
                     alert('Bluetooth has been enabled');
-                    this.scanBLE();
+                    this.scanBLE(virtualTiles);
                   })
 				    		 .catch( err => {
                     alert('Failed to enable bluetooth, try doing it manually');
@@ -56,7 +56,7 @@ export class BleService {
   /**
    * Checking to see if any bluetooth devices are in reach
    */
-  scanBLE = (): void => {
+  scanBLE = (virtualTiles: VirtualTile[]): void => {
     // A list of the discovered devices
     let newDevices: Array<Device> = [];
 
@@ -74,6 +74,9 @@ export class BleService {
               this.mqttClient.registerDevice(device);
               this.devicesService.newDevice(device);
               newDevices.push(device);
+              if (virtualTiles.map(tile => tile.tile.name).includes(device.tileId)) {
+                this.connect(device);
+              }
               //TODO: temporary, until we get the completion function to run
               this.events.publish('updateDevices');
             }
