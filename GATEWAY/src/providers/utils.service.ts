@@ -10,6 +10,19 @@ export class CommandObject {
   properties: string;
 }
 
+/** 
+ * Class to describe the structure of a command 
+ */
+export class Application {
+  _id: string;
+  devEnvironment: string;
+  user: string;
+  environmentOnline: boolean;
+  appOnline: boolean;
+  port: number;
+  virtualTiles: string[];
+}
+
 /**
  * Class for the devices, this makes it possible to specify the
  * device type in typescript to avoid getting invalid device-objects
