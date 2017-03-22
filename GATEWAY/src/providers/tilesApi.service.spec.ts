@@ -5,6 +5,8 @@ import { MockBackend } from '@angular/http/testing';
 import { Device } from './utils.service';
 import { TilesApi } from './tilesApi.service';
 
+import * as mockTilesApplicationDetailsResponse from '../fixtures/applicationDetails.json';
+
 describe('tilesAPI', () => {
 
   let tilesApi: TilesApi = null;
@@ -85,14 +87,10 @@ describe('tilesAPI', () => {
   });
 
   describe('getApplicationDetails(applicationId: string): Promise<any>', () => {
-
-  });
-
-  describe('getApplicationTiles(applicationId: string): Promise<any>', () => {
-    it('should return an application',
+    it('should return an application named "test3"',
         inject([MockBackend], (mockBackend) => {
 
-        const mockResponse = {id: 0, name: 'test' };
+        const mockResponse = mockTilesApplicationDetailsResponse;
 
         mockBackend.connections.subscribe((connection) => {
           connection.mockRespond(new Response(new ResponseOptions({
@@ -100,8 +98,27 @@ describe('tilesAPI', () => {
           })));
         });
 
-        tilesApi.getApplicationDetails("0").then(application => {
-          expect(application.name).toEqual("test");
+        tilesApi.getApplicationDetails("test3").then(application => {
+          expect(application._id).toEqual("test3");
+        });
+
+    }));
+  });
+
+  describe('getApplicationTiles(applicationId: string): Promise<any>', () => {
+    it('should return a list of three virtualTiles',
+        inject([MockBackend], (mockBackend) => {
+
+        const mockResponse = mockTilesApplicationDetailsResponse;
+
+        mockBackend.connections.subscribe((connection) => {
+          connection.mockRespond(new Response(new ResponseOptions({
+            body: JSON.stringify(mockResponse)
+          })));
+        });
+
+        tilesApi.getApplicationTiles("test3").then(tiles => {
+          expect(tiles.length).toEqual(3);
         });
 
     }));
