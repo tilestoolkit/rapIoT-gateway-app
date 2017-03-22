@@ -42,5 +42,40 @@ describe('HomePage', () => {
         expect(homePage).toBeTruthy();
     });
 
+    describe('setDevices(): void', () => {
+
+    });
+
+    describe('setVirtualTiles(): void', () => {
+
+    });
+
+    describe('scanForBLEDevices(): void', () => {
+
+    });
+
+    describe('connectToServer(user: string, host: string, port: number): void', () => {
+
+    });
+
+    describe('refreshDevices(refresher): void', () => {
+
+    });
+
+    describe('identifyDevice(device: Device): void', () => {
+
+    });
+
+    describe('showMQTTPopup()', () => {
+
+    });
+
+    describe('changeNamePop(device: Device): void', () => {
+
+    });
+
+    describe('pairTilePopUp(virtualTile: VirtualTile): void', () => {
+
+    });
 
 });
