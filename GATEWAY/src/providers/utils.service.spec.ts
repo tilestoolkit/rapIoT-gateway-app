@@ -60,7 +60,7 @@ describe('utilsService', () => {
     });
     it('should return false when passing the test-user parameters', () => {
       let username: string = 'testuser';
-      let host: string = 988;
+      let host: string = '99999testhost999999999999999';
       let port: number = 8080;
       expect(utilsService.verifyLoginCredentialsusername, host, port)).toBeFalsy;
     });
