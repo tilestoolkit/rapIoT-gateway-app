@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Injectable } from '@angular/core';
 import { NavController, NavParams, AlertController } from 'ionic-angular';
 import { ModalController } from 'ionic-angular';
 import { ModalPage } from './modal-page';
@@ -8,6 +8,8 @@ import { VirtualTilesPage } from '../virtual-tiles/virtual-tiles';
 import { TilesApi } from '../../providers/tilesApi.service';
 import { Application, UtilsService } from '../../providers/utils.service';
 import { MqttClient } from '../../providers/mqttClient';
+
+import { Storage } from '@ionic/storage';
 
 /*
   Generated class for the Applications page.
@@ -20,24 +22,42 @@ import { MqttClient } from '../../providers/mqttClient';
   templateUrl: 'applications.html',
   providers: [TilesApi]
 })
+
+@Injectable()
 export class ApplicationsPage {
-  loggedIn = true;
   applications: Application[];
 
   constructor(public navCtrl: NavController, 
-  						public navParams: NavParams, 
-  						public modalCtrl: ModalController,
-  						public alertCtrl: AlertController,
-  						private mqttClient: MqttClient,
-  						private tilesApi: TilesApi,
-  						private utils: UtilsService) {}
+              public navParams: NavParams, 
+              public modalCtrl: ModalController,
+              public alertCtrl: AlertController,
+              private mqttClient: MqttClient,
+              private tilesApi: TilesApi,
+              private utils: UtilsService,
+              private storage: Storage) {}
 
   ionViewDidLoad() {
-    console.log("applications loaded");
+    this.storage.get('loggedIn').then((val) => {
+      console.log(val);
+      if (val == null || val == false) {
+        this.presentModal();
+      }
+    });
+  }
 
-    if(!this.loggedIn){
-      this.presentModal();
-    }
+  setApplications = (): void => {
+    this.tilesApi.getAllApplications().then( data => {
+      this.applications = data;
+    }).catch (err => console.log(err));
+  }
+
+  refreshApplications = (refresher): void => {
+    console.log('Scanning for more devices...');
+    this.setApplications();
+    //Makes the refresher run for 2 secs
+    setTimeout(() => {
+      refresher.complete();
+    }, 2000);
   }
 
   presentModal() {
@@ -47,26 +67,16 @@ export class ApplicationsPage {
   }
 
 
-  setApplications = (): void => {
-    this.tilesApi.getAllApplications().then( data => {
-       this.applications = data;
-      console.log('DATA: ' + data);
-    }).catch (err => console.log(err));
+
+	// showConnectMQTTPopup = () => {
+	// 	this.connectToServer('andrea', '172.68.99.218', parseInt('8080'));
+	// };
+
+
+  escape = () => {
+    this.storage.set('loggedIn', false);
+    this.presentModal();
   }
-
-  connectToServer = (user: string, host: string, port: number): void => {
-		if (this.utils.verifyLoginCredentials(user, host, port)) {
-			this.mqttClient.connect(user, host, port);
-		} else {
-			alert("Invalid login credentials.");
-		}
-	}
-
-	showConnectMQTTPopup = () => {
-		this.connectToServer('andrea', '172.68.99.218', parseInt('8080'));
-    this.setApplications();
-	};
-
 
 
   viewApplication = (application: Application): void => {
