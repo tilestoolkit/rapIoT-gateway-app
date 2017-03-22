@@ -9,6 +9,9 @@ describe('utilsService', () => {
   let comparisonCmdObj = new CommandObject;
     comparisonCmdObj.name = "led";
     comparisonCmdObj.properties = ["on","red"];
+  let comparisonCmdObj2 = new CommandObject;
+    comparisonCmdObj2.name = "light";
+    comparisonCmdObj2.properties = ["on"];
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -54,7 +57,7 @@ describe('utilsService', () => {
       let cmdObj = utilsService.getEventStringAsObject(eventString);
       expect(cmdObj).toEqual(comparisonCmdObj);
     });
-    
+
     it('should return ´null´ if the string parameter does not contain any properties', () => {
       let cmdObj: CommandObject = utilsService.getEventStringAsObject('test');
       expect(cmdObj).toBeNull;
@@ -62,11 +65,18 @@ describe('utilsService', () => {
   });
 
   describe('getCommandObjectAsString(cmdObj: CommandObject): string', () => {
-
+    it('should return the CommandObjects contents as a string', () => {
+      let testObj: CommandObject = comparisonCmdObj;
+      expect(utilsService.getCommandObjectAsString(testObj)).toEqual('led,on,red');
+    });
   });
 
   describe('extendObject(obj1: any, obj2: any): any', () => {
-
+    xit('should return the combined object of object 1 and 2 from extendObject', () => {
+      let obj1 = comparisonCmdObj;
+      let obj2 = comparisonCmdObj2;
+      expect(utilsService.extendObject(obj1,obj2)).toEqual('{ }');
+    });
   });
 
   describe('verifyLoginCredentials(user: string, host: string, port: number): boolean', () => {
