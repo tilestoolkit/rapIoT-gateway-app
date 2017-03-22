@@ -86,7 +86,16 @@ describe('tilesAPI', () => {
     it('should return all available applications registered for all users',
       inject([MockBackend], mockBackend => {
 
-      const mockResponse = [{id: 211, name: 'testitest'}, { id: 321, name: 'test2'}];
+      const mockResponse = [
+        {
+          id: 211,
+          name: 'testitest'
+        },
+        {
+          id: 321,
+          name: 'test2'
+        }
+      ];
 
       mockBackend.connections.subscribe((connection) => {
         connection.mockRespond(new Response(new ResponseOptions({
@@ -94,13 +103,11 @@ describe('tilesAPI', () => {
         })));
       });
 
-      tilesApi.getAllApplications().then(application => {
-        expect(application.name).toEqual('testitest').then(application => {
-          expect(application.name).toEqual('test2');
-        });
+      tilesApi.getAllApplications().then(applications => {
+        expect(applications.length).toEqual(2);
+        expect(applications[1].name).toEqual('test2');
       });
-      });
-    });
+    }));
   });
 
   describe('getApplicationDetails(applicationId: string): Promise<any>', () => {
