@@ -6,14 +6,20 @@ import { Device } from './utils.service';
 
 import * as tilesDevice from '../fixtures/tilesDevice.json';
 import * as bleDevice from '../fixtures/bleDevice.json';
-//import * as convertedDevice from '../fixtures/convertedBLEdevice.json';
 
 describe('devicesService:', () => {
 
   let devicesService: DevicesService = null;
   let deviceOne: Device = null;
   let deviceTwo: Device = null;
-  //let convertedBle = new Promise<Device>() => {return new Device};
+  let convertedBle = new Device;
+      convertedBle.tileId = "TI SensorTag";
+      convertedBle.name = "TI SensorTag";
+      convertedBle.id = "01:23:45:67:89:AB";
+      convertedBle.connected = false;
+      convertedBle.loading = false;
+      convertedBle.ledOn = false;
+      convertedBle.buttonPressed = false;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -52,17 +58,14 @@ describe('devicesService:', () => {
   });
   //Needs to be changed. not an aqurate test.
   describe('convertBleDeviceToDevice(bleDevice: any): Promise<Device>', () => {
-    xit('should convert a given BLE Device parameter to a Device', () => {
+    it('should convert a given BLE Device parameter to a Device', done => {
       const testBLE = bleDevice;
-      convertedBle.tileId = "TI SensorTag";
-      convertedBle.name = "TI SensorTag";
-      convertedBle.id = "01:23:45:67:89:AB";
-      convertedBle.connected = false;
-      convertedBle.loading = false;
-      convertedBle.ledOn = false;
-      convertedBle.buttonPressed = false;
-      let returnedDevice = devicesService.convertBleDeviceToDevice(testBLE);
-      expect(returnedDevice).toEqual(convertedBle);
+      //let returnedDevice = 
+      devicesService.convertBleDeviceToDevice(testBLE)
+      .then(returnedDevice => {
+        expect(returnedDevice).toEqual(convertedBle);
+        done();
+      });
 
     });
 

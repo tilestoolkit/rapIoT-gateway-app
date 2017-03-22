@@ -34,8 +34,8 @@ export class DevicesService {
    * @param {any} bleDevice - the returned device from the ble scan
    */
   convertBleDeviceToDevice = (bleDevice: any): Promise<Device>  => {
+    let temp = new Device;
     return this.storage.get(bleDevice.name).then( name => {
-      let temp = new Device;
       //return {
         temp.id = bleDevice.id;
         temp.tileId = bleDevice.name;
@@ -47,7 +47,6 @@ export class DevicesService {
         return temp;
       //};
     }).catch(err => {
-      let temp = new Device;
       //return {
         temp.id = bleDevice.id;
         temp.tileId = bleDevice.name;
@@ -57,18 +56,7 @@ export class DevicesService {
         temp.ledOn = false;
         temp.buttonPressed = false;
         return temp;
-      //};
-      /*
-      return {
-        id: bleDevice.id,
-        tileId: bleDevice.name,
-        name: bleDevice.name,
-        connected: false,
-        loading: false,
-        ledOn: false,
-        buttonPressed: false,
-      };
-      */
+     //};
     })
   };
 
