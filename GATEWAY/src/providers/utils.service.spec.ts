@@ -6,6 +6,9 @@ import { UtilsService, CommandObject, Device, VirtualTile }from './utils.service
 describe('utilsService', () => {
 
   let utilsService: UtilsService = null;
+  let comparisonCmdObj = new CommandObject;
+    comparisonCmdObj.name = "led";
+    comparisonCmdObj.properties = ["on","red"];
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -45,6 +48,13 @@ describe('utilsService', () => {
   });
 
   describe('getEventStringAsObject(eventString: string): CommandObject', () => {
+    //E.g, ´led,on,red´
+    it('should return an object conatining the eventName and the properties of the string parameter', () => {
+      let eventString = "led,on,red";
+      let cmdObj = utilsService.getEventStringAsObject(eventString);
+      expect(cmdObj).toEqual(comparisonCmdObj);
+    });
+    
     it('should return ´null´ if the string parameter does not contain any properties', () => {
       let cmdObj: CommandObject = utilsService.getEventStringAsObject('test');
       expect(cmdObj).toBeNull;
@@ -60,18 +70,34 @@ describe('utilsService', () => {
   });
 
   describe('verifyLoginCredentials(user: string, host: string, port: number): boolean', () => {
-    it('should return true when passing the test-user parameters', () => {
-      let username: string = 'testuser';
-      let host: string = 'testhost';
+    it('should return true when passing correctly formated test-user parameters', () => {
+      let username: string = 'testUser';
+      let host: string = '178.62.99.218';
       let port: number = 8080;
       expect(utilsService.verifyLoginCredentials(username, host, port)).toBeTruthy;
     });
-    it('should return false when passing the test-user parameters', () => {
-      let username: string = 'testuser';
-      let host: string = 988;
+
+    it('should return false when passing incorrectly formated username parameters', () => {
+      let username: string = '}][{€$£@}]';
+      let host: string = '178.62.99.218';
       let port: number = 8080;
-      expect(utilsService.verifyLoginCredentialsusername, host, port)).toBeFalsy;
+      expect(utilsService.verifyLoginCredentials(username, host, port)).toBeFalsy;
     });
+
+    it('should return false when passing incorrectly formated host parameters', () => {
+      let username: string = 'testUser';
+      let host: string = '1.1.1.1';
+      let port: number = 8080;
+      expect(utilsService.verifyLoginCredentials(username, host, port)).toBeFalsy;
+    });
+
+    xit('should return false when passing incorrectly formated port parameters', () => {
+      let username: string = 'testUser';
+      let host: string = '178.62.99.218';
+      let port: number = 8080;
+      expect(true).toBeTruthy;
+    });
+
   });
 
 });

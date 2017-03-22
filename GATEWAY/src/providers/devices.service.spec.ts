@@ -13,15 +13,7 @@ describe('devicesService:', () => {
   let devicesService: DevicesService = null;
   let deviceOne: Device = null;
   let deviceTwo: Device = null;
-  const convertedDevice: Device = {
-  "tileId": "TI SensorTag",
-  "name": "TI SensorTag",
-  "id": "01:23:45:67:89:AB",
-  "connected": false,
-  "loading": false,
-  "ledOn": false,
-  "buttonPressed": false
-}
+  //let convertedBle = new Promise<Device>() => {return new Device};
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -62,8 +54,15 @@ describe('devicesService:', () => {
   describe('convertBleDeviceToDevice(bleDevice: any): Promise<Device>', () => {
     xit('should convert a given BLE Device parameter to a Device', () => {
       const testBLE = bleDevice;
+      convertedBle.tileId = "TI SensorTag";
+      convertedBle.name = "TI SensorTag";
+      convertedBle.id = "01:23:45:67:89:AB";
+      convertedBle.connected = false;
+      convertedBle.loading = false;
+      convertedBle.ledOn = false;
+      convertedBle.buttonPressed = false;
       let returnedDevice = devicesService.convertBleDeviceToDevice(testBLE);
-      expect(returnedDevice).toEqual(jasmine.objectContaining(convertedDevice));
+      expect(returnedDevice).toEqual(convertedBle);
 
     });
 

@@ -7,7 +7,7 @@ import { Events } from 'ionic-angular';
  */
 export class CommandObject {
   name: string;
-  properties: string;
+  properties: string[];
 }
 
 /**
@@ -67,10 +67,16 @@ export class UtilsService {
   getEventStringAsObject = (eventString: string): CommandObject => {
     const params = eventString.split(',');
     if (params.length > 1){
+      let temp = new CommandObject;
+      temp.name = params[0];
+      temp.properties = Array.prototype.slice.call(params, 1);
+      return temp;
+      /*
       return {
           name: params[0],
           properties: Array.prototype.slice.call(params, 1),
       };
+      */
     }
     return null;
   };

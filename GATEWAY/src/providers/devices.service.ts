@@ -35,16 +35,30 @@ export class DevicesService {
    */
   convertBleDeviceToDevice = (bleDevice: any): Promise<Device>  => {
     return this.storage.get(bleDevice.name).then( name => {
-      return {
-        id: bleDevice.id,
-        tileId: bleDevice.name,
-        name: name !== null ? name : bleDevice.name,
-        connected: false,
-        loading: false,
-        ledOn: false,
-        buttonPressed: false,
-      };
+      let temp = new Device;
+      //return {
+        temp.id = bleDevice.id;
+        temp.tileId = bleDevice.name;
+        temp.name = name !== null ? name : bleDevice.name;
+        temp.connected = false;
+        temp.loading = false;
+        temp.ledOn = false;
+        temp.buttonPressed = false;
+        return temp;
+      //};
     }).catch(err => {
+      let temp = new Device;
+      //return {
+        temp.id = bleDevice.id;
+        temp.tileId = bleDevice.name;
+        temp.name = bleDevice.name;
+        temp.connected = false;
+        temp.loading = false;
+        temp.ledOn = false;
+        temp.buttonPressed = false;
+        return temp;
+      //};
+      /*
       return {
         id: bleDevice.id,
         tileId: bleDevice.name,
@@ -54,6 +68,7 @@ export class DevicesService {
         ledOn: false,
         buttonPressed: false,
       };
+      */
     })
   };
 
