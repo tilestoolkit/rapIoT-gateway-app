@@ -66,9 +66,11 @@ export class TilesApi {
     return this.http.get(url)
             .toPromise()
             .then(res => {
-              res.json();
+              return res.json();
             })
-            //.catch(err => alert('failed getting applications with error: ' + err));
+            .catch(err => {
+              //alert('failed getting applications with error: ' + err);
+            });
   };
 
   /** 

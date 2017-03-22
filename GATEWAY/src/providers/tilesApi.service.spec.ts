@@ -4,6 +4,7 @@ import { Storage } from '@ionic/storage';
 import { MockBackend } from '@angular/http/testing';
 import { Device } from './utils.service';
 import { TilesApi } from './tilesApi.service';
+import { StorageMock } from '../mocks';
 
 import * as mockTilesApplicationDetailsResponse from '../fixtures/applicationDetails.json';
 
@@ -23,8 +24,11 @@ describe('tilesAPI', () => {
           },
           deps: [MockBackend, BaseRequestOptions],
         },
+        {
+          provide: Storage,
+          useClass: StorageMock
+        },
         Device,
-        Storage,
         TilesApi,
       ],
     });
@@ -87,14 +91,14 @@ describe('tilesAPI', () => {
       inject([MockBackend], mockBackend => {
 
       const mockResponse = [
-        {
-          id: 211,
-          name: 'testitest'
-        },
-        {
-          id: 321,
-          name: 'test2'
-        }
+          {
+            id: 211,
+            name: 'testitest'
+          },
+          {
+            id: 321,
+            name: 'test2'
+          }
       ];
 
       mockBackend.connections.subscribe((connection) => {

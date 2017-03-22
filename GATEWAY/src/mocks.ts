@@ -61,3 +61,14 @@ export class MenuMock {
     });
   }
 }
+
+export class StorageMock {
+  public get(any: string): Promise<any>{
+    return new Promise((resolve: Function) => {
+      resolve();
+    });
+  }
+  public set(any: any, any2: any): any{
+    return true;
+  }
+}
