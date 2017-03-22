@@ -79,4 +79,20 @@ describe('tilesAPI', () => {
       expect(tilesApi.mqttPort).toEqual(8080);
     });
   });
+
+  describe('getAllApplications(): Promise<any>', () => {
+
+  });
+
+  describe('getApplicationDetails(applicationId: string): Promise<any>', () => {
+
+  });
+
+  describe('getApplicationTiles(applicationId: string): Promise<any>', () => {
+
+  });
+
+  describe('pairDeviceToVirtualTile(deviceId: string, virtualTileId: string, applicationId: string): void', () => {
+
+  });
 });
