@@ -1,9 +1,14 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
-import { MqttClient } from '../../providers/mqttClient';
-import { TilesApi } from '../../providers/tilesApi.service';
-import { UtilsService } from '../../providers/utils.service';
+import { ModalController } from 'ionic-angular';
 
+import { Storage } from '@ionic/storage';
+
+import { TilesApi } from '../../providers/tilesApi.service';
+import { Application, UtilsService } from '../../providers/utils.service';
+import { MqttClient } from '../../providers/mqttClient';
+
+import { ApplicationsPage } from '../applications/applications.ts';
 
 @Component({
   selector: 'page-login',
@@ -15,23 +20,44 @@ import { UtilsService } from '../../providers/utils.service';
     ],
 })
 export class LoginPage {
-  loginInfo = {};
+  loginInfo = {username: '', host: '', port: ''};
+  remember = false;
 
   constructor(
       public navCtrl: NavController,
       public navParams: NavParams,
       private mqttClient: MqttClient,
       private tilesApi: TilesApi,
-      private  utils: UtilsService,)
+      private  utils: UtilsService,
+      private storage: Storage,
+      public modalCtrl: ModalController)
   {}
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad LoginPage');
   }
 
-  loginForm(){
-
+  connectToServer = (user: string, host: string, port: number): void => {
+    if (this.utils.verifyLoginCredentials(user, host, port)) {
+      this.mqttClient.connect(user, host, port);
+      localStorage.setItem('user', user)
+    } else {
+      alert("Invalid login credentials.");
+    }
   }
+
+  rememberMe() {
+    this.remember = !this.remember;
+  }
+
+  loginForm() {
+    this.connectToServer(this.loginInfo.username, this.loginInfo.host, parseInt(this.loginInfo.port));
+
+    this.storage.set('loggedIn', this.remember);
+    this.navCtrl.pop();
+    // ApplicationsPage.setApplications();
+  }
+
     /*
     connectToServer = (user: string, host: string, port: number): void => {
         if (this.verifyLoginCredentials(user, host, port)) {
