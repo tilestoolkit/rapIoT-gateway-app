@@ -1,5 +1,5 @@
 import { inject, TestBed } from '@angular/core/testing';
-import { Http, BaseRequestOptions } from '@angular/http';
+import { Http, Response, ResponseOptions, BaseRequestOptions } from '@angular/http';
 import { Storage } from '@ionic/storage';
 import { MockBackend } from '@angular/http/testing';
 import { Device } from './utils.service';
@@ -89,7 +89,22 @@ describe('tilesAPI', () => {
   });
 
   describe('getApplicationTiles(applicationId: string): Promise<any>', () => {
+    it('should return an application',
+        inject([MockBackend], (mockBackend) => {
 
+        const mockResponse = {id: 0, name: 'test' };
+
+        mockBackend.connections.subscribe((connection) => {
+          connection.mockRespond(new Response(new ResponseOptions({
+            body: JSON.stringify(mockResponse)
+          })));
+        });
+
+        tilesApi.getApplicationDetails("0").then(application => {
+          expect(application.name).toEqual("test");
+        });
+
+    }));
   });
 
   describe('pairDeviceToVirtualTile(deviceId: string, virtualTileId: string, applicationId: string): void', () => {
