@@ -1,11 +1,17 @@
 import { inject, TestBed } from '@angular/core/testing';
 import { Storage } from '@ionic/storage';
 import { Events } from 'ionic-angular';
-import { UtilsService }from './utils.service';
+import { UtilsService, CommandObject, Device, VirtualTile }from './utils.service';
 
 describe('utilsService', () => {
 
   let utilsService: UtilsService = null;
+  let comparisonCmdObj = new CommandObject;
+    comparisonCmdObj.name = "led";
+    comparisonCmdObj.properties = ["on","red"];
+  let comparisonCmdObj2 = new CommandObject;
+    comparisonCmdObj2.name = "light";
+    comparisonCmdObj2.properties = ["on"];
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -37,33 +43,71 @@ describe('utilsService', () => {
       let returnArray: Uint8Array = utilsService.convertStringtoBytes(stringParameter);
       expect(returnArray).toEqual(comparisonArray);
     });
+
+    it('should return null if the method is not able to convert the string', () => {
+      let returnArray: Uint8Array = utilsService.convertStringtoBytes(null);
+      expect(returnArray).toBeNull;
+    });
   });
 
   describe('getEventStringAsObject(eventString: string): CommandObject', () => {
+    //E.g, ´led,on,red´
+    it('should return an object conatining the eventName and the properties of the string parameter', () => {
+      let eventString = "led,on,red";
+      let cmdObj = utilsService.getEventStringAsObject(eventString);
+      expect(cmdObj).toEqual(comparisonCmdObj);
+    });
 
+    it('should return ´null´ if the string parameter does not contain any properties', () => {
+      let cmdObj: CommandObject = utilsService.getEventStringAsObject('test');
+      expect(cmdObj).toBeNull;
+    });
   });
 
   describe('getCommandObjectAsString(cmdObj: CommandObject): string', () => {
-
+    it('should return the CommandObjects contents as a string', () => {
+      let testObj: CommandObject = comparisonCmdObj;
+      expect(utilsService.getCommandObjectAsString(testObj)).toEqual('led,on,red');
+    });
   });
 
   describe('extendObject(obj1: any, obj2: any): any', () => {
-
+    xit('should return the combined object of object 1 and 2 from extendObject', () => {
+      let obj1 = comparisonCmdObj;
+      let obj2 = comparisonCmdObj2;
+      expect(utilsService.extendObject(obj1,obj2)).toEqual('{ }');
+    });
   });
 
   describe('verifyLoginCredentials(user: string, host: string, port: number): boolean', () => {
-    it('should return true when passing the test-user parameters', () => {
-      let username: string = 'testuser';
-      let host: string = 'testhost';
+    it('should return true when passing correctly formated test-user parameters', () => {
+      let username: string = 'testUser';
+      let host: string = '178.62.99.218';
       let port: number = 8080;
       expect(utilsService.verifyLoginCredentials(username, host, port)).toBeTruthy;
     });
-    it('should return false when passing the test-user parameters', () => {
-      let username: string = 'testuser';
-      let host: string = '99999testhost999999999999999';
+
+    it('should return false when passing incorrectly formated username parameters', () => {
+      let username: string = '}][{€$£@}]';
+      let host: string = '178.62.99.218';
       let port: number = 8080;
-      expect(utilsService.verifyLoginCredentialsusername, host, port)).toBeFalsy;
+      expect(utilsService.verifyLoginCredentials(username, host, port)).toBeFalsy;
     });
+
+    it('should return false when passing incorrectly formated host parameters', () => {
+      let username: string = 'testUser';
+      let host: string = '1.1.1.1';
+      let port: number = 8080;
+      expect(utilsService.verifyLoginCredentials(username, host, port)).toBeFalsy;
+    });
+
+    xit('should return false when passing incorrectly formated port parameters', () => {
+      let username: string = 'testUser';
+      let host: string = '178.62.99.218';
+      let port: number = 8080;
+      expect(true).toBeTruthy;
+    });
+
   });
 
 });
