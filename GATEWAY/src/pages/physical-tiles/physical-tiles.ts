@@ -26,6 +26,7 @@ export class PhysicalTilesPage {
   bleScanner: Subscription;
   virtualTiles: VirtualTile[];
   applications: Object[];
+  
 
   constructor(public navCtrl: NavController,
               public alertCtrl: AlertController,
