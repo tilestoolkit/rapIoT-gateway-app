@@ -48,4 +48,28 @@ describe('bleService', () => {
     expect(bleService).toBeTruthy;
   });
 
+  describe('scanForDevices(virtualTiles: VirtualTile[]): void', () => {
+
+  });
+
+  describe('scanBLE(virtualTiles: VirtualTile[]): void', () => {
+
+  });
+
+  describe('connect(device: Device): void', () => {
+
+  });
+
+  describe('startDeviceNotification(device: Device): void', () => {
+
+  });
+
+  describe('disconnect(device: Device): void', () => {
+
+  });
+
+  describe('sendData(device: Device, dataString: string): void', () => {
+
+  });
+
 });
