@@ -17,13 +17,15 @@
   </ion-refresher>
 
   <ion-list>
-    <button (click)="goToApplicationView()">
-      Go to OtherPage
-    </button>
-
-    <button (click)="setApplications()">gettem</button>
-    <ion-item *ngFor="let app of applications" (click)="setActiveApp(app)">
-      <b>{{app._id}}</b>
+    <ion-title left style="padding-left: 0;">Applications</ion-title>
+    <button right class="titleBttn" ion-button small color="positive" (click)="showConnectMQTTPopup()">CONNECT</button>
+    <ion-item class="devices" color="light" *ngFor="let app of applications">
+      <div class="row row-center">
+        <div id="devName" class="col col-75">
+          <b>{{app._id}}</b><br>
+          <button right class="bttn" ion-button small color="positive" (click)="viewApplication(app)">View app</button>
+        </div>
+      </div>
     </ion-item>
   </ion-list>
 </ion-content>
