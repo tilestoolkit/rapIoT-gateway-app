@@ -81,7 +81,11 @@ describe('tilesAPI', () => {
   });
 
   describe('getAllApplications(): Promise<any>', () => {
-
+    it('should return all available applications registered for all users', () => {
+      console.log(tilesApi.getAllApplications);
+      console.log("Heider!");
+      expect(tilesApi.getAllApplications).not.toBe('');
+    });
   });
 
   describe('getApplicationDetails(applicationId: string): Promise<any>', () => {
