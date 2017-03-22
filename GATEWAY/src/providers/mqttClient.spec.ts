@@ -43,4 +43,32 @@ describe('mqttClient', () => {
     expect(mqttClient).toBeTruthy;
   });
 
+  describe('getDeviceSpecificTopic(deviceId: string, isEvent: boolean): string', () => {
+
+  });
+
+  describe('setMqttConnectionStatus(connected: boolean): void', () => {
+
+  });
+
+  describe('connect(user: string, host: string, port: number): void', () => {
+
+  });
+
+  describe('registerDevice(device: Device): void', () => {
+
+  });
+
+  describe('unregisterDevice(device: Device): void', () => {
+
+  });
+
+  describe('sendEvent(deviceId: string, event: CommandObject): void', () => {
+
+  });
+
+  describe('endConnection(deviceId: string, event: any): void', () => {
+
+  });
+
 });
