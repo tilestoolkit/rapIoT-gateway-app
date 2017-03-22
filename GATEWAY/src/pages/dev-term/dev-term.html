@@ -14,4 +14,9 @@
 
 
 <ion-content padding>
+  <ion-item class="devices" color="light" *ngFor="let message of messages">
+    <div class="row row-center">
+      <b>{{message}}</b><br>
+    </div>
+  </ion-item>
 </ion-content>

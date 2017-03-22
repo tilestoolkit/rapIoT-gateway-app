@@ -165,6 +165,7 @@ export class BleService {
                 break;
             }
             this.mqttClient.sendEvent(device.tileId, message);
+            this.events.publish('recievedEvent', device.tileId, message);
           }
         },
         err => {
