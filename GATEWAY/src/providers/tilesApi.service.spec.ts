@@ -81,10 +81,23 @@ describe('tilesAPI', () => {
   });
 
   describe('getAllApplications(): Promise<any>', () => {
-    it('should return all available applications registered for all users', () => {
-      console.log(tilesApi.getAllApplications);
-      console.log("Heider!");
-      expect(tilesApi.getAllApplications).not.toBe('');
+    it('should return all available applications registered for all users',
+      inject([MockBackend], mockBackend => {
+
+      const mockResponse = [{id: 211, name: 'testitest'}, { id: 321, name: 'test2'}];
+
+      mockBackend.connections.subscribe((connection) => {
+        connection.mockRespond(new Response(new ResponseOptions({
+          body: JSON.stringify(mockResponse)
+        })));
+      });
+
+      tilesApi.getAllApplications().then(application => {
+        expect(application.name).toEqual('testitest').then(application => {
+          expect(application.name).toEqual('test2');
+        });
+      });
+      });
     });
   });
 
