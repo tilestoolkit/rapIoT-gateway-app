@@ -7,6 +7,7 @@ import { TilesApi } from './tilesApi.service';
 import { StorageMock } from '../mocks';
 
 import * as mockTilesApplicationDetailsResponse from '../fixtures/applicationDetails.json';
+import * as mockTilesApplicationsResponse from '../fixtures/applications.json';
 
 describe('tilesAPI', () => {
 
@@ -90,16 +91,7 @@ describe('tilesAPI', () => {
     it('should return all available applications registered for all users',
       inject([MockBackend], mockBackend => {
 
-      const mockResponse = [
-          {
-            id: 211,
-            name: 'testitest'
-          },
-          {
-            id: 321,
-            name: 'test2'
-          }
-      ];
+      const mockResponse = mockTilesApplicationsResponse;
 
       mockBackend.connections.subscribe((connection) => {
         connection.mockRespond(new Response(new ResponseOptions({
@@ -108,8 +100,8 @@ describe('tilesAPI', () => {
       });
 
       tilesApi.getAllApplications().then(applications => {
-        expect(applications.length).toEqual(2);
-        expect(applications[1].name).toEqual('test2');
+        expect(applications.length).toEqual(3);
+        expect(applications[2]._id).toEqual('asd');
       });
     }));
   });
