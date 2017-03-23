@@ -1,0 +1,42 @@
+[
+    {
+        "_id":"test3",
+        "devEnvironment":"Cloud",
+        "user":"Andrea",
+        "environmentOnline":true,
+        "appOnline":false,
+        "port":8000,
+        "__v":3,
+        "virtualTiles":[
+            "58c120c5497df8602fedfbd3",
+            "58c1cd94497df8602fedfbd4",
+            "58d11ad02e8c3638898da048"
+        ]
+    },
+    {
+        "_id":"test_app2",
+        "devEnvironment":"Rule engine",
+        "user":"Anders",
+        "environmentOnline":false,
+        "appOnline":false,
+        "port":0,
+        "__v":2,
+        "iftttkey":"-MXtrSsdb-WQxdmbW-CuA",
+        "virtualTiles":[
+            "58c686ccd414193771c07a15",
+            "58c906047affef4de6c7cf2f"
+        ]
+    },
+    {
+        "_id":"asd",
+        "devEnvironment":"Rule engine",
+        "user":"Anders",
+        "environmentOnline":false,
+        "appOnline":false,
+        "port":0,
+        "__v":1,
+        "virtualTiles":[
+            "58c904057affef4de6c7cf2c"
+        ]
+    }
+]

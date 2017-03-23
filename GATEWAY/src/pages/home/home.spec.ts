@@ -4,8 +4,9 @@ import { TestBed, ComponentFixture, async } from '@angular/core/testing';
 import { IonicModule, NavController } from 'ionic-angular';
 import { Storage } from '@ionic/storage';
 import { UtilsService }from '../../providers/utils.service';
+import { StorageMock } from '../../mocks';
 
-let comp: HomePage;
+let homePage: HomePage;
 let fixture: ComponentFixture<HomePage>;
  
 describe('HomePage', () => {
@@ -17,7 +18,10 @@ describe('HomePage', () => {
                 HomePage,
             ],
             providers: [
-                Storage,
+                {
+                provide: Storage,
+                useClass: StorageMock
+                },
                 NavController,
                 UtilsService,
             ],
@@ -29,18 +33,53 @@ describe('HomePage', () => {
  
     beforeEach(() => {
         fixture = TestBed.createComponent(HomePage);
-        comp    = fixture.componentInstance;
+        homePage    = fixture.componentInstance;
     });
  
     afterEach(() => {
         fixture.destroy();
-        comp = null;
+        homePage = null;
     });
  
     it('is created', () => {
         expect(fixture).toBeTruthy();
-        expect(comp).toBeTruthy();
+        expect(homePage).toBeTruthy();
     });
 
+    describe('setDevices(): void', () => {
+
+    });
+
+    describe('setVirtualTiles(): void', () => {
+
+    });
+
+    describe('scanForBLEDevices(): void', () => {
+
+    });
+
+    describe('connectToServer(user: string, host: string, port: number): void', () => {
+
+    });
+
+    describe('refreshDevices(refresher): void', () => {
+
+    });
+
+    describe('identifyDevice(device: Device): void', () => {
+
+    });
+
+    describe('showMQTTPopup()', () => {
+
+    });
+
+    describe('changeNamePop(device: Device): void', () => {
+
+    });
+
+    describe('pairTilePopUp(virtualTile: VirtualTile): void', () => {
+
+    });
 
 });

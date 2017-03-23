@@ -8,6 +8,7 @@ import { MqttClient } from './mqttClient';
 import { BleService } from './ble.service';
 import { DevicesService }from './devices.service';
 import { UtilsService }from './utils.service';
+import { StorageMock } from '../mocks';
 
 describe('bleService', () => {
 
@@ -17,7 +18,10 @@ describe('bleService', () => {
     TestBed.configureTestingModule({
       providers: [
         Events,
-        Storage,
+        {
+          provide: Storage,
+          useClass: StorageMock
+        },
         MockBackend,
         BaseRequestOptions,
         {
@@ -40,8 +44,36 @@ describe('bleService', () => {
     bleService = temp;
   }));
 
+  afterEach(() => {
+    bleService = null;
+  });
+
   it('should create an instance of the BleService', () => {
     expect(bleService).toBeTruthy;
+  });
+
+  describe('scanForDevices(virtualTiles: VirtualTile[]): void', () => {
+
+  });
+
+  describe('scanBLE(virtualTiles: VirtualTile[]): void', () => {
+
+  });
+
+  describe('connect(device: Device): void', () => {
+
+  });
+
+  describe('startDeviceNotification(device: Device): void', () => {
+
+  });
+
+  describe('disconnect(device: Device): void', () => {
+
+  });
+
+  describe('sendData(device: Device, dataString: string): void', () => {
+
   });
 
 });

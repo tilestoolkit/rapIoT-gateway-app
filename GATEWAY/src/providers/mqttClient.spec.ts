@@ -6,6 +6,7 @@ import { Storage } from '@ionic/storage';
 import { TilesApi } from './tilesApi.service';
 import { MqttClient } from './mqttClient';
 import { BleService } from './ble.service';
+import { StorageMock } from '../mocks';
 
 describe('mqttClient', () => {
 
@@ -17,7 +18,10 @@ describe('mqttClient', () => {
         TilesApi,
         MqttClient,
         Events,
-        Storage,
+        {
+          provide: Storage,
+          useClass: StorageMock
+        },
         MockBackend,
         BaseRequestOptions,
         {
@@ -35,8 +39,40 @@ describe('mqttClient', () => {
     mqttClient = temp;
   }));
 
+  afterEach(() => {
+    mqttClient = null;
+  });
+
   it('should create an instance of the MqttClient', () => {
     expect(mqttClient).toBeTruthy;
+  });
+
+  describe('getDeviceSpecificTopic(deviceId: string, isEvent: boolean): string', () => {
+
+  });
+
+  describe('setMqttConnectionStatus(connected: boolean): void', () => {
+
+  });
+
+  describe('connect(user: string, host: string, port: number): void', () => {
+
+  });
+
+  describe('registerDevice(device: Device): void', () => {
+
+  });
+
+  describe('unregisterDevice(device: Device): void', () => {
+
+  });
+
+  describe('sendEvent(deviceId: string, event: CommandObject): void', () => {
+
+  });
+
+  describe('endConnection(deviceId: string, event: any): void', () => {
+
   });
 
 });
