@@ -146,7 +146,7 @@ describe('tilesAPI', () => {
 
   describe('pairDeviceToVirtualTile(deviceId: string, virtualTileId: string, applicationId: string): void', () => {
     it('should insert new blog entries', inject([MockBackend], (mockBackend) => {
-      
+
       mockBackend.connections.subscribe((connection: MockConnection) => {
         // is it the correct REST type for an insert? (POST)
         expect(connection.request.method).toBe(RequestMethod.Post);
