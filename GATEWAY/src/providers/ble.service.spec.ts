@@ -1,4 +1,4 @@
-import { inject, TestBed } from '@angular/core/testing';
+import { inject, TestBed, async } from '@angular/core/testing';
 import { Http, BaseRequestOptions } from '@angular/http';
 import { MockBackend } from '@angular/http/testing';
 import { Events } from 'ionic-angular';
@@ -13,6 +13,7 @@ import { BLE } from 'ionic-native';
 import { Observable } from 'rxjs';
 
 import * as bleReturnValue from '../fixtures/bleDevice.json';
+import * as virtualTile from '../fixtures/virtualTIle.json';
 
 describe('bleService', () => {
 
@@ -58,9 +59,9 @@ describe('bleService', () => {
   });
 
   describe('scanForDevices(virtualTiles: VirtualTile[]): void', () => {
-    xit('should check if BLE is enabled, scan for BLE-devices and have the tilesApi convert and store them', () => {
-      spyOn(bleService, 'scanBLE').and.returnValue(new Promise((resolve) => {resolve(bleReturnValue); }));
-      bleService.scanForDevices([]);
+    it('should check if BLE is enabled, scan for BLE-devices and have the tilesApi convert and store them', () => {
+      spyOn(bleService, 'scanBLE').and.returnValue(Observable.of(bleReturnValue));
+      bleService.scanForDevices([virtualTile]);
       expect(bleService['scanBLE']).toHaveBeenCalled;
     });
   });
@@ -68,7 +69,7 @@ describe('bleService', () => {
   describe('scanBLE(virtualTiles: VirtualTile[]): void', () => {
     it('should scan for BLE-devices and have the tilesApi convert and store them', () => {
       spyOn(BLE, 'scan').and.returnValue(Observable.of(bleReturnValue));
-      bleService.scanBLE([]);
+      bleService.scanBLE([virtualTile]);
       expect(BLE['scan']).toHaveBeenCalled;
     });
   });
