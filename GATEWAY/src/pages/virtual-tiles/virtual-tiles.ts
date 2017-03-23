@@ -47,16 +47,9 @@ export class VirtualTilesPage {
    * Set the virtual tiles equal to the ones stores for the app
    */
   setVirtualTiles = (): void => {
-    if (this.activeApp !== undefined){
-      this.tilesApi.getApplicationTiles(this.activeApp._id).then(res => {
-        this.virtualTiles = res;
-      });
-    }
-    else { //TODO: remove this, for debugging only
-      this.tilesApi.getApplicationTiles('test3').then(res => {
-        this.virtualTiles = res;
-      });
-    }
+    this.tilesApi.getApplicationTiles(this.activeApp._id).then(res => {
+      this.virtualTiles = res;
+    });
   }
 
   /**
