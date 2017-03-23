@@ -14,6 +14,7 @@ import { Observable } from 'rxjs';
 
 import * as bleReturnValue from '../fixtures/bleDevice.json';
 import * as virtualTile from '../fixtures/virtualTIle.json';
+import * as testDevice from '../fixtures/tilesDevice.json';
 
 describe('bleService', () => {
 
@@ -75,7 +76,11 @@ describe('bleService', () => {
   });
 
   describe('connect(device: Device): void', () => {
-
+    it('should connect successfully to a device after being called with a Device argument', () => {
+      spyOn(BLE, 'connect').and.returnValue(Observable.of(bleReturnValue));
+      bleService.connect(testDevice);
+      expect(BLE['connect']).toHaveBeenCalled;
+    });
   });
 
   describe('startDeviceNotification(device: Device): void', () => {
