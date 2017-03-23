@@ -6,7 +6,7 @@ import { BleService } from '../../providers/ble.service';
 import { DevicesService } from '../../providers/devices.service';
 import { MqttClient } from '../../providers/mqttClient';
 import { TilesApi } from '../../providers/tilesApi.service';
-import { CommandObject, Device, UtilsService, VirtualTile } from '../../providers/utils.service';
+import { Application, CommandObject, Device, UtilsService, VirtualTile } from '../../providers/utils.service';
 
 
 @Component({
@@ -25,7 +25,8 @@ export class HomePage {
   statusMsg: string;
   bleScanner: Subscription;
   virtualTiles: VirtualTile[];
-  applications: Object[];
+  applications: Application[];
+  activeApp: Application;
 
   constructor(public alertCtrl: AlertController,
               public navCtrl: NavController,
@@ -39,7 +40,8 @@ export class HomePage {
               private utils: UtilsService) {
   	this.setDevices();
     this.setVirtualTiles();
-  	this.serverConnectStatusMsg = 'Click to connect to server';
+    this.serverConnectStatusMsg = 'Click to connect to server';
+
 
   	// Subscriptions to events that can be emitted from other places in the code
     this.events.subscribe('serverConnected', () => {
@@ -104,11 +106,35 @@ export class HomePage {
    */
   setVirtualTiles = (): void => {
     //TODO: Use the appname for the chosen app when implemented
-    this.tilesApi.getApplicationTiles('test3').then(res => {
-      this.virtualTiles = res; 
-      alert('tiles: ' + JSON.stringify(this.virtualTiles));
-    });
+    if (this.activeApp !== undefined){
+      this.tilesApi.getApplicationTiles(this.activeApp._id).then(res => {
+        this.virtualTiles = res; 
+      });
+    }
+    else {
+      this.tilesApi.getApplicationTiles('test3').then(res => {
+        this.virtualTiles = res; 
+      });
+    }
   }
+
+  /**
+   * Set the list of applications from the api
+   */
+  setApplications = (): void => {
+    this.tilesApi.getAllApplications().then( data => {
+      this.applications = data;
+    }).catch (err => console.log(err));
+  }
+
+  /**
+   * Set the active application
+   * @param {Application} application - a tiles application
+   */
+  setActiveApp = (application: Application): void => {
+    this.activeApp = application;
+    this.setVirtualTiles();
+  } 
 
   /**
    * Use ble to discover new devices
@@ -135,7 +161,7 @@ export class HomePage {
 	}
 
   /**
-   * Called when the refresher is triggered by pulling down on the view of 
+   * Called when the refresher is triggered by pulling down on the view of
 	 * the devices. TODO: Not sure if needed when refresh is done every 30s anyways.
 	 */
 	refreshDevices = (refresher): void => {
@@ -190,9 +216,7 @@ export class HomePage {
 					text: 'Connect',
 					handler: data => {
 						this.connectToServer(data.username, data.host, parseInt(data.port));
-            this.tilesApi.getAllApplications().then( data => {
-              this.applications = data;
-            });
+            this.setApplications();
 					},
 				},
 			],

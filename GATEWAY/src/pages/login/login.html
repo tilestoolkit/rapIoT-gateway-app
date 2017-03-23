@@ -1,0 +1,29 @@
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>Login</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+<ion-content padding>
+  <form (ngSubmit)="loginForm()" #registerForm="ngForm">
+    <ion-item>
+      <ion-label>Username</ion-label>
+      <ion-input type="text" [(ngModel)]="loginInfo.username" name="username" placeholder='andrea'></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label>Host</ion-label>
+      <ion-input type="text" [(ngModel)]="loginInfo.host" name="host" placeholder='172.68.99.218'></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label>Port</ion-label>
+      <ion-input type="number" [(ngModel)]="loginInfo.port" name="port" placeholder='8080'></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label>Remember me</ion-label>
+      <ion-checkbox (click)="rememberMe()" checked='false'></ion-checkbox>
+    </ion-item>
+    <button ion-button type="submit" block>Log In!</button>
+  </form>
+</ion-content>
