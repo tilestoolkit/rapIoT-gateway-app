@@ -13,7 +13,7 @@ import { BLE } from 'ionic-native';
 import { Observable } from 'rxjs';
 
 import * as bleReturnValue from '../fixtures/bleDevice.json';
-
+import * as testDevice from '../fixtures/tilesDevice.json';
 describe('bleService', () => {
 
   let bleService: BleService = null;
@@ -58,7 +58,7 @@ describe('bleService', () => {
   });
 
   describe('scanForDevices(virtualTiles: VirtualTile[]): void', () => {
-    xit('should check if BLE is enabled, scan for BLE-devices and have the tilesApi convert and store them', () => {
+    it('should check if BLE is enabled, scan for BLE-devices and have the tilesApi convert and store them', () => {
       spyOn(bleService, 'scanBLE').and.returnValue(new Promise((resolve) => {resolve(bleReturnValue); }));
       bleService.scanForDevices([]);
       expect(bleService['scanBLE']).toHaveBeenCalled;
@@ -74,7 +74,11 @@ describe('bleService', () => {
   });
 
   describe('connect(device: Device): void', () => {
-
+    it('should connect successfully to a device after being called with a Device argument', () => {
+      spyOn(BLE, 'connect').and.returnValue(Observable.of(bleReturnValue));
+      bleService.connect(testDevice);
+      expect(BLE['connect']).toHaveBeenCalled;
+    });
   });
 
   describe('startDeviceNotification(device: Device): void', () => {
