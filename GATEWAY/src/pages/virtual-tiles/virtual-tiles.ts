@@ -19,6 +19,7 @@ export class VirtualTilesPage {
 	applicationTitle: string;
   virtualTiles: VirtualTile[];
   activeApp: Application;
+  application_id = null;
 
   constructor(public alertCtrl: AlertController,
               public navCtrl: NavController, 
@@ -27,10 +28,10 @@ export class VirtualTilesPage {
               private utils: UtilsService,
               private tilesApi: TilesApi,) {
   	// A id variable is stored in the navParams, and .get set this value to the local variable id
-  	let id = navParams.get('_id');
+  	this.application_id = navParams.get('_id');
 
   	// Sets the title of the page (found in virtual-tiles.html) to id, capitalized. 
-  	this.applicationTitle = utils.capitalize(id);
+  	this.applicationTitle = utils.capitalize(this.application_id);
     this.setDevices();
     this.setVirtualTiles();
   }
@@ -46,17 +47,9 @@ export class VirtualTilesPage {
    * Set the virtual tiles equal to the ones stores for the app
    */
   setVirtualTiles = (): void => {
-    //TODO: Use the appname for the chosen app when implemented
-    if (this.activeApp !== undefined){
-      this.tilesApi.getApplicationTiles(this.activeApp._id).then(res => {
+    this.tilesApi.getApplicationTiles(this.application_id).then(res => {
         this.virtualTiles = res;
       });
-    }
-    else {
-      this.tilesApi.getApplicationTiles('test3').then(res => {
-        this.virtualTiles = res;
-      });
-    }
   }
 
   /**
@@ -71,6 +64,7 @@ export class VirtualTilesPage {
     this.alertCtrl.create({
       title: 'Pair to physical tile',
       inputs: deviceRadioButtons,
+
       buttons: [{
           text: 'Cancel',
           role: 'cancel',
@@ -78,7 +72,7 @@ export class VirtualTilesPage {
         {
           text: 'Pair',
           handler: data => {
-            this.tilesApi.pairDeviceToVirualTile(data, virtualTile._id, 'test3');
+            this.tilesApi.pairDeviceToVirualTile(data, virtualTile._id, this.application_id);
           },
       }],
     }).present();
