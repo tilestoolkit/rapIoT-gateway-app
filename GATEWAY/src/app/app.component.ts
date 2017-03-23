@@ -1,12 +1,12 @@
-import { Component, Injectable, Inject } from '@angular/core';
+import { Component } from '@angular/core';
 import { Events, Platform } from 'ionic-angular';
-import { AppVersion, StatusBar, Splashscreen } from 'ionic-native';
+import { StatusBar, Splashscreen } from 'ionic-native';
 import { TabsPage } from '../pages/tabs/tabs';
 
 
 import { BleService } from '../providers/ble.service';
 import { DevicesService } from '../providers/devices.service';
-import { Application, CommandObject, Device, UtilsService } from '../providers/utils.service';
+import { CommandObject, Device, UtilsService } from '../providers/utils.service';
 
 
 @Component({
@@ -30,6 +30,14 @@ export class Tiles {
     platform.ready().then(() => {
       StatusBar.styleDefault();
       Splashscreen.hide();
+    });
+
+    this.events.subscribe('serverConnected', () => {
+      this.bleService.startBLEScanner();
+    });
+
+    this.events.subscribe('offline', () => {
+      this.bleService.stopBLEScanner();
     });
 
     this.events.subscribe('command', (deviceId: string, command: CommandObject) => {

@@ -1,11 +1,9 @@
 import { Component } from '@angular/core';
 import { AlertController, Events, NavController, Platform } from 'ionic-angular';
-import { Observable, Subscription } from 'rxjs';
-import { Http } from '@angular/http';
 import { BleService } from '../../providers/ble.service';
 import { DevicesService } from '../../providers/devices.service';
 import { MqttClient } from '../../providers/mqttClient';
-import { Device, UtilsService, VirtualTile } from '../../providers/utils.service';
+import { Device } from '../../providers/utils.service';
 
 
 @Component({
@@ -15,7 +13,6 @@ import { Device, UtilsService, VirtualTile } from '../../providers/utils.service
     BleService,
     DevicesService,
     MqttClient,
-    UtilsService,
   ],
 })
 export class PhysicalTilesPage {
@@ -27,23 +24,14 @@ export class PhysicalTilesPage {
               public alertCtrl: AlertController,
               public platform: Platform,
               private events: Events,
-              private http: Http,
               private bleService: BleService,
               private devicesService: DevicesService,
-              private mqttClient: MqttClient,
-              private utils: UtilsService) {
+              private mqttClient: MqttClient,) {
     this.setDevices();
-
-    this.events.subscribe('serverConnected', () => {
-      this.serverConnectStatusMsg = 'Connected to server';
-      // Scans for new devices once, and then every 30 seconds
-      this.bleService.startBLEScanner();
-    });
 
     this.events.subscribe('offline', () => {
       this.mqttClient.setMqttConnectionStatus(false);
       this.serverConnectStatusMsg = 'Client gone offline';
-      this.bleService.stopBLEScanner();
     });
 
     this.events.subscribe('updateDevices', () => {
