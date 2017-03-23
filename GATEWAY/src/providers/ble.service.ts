@@ -37,6 +37,7 @@ export class BleService {
    * Start the BLE scanner making it scan every 30s
    */
   startBLEScanner = (): void => {
+    this.scanForDevices([]);
     this.bleScanner = Observable.interval(30000).subscribe(res => {
       this.scanForDevices([]);
     });
