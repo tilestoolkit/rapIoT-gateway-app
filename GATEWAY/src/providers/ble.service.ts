@@ -152,6 +152,10 @@ export class BleService {
           });
   };
 
+  /**
+   * Connect and rename a device
+   * @param {Device} device - the target device
+   */
   locate = (device: Device): void => {
     device.loading = true;
     //TODO: unsubscribe at some point ?
