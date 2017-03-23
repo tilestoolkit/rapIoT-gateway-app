@@ -9,6 +9,10 @@ import { BleService } from './ble.service';
 import { DevicesService }from './devices.service';
 import { UtilsService }from './utils.service';
 import { StorageMock } from '../mocks';
+import { BLE } from 'ionic-native';
+import { Observable } from 'rxjs';
+
+import * as bleReturnValue from '../fixtures/bleDevice.json';
 
 describe('bleService', () => {
 
@@ -36,6 +40,7 @@ describe('bleService', () => {
         TilesApi,
         MqttClient,
         BleService,
+        BLE,
       ],
     });
   });
@@ -53,11 +58,19 @@ describe('bleService', () => {
   });
 
   describe('scanForDevices(virtualTiles: VirtualTile[]): void', () => {
-
+    xit('should check if BLE is enabled, scan for BLE-devices and have the tilesApi convert and store them', () => {
+      spyOn(bleService, 'scanBLE').and.returnValue(new Promise((resolve) => {resolve(bleReturnValue); }));
+      bleService.scanForDevices([]);
+      expect(bleService['scanBLE']).toHaveBeenCalled;
+    });
   });
 
   describe('scanBLE(virtualTiles: VirtualTile[]): void', () => {
-
+    it('should scan for BLE-devices and have the tilesApi convert and store them', () => {
+      spyOn(BLE, 'scan').and.returnValue(Observable.of(bleReturnValue));
+      bleService.scanBLE([]);
+      expect(BLE['scan']).toHaveBeenCalled;
+    });
   });
 
   describe('connect(device: Device): void', () => {
