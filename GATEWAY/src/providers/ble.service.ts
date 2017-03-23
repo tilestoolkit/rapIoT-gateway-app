@@ -152,6 +152,40 @@ export class BleService {
           });
   };
 
+  locate = (device: Device): void => {
+    device.loading = true;
+    //TODO: unsubscribe at some point ?
+    BLE.connect(device.id)
+        .subscribe(
+          res => {
+            // Setting information about the device
+             device.ledOn = false;
+            device.connected = true;
+            device.buttonPressed = false;
+            //this.tilesApi.loadEventMappings(device.tileId);
+            this.mqttClient.registerDevice(device);
+            this.startDeviceNotification(device);
+            if (device.name in tileNames){
+              device.name = tileNames[device.name];
+            }
+
+            this.sendData(device, 'led,on,red');
+            setTimeout(()=> (this.sendData(device, 'led,off')), 3000);
+            device.loading = false;
+          },
+          err => {
+            device.connected = false;
+            device.loading = false;
+            this.devicesService.clearDisconnectedDevices();
+            this.events.publish('updateDevices');
+            this.disconnect(device);
+            //alert('Lost connection to ' + device.name)
+          },
+          () => {
+            alert('Connection attempt completed')
+          });
+  };
+
   /**
    * Start getting notifications of events from a device
    * @param {Device} device - the id from the target device
