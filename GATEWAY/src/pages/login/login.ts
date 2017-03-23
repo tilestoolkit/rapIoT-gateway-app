@@ -40,7 +40,9 @@ export class LoginPage {
   connectToServer = (user: string, host: string, port: number): void => {
     if (this.utils.verifyLoginCredentials(user, host, port)) {
       this.mqttClient.connect(user, host, port);
-      localStorage.setItem('user', user)
+      localStorage.setItem('user', user);
+      this.storage.set('loggedIn', this.remember);
+      this.navCtrl.pop();
     } else {
       alert("Invalid login credentials.");
     }
@@ -52,9 +54,6 @@ export class LoginPage {
 
   loginForm() {
     this.connectToServer(this.loginInfo.username, this.loginInfo.host, parseInt(this.loginInfo.port));
-
-    this.storage.set('loggedIn', this.remember);
-    this.navCtrl.pop();
     // ApplicationsPage.setApplications();
   }
 

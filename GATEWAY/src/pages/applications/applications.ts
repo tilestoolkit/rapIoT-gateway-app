@@ -10,7 +10,6 @@ import { Application, UtilsService } from '../../providers/utils.service';
 import { MqttClient } from '../../providers/mqttClient';
 
 import { Storage } from '@ionic/storage';
-
 /*
   Generated class for the Applications page.
 
@@ -27,8 +26,8 @@ import { Storage } from '@ionic/storage';
 export class ApplicationsPage {
   applications: Application[];
 
-  constructor(public navCtrl: NavController, 
-              public navParams: NavParams, 
+  constructor(public navCtrl: NavController,
+              public navParams: NavParams,
               public modalCtrl: ModalController,
               public alertCtrl: AlertController,
               private mqttClient: MqttClient,
