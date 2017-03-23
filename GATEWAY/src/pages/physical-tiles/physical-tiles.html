@@ -34,7 +34,7 @@
             <button class="bttn" ion-button small color="positive" (click)="devicesService.resetDeviceName(device)">RESET NAME</button>
           </div>
           <div class="col">
-            <button class="bttn" ion-button small color="positive" (click)="identifyDevice(device)">LOCATE</button>
+            <button class="bttn" ion-button small color="positive" (click)="bleService.locate(device)">LOCATE</button>
           </div>
         </div>
       </ion-list>
