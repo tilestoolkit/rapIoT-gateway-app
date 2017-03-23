@@ -42,11 +42,14 @@ export class ApplicationsPage {
   ionViewDidLoad() {
     this.storage.get('loggedIn').then((val) => {
       if (val == null || val == false) {
-        this.presentModal();
+        this.presentLoginModal();
       }
     });
   }
 
+  /**
+   * Set the list of applications from the api
+   */
   setApplications = (): void => {
     this.tilesApi.getAllApplications().then( data => {
       this.refreshed = false;
@@ -54,6 +57,9 @@ export class ApplicationsPage {
     }).catch (err => console.log(err));
   }
 
+  /**
+   * Called when the refresher is triggered by pulling down on the view of
+   */
   refreshApplications = (refresher): void => {
     this.setApplications();
     //Makes the refresher run for 2 secs
@@ -62,18 +68,29 @@ export class ApplicationsPage {
     }, 1250);
   }
 
-  presentModal() {
+  /**
+  *  Pushes the modal on the viewStack.
+  */
+  presentLoginModal() {
     let modal = this.modalCtrl.create(LoginPage);
     modal.present();
   }
 
+  /**
+  *  Logout - empties the list of applications, changes the refreshstate 
+  * and presents login window.
+  */
   logout = () => {
     this.storage.set('loggedIn', false);
     this.applications = []
     this.refreshed = true;
-    this.presentModal();
+    this.presentLoginModal();
   }
 
+  /**
+  *  Pushes the virtualTilesPage on viewStack and passes the pressed
+  * application ID.
+  */
   viewApplication = (application: Application): void => {
     //push another page onto the history stack
     //causing the nav controller to animate the new page in
