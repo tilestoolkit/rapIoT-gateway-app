@@ -2,6 +2,7 @@
 import { Injectable } from '@angular/core';
 import { Events } from 'ionic-angular';
 import { BLE } from 'ionic-native';
+import { Observable, Subscription } from 'rxjs';
 import 'rxjs/add/operator/toPromise';
 
 import { DevicesService }from './devices.service';
@@ -14,6 +15,7 @@ let tileNames = {};
 
 @Injectable()
 export class BleService {
+  bleScanner: Subscription;
 	rfduino = {
     serviceUUID: '2220',
     receiveCharacteristicUUID: '2221',
@@ -32,9 +34,28 @@ export class BleService {
   }
 
   /**
+   * Start the BLE scanner making it scan every 30s
+   */
+  startBLEScanner = (): void => {
+    this.bleScanner = Observable.interval(30000).subscribe(res => {
+      this.scanForDevices([]);
+    });
+  }
+
+  /**
+   * Stop the BLE scanner
+   */
+  stopBLEScanner = (): void => {
+    if (this.bleScanner !== undefined) {
+      this.bleScanner.unsubscribe();
+    }
+  }
+
+  /**
    * Checking if bluetooth is enabled and enable on android if not
    */
   scanForDevices = (virtualTiles: VirtualTile[]): void => {
+    this.devicesService.clearDisconnectedDevices();
     BLE.isEnabled()
 		  		  .then( res => {
 		   		 		this.scanBLE(virtualTiles);

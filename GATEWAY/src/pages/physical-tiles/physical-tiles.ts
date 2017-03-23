@@ -22,9 +22,6 @@ export class PhysicalTilesPage {
   devices: Device[];
   serverConnectStatusMsg: string;
   statusMsg: string;
-  bleScanner: Subscription;
-  virtualTiles: VirtualTile[];
-  applications: Object[];
 
   constructor(public navCtrl: NavController,
               public alertCtrl: AlertController,
@@ -40,18 +37,13 @@ export class PhysicalTilesPage {
     this.events.subscribe('serverConnected', () => {
       this.serverConnectStatusMsg = 'Connected to server';
       // Scans for new devices once, and then every 30 seconds
-      this.scanForNewBLEDevices();
-      this.bleScanner = Observable.interval(30000).subscribe(res => {
-        this.scanForNewBLEDevices();
-      });
+      this.bleService.startBLEScanner();
     });
 
     this.events.subscribe('offline', () => {
       this.mqttClient.setMqttConnectionStatus(false);
       this.serverConnectStatusMsg = 'Client gone offline';
-      if (this.bleScanner !== undefined) {
-        this.bleScanner.unsubscribe();
-      }
+      this.bleService.stopBLEScanner();
     });
 
     this.events.subscribe('updateDevices', () => {
@@ -67,22 +59,12 @@ export class PhysicalTilesPage {
   }
 
   /**
-   * Use ble to discover new devices
-   */
-  scanForNewBLEDevices = (): void => {
-    this.statusMsg = 'Searching for devices...';
-    this.devicesService.clearDisconnectedDevices();
-    this.bleService.scanForDevices(this.virtualTiles);
-    this.setDevices();
-  }
-
-  /**
    * Called when the refresher is triggered by pulling down on the view of
    * the devices. TODO: Not sure if needed when refresh is done every 30s anyways.
    */
   refreshDevices = (refresher): void => {
     console.log('Scanning for more devices...');
-    this.scanForNewBLEDevices();
+    this.bleService.scanForDevices([]);
     //Makes the refresher run for 2 secs
     setTimeout(() => {
       refresher.complete();
