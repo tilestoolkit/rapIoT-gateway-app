@@ -38,7 +38,6 @@ export class ApplicationsPage {
 
   ionViewDidLoad() {
     this.storage.get('loggedIn').then((val) => {
-      console.log(val);
       if (val == null || val == false) {
         this.presentModal();
       }
@@ -53,16 +52,14 @@ export class ApplicationsPage {
   }
 
   refreshApplications = (refresher): void => {
-    console.log('Scanning for more devices...');
     this.setApplications();
     //Makes the refresher run for 2 secs
     setTimeout(() => {
       refresher.complete();
-    }, 1500);
+    }, 1250);
   }
 
   presentModal() {
-    console.log("presentModal")
     let modal = this.modalCtrl.create(LoginPage);
     modal.present();
   }
