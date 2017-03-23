@@ -39,7 +39,7 @@ export class DevicesService {
       //return {
         temp.id = bleDevice.id;
         temp.tileId = bleDevice.name;
-        temp.name = name !== null ? name : bleDevice.name;
+        temp.name = (name !== null && name !== undefined) ? name : bleDevice.name;
         temp.connected = false;
         temp.loading = false;
         temp.ledOn = false;

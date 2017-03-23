@@ -8,6 +8,7 @@ import { MqttClient } from './mqttClient';
 import { BleService } from './ble.service';
 import { DevicesService }from './devices.service';
 import { UtilsService }from './utils.service';
+import { StorageMock } from '../mocks';
 
 describe('bleService', () => {
 
@@ -17,7 +18,10 @@ describe('bleService', () => {
     TestBed.configureTestingModule({
       providers: [
         Events,
-        Storage,
+        {
+          provide: Storage,
+          useClass: StorageMock
+        },
         MockBackend,
         BaseRequestOptions,
         {

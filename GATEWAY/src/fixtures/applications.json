@@ -38,17 +38,5 @@
         "virtualTiles":[
             "58c904057affef4de6c7cf2c"
         ]
-    },
-    {
-        "_id":"test_workshop",
-        "devEnvironment":"Cloud",
-        "user":"Simone",
-        "environmentOnline":true,
-        "appOnline":false,
-        "port":8001,
-        "__v":0,
-        "virtualTiles":[
-
-        ]
     }
 ]

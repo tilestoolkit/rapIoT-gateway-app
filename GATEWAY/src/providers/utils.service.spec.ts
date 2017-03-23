@@ -2,6 +2,7 @@ import { inject, TestBed } from '@angular/core/testing';
 import { Storage } from '@ionic/storage';
 import { Events } from 'ionic-angular';
 import { UtilsService, CommandObject, Device, VirtualTile }from './utils.service';
+import { StorageMock } from '../mocks';
 
 describe('utilsService', () => {
 
@@ -17,7 +18,10 @@ describe('utilsService', () => {
     TestBed.configureTestingModule({
       providers: [
         Events,
-        Storage,
+        {
+          provide: Storage,
+          useClass: StorageMock
+        },
         UtilsService,
       ],
     });

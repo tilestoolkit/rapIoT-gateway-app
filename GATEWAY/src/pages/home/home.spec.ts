@@ -4,6 +4,7 @@ import { TestBed, ComponentFixture, async } from '@angular/core/testing';
 import { IonicModule, NavController } from 'ionic-angular';
 import { Storage } from '@ionic/storage';
 import { UtilsService }from '../../providers/utils.service';
+import { StorageMock } from '../../mocks';
 
 let homePage: HomePage;
 let fixture: ComponentFixture<HomePage>;
@@ -17,7 +18,10 @@ describe('HomePage', () => {
                 HomePage,
             ],
             providers: [
-                Storage,
+                {
+                provide: Storage,
+                useClass: StorageMock
+                },
                 NavController,
                 UtilsService,
             ],

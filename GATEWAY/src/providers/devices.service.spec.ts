@@ -3,6 +3,7 @@ import { Storage } from '@ionic/storage';
 import { Events } from 'ionic-angular';
 import { DevicesService }from './devices.service';
 import { Device } from './utils.service';
+import { StorageMock } from '../mocks';
 
 import * as tilesDevice from '../fixtures/tilesDevice.json';
 import * as bleDevice from '../fixtures/bleDevice.json';
@@ -25,7 +26,10 @@ describe('devicesService:', () => {
     TestBed.configureTestingModule({
       providers: [
         Events,
-        Storage,
+        {
+          provide: Storage,
+          useClass: StorageMock
+        },
         DevicesService,
       ],
     });

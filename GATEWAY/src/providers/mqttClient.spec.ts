@@ -6,6 +6,7 @@ import { Storage } from '@ionic/storage';
 import { TilesApi } from './tilesApi.service';
 import { MqttClient } from './mqttClient';
 import { BleService } from './ble.service';
+import { StorageMock } from '../mocks';
 
 describe('mqttClient', () => {
 
@@ -17,7 +18,10 @@ describe('mqttClient', () => {
         TilesApi,
         MqttClient,
         Events,
-        Storage,
+        {
+          provide: Storage,
+          useClass: StorageMock
+        },
         MockBackend,
         BaseRequestOptions,
         {
