@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams, ModalController } from 'ionic-angular';
-import {  } from 'ionic-angular';
 import { Storage } from '@ionic/storage';
+import { NavController } from 'ionic-angular';
 
 import { UtilsService } from '../../providers/utils.service';
 import { MqttClient } from '../../providers/mqttClient';
@@ -16,12 +15,16 @@ export class LoginPage {
 
   constructor(
       public navCtrl: NavController,
-      public navParams: NavParams,
       private mqttClient: MqttClient,
       private  utils: UtilsService,
-      private storage: Storage,
-      public modalCtrl: ModalController,){}
+      private storage: Storage,){}
 
+  /**
+   * Connect to the mqttServer
+   * @param {string} user - username
+   * @param {string} host - api host address
+   * @param {number} port - mqtt port number
+   */
   connectToServer = (user: string, host: string, port: number): void => {
     if (this.utils.verifyLoginCredentials(user, host, port)) {
       this.mqttClient.connect(user, host, port);
@@ -33,10 +36,16 @@ export class LoginPage {
     }
   }
 
+  /**
+   * Change the remember me variable from false (not remember) to true (remember)
+   */
   rememberMe() {
     this.remember = !this.remember;
   }
 
+  /**
+   * Passes the login credidentials from the login form to the connectToServer function.
+   */
   loginForm() {
     this.connectToServer(this.loginInfo.username, this.loginInfo.host, parseInt(this.loginInfo.port));
   }
