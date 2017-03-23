@@ -2,7 +2,7 @@
 
   <ion-navbar>
     <ion-title>Applications</ion-title>
-     <button right class="titleBttn" ion-button small color="positive" (click)="escape()">logout</button>
+     <button right class="titleBttn" ion-button small color="positive" (click)="logout()">logout</button>
   </ion-navbar>
 
 </ion-header>
@@ -27,5 +27,5 @@
       </div>
     </ion-item>
   </ion-list>
-  <ion-item style="text-align: center;">Pull down to refresh list</ion-item>
+  <ion-item *ngIf="refreshed" style="text-align: center;">Pull down to refresh list</ion-item>
 </ion-content>

@@ -25,6 +25,7 @@ import { Storage } from '@ionic/storage';
 @Injectable()
 export class ApplicationsPage {
   applications: Application[];
+  public refreshed = true;
 
   constructor(public navCtrl: NavController,
               public navParams: NavParams,
@@ -46,6 +47,7 @@ export class ApplicationsPage {
 
   setApplications = (): void => {
     this.tilesApi.getAllApplications().then( data => {
+      this.refreshed = false;
       this.applications = data;
     }).catch (err => console.log(err));
   }
@@ -56,7 +58,7 @@ export class ApplicationsPage {
     //Makes the refresher run for 2 secs
     setTimeout(() => {
       refresher.complete();
-    }, 2000);
+    }, 1500);
   }
 
   presentModal() {
@@ -72,8 +74,10 @@ export class ApplicationsPage {
 	// };
 
 
-  escape = () => {
+  logout = () => {
     this.storage.set('loggedIn', false);
+    this.applications = []
+    this.refreshed = true;
     this.presentModal();
   }
 
