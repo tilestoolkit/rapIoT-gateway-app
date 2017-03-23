@@ -8,8 +8,6 @@ import { TilesApi } from '../../providers/tilesApi.service';
 import { Application, UtilsService } from '../../providers/utils.service';
 import { MqttClient } from '../../providers/mqttClient';
 
-import { ApplicationsPage } from '../applications/applications.ts';
-
 @Component({
   selector: 'page-login',
   templateUrl: 'login.html',
@@ -54,7 +52,6 @@ export class LoginPage {
 
   loginForm() {
     this.connectToServer(this.loginInfo.username, this.loginInfo.host, parseInt(this.loginInfo.port));
-    // ApplicationsPage.setApplications();
   }
 
     /*
