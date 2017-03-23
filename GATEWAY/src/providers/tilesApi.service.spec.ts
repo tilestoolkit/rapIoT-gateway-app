@@ -1,7 +1,7 @@
 import { inject, TestBed } from '@angular/core/testing';
-import { Http, Response, ResponseOptions, BaseRequestOptions } from '@angular/http';
+import { Http, Response, ResponseOptions, BaseRequestOptions, RequestMethod } from '@angular/http';
 import { Storage } from '@ionic/storage';
-import { MockBackend } from '@angular/http/testing';
+import { MockBackend, MockConnection } from '@angular/http/testing';
 import { Device } from './utils.service';
 import { TilesApi } from './tilesApi.service';
 import { StorageMock } from '../mocks';
@@ -145,6 +145,20 @@ describe('tilesAPI', () => {
   });
 
   describe('pairDeviceToVirtualTile(deviceId: string, virtualTileId: string, applicationId: string): void', () => {
+    it('should insert new blog entries', inject([MockBackend], (mockBackend) => {
+      
+      mockBackend.connections.subscribe((connection: MockConnection) => {
+        // is it the correct REST type for an insert? (POST)
+        expect(connection.request.method).toBe(RequestMethod.Post);
 
+        connection.mockRespond(new Response(new ResponseOptions({status: 201})));
+      });
+
+      tilesApi.pairDeviceToVirualTile('test', '58c120c5497df8602fedfbd3', 'test3').then(
+        (successResult) => {
+          expect(successResult).toBeDefined();
+          expect(successResult.status).toBe(201);
+        });
+    }));
   });
 });
