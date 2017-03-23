@@ -3,17 +3,13 @@ import { AlertController, NavController, NavParams } from 'ionic-angular';
 
 import { DevicesService } from '../../providers/devices.service';
 import { TilesApi } from '../../providers/tilesApi.service';
-import { Application, Device, VirtualTile } from '../../providers/utils.service';
+import { Application, Device, UtilsService, VirtualTile } from '../../providers/utils.service';
 /*
   Generated class for the VirtualTiles page.
 
   See http://ionicframework.com/docs/v2/components/#navigation for more info on
   Ionic pages and navigation.
 */
-
-// function for capitalizing a string 
-var capitalize = string => string.charAt(0).toUpperCase() + string.slice(1);
-
 @Component({
   selector: 'page-virtual-tiles',
   templateUrl: 'virtual-tiles.html'
@@ -28,12 +24,13 @@ export class VirtualTilesPage {
               public navCtrl: NavController, 
               public navParams: NavParams,
               private devicesService: DevicesService,
+              private utils: UtilsService,
               private tilesApi: TilesApi,) {
   	// A id variable is stored in the navParams, and .get set this value to the local variable id
   	let id = navParams.get('_id');
 
   	// Sets the title of the page (found in virtual-tiles.html) to id, capitalized. 
-  	this.applicationTitle = capitalize(id);
+  	this.applicationTitle = utils.capitalize(id);
     this.setDevices();
     this.setVirtualTiles();
   }
@@ -86,5 +83,4 @@ export class VirtualTilesPage {
       }],
     }).present();
   }
-
 }

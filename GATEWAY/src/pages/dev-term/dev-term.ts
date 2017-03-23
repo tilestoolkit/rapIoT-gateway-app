@@ -23,7 +23,6 @@ export class DevTermPage {
               private mqttClient: MqttClient,
               private utils: UtilsService,) {
   	this.messages = [];
-  	
 
     this.events.subscribe('serverConnected', () => {
     	console.log('broker connected')
@@ -56,9 +55,4 @@ export class DevTermPage {
 			this.messages.push(message)
     });
   }
-
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad DevTermPage');
-  }
-
 }
