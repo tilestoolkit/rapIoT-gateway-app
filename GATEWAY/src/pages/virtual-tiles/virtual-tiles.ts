@@ -46,13 +46,12 @@ export class VirtualTilesPage {
    * Set the virtual tiles equal to the ones stores for the app
    */
   setVirtualTiles = (): void => {
-    //TODO: Use the appname for the chosen app when implemented
     if (this.activeApp !== undefined){
       this.tilesApi.getApplicationTiles(this.activeApp._id).then(res => {
         this.virtualTiles = res;
       });
     }
-    else {
+    else { //TODO: remove this, for debugging only
       this.tilesApi.getApplicationTiles('test3').then(res => {
         this.virtualTiles = res;
       });
@@ -66,7 +65,7 @@ export class VirtualTilesPage {
    */
   pairTilePopUp = (virtualTile: VirtualTile): void => {
     const deviceRadioButtons = this.devices.map(device => {
-      return {type: 'radio', name: 'deviceId', value: device.tileId, label: device.name}
+      return {type: 'radio', name: 'deviceId', value: device.tileId, label: device.name};
     });
     this.alertCtrl.create({
       title: 'Pair to physical tile',

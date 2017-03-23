@@ -19,13 +19,7 @@ import { Storage } from '@ionic/storage';
 @Component({
   selector: 'page-applications',
   templateUrl: 'applications.html',
-  providers: [
-    MqttClient,
-    TilesApi,
-    UtilsService,
-  ]
 })
-@Injectable()
 export class ApplicationsPage {
   applications: Application[];
   public refreshed = true;
@@ -37,8 +31,11 @@ export class ApplicationsPage {
               private mqttClient: MqttClient,
               private tilesApi: TilesApi,
               private utils: UtilsService,
-              private storage: Storage) {}
-
+              private storage: Storage,) {}
+  /**
+   * Called when the view is loaded to present login page if 
+   * the user is not logged in
+   */
   ionViewDidLoad() {
     this.storage.get('loggedIn').then((val) => {
       if (val == null || val == false) {
@@ -69,28 +66,29 @@ export class ApplicationsPage {
   }
 
   /**
-  *  Pushes the modal on the viewStack.
-  */
+   *  Pushes the modal on the viewStack.
+   */
   presentLoginModal() {
     let modal = this.modalCtrl.create(LoginPage);
     modal.present();
   }
 
   /**
-  *  Logout - empties the list of applications, changes the refreshstate 
-  * and presents login window.
-  */
+   * Logout - empties the list of applications, changes the refreshstate 
+   * and presents login window.
+   */
   logout = () => {
     this.storage.set('loggedIn', false);
-    this.applications = []
+    this.applications = [];
     this.refreshed = true;
     this.presentLoginModal();
   }
 
   /**
-  *  Pushes the virtualTilesPage on viewStack and passes the pressed
-  * application ID.
-  */
+   * Pushes the virtualTilesPage on viewStack and passes the pressed
+   * application ID.
+   * @param {Application} application - a tiles application created in the web view
+   */
   viewApplication = (application: Application): void => {
     //push another page onto the history stack
     //causing the nav controller to animate the new page in

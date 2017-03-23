@@ -1,21 +1,14 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams } from 'ionic-angular';
-import { ModalController } from 'ionic-angular';
-
+import { NavController, NavParams, ModalController } from 'ionic-angular';
+import {  } from 'ionic-angular';
 import { Storage } from '@ionic/storage';
 
-import { TilesApi } from '../../providers/tilesApi.service';
-import { Application, UtilsService } from '../../providers/utils.service';
+import { UtilsService } from '../../providers/utils.service';
 import { MqttClient } from '../../providers/mqttClient';
 
 @Component({
   selector: 'page-login',
   templateUrl: 'login.html',
-    providers: [
-        TilesApi,
-        MqttClient,
-        UtilsService,
-    ],
 })
 export class LoginPage {
   loginInfo = {username: '', host: '', port: ''};
@@ -25,10 +18,9 @@ export class LoginPage {
       public navCtrl: NavController,
       public navParams: NavParams,
       private mqttClient: MqttClient,
-      private tilesApi: TilesApi,
       private  utils: UtilsService,
       private storage: Storage,
-      public modalCtrl: ModalController){}
+      public modalCtrl: ModalController,){}
 
   connectToServer = (user: string, host: string, port: number): void => {
     if (this.utils.verifyLoginCredentials(user, host, port)) {

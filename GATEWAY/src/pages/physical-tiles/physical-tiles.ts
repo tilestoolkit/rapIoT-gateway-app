@@ -9,11 +9,6 @@ import { Device } from '../../providers/utils.service';
 @Component({
   selector: 'page-physical-tiles',
   templateUrl: 'physical-tiles.html',
-  providers: [
-    BleService,
-    DevicesService,
-    MqttClient,
-  ],
 })
 export class PhysicalTilesPage {
   devices: Device[];
@@ -90,12 +85,12 @@ export class PhysicalTilesPage {
         text: 'Cancel',
         role: 'cancel',
       },
-        {
-          text: 'Rename',
-          handler: data => {
-            this.devicesService.setCustomDeviceName(device, data.newName);
-          },
-        }],
+      {
+        text: 'Rename',
+        handler: data => {
+          this.devicesService.setCustomDeviceName(device, data.newName);
+        },
+      }],
     }).present();
   }
 }
