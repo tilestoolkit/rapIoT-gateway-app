@@ -92,8 +92,4 @@ export class PhysicalTilesPage {
         }],
     }).present();
   }
-
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad PhysicalTilesPage');
-  }
 }

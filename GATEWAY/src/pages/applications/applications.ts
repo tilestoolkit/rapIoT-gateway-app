@@ -19,9 +19,12 @@ import { Storage } from '@ionic/storage';
 @Component({
   selector: 'page-applications',
   templateUrl: 'applications.html',
-  providers: [TilesApi]
+  providers: [
+    MqttClient,
+    TilesApi,
+    UtilsService,
+  ]
 })
-
 @Injectable()
 export class ApplicationsPage {
   applications: Application[];
@@ -64,20 +67,12 @@ export class ApplicationsPage {
     modal.present();
   }
 
-
-
-	// showConnectMQTTPopup = () => {
-	// 	this.connectToServer('andrea', '172.68.99.218', parseInt('8080'));
-	// };
-
-
   logout = () => {
     this.storage.set('loggedIn', false);
     this.applications = []
     this.refreshed = true;
     this.presentModal();
   }
-
 
   viewApplication = (application: Application): void => {
     //push another page onto the history stack
