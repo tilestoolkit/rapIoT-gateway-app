@@ -65,7 +65,7 @@ export class PhysicalTilesPage {
    */
   identifyDevice = (device: Device): void => {
     this.bleService.sendData(device, 'led,on,red');
-    setTimeout(()=> (this.bleService.sendData(device, 'led,off')), 3000);
+    setTimeout(() => (this.bleService.sendData(device, 'led,off')), 3000);
   }
 
   /**
