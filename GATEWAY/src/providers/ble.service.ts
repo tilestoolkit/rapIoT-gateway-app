@@ -163,7 +163,7 @@ export class BleService {
         .subscribe(
           res => {
             // Setting information about the device
-             device.ledOn = false;
+            device.ledOn = false;
             device.connected = true;
             device.buttonPressed = false;
             //this.tilesApi.loadEventMappings(device.tileId);
@@ -174,8 +174,7 @@ export class BleService {
             }
 
             this.sendData(device, 'led,on,red');
-            setTimeout(()=> (this.sendData(device, 'led,off')), 3000);
-            this.disconnect(device);
+            setTimeout(()=> {this.sendData(device, 'led,off'); this.disconnect(device);}, 3000);
             device.loading = false;
           },
           err => {
@@ -246,6 +245,7 @@ export class BleService {
   					.then( res => {
   						device.connected = false;
   						this.mqttClient.unregisterDevice(device);
+              alert('disconnected');
   					})
   					.catch( err => {
               console.log('Failed to disconnect');
