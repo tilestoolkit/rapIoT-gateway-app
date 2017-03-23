@@ -28,12 +28,7 @@ export class LoginPage {
       private tilesApi: TilesApi,
       private  utils: UtilsService,
       private storage: Storage,
-      public modalCtrl: ModalController)
-  {}
-
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad LoginPage');
-  }
+      public modalCtrl: ModalController){}
 
   connectToServer = (user: string, host: string, port: number): void => {
     if (this.utils.verifyLoginCredentials(user, host, port)) {
@@ -53,15 +48,4 @@ export class LoginPage {
   loginForm() {
     this.connectToServer(this.loginInfo.username, this.loginInfo.host, parseInt(this.loginInfo.port));
   }
-
-    /*
-    connectToServer = (user: string, host: string, port: number): void => {
-        if (this.verifyLoginCredentials(user, host, port)) {
-            this.mqttClient.connect(user, host, port);
-        } else {
-            alert("Invalid login credentials.");
-        }
-    }
-    */
-
 }
