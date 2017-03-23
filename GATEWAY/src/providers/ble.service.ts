@@ -175,6 +175,7 @@ export class BleService {
 
             this.sendData(device, 'led,on,red');
             setTimeout(()=> (this.sendData(device, 'led,off')), 3000);
+            this.disconnect(device);
             device.loading = false;
           },
           err => {
