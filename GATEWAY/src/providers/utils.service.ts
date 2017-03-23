@@ -139,6 +139,14 @@ export class UtilsService {
       return false;
     }
   }
+
+  /**
+   * Capitalize a string
+   * @param {string} string - a string
+   */
+  capitalize = (string: string): string => {
+    return string.charAt(0).toUpperCase() + string.slice(1)
+  };
 }
 
 export default { CommandObject, Device, UtilsService, VirtualTile };

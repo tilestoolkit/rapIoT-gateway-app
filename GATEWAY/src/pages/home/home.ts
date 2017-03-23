@@ -161,7 +161,7 @@ export class HomePage {
 	}
 
   /**
-   * Called when the refresher is triggered by pulling down on the view of 
+   * Called when the refresher is triggered by pulling down on the view of
 	 * the devices. TODO: Not sure if needed when refresh is done every 30s anyways.
 	 */
 	refreshDevices = (refresher): void => {

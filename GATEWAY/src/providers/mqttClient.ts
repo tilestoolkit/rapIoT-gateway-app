@@ -108,7 +108,9 @@ export class MqttClient {
 
     // Ends the connection attempt if the timeout rus out
     const failedConnectionTimeout = setTimeout(function(){
-      this.client.end();
+      if (this.client) {
+        this.client.end();
+      }
     }, this.connectionTimeout);
   };
 

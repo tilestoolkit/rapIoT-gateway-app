@@ -2,6 +2,7 @@
 import { Injectable } from '@angular/core';
 import { Events } from 'ionic-angular';
 import { BLE } from 'ionic-native';
+import { Observable, Subscription } from 'rxjs';
 import 'rxjs/add/operator/toPromise';
 
 import { DevicesService }from './devices.service';
@@ -14,6 +15,7 @@ let tileNames = {};
 
 @Injectable()
 export class BleService {
+  bleScanner: Subscription;
 	rfduino = {
     serviceUUID: '2220',
     receiveCharacteristicUUID: '2221',
@@ -32,9 +34,28 @@ export class BleService {
   }
 
   /**
+   * Start the BLE scanner making it scan every 30s
+   */
+  startBLEScanner = (): void => {
+    this.bleScanner = Observable.interval(30000).subscribe(res => {
+      this.scanForDevices([]);
+    });
+  }
+
+  /**
+   * Stop the BLE scanner
+   */
+  stopBLEScanner = (): void => {
+    if (this.bleScanner !== undefined) {
+      this.bleScanner.unsubscribe();
+    }
+  }
+
+  /**
    * Checking if bluetooth is enabled and enable on android if not
    */
   scanForDevices = (virtualTiles: VirtualTile[]): void => {
+    this.devicesService.clearDisconnectedDevices();
     BLE.isEnabled()
 		  		  .then( res => {
 		   		 		this.scanBLE(virtualTiles);
@@ -132,6 +153,44 @@ export class BleService {
   };
 
   /**
+   * Connect and rename a device
+   * @param {Device} device - the target device
+   */
+  locate = (device: Device): void => {
+    device.loading = true;
+    //TODO: unsubscribe at some point ?
+    BLE.connect(device.id)
+        .subscribe(
+          res => {
+            // Setting information about the device
+            device.ledOn = false;
+            device.connected = true;
+            device.buttonPressed = false;
+            //this.tilesApi.loadEventMappings(device.tileId);
+            this.mqttClient.registerDevice(device);
+            this.startDeviceNotification(device);
+            if (device.name in tileNames){
+              device.name = tileNames[device.name];
+            }
+
+            this.sendData(device, 'led,on,red');
+            setTimeout(()=> {this.sendData(device, 'led,off'); this.disconnect(device);}, 3000);
+            device.loading = false;
+          },
+          err => {
+            device.connected = false;
+            device.loading = false;
+            this.devicesService.clearDisconnectedDevices();
+            this.events.publish('updateDevices');
+            this.disconnect(device);
+            //alert('Lost connection to ' + device.name)
+          },
+          () => {
+            alert('Connection attempt completed')
+          });
+  };
+
+  /**
    * Start getting notifications of events from a device
    * @param {Device} device - the id from the target device
    */
@@ -165,6 +224,7 @@ export class BleService {
                 break;
             }
             this.mqttClient.sendEvent(device.tileId, message);
+            this.events.publish('recievedEvent', device.tileId, message);
           }
         },
         err => {

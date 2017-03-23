@@ -1,0 +1,31 @@
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>Applications</ion-title>
+     <button right class="titleBttn" ion-button small color="positive" (click)="logout()">logout</button>
+  </ion-navbar>
+
+</ion-header>
+
+<ion-content padding>
+  <ion-refresher (ionRefresh)="refreshApplications($event)">
+    <ion-refresher-content
+      pullingIcon="arrow-dropdown"
+      pullingText="Pull to refresh"
+      refreshingSpinner="circles"
+      refreshingText="Refreshing...">
+    </ion-refresher-content>
+  </ion-refresher>
+
+  <ion-list>
+    <ion-item class="devices" color="light" *ngFor="let app of applications">
+      <div class="row row-center">
+        <div id="devName" class="col col-75">
+          <b>{{app._id}}</b><br>
+          <button right class="bttn" ion-button small color="positive" (click)="viewApplication(app)">View app</button>
+        </div>
+      </div>
+    </ion-item>
+  </ion-list>
+  <ion-item *ngIf="refreshed" style="text-align: center;">Pull down to refresh list</ion-item>
+</ion-content>
