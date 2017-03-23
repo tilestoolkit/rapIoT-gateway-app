@@ -5,18 +5,17 @@ import { Http } from '@angular/http';
 import { BleService } from '../../providers/ble.service';
 import { DevicesService } from '../../providers/devices.service';
 import { MqttClient } from '../../providers/mqttClient';
-import { TilesApi } from '../../providers/tilesApi.service';
-import { CommandObject, Device, UtilsService, VirtualTile } from '../../providers/utils.service';
+import { Device, UtilsService, VirtualTile } from '../../providers/utils.service';
 
 
 @Component({
   selector: 'page-physical-tiles',
   templateUrl: 'physical-tiles.html',
   providers: [
-    TilesApi,
-    MqttClient,
-    DevicesService,
     BleService,
+    DevicesService,
+    MqttClient,
+    UtilsService,
   ],
 })
 export class PhysicalTilesPage {
@@ -55,33 +54,6 @@ export class PhysicalTilesPage {
       }
     });
 
-    this.events.subscribe('close', () => {
-      this.mqttClient.setMqttConnectionStatus(false);
-      this.serverConnectStatusMsg = 'Disconnected from server';
-    });
-
-    this.events.subscribe('reconnect', () => {
-      this.mqttClient.setMqttConnectionStatus(false);
-      this.serverConnectStatusMsg = 'A reconnect is started';
-    });
-
-    this.events.subscribe('error', (err) => {
-      this.mqttClient.setMqttConnectionStatus(false);
-      this.serverConnectStatusMsg = 'Error: ${err}';
-    });
-
-    this.events.subscribe('command', (deviceId: string, command: CommandObject) => {
-      for (let device of this.devices) {
-        if (device.tileId === deviceId) {
-          device.ledOn = (command.name === 'led' && command.properties[0] === 'on');
-          console.log('Device led on: ' + device.ledOn);
-          const commandString = this.utils.getCommandObjectAsString(command);
-          this.bleService.sendData(device, commandString);
-
-        }
-      }
-    });
-
     this.events.subscribe('updateDevices', () => {
       this.setDevices();
     });
@@ -93,6 +65,7 @@ export class PhysicalTilesPage {
   setDevices = (): void => {
     this.devices = this.devicesService.getDevices();
   }
+
   /**
    * Use ble to discover new devices
    */
