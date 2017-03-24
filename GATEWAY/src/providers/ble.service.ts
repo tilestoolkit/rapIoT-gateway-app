@@ -70,8 +70,8 @@ export class BleService {
 				  		 	 .then( res => {
                   let toast = this.toastCtrl.create({
                       message: 'Bluetooth has been enabled',
-                      duration: 4000,
-                      position: 'middle'
+                      duration: 3000,
+                      position: 'top'
                     });
                     toast.present();
                     this.scanBLE(virtualTiles);
