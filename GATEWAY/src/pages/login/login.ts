@@ -10,8 +10,7 @@ import { MqttClient } from '../../providers/mqttClient';
   templateUrl: 'login.html',
 })
 export class LoginPage {
-  loginInfo = {username: '', host: '', port: ''};
-  remember = false;
+  loginInfo = {username: '', host: '', port: '', remember: false};
 
   constructor(
       public navCtrl: NavController,
@@ -29,18 +28,11 @@ export class LoginPage {
     if (this.utils.verifyLoginCredentials(user, host, port)) {
       this.mqttClient.connect(user, host, port);
       localStorage.setItem('user', user);
-      this.storage.set('loggedIn', this.remember);
+      this.storage.set('loggedIn', this.loginInfo.remember);
       this.navCtrl.pop();
     } else {
       alert("Invalid login credentials.");
     }
-  }
-
-  /**
-   * Change the remember me variable from false (not remember) to true (remember)
-   */
-  rememberMe() {
-    this.remember = !this.remember;
   }
 
   /**
