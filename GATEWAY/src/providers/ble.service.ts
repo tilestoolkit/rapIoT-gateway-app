@@ -1,6 +1,6 @@
 
 import { Injectable } from '@angular/core';
-import { Events } from 'ionic-angular';
+import { Events, AlertController, ToastController } from 'ionic-angular';
 import { BLE } from 'ionic-native';
 import { Observable, Subscription } from 'rxjs';
 import 'rxjs/add/operator/toPromise';
@@ -30,7 +30,9 @@ export class BleService {
               private devicesService: DevicesService,
               private mqttClient: MqttClient,
   						private tilesApi: TilesApi,
-              private utils: UtilsService) {
+              private utils: UtilsService,
+              private alertCtrl: AlertController,
+              private toastCtrl: ToastController) {
   }
 
   /**
@@ -62,11 +64,18 @@ export class BleService {
 		   		 		this.scanBLE(virtualTiles);
 		   		 	})
 		  		  .catch( err => {
-		  		 		alert('Bluetooth not enabled!');
+              this.alertCtrl.create({
+                title: 'Alert',
+                message: 'Bluetooth not enabled.',
+               buttons: ['Dismiss']}).present();
 		  		 		// NB! Android only!! IOS users has to turn bluetooth on manually
 		  		 		BLE.enable()
 				  		 	 .then( res => {
-                    alert('Bluetooth has been enabled');
+                  let toast = this.toastCtrl.create({
+                      message: 'Bluetooth has been enabled',
+                      duration: 3000
+                    });
+                    toast.present();
                     this.scanBLE(virtualTiles);
                   })
 				    		 .catch( err => {
