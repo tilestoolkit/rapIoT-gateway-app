@@ -64,16 +64,14 @@ export class BleService {
 		   		 		this.scanBLE(virtualTiles);
 		   		 	})
 		  		  .catch( err => {
-              this.alertCtrl.create({
-                title: 'Alert',
-                message: 'Bluetooth not enabled.',
-               buttons: ['Dismiss']}).present();
+              alert('Bluetooth not enabled.');
 		  		 		// NB! Android only!! IOS users has to turn bluetooth on manually
 		  		 		BLE.enable()
 				  		 	 .then( res => {
                   let toast = this.toastCtrl.create({
                       message: 'Bluetooth has been enabled',
-                      duration: 3000
+                      duration: 4000,
+                      position: 'middle'
                     });
                     toast.present();
                     this.scanBLE(virtualTiles);
