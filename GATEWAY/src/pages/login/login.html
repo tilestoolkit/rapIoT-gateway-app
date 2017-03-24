@@ -22,7 +22,7 @@
     </ion-item>
     <ion-item>
       <ion-label>Remember me</ion-label>
-      <ion-checkbox (click)="rememberMe()" checked='false'></ion-checkbox>
+      <ion-checkbox [(ngModel)]="loginInfo.remember" name='remember'></ion-checkbox>
     </ion-item>
     <button ion-button type="submit" block>Log In!</button>
   </form>
