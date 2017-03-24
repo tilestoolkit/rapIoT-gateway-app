@@ -72,7 +72,10 @@ export class ApplicationsPage {
    */
   presentLoginModal() {
     let modal = this.modalCtrl.create(LoginPage);
-    modal.present();
+    modal.onDidDismiss(data => {
+        this.setApplications();
+   });
+   modal.present();
   }
 
   /**
