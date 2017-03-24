@@ -63,7 +63,6 @@ export class VirtualTilesPage {
     this.alertCtrl.create({
       title: 'Pair to physical tile',
       inputs: deviceRadioButtons,
-
       buttons: [{
           text: 'Cancel',
           role: 'cancel',
