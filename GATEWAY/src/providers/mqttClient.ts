@@ -94,14 +94,15 @@ export class MqttClient {
 
     // Client is connected to the server
 		this.client.on('connect', () => {
-      console.log(this.client)
+      console.log('connected to broker');
 			clearTimeout(failedConnectionTimeout);
       this.connectedToBroker = true;
       this.events.publish('serverConnected');
       // NB: temporary for testing only
+      const time = new Date;
       this.client.publish(
         'tiles/test', 
-        'connect' + (new Date).getTime(),
+        'connect at time:  ' + time.getDate()+'/'+time.getMonth()+' . '+time.getHours()+':'+time.getMinutes(),
         this.publishOpts,
         );
 		});

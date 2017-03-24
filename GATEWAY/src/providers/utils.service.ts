@@ -131,7 +131,7 @@ export class UtilsService {
    */
   verifyLoginCredentials = (user: string, host: string, port: number): boolean => {
     const validUsername = user.match(/^[a-zA-Z0-9\_\-\.]+$/);
-    const validHost = host.match(/^([0-9]{1,3}.){3}[0-9]{1,3}/);
+    const validHost = host.match(/^([0-9]{1,3}.){3}[0-9]{1,3}/) || host.match(/^[a-zA-Z0-9\_\-\.]+$/);
 
     if (validUsername != null && validHost != null) {
       return true;
