@@ -40,6 +40,8 @@ export class ApplicationsPage {
     this.storage.get('loggedIn').then((val) => {
       if (val == null || val == false) {
         this.presentLoginModal();
+      } else {
+        this.mqttClient.connect(val.username, val.host, val.port);
       }
     });
   }
