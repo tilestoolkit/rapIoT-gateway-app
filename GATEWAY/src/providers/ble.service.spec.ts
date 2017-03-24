@@ -84,15 +84,33 @@ describe('bleService', () => {
   });
 
   describe('startDeviceNotification(device: Device): void', () => {
-
+    it('should get notifications of events from a deivce', () => {
+      spyOn(BLE, 'startNotification').and.returnValue(Observable.of(bleReturnValue));
+      bleService.startDeviceNotification(testDevice);
+      expect(BLE['startNotification']).toHaveBeenCalled;
+    });
   });
 
   describe('disconnect(device: Device): void', () => {
-
+    it('should disconnect from the current device if it is paired', () => {
+      spyOn(bleService, 'disconnect').and.returnValue(Observable.of(bleReturnValue));
+      bleService.disconnect(testDevice);
+      expect(bleService['disconnect']).toHaveBeenCalled;
+    });
   });
 
   describe('sendData(device: Device, dataString: string): void', () => {
+    it('should successfully send a dataString to a device using BLE', () => {
+      spyOn(bleService, 'sendData').and.returnValue(Observable.of(bleReturnValue));
+      bleService.sendData(testDevice, 'Hello!');
+      expect(bleService['sendData']).toHaveBeenCalled;
+    });
 
+    it('should not be able to send data that is not of the type string', () => {
+      spyOn(bleService, 'sendData').and.returnValue(Observable.of(bleReturnValue));
+      bleService.sendData(testDevice, 2345);
+      expect(bleService['sendData']).not.toHaveBeenCalled;
+    })
   });
 
 });
