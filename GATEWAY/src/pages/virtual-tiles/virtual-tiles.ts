@@ -60,7 +60,8 @@ export class VirtualTilesPage {
     const deviceRadioButtons = this.devices.map(device => {
       return {type: 'radio', name: 'deviceId', value: device.tileId, label: device.name};
     });
-    this.alertCtrl.create({
+    if (this.devices.length > 0) {
+      this.alertCtrl.create({
       title: 'Pair to physical tile',
       inputs: deviceRadioButtons,
       buttons: [{
@@ -74,5 +75,13 @@ export class VirtualTilesPage {
           },
       }],
     }).present();
+    } 
+    else {
+      this.alertCtrl.create({
+        title: 'Pair to physical tile',
+        message: 'No physical tiles nearby.',
+       buttons: ['Dismiss']}).present();
+    }
+    
   }
 }
