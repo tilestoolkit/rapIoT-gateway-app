@@ -19,7 +19,6 @@ export class VirtualTilesPage {
 	applicationTitle: string;
   virtualTiles: VirtualTile[];
   activeApp: Application;
-  application_id = null;
 
   constructor(public alertCtrl: AlertController,
               public navCtrl: NavController, 
@@ -28,10 +27,10 @@ export class VirtualTilesPage {
               private utils: UtilsService,
               private tilesApi: TilesApi,) {
   	// A id variable is stored in the navParams, and .get set this value to the local variable id
-  	this.application_id = navParams.get('_id');
+  	this.activeApp = navParams.get('app');
 
   	// Sets the title of the page (found in virtual-tiles.html) to id, capitalized. 
-  	this.applicationTitle = utils.capitalize(this.application_id);
+  	this.applicationTitle = utils.capitalize(this.activeApp._id);
     this.setDevices();
     this.setVirtualTiles();
   }
@@ -72,7 +71,7 @@ export class VirtualTilesPage {
         {
           text: 'Pair',
           handler: data => {
-            this.tilesApi.pairDeviceToVirualTile(data, virtualTile._id, this.application_id);
+            this.tilesApi.pairDeviceToVirualTile(data, virtualTile._id, this.activeApp._id);
           },
       }],
     }).present();
