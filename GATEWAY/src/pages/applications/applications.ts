@@ -42,6 +42,7 @@ export class ApplicationsPage {
         this.presentLoginModal();
       } else {
         this.mqttClient.connect(val.username, val.host, val.port);
+        this.setApplications();
       }
     });
   }
