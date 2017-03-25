@@ -91,7 +91,9 @@ export class BleService {
               this.mqttClient.registerDevice(device);
               this.devicesService.newDevice(device);
               newDevices.push(device);
-              if (virtualTiles.map(tile => tile.tile.name).includes(device.tileId)) {
+              if (virtualTiles.filter(tile => tile.tile != null)
+                              .map(tile => tile.tile.name)
+                              .includes(device.tileId)) {
                 this.connect(device);
               }
               //TODO: temporary, until we get the completion function to run
