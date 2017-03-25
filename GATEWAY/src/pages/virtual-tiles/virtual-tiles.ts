@@ -53,16 +53,13 @@ export class VirtualTilesPage {
       this.virtualTiles = res;
 
       // This is the already paired virtual tiles
-      this.pairedVirtualTiles = [];
-      this.unpairedVirtualTiles = [];
-      
-      for (var i = 0; i < this.virtualTiles.length; i++) {
-        if (this.virtualTiles[i].tile != null) {
-          this.pairedVirtualTiles.push(this.virtualTiles[i]);
+      this.virtualTiles.map(tile => {
+        if (tile.tile != null) {
+          this.pairedVirtualTiles.push(tile);
         } else {
-          this.unpairedVirtualTiles.push(this.virtualTiles[i]);
+          this.unpairedVirtualTiles.push(tile);
         }
-      }
+      })
     });
   }
 
