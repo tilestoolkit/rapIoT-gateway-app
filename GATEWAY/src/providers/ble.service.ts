@@ -164,36 +164,30 @@ export class BleService {
    * @param {Device} device - the id from the target device
    */
   startDeviceNotification = (device: Device): void => {
-    //alert('Starting notifications from device: ' + device.name);
-    //TODO: unsubscribe at some point. Could return the subscriber and unsubscribe after a timeout
     this.ble.startNotification(device.id, this.rfduino.serviceUUID, this.rfduino.receiveCharacteristicUUID)
       .subscribe(
         res => {
           let responseString:string;
           if(typeof res == 'string') {
-            responseString = res;
+            responseString = device.id + ' ' + res;
           } else {
             // Convert the bytes sent from the device into a string
             responseString = ((String.fromCharCode.apply(null, new Uint8Array(res))).slice(0, -1)).trim();
           }
           let message: CommandObject = this.utils.getEventStringAsObject(responseString);
-          //alert('Recieved event: ' + message.name + ' with properties: ' + message.properties);
           if (message === null) {
             console.log('Found no mapping for event: ' + responseString);
           } else {
-            console.log(message);
-            
-            // Switch on the event type of the message
-            // for testing purposes only
+            // Switch on the event type of the message, for testing purposes only
             const eventType = message.properties[0];
             switch (eventType){
               case 'tap':
                 device.buttonPressed = device.buttonPressed !== undefined
                                       ? !device.buttonPressed : true;
-                //alert('tappeti tap')
+                console.log('tappeti tap')
                 break;
               case 'tilt':
-                //alert('You are tilting me!');
+                console.log('You are tilting me!');
                 break;
               default:
                 alert('No response for ' + message.properties[0])
@@ -206,8 +200,7 @@ export class BleService {
         err => {
           console.log('Failed to start notification');
         },
-        () => {
-          // called when the device disconnects
+        () => { // called when the device disconnects
           device.connected = false;
           this.mqttClient.unregisterDevice(device);
         });
