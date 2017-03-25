@@ -1,6 +1,6 @@
 
 import { Injectable } from '@angular/core';
-import { Events, AlertController, ToastController } from 'ionic-angular';
+import { Events, AlertController } from 'ionic-angular';
 import { BLE } from 'ionic-native';
 import { Observable, Subscription } from 'rxjs';
 import 'rxjs/add/operator/toPromise';
@@ -31,8 +31,7 @@ export class BleService {
               private mqttClient: MqttClient,
   						private tilesApi: TilesApi,
               private utils: UtilsService,
-              private alertCtrl: AlertController,
-              private toastCtrl: ToastController) {
+              private alertCtrl: AlertController) {
   }
 
   /**
