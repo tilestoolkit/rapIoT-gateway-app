@@ -15,7 +15,6 @@ import { DevTermPage } from '../pages/dev-term/dev-term'
 import { VirtualTilesPage } from '../pages/virtual-tiles/virtual-tiles'
 import { PhysicalTilesPage } from '../pages/physical-tiles/physical-tiles'
 
-
 import { BleService } from '../providers/ble.service';
 import { MqttClient } from '../providers/mqttClient';
 import { TilesApi } from '../providers/tilesApi.service';
@@ -23,10 +22,7 @@ import { DevicesService } from '../providers/devices.service';
 import { UtilsService } from '../providers/utils.service';
 
 
-
-
 class BleMock extends BLE {
-
   isEnabled() {
     return new Promise<void>(resolve => resolve());
   }
@@ -46,25 +42,12 @@ class BleMock extends BLE {
         "rssi": -79,
         "advertising": null
       }
-      , {
-        "name": "Tile3",
-        "id": "01:23:45:67:89:AC",
-        "rssi": -79,
-        "advertising": null
-      }
-      , {
-        "name": "Tile14",
-        "id": "01:23:45:67:89:AD",
-        "rssi": -79,
-        "advertising": null
-      }
-
     ]
     return Observable.from(mockBle);
   }
   connect(device){
     return Observable.create(observer => {
-      observer.next(42);
+      observer.next();
     }); 
   }
   startNotification(deviceId, serviceUUID, characteristicUUID) {
@@ -79,7 +62,6 @@ class BleMock extends BLE {
     return new Promise<void>(resolve => resolve());
   }
 }
-
 
 
 @NgModule({

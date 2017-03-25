@@ -10,8 +10,6 @@ import { MqttClient } from './mqttClient';
 import { TilesApi  } from './tilesApi.service';
 import { Application, CommandObject, Device, UtilsService } from './utils.service';
 
-// A dictionary of new device names set by user
-let tileNames = {};
 
 @Injectable()
 export class BleService {
@@ -80,12 +78,9 @@ export class BleService {
   scanBLE = (): void => {
     // A list of the discovered devices
     let newDevices: Array<Device> = [];
-
     const virtualTiles = this.tilesApi.getVirtualTiles()
     //TODO: BUG: The completion function is never called.
     //TODO: unsubscribe at some point
-
-    // Subscribing to the observable returned by this.ble.scan()
     this.ble.scan([], 30).subscribe(
       // function to be called for each new device discovered
       bleDevice => {
@@ -108,14 +103,7 @@ export class BleService {
       err => {
         alert('Error when scanning for devices: ' + err);
       },
-      () => {
-        //alert('No more devices');
-        // If we found any devices we should update the device list
-        if (newDevices.length > 0) {
-          this.events.publish('updateDevices');
-        }
-        console.log('\nNo more devices: ');
-      });
+      () => {})
   };
 
   /**
@@ -128,17 +116,13 @@ export class BleService {
   	this.ble.connect(device.id)
   		  .subscribe(
           res => {
-            console.log('connecting to : '+device.name);
+            console.log('connecting to : '+ device.name);
     		  	// Setting information about the device
   	  		 	device.ledOn = false;
             device.connected = true;
             device.buttonPressed = false;
-  	        //this.tilesApi.loadEventMappings(device.tileId);
             this.mqttClient.registerDevice(device);
             this.startDeviceNotification(device);
-            if (device.name in tileNames){
-              device.name = tileNames[device.name];
-            }
             device.loading = false;
           },
           err => {
@@ -147,11 +131,8 @@ export class BleService {
             this.devicesService.clearDisconnectedDevices();
             this.events.publish('updateDevices');
             this.disconnect(device);
-            //alert('Lost connection to ' + device.name)
           },
-          () => {
-            alert('Connection attempt completed')
-          });
+          () => {})
   };
 
   /**
@@ -175,9 +156,7 @@ export class BleService {
           err => {
             console.log(err);
           },
-          () => {
-            alert('Connection attempt completed');
-          });
+          () => {})
   };
 
   /**
@@ -230,6 +209,7 @@ export class BleService {
         () => {
           // called when the device disconnects
           device.connected = false;
+          this.mqttClient.unregisterDevice(device);
         });
   };
 
@@ -255,14 +235,13 @@ export class BleService {
    */
   sendData = (device: Device, dataString: string): void => {
     try {
-      console.log('Attempting to send data to device via BLE');
       const dataArray = this.utils.convertStringtoBytes(dataString);
       // Attempting to send the array of bytes to the device
       this.ble.writeWithoutResponse(device.id,
                                this.rfduino.serviceUUID,
                                this.rfduino.sendCharacteristicUUID,
                                dataArray.buffer)
-              //.then( res => alert('Success sending the string: ' + dataString))
+              .then( res => console.log('Success sending the string: ' + dataString))
               .catch( err => alert('Failed when trying to send data to the device!'));
     } catch (err) {
       alert('Failed when trying to send data to the device!');
