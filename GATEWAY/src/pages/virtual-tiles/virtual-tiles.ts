@@ -10,15 +10,18 @@ import { Application, Device, UtilsService, VirtualTile } from '../../providers/
   See http://ionicframework.com/docs/v2/components/#navigation for more info on
   Ionic pages and navigation.
 */
+
 @Component({
   selector: 'page-virtual-tiles',
   templateUrl: 'virtual-tiles.html'
 })
 export class VirtualTilesPage {
   devices: Device[];
-	applicationTitle: string;
+  applicationTitle: string;
   virtualTiles: VirtualTile[];
   activeApp: Application;
+  pairedVirtualTiles = [];
+  unpairedVirtualTiles = [];
 
   constructor(public alertCtrl: AlertController,
               public navCtrl: NavController, 
@@ -48,7 +51,32 @@ export class VirtualTilesPage {
   setVirtualTiles = (): void => {
     this.tilesApi.getApplicationTiles(this.activeApp._id).then(res => {
       this.virtualTiles = res;
+
+      // This is the already paired virtual tiles
+      this.pairedVirtualTiles = [];
+      this.unpairedVirtualTiles = [];
+      
+      for (var i = 0; i < this.virtualTiles.length; i++) {
+        if (this.virtualTiles[i].tile != null) {
+          this.pairedVirtualTiles.push(this.virtualTiles[i]);
+        } else {
+          this.unpairedVirtualTiles.push(this.virtualTiles[i]);
+        }
+      }
     });
+  }
+
+    /**
+   * Called when the refresher is triggered by pulling down on the view of
+   * virtualTiles
+   */
+  refreshVirtualTiles = (refresher): void => {
+    this.setDevices();
+    this.setVirtualTiles();
+    //Makes the refresher run for 2 secs
+    setTimeout(() => {
+      refresher.complete();
+    }, 1250);
   }
 
   /**
@@ -72,6 +100,9 @@ export class VirtualTilesPage {
           text: 'Pair',
           handler: data => {
             this.tilesApi.pairDeviceToVirualTile(data, virtualTile._id, this.activeApp._id);
+            
+            // Refreshes the lists of paired and unpaired virtual tiles
+            this.setVirtualTiles();
           },
       }],
     }).present();
@@ -82,6 +113,31 @@ export class VirtualTilesPage {
         message: 'No physical tiles nearby.',
        buttons: ['Dismiss']}).present();
     }
-    
   }
+  /**
+  * Called when the pair button is pushed on the view of the the
+  * the virtual tiles.
+  * @param {VirtualTile} virtualTile - the target device
+  */
+  unpairTile = (virtualTile: VirtualTile): void => {
+    this.alertCtrl.create({
+      title: 'Unpair physical tile',
+      message: 'not yet implemented',
+      buttons: [{
+          text: 'Cancel',
+          role: 'cancel',
+        },
+        {
+          text: 'Unpair',
+          handler: data => {
+            // TODO
+            
+            // Refreshes the lists of paired and unpaired virtual tiles
+            this.setVirtualTiles();
+          },
+      }],
+    }).present();
+
+  }
+
 }

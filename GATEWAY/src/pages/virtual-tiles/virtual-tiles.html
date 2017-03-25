@@ -14,14 +14,38 @@
 
 
 <ion-content padding>
-	<ion-title left style="padding-left: 0;">VIRTUAL TILES</ion-title>
-  <ion-item class="devices" color="light" *ngFor="let tile of virtualTiles">
+  <ion-refresher (ionRefresh)="refreshVirtualTiles($event)">
+    <ion-refresher-content
+      pullingIcon="arrow-dropdown"
+      pullingText="Pull to refresh"
+      refreshingSpinner="circles"
+      refreshingText="Refreshing...">
+    </ion-refresher-content>
+  </ion-refresher>
+
+	<ion-title left style="padding-left: 0;">UNPAIRED TILES</ion-title>
+  <ion-item class="devices" color="light" *ngFor="let tile of unpairedVirtualTiles">
     <div class="row row-center">
       <div id="devName" class="col col-75">
         <b>{{tile.virtualName}}</b><br>
       </div>
       <div class="col">
         <button class="bttn" ion-button small color="positive" (click)="pairTilePopUp(tile)" >PAIR</button>
+      </div>
+    </div>
+  </ion-item>
+
+  <ion-title left style="padding-left: 0;">PAIRED TILES</ion-title>
+  <ion-item class="devices" color="light" *ngFor="let tile of pairedVirtualTiles">
+    <div class="row row-center">
+      <div id="devName" class="col col-75">
+        <b>vTile: {{tile.virtualName}}</b><br>
+        <p>Tile: {{tile.tile._id}}</p><br>
+      </div>
+      <div class="col">
+        <!-- TODO: add unpair function -->
+        <button class="bttn" ion-button small color="positive" (click)="unpairTile(tile)">UNPAIR</button>
+        <!-- <button class="bttn" ion-button small color="positive" (click)="pairTilePopUp(tile)" >UNPAIR</button> -->
       </div>
     </div>
   </ion-item>
