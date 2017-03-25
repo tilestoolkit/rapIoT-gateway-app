@@ -114,30 +114,5 @@ export class VirtualTilesPage {
        buttons: ['Dismiss']}).present();
     }
   }
-  /**
-  * Called when the pair button is pushed on the view of the the
-  * the virtual tiles.
-  * @param {VirtualTile} virtualTile - the target device
-  */
-  unpairTile = (virtualTile: VirtualTile): void => {
-    this.alertCtrl.create({
-      title: 'Unpair physical tile',
-      message: 'not yet implemented',
-      buttons: [{
-          text: 'Cancel',
-          role: 'cancel',
-        },
-        {
-          text: 'Unpair',
-          handler: data => {
-            // TODO
-            
-            // Refreshes the lists of paired and unpaired virtual tiles
-            this.setVirtualTiles();
-          },
-      }],
-    }).present();
-
-  }
 
 }
