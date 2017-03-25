@@ -48,7 +48,7 @@ export class PhysicalTilesPage {
    */
   refreshDevices = (refresher): void => {
     console.log('Scanning for more devices...');
-    this.bleService.scanForDevices([]);
+    this.bleService.scanForDevices();
     //Makes the refresher run for 2 secs
     setTimeout(() => {
       refresher.complete();

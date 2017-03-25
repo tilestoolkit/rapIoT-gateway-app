@@ -8,7 +8,7 @@ import 'rxjs/add/operator/toPromise';
 import { DevicesService }from './devices.service';
 import { MqttClient } from './mqttClient';
 import { TilesApi  } from './tilesApi.service';
-import { CommandObject, Device, UtilsService, VirtualTile } from './utils.service';
+import { Application, CommandObject, Device, UtilsService, VirtualTile } from './utils.service';
 
 // A dictionary of new device names set by user
 let tileNames = {};
@@ -36,9 +36,9 @@ export class BleService {
    * Start the BLE scanner making it scan every 30s
    */
   startBLEScanner = (): void => {
-    this.scanForDevices([]);
+    this.scanForDevices();
     this.bleScanner = Observable.interval(30000).subscribe(res => {
-      this.scanForDevices([]);
+      this.scanForDevices();
     });
   }
 
@@ -54,22 +54,22 @@ export class BleService {
   /**
    * Checking if bluetooth is enabled and enable on android if not
    */
-  scanForDevices = (virtualTiles: VirtualTile[]): void => {
+  scanForDevices = (): void => {
     this.devicesService.clearDisconnectedDevices();
     this.ble.isEnabled()
 		  		  .then( res => {
-		   		 		this.scanBLE(virtualTiles);
+		   		 		this.scanBLE();
 		   		 	})
 		  		  .catch( err => {
-		  		 		alert('Bluetooth not enabled!');
+		  		 		//alert('Bluetooth not enabled!');
 		  		 		// NB! Android only!! IOS users has to turn bluetooth on manually
 		  		 		this.ble.enable()
 				  		 	 .then( res => {
-                    alert('Bluetooth has been enabled');
-                    this.scanBLE(virtualTiles);
+                    //alert('Bluetooth has been enabled');
+                    this.scanBLE();
                   })
 				    		 .catch( err => {
-                    alert('Failed to enable bluetooth, try doing it manually');
+                    //alert('Failed to enable bluetooth, try doing it manually');
                   });
 		  		  });
   };
@@ -77,10 +77,11 @@ export class BleService {
   /**
    * Checking to see if any bluetooth devices are in reach
    */
-  scanBLE = (virtualTiles: VirtualTile[]): void => {
+  scanBLE = (): void => {
     // A list of the discovered devices
     let newDevices: Array<Device> = [];
 
+    const virtualTiles = this.tilesApi.getVirtualTiles()
     //TODO: BUG: The completion function is never called.
     //TODO: unsubscribe at some point
 
@@ -108,7 +109,7 @@ export class BleService {
         alert('Error when scanning for devices: ' + err);
       },
       () => {
-        alert('No more devices');
+        //alert('No more devices');
         // If we found any devices we should update the device list
         if (newDevices.length > 0) {
           this.events.publish('updateDevices');
@@ -161,31 +162,20 @@ export class BleService {
     this.ble.connect(device.id)
         .subscribe(
           res => {
-            // Setting information about the device
-            device.ledOn = false;
-            device.connected = true;
-            device.buttonPressed = false;
-            //this.tilesApi.loadEventMappings(device.tileId);
-            this.mqttClient.registerDevice(device);
-            this.startDeviceNotification(device);
-            if (device.name in tileNames){
-              device.name = tileNames[device.name];
-            }
-
             this.sendData(device, 'led,on,red');
-            setTimeout(()=> {this.sendData(device, 'led,off'); this.disconnect(device);}, 3000);
+            setTimeout(()=> {
+              this.sendData(device, 'led,off'); 
+              if(!device.connected) {
+                this.disconnect(device);
+              }
+            }, 3000);
             device.loading = false;
           },
           err => {
-            device.connected = false;
-            device.loading = false;
-            this.devicesService.clearDisconnectedDevices();
-            this.events.publish('updateDevices');
-            this.disconnect(device);
-            //alert('Lost connection to ' + device.name)
+            console.log(err);
           },
           () => {
-            alert('Connection attempt completed')
+            alert('Connection attempt completed');
           });
   };
 

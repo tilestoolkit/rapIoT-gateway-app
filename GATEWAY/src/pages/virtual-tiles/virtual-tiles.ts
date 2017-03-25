@@ -32,6 +32,7 @@ export class VirtualTilesPage {
   	// Sets the title of the page (found in virtual-tiles.html) to id, capitalized. 
   	this.applicationTitle = utils.capitalize(this.activeApp._id);
     this.setDevices();
+    this.tilesApi.setVirtualTiles(this.activeApp._id);
     this.setVirtualTiles();
   }
 
