@@ -2,13 +2,13 @@
 import { Injectable } from '@angular/core';
 import { Events } from 'ionic-angular';
 import { BLE } from '@ionic-native/ble';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import 'rxjs/add/operator/toPromise';
 
 import { DevicesService }from './devices.service';
 import { MqttClient } from './mqttClient';
 import { TilesApi  } from './tilesApi.service';
-import { Application, CommandObject, Device, UtilsService, VirtualTile } from './utils.service';
+import { Application, CommandObject, Device, UtilsService } from './utils.service';
 
 // A dictionary of new device names set by user
 let tileNames = {};
@@ -128,6 +128,7 @@ export class BleService {
   	this.ble.connect(device.id)
   		  .subscribe(
           res => {
+            console.log('connecting to : '+device.name);
     		  	// Setting information about the device
   	  		 	device.ledOn = false;
             device.connected = true;
@@ -189,13 +190,20 @@ export class BleService {
     this.ble.startNotification(device.id, this.rfduino.serviceUUID, this.rfduino.receiveCharacteristicUUID)
       .subscribe(
         res => {
-          // Convert the bytes sent from the device into a string
-          const responseString = ((String.fromCharCode.apply(null, new Uint8Array(res))).slice(0, -1)).trim();
+          let responseString:string;
+          if(typeof res == 'string') {
+            responseString = res;
+          } else {
+            // Convert the bytes sent from the device into a string
+            responseString = ((String.fromCharCode.apply(null, new Uint8Array(res))).slice(0, -1)).trim();
+          }
           let message: CommandObject = this.utils.getEventStringAsObject(responseString);
           //alert('Recieved event: ' + message.name + ' with properties: ' + message.properties);
           if (message === null) {
-            alert('Found no mapping for event: ' + responseString);
+            console.log('Found no mapping for event: ' + responseString);
           } else {
+            console.log(message);
+            
             // Switch on the event type of the message
             // for testing purposes only
             const eventType = message.properties[0];
@@ -247,7 +255,7 @@ export class BleService {
    */
   sendData = (device: Device, dataString: string): void => {
     try {
-      console.log('Attempting to send data to device via BLE.');
+      console.log('Attempting to send data to device via BLE');
       const dataArray = this.utils.convertStringtoBytes(dataString);
       // Attempting to send the array of bytes to the device
       this.ble.writeWithoutResponse(device.id,

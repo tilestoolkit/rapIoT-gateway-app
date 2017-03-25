@@ -4,7 +4,7 @@ import { HttpModule }    from '@angular/http';
 import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
 import { BLE } from '@ionic-native/ble';
 import { Storage } from '@ionic/storage';
-import { Observable, Subscription } from 'rxjs';
+import { Observable } from 'rxjs';
 
 import { Tiles } from './app.component';
 import { TabsPage } from '../pages/tabs/tabs';
@@ -41,7 +41,7 @@ class BleMock extends BLE {
         "rssi": -79,
         "advertising": null
       }, {
-        "name": "Tile2",
+        "name": "Tile_da",
         "id": "01:23:45:67:89:AB",
         "rssi": -79,
         "advertising": null
@@ -64,12 +64,12 @@ class BleMock extends BLE {
   }
   connect(device){
     return Observable.create(observer => {
-      return true
+      observer.next(42);
     }); 
   }
   startNotification(deviceId, serviceUUID, characteristicUUID) {
     return Observable.create(observer => {
-      return true
+      observer.next('tap,single');
     });     
   }
   disconnect(device) {
