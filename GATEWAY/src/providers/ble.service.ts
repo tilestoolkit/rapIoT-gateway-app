@@ -1,8 +1,8 @@
 
 import { Injectable } from '@angular/core';
 import { Events } from 'ionic-angular';
-import { BLE } from 'ionic-native';
-import { Observable, Subscription } from 'rxjs';
+import { BLE } from '@ionic-native/ble';
+import { Observable } from 'rxjs';
 import 'rxjs/add/operator/toPromise';
 
 import { DevicesService }from './devices.service';
@@ -16,17 +16,16 @@ let tileNames = {};
 @Injectable()
 export class BleService {
   bleScanner: Subscription;
+  activeApp: Application;
 	rfduino = {
     serviceUUID: '2220',
     receiveCharacteristicUUID: '2221',
     sendCharacteristicUUID: '2222',
     disconnectCharacteristicUUID: '2223',
-  };/*
-  mockDevices = [
-  	{'name': 'TI SensorTag','id': '01:23:45:67:89:AB', 'rssi': -79, 'advertising': null},
-  	{'name': 'Some OtherDevice', 'id': 'A1:B2:5C:87:2D:36', 'rssi': -52, 'advertising': null}
-  ];*/
+  };
+
   constructor(private events: Events,
+              private ble: BLE,
               private devicesService: DevicesService,
               private mqttClient: MqttClient,
   						private tilesApi: TilesApi,
@@ -57,14 +56,14 @@ export class BleService {
    */
   scanForDevices = (virtualTiles: VirtualTile[]): void => {
     this.devicesService.clearDisconnectedDevices();
-    BLE.isEnabled()
+    this.ble.isEnabled()
 		  		  .then( res => {
 		   		 		this.scanBLE(virtualTiles);
 		   		 	})
 		  		  .catch( err => {
 		  		 		alert('Bluetooth not enabled!');
 		  		 		// NB! Android only!! IOS users has to turn bluetooth on manually
-		  		 		BLE.enable()
+		  		 		this.ble.enable()
 				  		 	 .then( res => {
                     alert('Bluetooth has been enabled');
                     this.scanBLE(virtualTiles);
@@ -85,8 +84,8 @@ export class BleService {
     //TODO: BUG: The completion function is never called.
     //TODO: unsubscribe at some point
 
-    // Subscribing to the observable returned by BLE.scan()
-    BLE.scan([], 30).subscribe(
+    // Subscribing to the observable returned by this.ble.scan()
+    this.ble.scan([], 30).subscribe(
       // function to be called for each new device discovered
       bleDevice => {
         if (this.tilesApi.isTilesDevice(bleDevice) && this.devicesService.isNewDevice(bleDevice)) {
@@ -125,7 +124,7 @@ export class BleService {
   connect = (device: Device): void => {
     device.loading = true;
     //TODO: unsubscribe at some point ?
-  	BLE.connect(device.id)
+  	this.ble.connect(device.id)
   		  .subscribe(
           res => {
     		  	// Setting information about the device
@@ -159,8 +158,7 @@ export class BleService {
    */
   locate = (device: Device): void => {
     device.loading = true;
-    //TODO: unsubscribe at some point ?
-    BLE.connect(device.id)
+    this.ble.connect(device.id)
         .subscribe(
           res => {
             // Setting information about the device
@@ -198,7 +196,7 @@ export class BleService {
   startDeviceNotification = (device: Device): void => {
     //alert('Starting notifications from device: ' + device.name);
     //TODO: unsubscribe at some point. Could return the subscriber and unsubscribe after a timeout
-    BLE.startNotification(device.id, this.rfduino.serviceUUID, this.rfduino.receiveCharacteristicUUID)
+    this.ble.startNotification(device.id, this.rfduino.serviceUUID, this.rfduino.receiveCharacteristicUUID)
       .subscribe(
         res => {
           // Convert the bytes sent from the device into a string
@@ -242,7 +240,7 @@ export class BleService {
 	 * @param {Device} device - the target device
 	 */
   disconnect = (device: Device): void => {
-  	BLE.disconnect(device.id)
+  	this.ble.disconnect(device.id)
   					.then( res => {
   						device.connected = false;
   						this.mqttClient.unregisterDevice(device);
@@ -262,7 +260,7 @@ export class BleService {
       console.log('Attempting to send data to device via BLE.');
       const dataArray = this.utils.convertStringtoBytes(dataString);
       // Attempting to send the array of bytes to the device
-      BLE.writeWithoutResponse(device.id,
+      this.ble.writeWithoutResponse(device.id,
                                this.rfduino.serviceUUID,
                                this.rfduino.sendCharacteristicUUID,
                                dataArray.buffer)
