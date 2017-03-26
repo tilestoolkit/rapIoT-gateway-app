@@ -46,4 +46,8 @@ export class LoginPage {
   loginForm() {
     this.connectToServer(this.loginInfo.user, this.loginInfo.host, parseInt(this.loginInfo.port), this.loginInfo.remember);
   }
+
+  autoLogin() {
+    this.connectToServer('Andrea', '178.62.99.218', 8080, true);
+  }
 }
