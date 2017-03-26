@@ -14,11 +14,12 @@
 
 </ion-header>
 
-<ion-content padding>
+<ion-content>
   <ion-list>
-    <ion-item class="devices" *ngFor="let message of messages">
-      <div class="row row-center">
-        <p>{{message}}</p>
+    <ion-item class="devices" *ngFor="let message of messages" no-margin>
+      <div>
+        <span style="font-size: 10px">{{message}}</span><br>
+        <span>{{message}}</span>
       </div>
     </ion-item>
   </ion-list>
