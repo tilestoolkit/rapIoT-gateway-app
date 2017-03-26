@@ -35,7 +35,7 @@ export class BleService {
    */
   startBLEScanner = (): void => {
     this.scanForDevices();
-    this.bleScanner = Observable.interval(30000).subscribe(res => {
+    this.bleScanner = Observable.interval(10000).subscribe(res => {
       this.scanForDevices();
     });
   }
@@ -121,8 +121,8 @@ export class BleService {
   	  		 	device.ledOn = false;
             device.connected = true;
             device.buttonPressed = false;
-            this.mqttClient.registerDevice(device);
             this.startDeviceNotification(device);
+            this.mqttClient.registerDevice(device);
           },
           err => {
             device.connected = false;

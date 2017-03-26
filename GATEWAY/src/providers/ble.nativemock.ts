@@ -40,7 +40,7 @@ export class BLENativeMock extends BLE {
   }
   startNotification(deviceId, serviceUUID, characteristicUUID) {
     return Observable.create(observer => {
-      observer.next(this.utils.convertStringtoBytes('Tile_da,tap,single'));
+      observer.next(this.utils.convertStringtoBytes('tap,single.'));
     });     
   }
   disconnect(device) {
