@@ -48,6 +48,6 @@ export class LoginPage {
   }
 
   autoLogin() {
-    this.connectToServer('andrea', '178.62.99.218', 8080, true);
+    this.connectToServer('Andrea', '178.62.99.218', 8080, true);
   }
 }
