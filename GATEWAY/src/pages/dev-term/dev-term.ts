@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { Events, NavController, NavParams } from 'ionic-angular';
+import { Component, ViewChild } from '@angular/core';
+import { Events, NavController, NavParams, Content} from 'ionic-angular';
 
 import { MqttClient } from '../../providers/mqttClient';
 import { CommandObject, UtilsService } from '../../providers/utils.service';
@@ -15,7 +15,8 @@ import { CommandObject, UtilsService } from '../../providers/utils.service';
   templateUrl: 'dev-term.html'
 })
 export class DevTermPage {
-	messages: string[];
+ @ViewChild(Content) content: Content;
+  messages: string[];
 
   constructor(private events: Events,
               public navCtrl: NavController, 
@@ -23,6 +24,24 @@ export class DevTermPage {
               private mqttClient: MqttClient,
               private utils: UtilsService,) {
   	this.messages = [];
+    this.messages.push('test');
+    this.messages.push('test');
+    this.messages.push('test');
+    this.messages.push('test');
+    this.messages.push('test');
+    this.messages.push('test');
+    this.messages.push('test');
+    this.messages.push('test');
+    this.messages.push('test');
+    this.messages.push('test');
+    this.messages.push('test');
+    this.messages.push('test');
+    this.messages.push('test');
+    this.messages.push('test');
+    this.messages.push('test');
+    this.messages.push('test');
+    this.messages.push('test');
+    this.messages.push('test');
 
     this.events.subscribe('serverConnected', () => {
     	console.log('broker connected')
@@ -54,5 +73,13 @@ export class DevTermPage {
 	  	const message = `Recieved event from BLE device: ${deviceId} : ${this.utils.getCommandObjectAsString(event)}`;
 			this.messages.push(message)
     });
+  }
+
+  scrollBottom = () => {
+    this.content.scrollToBottom(100);
+  }
+
+  clearTerminal = () => {
+    this.messages = [];
   }
 }
