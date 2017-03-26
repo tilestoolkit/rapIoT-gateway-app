@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Storage } from '@ionic/storage';
-import { NavController } from 'ionic-angular';
+import { ViewController } from 'ionic-angular';
 
 import { TilesApi } from '../../providers/tilesApi.service';
 import { MqttClient } from '../../providers/mqttClient';
@@ -14,7 +14,7 @@ export class LoginPage {
   loginInfo = { user: '', host: '', port: '', remember: false };
 
   constructor(
-      public navCtrl: NavController,
+      public navCtrl: ViewController,
       private tilesApi: TilesApi,
       private mqttClient: MqttClient,
       private  utils: UtilsService,
@@ -34,7 +34,7 @@ export class LoginPage {
         this.mqttClient.connect();
       });
       this.storage.set('loggedIn', loginData.remember);
-      this.navCtrl.pop();
+      this.viewCtrl.dismiss('logged_in');
     } else {
       alert("Invalid login credentials.");
     }

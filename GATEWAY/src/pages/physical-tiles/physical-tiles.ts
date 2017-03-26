@@ -79,7 +79,7 @@ export class PhysicalTilesPage {
       title: 'Change tile name',
       inputs: [{
         name: 'newName',
-        placeholder: 'new name',
+        placeholder: 'New name',
       }],
       buttons: [{
         text: 'Cancel',
