@@ -47,9 +47,7 @@ export class MqttClient {
     if (this.mqttConnectionData === undefined || this.mqttConnectionData === null) {
       this.mqttConnectionData = this.tilesApi.getLoginData();
     }
-		// Check if a previous server connection exists
-		// and end it if it does
-    //connect = (host: string, port: number): void => {
+
 		// Check if a previous server connection exists and end it if it does
 		if (this.client) {
 			this.client.end();
@@ -98,13 +96,6 @@ export class MqttClient {
 			clearTimeout(failedConnectionTimeout);
       this.connectedToBroker = true;
       this.events.publish('serverConnected');
-      // NB: temporary for testing only
-      const time = new Date();
-      this.client.publish(
-        this.getDeviceSpecificTopic('Tile_da', true),
-        'connect at time:  ' + time.getDate()+'/'+time.getMonth()+' . '+time.getHours()+':'+time.getMinutes(),
-        this.publishOpts,
-        );
 		});
 
     // Ends the connection attempt if the timeout rus out

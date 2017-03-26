@@ -96,8 +96,8 @@ export class ApplicationsPage {
    * @param {Application} application - a tiles application created in the web view
    */
   viewApplication = (application: Application): void => {
-    //push another page onto the history stack
-    //causing the nav controller to animate the new page in
+    // Push another page onto the history stack
+    // causing the nav controller to animate the new page in
     this.navCtrl.push(VirtualTilesPage, {
     	app: application,
     });
