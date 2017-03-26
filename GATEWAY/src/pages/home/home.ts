@@ -142,7 +142,7 @@ export class HomePage {
   scanForNewBLEDevices = (): void => {
     this.statusMsg = 'Searching for devices...';
     this.devicesService.clearDisconnectedDevices();
-    this.bleService.scanForDevices(this.virtualTiles);
+    this.bleService.scanForDevices();
     this.setDevices();
   }
 
