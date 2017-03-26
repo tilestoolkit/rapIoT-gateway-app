@@ -22,7 +22,14 @@ export class DevTermPage {
               public navCtrl: NavController, 
   						public navParams: NavParams,
               private mqttClient: MqttClient,
-              private utils: UtilsService,) {
+              private utils: UtilsService) {
+
+//     angular.module('ionicApp', ['ionic']).config(function($ionicConfigProvider) {
+//   if (!ionic.Platform.isIOS()) {
+//     $ionicConfigProvider.scrolling.jsScrolling(false);
+//   }
+// })
+
   	this.messages = [];
     this.messages.push('test');
     this.messages.push('test');
