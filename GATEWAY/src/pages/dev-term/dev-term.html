@@ -8,16 +8,15 @@
 
   <ion-navbar>
     <ion-title>Developer Terminal</ion-title>
+    <button ion-button left (click)="scrollBottom()">Scroll</button>
+    <button ion-button right (click)="clearTerminal()">Clear</button>
   </ion-navbar>
 
 </ion-header>
 
-
-<ion-content padding>
-  <button ion-button left (click)="scrollBottom()">Scroll</button>
-  <button ion-button right (click)="clearTerminal()">Clear</button>
+<ion-content padding style="overflow-scroll: true">
   <ion-list>
-    <ion-item class="devices" color="light" *ngFor="let message of messages">
+    <ion-item class="devices" *ngFor="let message of messages">
       <div class="row row-center">
         <p>{{message}}</p>
       </div>
