@@ -14,7 +14,7 @@ export class LoginPage {
   loginInfo = { user: '', host: '', port: '', remember: false };
 
   constructor(
-      public navCtrl: ViewController,
+      public viewCtrl: ViewController,
       private tilesApi: TilesApi,
       private mqttClient: MqttClient,
       private  utils: UtilsService,
