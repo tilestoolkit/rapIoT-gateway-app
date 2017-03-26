@@ -14,9 +14,13 @@
 
 
 <ion-content padding>
-  <ion-item class="devices" color="light" *ngFor="let message of messages">
-    <div class="row row-center">
-      <b>{{message}}</b><br>
-    </div>
-  </ion-item>
+  <button ion-button left (click)="scrollBottom()">Scroll</button>
+  <button ion-button right (click)="clearTerminal()">Clear</button>
+  <ion-list>
+    <ion-item class="devices" color="light" *ngFor="let message of messages">
+      <div class="row row-center">
+        <p>{{message}}</p>
+      </div>
+    </ion-item>
+  </ion-list>
 </ion-content>
