@@ -31,7 +31,7 @@
           <b>{{device.name}}</b><br><!--ID: {{device.tileId}}-->
         </div>
         <div class="col">
-          <button class="bttn" ion-button small color="positive" (click)="bleService.connect(device)" [disabled]="device.loading" [hidden]="device.connected">CONNECT</button>
+          <!--button class="bttn" ion-button small color="positive" (click)="bleService.connect(device)" [disabled]="device.loading" [hidden]="device.connected">CONNECT</button-->
           <button class="bttn" ion-button small color="positive" id="disconnectButton" (click)="bleService.disconnect(device)" [hidden]="!device.connected">DISCONNECT</button>
           <!--button class="bttn" ion-button small color="positive" id="fetchEventMappingsButton" (click)="fetchEventMappings(device)" [hidden]="!device.connected">FETCH EVT</button-->
         </div>
