@@ -31,6 +31,7 @@ export class DevTermPage {
 //   }
 // })
 
+    //  THIS IS REALLY REALLY BAD, BUT JUST FOR TESTING
   	this.messages = [];
     this.messages.push('test');
     this.messageDate.push(this.currentTime());
