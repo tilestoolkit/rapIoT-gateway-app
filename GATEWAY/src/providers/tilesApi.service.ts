@@ -4,6 +4,8 @@ import { Storage } from '@ionic/storage';
 import { Observable } from 'rxjs';
 import 'rxjs/add/operator/toPromise';
 
+import { Application, VirtualTile } from './utils.service';
+
 
 @Injectable()
 export class TilesApi {
@@ -22,6 +24,7 @@ export class TilesApi {
   hostAddress: string = '178.62.99.218';//'138.68.144.206';
   mqttPort: number = 8080;
   apiPort: number = 3000;
+  virtualTiles: VirtualTile[] = [];
 
   constructor(private http: Http,
               private storage: Storage) {
@@ -57,6 +60,22 @@ export class TilesApi {
    */
   setHostMqttPort = (hostMqttPort: number): void => {
     this.mqttPort = hostMqttPort;
+  };
+
+  /**
+   * Set the virtual tiles equal to the ones stores for the app
+   */
+  setVirtualTiles = (appId: string): void => {
+    this.getApplicationTiles(appId).then(res => {
+      this.virtualTiles = res;
+    });
+  };
+
+  /**
+   * Get the virtual tiles
+   */
+  getVirtualTiles = (): VirtualTile[] => {
+    return this.virtualTiles;
   };
 
   /** 

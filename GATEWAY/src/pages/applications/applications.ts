@@ -1,4 +1,4 @@
-import { Component, Injectable } from '@angular/core';
+import { Component } from '@angular/core';
 import { NavController, NavParams, AlertController } from 'ionic-angular';
 import { ModalController } from 'ionic-angular';
 import { ModalPage } from './modal-page';
@@ -41,7 +41,9 @@ export class ApplicationsPage {
       if (val == null || val == false) {
         this.presentLoginModal();
       } else {
+        this.setApplications();
         this.mqttClient.connect(val.username, val.host, val.port);
+        this.setApplications();
       }
     });
   }
@@ -67,12 +69,16 @@ export class ApplicationsPage {
     }, 1250);
   }
 
+
   /**
    *  Pushes the modal on the viewStack.
    */
   presentLoginModal() {
     let modal = this.modalCtrl.create(LoginPage);
-    modal.present();
+    modal.onDidDismiss(data => {
+        this.setApplications();
+   });
+   modal.present();
   }
 
   /**

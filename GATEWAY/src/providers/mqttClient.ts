@@ -99,9 +99,9 @@ export class MqttClient {
       this.connectedToBroker = true;
       this.events.publish('serverConnected');
       // NB: temporary for testing only
-      const time = new Date;
+      const time = new Date();
       this.client.publish(
-        'tiles/test', 
+        this.getDeviceSpecificTopic('Tile_da', true),
         'connect at time:  ' + time.getDate()+'/'+time.getMonth()+' . '+time.getHours()+':'+time.getMinutes(),
         this.publishOpts,
         );

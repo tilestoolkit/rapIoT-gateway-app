@@ -48,7 +48,7 @@ export class PhysicalTilesPage {
    */
   refreshDevices = (refresher): void => {
     console.log('Scanning for more devices...');
-    this.bleService.scanForDevices([]);
+    this.bleService.scanForDevices();
     //Makes the refresher run for 2 secs
     setTimeout(() => {
       refresher.complete();
@@ -79,7 +79,7 @@ export class PhysicalTilesPage {
       title: 'Change tile name',
       inputs: [{
         name: 'newName',
-        placeholder: 'new name',
+        placeholder: 'New name',
       }],
       buttons: [{
         text: 'Cancel',
