@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Events } from 'ionic-angular';
 import mqtt from 'mqtt';
 
-import { CommandObject, Device } from './utils.service';
+import { CommandObject, Device, LoginData } from './utils.service';
 import { TilesApi } from './tilesApi.service';
 
 
@@ -12,14 +12,11 @@ export class MqttClient {
   private connectionTimeout: number = 10000; // 10 seconds
   private connectedToBroker: boolean = false;
   private client;
-  private mqttConnectionData = {
-    username: this.tilesApi.username,
-    host: this.tilesApi.hostAddress,//'178.62.99.218',//
-    port: this.tilesApi.mqttPort,
-  };
+  private mqttConnectionData: LoginData;
 
   constructor(private events: Events,
               private tilesApi: TilesApi) { 
+    this.mqttConnectionData = this.tilesApi.getLoginData();
   }
 
   /**
@@ -29,7 +26,7 @@ export class MqttClient {
    */
   getDeviceSpecificTopic = (deviceId: string, isEvent: boolean): string => {
   	const type = isEvent ? 'evt' : 'cmd';
-  	return `tiles/${type}/${this.tilesApi.username}/${deviceId}`;
+  	return `tiles/${type}/${this.mqttConnectionData.user}/${deviceId}`;
   };
 
   /**
@@ -46,10 +43,13 @@ export class MqttClient {
    * @param {string} host - the host url / ip
    * @param {number} port - the port to send to
    */
-  connect = (user: string, host: string, port: number): void => {
+  connect = (): void => {
+    if (this.mqttConnectionData === undefined || this.mqttConnectionData === null) {
+      this.mqttConnectionData = this.tilesApi.getLoginData();
+    }
 		// Check if a previous server connection exists
 		// and end it if it does
-  //connect = (host: string, port: number): void => {
+    //connect = (host: string, port: number): void => {
 		// Check if a previous server connection exists and end it if it does
 		if (this.client) {
 			this.client.end();
@@ -57,8 +57,8 @@ export class MqttClient {
 
     // Instantiate a mqtt-client from the host and port
     this.client = mqtt.connect({
-      host: host || this.mqttConnectionData.host,//'test.mosquitto.org'
-      port: port || this.mqttConnectionData.port,
+      host: this.mqttConnectionData.host,//'test.mosquitto.org'
+      port: this.mqttConnectionData.port,
       keepalive: 0,
 		});
     

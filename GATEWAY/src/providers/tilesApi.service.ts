@@ -3,13 +3,14 @@ import { Headers, Http, Response }    from '@angular/http';
 import { Storage } from '@ionic/storage';
 import 'rxjs/add/operator/toPromise';
 
-import { Application, VirtualTile } from './utils.service';
+import { LoginData, VirtualTile } from './utils.service';
 
 
 @Injectable()
 export class TilesApi {
   apiPort: number = 3000;
   virtualTiles: VirtualTile[] = [];
+  loginData: LoginData;
 
   constructor(private http: Http,
               private storage: Storage) {
@@ -24,28 +25,28 @@ export class TilesApi {
   };
 
   /** 
-   * Set a username for the tile owner/user
-   * @param {string} username - The new username
+   * Sets login data for the user
+   * @param {LoginData} loginData - the device to test
    */
-  setUsername = (username: string): void => {
-    this.username = username;
-  };
+  setLoginData = (loginData: LoginData): void => {
+    this.loginData = loginData;
+  }
 
   /** 
-   * Set the host address
-   * @param {string} hostAddress - The url/ip address of the host
+   * Gets login data for the user
    */
-  setHostAddress = (hostAddress: string): void => {
-    this.hostAddress = hostAddress;
-  };
-
-  /** 
-   * Set the port for connecting to the server
-   * @param {number} hostMqttPort - the port number 
-   */
-  setHostMqttPort = (hostMqttPort: number): void => {
-    this.mqttPort = hostMqttPort;
-  };
+  getLoginData = (): LoginData => {
+    if (this.loginData === undefined || this.loginData === null) {
+      this.storage.get('loginData').then((loginData) => {
+        this.setLoginData(loginData);
+        return loginData;
+      })
+    }
+    else { 
+      return this.loginData;
+    }
+    
+  }
 
   /**
    * Set the virtual tiles equal to the ones stores for the app
@@ -67,7 +68,7 @@ export class TilesApi {
    * Get all registered applications for all users
    */
   getAllApplications = (): Promise<any> => {
-    const url = `http://${this.hostAddress}:${this.apiPort}/applications`;
+    const url = `http://${this.loginData.host}:${this.apiPort}/applications`;
     console.log(url)
     return this.http.get(url)
             .toPromise()
@@ -84,8 +85,8 @@ export class TilesApi {
    * @param {string} applicationId - The application ID
    */
   getApplicationDetails = (applicationId: string): Promise<any> => {
-    //const url = `http://${this.hostAddress}:${this.apiPort}/applications/${applicationId}`;
-    const url = `http://${this.hostAddress}:${this.apiPort}/applications/${applicationId}`;
+    //const url = `http://${this.loginData.host}:${this.apiPort}/applications/${applicationId}`;
+    const url = `http://${this.loginData.host}:${this.apiPort}/applications/${applicationId}`;
     return this.http.get(url)
             .toPromise()
             .then(res => {
@@ -113,7 +114,7 @@ export class TilesApi {
    * @param {string} applicationId - The application the virtual tile is registered to
    */
   pairDeviceToVirualTile = (deviceId: string, virtualTileId: string, applicationId: string): Promise<Response> => {
-    const url = `http://${this.hostAddress}:${this.apiPort}/applications/${applicationId}/${virtualTileId}`;
+    const url = `http://${this.loginData.host}:${this.apiPort}/applications/${applicationId}/${virtualTileId}`;
     const body = JSON.stringify({ tile: deviceId });
     const headerFields = new Headers({'Content-Type': 'application/json'});
     console.log('url: ' + url + ' body: ' + body)

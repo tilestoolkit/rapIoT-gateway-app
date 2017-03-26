@@ -25,7 +25,6 @@ import { UtilsService } from '../providers/utils.service';
 @NgModule({
   declarations: [
     Tiles,
-    HomePage,
     TabsPage,
     LoginPage,
     DevTermPage,
@@ -41,7 +40,6 @@ import { UtilsService } from '../providers/utils.service';
   bootstrap: [IonicApp],
   entryComponents: [
     Tiles,
-    HomePage,
     TabsPage,
     LoginPage,
     DevTermPage,

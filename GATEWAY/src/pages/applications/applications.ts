@@ -41,8 +41,11 @@ export class ApplicationsPage {
       if (val == null || val == false) {
         this.presentLoginModal();
       } else {
-        this.setApplications();
-        this.mqttClient.connect(val.username, val.host, val.port);
+        this.storage.get('loginData').then((loginData) => {
+          this.tilesApi.setLoginData(loginData);
+          this.mqttClient.connect();
+          this.setApplications();
+        });
       }
     });
   }
@@ -67,7 +70,6 @@ export class ApplicationsPage {
       refresher.complete();
     }, 1250);
   }
-
 
   /**
    *  Pushes the modal on the viewStack.
