@@ -165,8 +165,8 @@ export class BleService {
         res => {
           const responseString = ((String.fromCharCode.apply(null, new Uint8Array(res))).slice(0, -1)).trim();
           const message: CommandObject = this.utils.getEventStringAsObject(responseString);
-          if (message !== null) {
-            console.log('Found no mapping for event: ' + responseString);
+          if (message === null) {
+            console.log('Couldnt make an object from event: ' + responseString);
           } else {
             this.mqttClient.sendEvent(device.tileId, message);
             this.events.publish('recievedEvent', device.tileId, message);
