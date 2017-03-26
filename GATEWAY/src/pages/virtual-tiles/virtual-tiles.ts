@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Pipe, Injectable } from '@angular/core';
 import { AlertController, NavController, NavParams } from 'ionic-angular';
 
 import { DevicesService } from '../../providers/devices.service';
@@ -15,6 +15,7 @@ import { Application, Device, UtilsService, VirtualTile } from '../../providers/
   selector: 'page-virtual-tiles',
   templateUrl: 'virtual-tiles.html'
 })
+
 export class VirtualTilesPage {
   devices: Device[];
   applicationTitle: string;
@@ -53,6 +54,9 @@ export class VirtualTilesPage {
       this.virtualTiles = res;
 
       // This is the already paired virtual tiles
+      this.pairedVirtualTiles = [];
+      this.unpairedVirtualTiles = [];
+
       this.virtualTiles.map(tile => {
         if (tile.tile != null) {
           this.pairedVirtualTiles.push(tile);
@@ -63,10 +67,10 @@ export class VirtualTilesPage {
     });
   }
 
-    /**
-   * Called when the refresher is triggered by pulling down on the view of
-   * virtualTiles
-   */
+  /**
+  * Called when the refresher is triggered by pulling down on the view of
+  * virtualTiles
+  */
   refreshVirtualTiles = (refresher): void => {
     this.setDevices();
     this.setVirtualTiles();
