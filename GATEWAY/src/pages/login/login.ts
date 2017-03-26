@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Storage } from '@ionic/storage';
-import { NavController } from 'ionic-angular';
+import { ViewController } from 'ionic-angular';
 
 import { UtilsService } from '../../providers/utils.service';
 import { MqttClient } from '../../providers/mqttClient';
@@ -13,7 +13,7 @@ export class LoginPage {
   loginInfo = {username: '', host: '', port: '', remember: false};
 
   constructor(
-      public navCtrl: NavController,
+      public viewCtrl: ViewController,
       private mqttClient: MqttClient,
       private  utils: UtilsService,
       private storage: Storage,){}
@@ -29,7 +29,7 @@ export class LoginPage {
       this.mqttClient.connect(user, host, port);
       localStorage.setItem('user', user);
       this.storage.set('loggedIn', this.loginInfo.remember);
-      this.navCtrl.pop();
+      this.viewCtrl.dismiss('logged_in');
     } else {
       alert("Invalid login credentials.");
     }

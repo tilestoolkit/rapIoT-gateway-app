@@ -62,12 +62,10 @@ export class BleService {
 		   		 		this.scanBLE(virtualTiles);
 		   		 	})
 		  		  .catch( err => {
-		  		 		alert('Bluetooth not enabled!');
 		  		 		// NB! Android only!! IOS users has to turn bluetooth on manually
 		  		 		BLE.enable()
 				  		 	 .then( res => {
-                    alert('Bluetooth has been enabled');
-                    this.scanBLE(virtualTiles);
+                   this.scanBLE(virtualTiles);
                   })
 				    		 .catch( err => {
                     alert('Failed to enable bluetooth, try doing it manually');

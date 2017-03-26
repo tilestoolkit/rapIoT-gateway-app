@@ -42,6 +42,7 @@ export class ApplicationsPage {
         this.presentLoginModal();
       } else {
         this.mqttClient.connect(val.username, val.host, val.port);
+        this.setApplications();
       }
     });
   }
@@ -72,7 +73,10 @@ export class ApplicationsPage {
    */
   presentLoginModal() {
     let modal = this.modalCtrl.create(LoginPage);
-    modal.present();
+    modal.onDidDismiss(data => {
+        this.setApplications();
+   });
+   modal.present();
   }
 
   /**
