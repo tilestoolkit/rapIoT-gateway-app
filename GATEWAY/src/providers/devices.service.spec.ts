@@ -18,7 +18,6 @@ describe('devicesService:', () => {
       convertedBle.name = "TI SensorTag";
       convertedBle.id = "01:23:45:67:89:AB";
       convertedBle.connected = false;
-      convertedBle.loading = false;
       convertedBle.ledOn = false;
       convertedBle.buttonPressed = false;
 

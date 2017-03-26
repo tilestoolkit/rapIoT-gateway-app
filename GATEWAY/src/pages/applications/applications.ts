@@ -41,9 +41,11 @@ export class ApplicationsPage {
       if (val == null || val == false) {
         this.presentLoginModal();
       } else {
-        this.setApplications();
-        this.mqttClient.connect(val.username, val.host, val.port);
-        this.setApplications();
+        this.storage.get('loginData').then((loginData) => {
+          this.tilesApi.setLoginData(loginData);
+          this.mqttClient.connect();
+          this.setApplications();
+        });
       }
     });
   }
@@ -68,7 +70,6 @@ export class ApplicationsPage {
       refresher.complete();
     }, 1250);
   }
-
 
   /**
    *  Pushes the modal on the viewStack.
@@ -98,8 +99,8 @@ export class ApplicationsPage {
    * @param {Application} application - a tiles application created in the web view
    */
   viewApplication = (application: Application): void => {
-    //push another page onto the history stack
-    //causing the nav controller to animate the new page in
+    // Push another page onto the history stack
+    // causing the nav controller to animate the new page in
     this.navCtrl.push(VirtualTilesPage, {
     	app: application,
     });

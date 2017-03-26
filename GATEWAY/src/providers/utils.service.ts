@@ -3,15 +3,7 @@ import { Storage } from '@ionic/storage';
 import { Events } from 'ionic-angular';
 
 /** 
- * Class to describe the structure of a command 
- */
-export class CommandObject {
-  name: string;
-  properties: string[];
-}
-
-/** 
- * Class to describe the structure of a command 
+ * Class to describe the structure of an application
  */
 export class Application {
   _id: string;
@@ -21,6 +13,14 @@ export class Application {
   appOnline: boolean;
   port: number;
   virtualTiles: string[];
+}
+
+/** 
+ * Class to describe the structure of a command 
+ */
+export class CommandObject {
+  name: string;
+  properties: string[];
 }
 
 /**
@@ -34,8 +34,24 @@ export class Device {
   connected: boolean;
   ledOn: boolean;
   buttonPressed?: boolean;
-  loading: boolean;
 }
+
+/** 
+ * Class to describe a login data object
+ */
+export class LoginData {
+  constructor(user: string, host: string, port: number, remember?:boolean) {
+    this.user = user;
+    this.host = host;
+    this.port = port;
+    this.remember = remember;
+  }
+  user: string;
+  host: string;
+  port: number;
+  remember?: boolean;
+}
+
 
 /**
  * Class to describe the structure of a virtual tile
@@ -80,16 +96,10 @@ export class UtilsService {
   getEventStringAsObject = (eventString: string): CommandObject => {
     const params = eventString.split(',');
     if (params.length > 1){
-      let temp = new CommandObject;
+      let temp = new CommandObject();
       temp.name = params[0];
       temp.properties = Array.prototype.slice.call(params, 1);
       return temp;
-      /*
-      return {
-          name: params[0],
-          properties: Array.prototype.slice.call(params, 1),
-      };
-      */
     }
     return null;
   };

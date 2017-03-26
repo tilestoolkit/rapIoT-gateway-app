@@ -35,7 +35,7 @@ export class BleService {
    */
   startBLEScanner = (): void => {
     this.scanForDevices();
-    this.bleScanner = Observable.interval(30000).subscribe(res => {
+    this.bleScanner = Observable.interval(10000).subscribe(res => {
       this.scanForDevices();
     });
   }
@@ -112,8 +112,6 @@ export class BleService {
 	 * @param {Device} device - the target device
 	 */
   connect = (device: Device): void => {
-    device.loading = true;
-    //TODO: unsubscribe at some point ?
   	this.ble.connect(device.id)
   		  .subscribe(
           res => {
@@ -122,13 +120,11 @@ export class BleService {
   	  		 	device.ledOn = false;
             device.connected = true;
             device.buttonPressed = false;
-            this.mqttClient.registerDevice(device);
             this.startDeviceNotification(device);
-            device.loading = false;
+            this.mqttClient.registerDevice(device);
           },
           err => {
             device.connected = false;
-            device.loading = false;
             this.devicesService.clearDisconnectedDevices();
             this.events.publish('updateDevices');
             this.disconnect(device);
@@ -141,7 +137,6 @@ export class BleService {
    * @param {Device} device - the target device
    */
   locate = (device: Device): void => {
-    device.loading = true;
     this.ble.connect(device.id)
         .subscribe(
           res => {
@@ -152,7 +147,6 @@ export class BleService {
                 this.disconnect(device);
               }
             }, 3000);
-            device.loading = false;
           },
           err => {
             console.log(err);
@@ -168,32 +162,11 @@ export class BleService {
     this.ble.startNotification(device.id, this.rfduino.serviceUUID, this.rfduino.receiveCharacteristicUUID)
       .subscribe(
         res => {
-          let responseString:string;
-          if(typeof res == 'string') {
-            responseString = device.id + ' ' + res;
-          } else {
-            // Convert the bytes sent from the device into a string
-            responseString = ((String.fromCharCode.apply(null, new Uint8Array(res))).slice(0, -1)).trim();
-          }
-          let message: CommandObject = this.utils.getEventStringAsObject(responseString);
+          const responseString = ((String.fromCharCode.apply(null, new Uint8Array(res))).slice(0, -1)).trim();
+          const message: CommandObject = this.utils.getEventStringAsObject(responseString);
           if (message === null) {
-            console.log('Found no mapping for event: ' + responseString);
+            console.log('Couldnt make an object from event: ' + responseString);
           } else {
-            // Switch on the event type of the message, for testing purposes only
-            const eventType = message.properties[0];
-            switch (eventType){
-              case 'tap':
-                device.buttonPressed = device.buttonPressed !== undefined
-                                      ? !device.buttonPressed : true;
-                console.log('tappeti tap')
-                break;
-              case 'tilt':
-                console.log('You are tilting me!');
-                break;
-              default:
-                alert('No response for ' + message.properties[0])
-                break;
-            }
             this.mqttClient.sendEvent(device.tileId, message);
             this.events.publish('recievedEvent', device.tileId, message);
           }
