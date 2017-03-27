@@ -87,7 +87,9 @@ export class DevTermPage {
   }
 
   jumpBottomOfList = () => {
-    this.content.scrollToBottom(50);
+    setTimeout(() => {
+      this.content.scrollToBottom(50);
+    }, 10);
   }
 
   getListLocation = () => {
