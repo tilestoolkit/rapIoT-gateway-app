@@ -1,8 +1,7 @@
-import { NgModule, ErrorHandler } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpModule }    from '@angular/http';
-import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
-import { BLE } from '@ionic-native/ble';
+import { IonicApp, IonicModule } from 'ionic-angular';
 import { Storage } from '@ionic/storage';
 
 import { Tiles } from './app.component';
@@ -14,7 +13,7 @@ import { DevTermPage } from '../pages/dev-term/dev-term';
 import { VirtualTilesPage } from '../pages/virtual-tiles/virtual-tiles';
 import { PhysicalTilesPage } from '../pages/physical-tiles/physical-tiles';
 
-import { BLENativeMock } from '../providers/ble.nativemock';
+import { AppProviders } from './app.providers';
 import { BleService } from '../providers/ble.service';
 import { MqttClient } from '../providers/mqttClient';
 import { TilesApi } from '../providers/tilesApi.service';
@@ -47,16 +46,14 @@ import { UtilsService } from '../providers/utils.service';
     VirtualTilesPage,
     PhysicalTilesPage
   ],
-  providers: [
-    { provide: ErrorHandler, useClass: IonicErrorHandler },
-    { provide: BLE, useClass: BLENativeMock },
+  providers: AppProviders.getProviders().concat([
     Storage,
     BleService,
     DevicesService,
     MqttClient,
     TilesApi,
     UtilsService,
-  ],
+  ]),
 })
 
 export class AppModule {}

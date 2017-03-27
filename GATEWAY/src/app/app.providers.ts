@@ -1,13 +1,12 @@
-import { Injectable } from '@angular/core';
+import { ErrorHandler } from '@angular/core';
+import { IonicErrorHandler } from 'ionic-angular';
 import { BLE } from '@ionic-native/ble';
 import { Observable } from 'rxjs';
 
+import { UtilsService } from '../providers/utils.service';
 
-import { UtilsService } from './utils.service';
 
-
-@Injectable()
-export class BLENativeMock extends BLE {
+class BLEMock extends BLE {
   constructor(private utils: UtilsService){
     super();
   }
@@ -49,4 +48,36 @@ export class BLENativeMock extends BLE {
   writeWithoutResponse(deviceId, serviceUUID, characteristicUUID, value) {
     return new Promise<void>(resolve => resolve());
   }
+}
+
+
+
+export class AppProviders {
+
+  public static getProviders() {
+
+    let providers;
+
+    if(document.URL.includes('https://') || document.URL.includes('http://')){
+
+      // Use browser providers
+      providers = [
+        {provide: BLE, useClass: BLEMock},
+        {provide: ErrorHandler, useClass: IonicErrorHandler}
+      ];
+
+    } else {
+      
+      // Use device providers
+      providers = [
+        BLE,
+        {provide: ErrorHandler, useClass: IonicErrorHandler}
+      ];  
+
+    }
+
+    return providers;
+
+  }
+
 }
