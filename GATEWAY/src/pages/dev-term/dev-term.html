@@ -8,20 +8,25 @@
 
   <ion-navbar>
     <ion-title>Developer Terminal</ion-title>
-    <button ion-button left (click)="scrollBottom()">Scroll</button>
-    <button ion-button right (click)="clearTerminal()">Clear</button>
   </ion-navbar>
+    <div>
+        <button style="max-height: 29px;" ion-button (click)="jumpBottomOfList()">Scroll</button>
+        <button style="max-height: 29px;" ion-button (click)="clearTerminal()">Clear</button>
+        <button style="max-height: 29px;" ion-button (click)="getListLocation()">Location</button>
+        <button style="max-height: 29px;" ion-button (click)="addNewMessage('test_msg')">New msg</button>
+    </div>
 
 </ion-header>
 
 
 <ion-content>
-  <ion-list>
+    <ion-list>
       <ion-item class="devices" *ngFor="let message of messages;" no-margin>
         <div>
           <span style="font-size: 12px">{{message.datetime}}</span><br>
           <span>{{message.text}}</span>
         </div>
       </ion-item>
-  </ion-list>
+    </ion-list>
+
 </ion-content>
