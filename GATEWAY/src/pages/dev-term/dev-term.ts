@@ -1,5 +1,5 @@
-import { Component, ViewChild } from '@angular/core';
 import { Events, NavController, NavParams, Content} from 'ionic-angular';
+import { Component, ViewChild } from '@angular/core';
 
 import { MqttClient } from '../../providers/mqttClient';
 import { CommandObject, UtilsService } from '../../providers/utils.service';
@@ -15,7 +15,7 @@ import { CommandObject, UtilsService } from '../../providers/utils.service';
   templateUrl: 'dev-term.html'
 })
 export class DevTermPage {
- @ViewChild(Content) content: Content;
+  @ViewChild(Content) content: Content;
   messages = [];
 
   constructor(private events: Events,
@@ -24,71 +24,78 @@ export class DevTermPage {
               private mqttClient: MqttClient,
               private utils: UtilsService) {
 
-//     angular.module('ionicApp', ['ionic']).config(function($ionicConfigProvider) {
-//   if (!ionic.Platform.isIOS()) {
-//     $ionicConfigProvider.scrolling.jsScrolling(false);
-//   }
-// })
+    this.messages = [];
 
     //  THIS IS REALLY REALLY BAD, BUT JUST FOR TESTING
-  	this.messages = [];
-
-    this.messages.push({'text': 'test', 'datetime': this.currentTime()});
-    this.messages.push({'text': 'test', 'datetime': this.currentTime()});
-    this.messages.push({'text': 'test', 'datetime': this.currentTime()});
-    this.messages.push({'text': 'test', 'datetime': this.currentTime()});
-    this.messages.push({'text': 'test', 'datetime': this.currentTime()});
-    this.messages.push({'text': 'test', 'datetime': this.currentTime()});
-    this.messages.push({'text': 'test', 'datetime': this.currentTime()});
-    this.messages.push({'text': 'test', 'datetime': this.currentTime()});
-    this.messages.push({'text': 'test', 'datetime': this.currentTime()});
-    this.messages.push({'text': 'test', 'datetime': this.currentTime()});
-    this.messages.push({'text': 'test', 'datetime': this.currentTime()});
-    this.messages.push({'text': 'test', 'datetime': this.currentTime()});
-    this.messages.push({'text': 'test', 'datetime': this.currentTime()});
-    this.messages.push({'text': 'test', 'datetime': this.currentTime()});
-    this.messages.push({'text': 'test', 'datetime': this.currentTime()});
-    this.messages.push({'text': 'test', 'datetime': this.currentTime()});
-    this.messages.push({'text': 'test', 'datetime': this.currentTime()});
+    for (var i = 0; i < 20; i++) {
+      this.messages.push({'text': 'test', 'datetime': this.currentTime()});
+    }
 
     this.events.subscribe('serverConnected', () => {
     	console.log('broker connected')
-    	this.messages.push('Connected to MQTT-broker');
+    	this.addNewMessage('Connected to MQTT-broker');
     });
 
     this.events.subscribe('offline', () => {
     	console.log('broker offline')
-    	this.messages.push({'text': 'MQTT-broker offline', 'datetime': this.currentTime()});
+      this.addNewMessage('MQTT-broker offline');
     });
 
     this.events.subscribe('close', () => {
-      this.messages.push({'text': 'Closed connection to MQTT-broker', 'datetime': this.currentTime()});
+      this.addNewMessage('Closed connection to MQTT-broker');
     });
 
     this.events.subscribe('reconnect', () => {
     	console.log('reconnecting')
-      this.messages.push({'text': 'MQTT-broker reconnecting', 'datetime': this.currentTime()});
+      this.addNewMessage('MQTT-broker reconnecting');
     });
 
 	  this.events.subscribe('command', (deviceId: string, command: CommandObject) => {
     	console.log('sending command')
 	  	const message = `Sending message to BLE device: ${deviceId} : ${this.utils.getCommandObjectAsString(command)}`;
-			this.messages.push({'text': message, 'datetime': this.currentTime()});
+      this.addNewMessage(message);
     });
 
     this.events.subscribe('recievedEvent', (deviceId: string, event: CommandObject) => {
     	console.log('recieved event')
 	  	const message = `Recieved event from BLE device: ${deviceId} : ${this.utils.getCommandObjectAsString(event)}`;
-			this.messages.push({'text': message, 'datetime': this.currentTime()});
+			this.addNewMessage(message);
     });
   }
 
-  scrollBottom = () => {
-    this.content.scrollToBottom(100);
+  ionViewDidEnter() {
+    this.jumpBottomOfList();
+  }
+
+  addNewMessage = (message) => {
+    this.messages.push({'text': message, 'datetime': this.currentTime()});
+    this.scrollBottomOfList();
   }
 
   clearTerminal = () => {
     this.messages = [];
+  }
+
+  scrollBottomOfList = () => {
+    // Check if scrolled to bottom of list
+    if (this.getListLocation() === 0) {
+      // Need a delay so the list can update before scrolling down
+      setTimeout(() => {
+        this.content.scrollToBottom(50);
+      }, 10);
+    }
+  }
+
+  jumpBottomOfList = () => {
+    this.content.scrollToBottom(50);
+  }
+
+  getListLocation = () => {
+    let dim = this.content.getContentDimensions();
+    let distanceToBottom = dim.scrollHeight - (dim.contentHeight + dim.scrollTop);
+    console.log(distanceToBottom);
+
+    return distanceToBottom;
   }
 
   currentTime = () => {
@@ -98,5 +105,6 @@ export class DevTermPage {
                    date.getSeconds();
     return datetime;
   }
+
 
 }
