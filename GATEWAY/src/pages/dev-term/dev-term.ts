@@ -17,7 +17,6 @@ import { CommandObject, UtilsService } from '../../providers/utils.service';
 export class DevTermPage {
  @ViewChild(Content) content: Content;
   messages = [];
-  messageDate = [];
 
   constructor(private events: Events,
               public navCtrl: NavController, 
@@ -33,76 +32,54 @@ export class DevTermPage {
 
     //  THIS IS REALLY REALLY BAD, BUT JUST FOR TESTING
   	this.messages = [];
-    this.messages.push('test');
-    this.messageDate.push(this.currentTime());
-    this.messages.push('test');
-    this.messageDate.push(this.currentTime());
-    this.messages.push('test');
-    this.messageDate.push(this.currentTime());
-    this.messages.push('test');
-    this.messageDate.push(this.currentTime());
-    this.messages.push('test');
-    this.messageDate.push(this.currentTime());
-    this.messages.push('test');
-    this.messageDate.push(this.currentTime());
-    this.messages.push('test');
-    this.messageDate.push(this.currentTime());
-    this.messages.push('test');
-    this.messageDate.push(this.currentTime());
-    this.messages.push('test');
-    this.messageDate.push(this.currentTime());
-    this.messages.push('test');
-    this.messageDate.push(this.currentTime());
-    this.messages.push('test');
-    this.messageDate.push(this.currentTime());
-    this.messages.push('test');
-    this.messageDate.push(this.currentTime());
-    this.messages.push('test');
-    this.messageDate.push(this.currentTime());
-    this.messages.push('test');
-    this.messageDate.push(this.currentTime());
-    this.messages.push('test');
-    this.messageDate.push(this.currentTime());
-    this.messages.push('test');
-    this.messageDate.push(this.currentTime());
-    this.messages.push('test');
-    this.messageDate.push(this.currentTime());
+
+    this.messages.push({'text': 'test', 'datetime': this.currentTime()});
+    this.messages.push({'text': 'test', 'datetime': this.currentTime()});
+    this.messages.push({'text': 'test', 'datetime': this.currentTime()});
+    this.messages.push({'text': 'test', 'datetime': this.currentTime()});
+    this.messages.push({'text': 'test', 'datetime': this.currentTime()});
+    this.messages.push({'text': 'test', 'datetime': this.currentTime()});
+    this.messages.push({'text': 'test', 'datetime': this.currentTime()});
+    this.messages.push({'text': 'test', 'datetime': this.currentTime()});
+    this.messages.push({'text': 'test', 'datetime': this.currentTime()});
+    this.messages.push({'text': 'test', 'datetime': this.currentTime()});
+    this.messages.push({'text': 'test', 'datetime': this.currentTime()});
+    this.messages.push({'text': 'test', 'datetime': this.currentTime()});
+    this.messages.push({'text': 'test', 'datetime': this.currentTime()});
+    this.messages.push({'text': 'test', 'datetime': this.currentTime()});
+    this.messages.push({'text': 'test', 'datetime': this.currentTime()});
+    this.messages.push({'text': 'test', 'datetime': this.currentTime()});
+    this.messages.push({'text': 'test', 'datetime': this.currentTime()});
 
     this.events.subscribe('serverConnected', () => {
     	console.log('broker connected')
     	this.messages.push('Connected to MQTT-broker');
-      this.messageDate.push(this.currentTime());
     });
 
     this.events.subscribe('offline', () => {
     	console.log('broker offline')
-    	this.messages.push('MQTT-broker offline');
-      this.messageDate.push(this.currentTime());
+    	this.messages.push({'text': 'MQTT-broker offline', 'datetime': this.currentTime()});
     });
 
     this.events.subscribe('close', () => {
-    	this.messages.push('Closed connection to MQTT-broker');
-      this.messageDate.push(this.currentTime());
+      this.messages.push({'text': 'Closed connection to MQTT-broker', 'datetime': this.currentTime()});
     });
 
     this.events.subscribe('reconnect', () => {
     	console.log('reconnecting')
-    	this.messages.push('MQTT-broker reconnecting');
-      this.messageDate.push(this.currentTime());
+      this.messages.push({'text': 'MQTT-broker reconnecting', 'datetime': this.currentTime()});
     });
 
 	  this.events.subscribe('command', (deviceId: string, command: CommandObject) => {
     	console.log('sending command')
 	  	const message = `Sending message to BLE device: ${deviceId} : ${this.utils.getCommandObjectAsString(command)}`;
-			this.messages.push(message);
-      this.messageDate.push(this.currentTime());
+			this.messages.push({'text': message, 'datetime': this.currentTime()});
     });
 
     this.events.subscribe('recievedEvent', (deviceId: string, event: CommandObject) => {
     	console.log('recieved event')
 	  	const message = `Recieved event from BLE device: ${deviceId} : ${this.utils.getCommandObjectAsString(event)}`;
-			this.messages.push(message);
-      this.messageDate.push(this.currentTime());
+			this.messages.push({'text': message, 'datetime': this.currentTime()});
     });
   }
 
@@ -116,7 +93,11 @@ export class DevTermPage {
   }
 
   currentTime = () => {
-    return  String(new Date(new Date().getTime()));
+    var date = new Date(); 
+    var datetime = date.getHours() + ':' +
+                   date.getMinutes() + ':' +
+                   date.getSeconds();
+    return datetime;
   }
 
 }

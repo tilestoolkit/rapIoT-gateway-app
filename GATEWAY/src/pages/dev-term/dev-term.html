@@ -14,13 +14,14 @@
 
 </ion-header>
 
+
 <ion-content>
   <ion-list>
-    <ion-item class="devices" *ngFor="let message of messages" no-margin>
-      <div>
-        <span style="font-size: 10px">{{message}}</span><br>
-        <span>{{message}}</span>
-      </div>
-    </ion-item>
+      <ion-item class="devices" *ngFor="let message of messages;" no-margin>
+        <div>
+          <span style="font-size: 12px">{{message.datetime}}</span><br>
+          <span>{{message.text}}</span>
+        </div>
+      </ion-item>
   </ion-list>
 </ion-content>
