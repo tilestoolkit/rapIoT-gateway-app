@@ -89,7 +89,6 @@ export class DevTermPage {
 
   clearTerminal = () => {
     this.messages = [];
-    this.messageDate = [];
   }
 
   currentTime = () => {
