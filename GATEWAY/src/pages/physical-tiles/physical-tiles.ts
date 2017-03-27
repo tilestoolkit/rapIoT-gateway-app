@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { AlertController, Events, NavController, Platform } from 'ionic-angular';
 import { BleService } from '../../providers/ble.service';
 import { DevicesService } from '../../providers/devices.service';
-import { MqttClient } from '../../providers/mqttClient';
 import { Device } from '../../providers/utils.service';
 
 
@@ -22,7 +21,7 @@ export class PhysicalTilesPage {
               private events: Events,
               private bleService: BleService,
               private devicesService: DevicesService,
-              private mqttClient: MqttClient,) {
+              ) {
     this.setDevices();
 
     this.events.subscribe('offline', () => {
