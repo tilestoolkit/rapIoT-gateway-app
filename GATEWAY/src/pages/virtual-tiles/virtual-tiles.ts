@@ -29,7 +29,7 @@ export class VirtualTilesPage {
               public navParams: NavParams,
               private devicesService: DevicesService,
               private utils: UtilsService,
-              private tilesApi: TilesApi,) {
+              private tilesApi: TilesApi) {
   	// A id variable is stored in the navParams, and .get set this value to the local variable id
   	this.activeApp = navParams.get('app');
 

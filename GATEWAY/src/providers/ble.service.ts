@@ -27,8 +27,7 @@ export class BleService {
               private devicesService: DevicesService,
               private mqttClient: MqttClient,
   						private tilesApi: TilesApi,
-              private utils: UtilsService) {
-  }
+              private utils: UtilsService) {}
 
   /**
    * Start the BLE scanner making it scan every 30s

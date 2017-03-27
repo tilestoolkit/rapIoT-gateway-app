@@ -68,9 +68,7 @@ export class VirtualTile {
 @Injectable()
 export class UtilsService {
   constructor(public storage: Storage,
-              public events: Events) {
-
-  }
+              public events: Events) {}
 
   /**
    * Convert a string to an attay of bytes
