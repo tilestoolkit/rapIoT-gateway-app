@@ -26,7 +26,6 @@ export class PhysicalTilesPage {
     this.setDevices();
 
     this.events.subscribe('offline', () => {
-      this.mqttClient.setMqttConnectionStatus(false);
       this.serverConnectStatusMsg = 'Client gone offline';
     });
 
