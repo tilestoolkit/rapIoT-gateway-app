@@ -10,7 +10,6 @@ import { TilesApi } from './tilesApi.service';
 export class MqttClient {
   private publishOpts = { retain: true };
   private connectionTimeout: number = 10000; // 10 seconds
-  private connectedToBroker: boolean = false;
   private client;
   private mqttConnectionData: LoginData;
 
@@ -27,14 +26,6 @@ export class MqttClient {
   getDeviceSpecificTopic = (deviceId: string, isEvent: boolean): string => {
   	const type = isEvent ? 'evt' : 'cmd';
   	return `tiles/${type}/${this.mqttConnectionData.user}/${deviceId}`;
-  };
-
-  /**
-   * Set the connection status for the server
-   * @param {boolean} connected - The new status of the connection
-   */
-  setMqttConnectionStatus = (connected: boolean): void => {
-    this.connectedToBroker = connected;
   };
 
   /**
@@ -72,12 +63,10 @@ export class MqttClient {
     });
 
     this.client.on('offline', () => {
-      this.connectedToBroker = false;
       this.events.publish('offline');
     });
 
     this.client.on('close', () => {
-      this.connectedToBroker = false;
       this.events.publish('close');
     });
 
@@ -86,15 +75,12 @@ export class MqttClient {
     });
 
     this.client.on('error', error => {
-      this.connectedToBroker = false;
       this.events.publish('error', error);
     });
 
-    // Client is connected to the server
 		this.client.on('connect', () => {
       console.log('connected to broker');
 			clearTimeout(failedConnectionTimeout);
-      this.connectedToBroker = true;
       this.events.publish('serverConnected');
 		});
 

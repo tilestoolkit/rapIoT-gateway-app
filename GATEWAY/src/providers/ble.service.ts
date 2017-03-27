@@ -27,8 +27,7 @@ export class BleService {
               private devicesService: DevicesService,
               private mqttClient: MqttClient,
   						private tilesApi: TilesApi,
-              private utils: UtilsService) {
-  }
+              private utils: UtilsService) {}
 
   /**
    * Start the BLE scanner making it scan every 30s
@@ -78,8 +77,6 @@ export class BleService {
     // A list of the discovered devices
     let newDevices: Array<Device> = [];
     const virtualTiles = this.tilesApi.getVirtualTiles()
-    //TODO: BUG: The completion function is never called.
-    //TODO: unsubscribe at some point
     this.ble.scan([], 30).subscribe(
       // function to be called for each new device discovered
       bleDevice => {
@@ -95,7 +92,6 @@ export class BleService {
                               .includes(device.tileId)) {
                 this.connect(device);
               }
-              //TODO: temporary, until we get the completion function to run
               this.events.publish('updateDevices');
             }
           }).catch(err => alert(err));
@@ -117,9 +113,7 @@ export class BleService {
           res => {
             console.log('connecting to : '+ device.name);
     		  	// Setting information about the device
-  	  		 	device.ledOn = false;
             device.connected = true;
-            device.buttonPressed = false;
             this.startDeviceNotification(device);
             this.mqttClient.registerDevice(device);
           },

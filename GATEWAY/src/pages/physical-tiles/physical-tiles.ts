@@ -1,8 +1,7 @@
 import { Component } from '@angular/core';
-import { AlertController, Events, NavController, Platform } from 'ionic-angular';
+import { AlertController, Events, NavController } from 'ionic-angular';
 import { BleService } from '../../providers/ble.service';
 import { DevicesService } from '../../providers/devices.service';
-import { MqttClient } from '../../providers/mqttClient';
 import { Device } from '../../providers/utils.service';
 
 
@@ -18,18 +17,13 @@ export class PhysicalTilesPage {
 
   constructor(public navCtrl: NavController,
               public alertCtrl: AlertController,
-              public platform: Platform,
               private events: Events,
               private bleService: BleService,
-              private devicesService: DevicesService,
-              private mqttClient: MqttClient,) {
+              private devicesService: DevicesService) {
     this.setDevices();
-
     this.events.subscribe('offline', () => {
-      this.mqttClient.setMqttConnectionStatus(false);
       this.serverConnectStatusMsg = 'Client gone offline';
     });
-
     this.events.subscribe('updateDevices', () => {
       this.setDevices();
     });
