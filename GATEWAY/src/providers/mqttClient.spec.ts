@@ -6,6 +6,7 @@ import { Storage } from '@ionic/storage';
 import { TilesApi } from './tilesApi.service';
 import { MqttClient } from './mqttClient';
 import { BleService } from './ble.service';
+import { LoginData } from './utils.service';
 import { StorageMock } from '../mocks';
 
 
@@ -14,6 +15,7 @@ import * as testDevice from '../fixtures/tilesDevice.json';
 describe('mqttClient', () => {
 
   let mqttClient: MqttClient = null;
+  let loginData: LoginData = new LoginData("TestUser", "172.68.99.218", 8080, false);
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -40,6 +42,7 @@ describe('mqttClient', () => {
 
   beforeEach(inject([MqttClient], (temp: MqttClient) => {
     mqttClient = temp;
+    mqttClient.setConnectionData(loginData);
   }));
 
   afterEach(() => {
@@ -64,7 +67,7 @@ describe('mqttClient', () => {
     })
   });
 
-  describe('setMqttConnectionStatus(connected: boolean): void', () => {
+  xdescribe('setMqttConnectionStatus(connected: boolean): void', () => {
     it('should change connection based on the boolean argument given', () => {
       mqttClient.setMqttConnectionStatus(false);
       expect(mqttClient.connectedToBroker).toEqual(false);
