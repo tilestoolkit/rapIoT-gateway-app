@@ -1,4 +1,4 @@
-import { Component, Pipe, Injectable } from '@angular/core';
+import { Component } from '@angular/core';
 import { AlertController, NavController, NavParams } from 'ionic-angular';
 
 import { DevicesService } from '../../providers/devices.service';
@@ -25,7 +25,7 @@ export class VirtualTilesPage {
   unpairedVirtualTiles = [];
 
   constructor(public alertCtrl: AlertController,
-              public navCtrl: NavController, 
+              public navCtrl: NavController,
               public navParams: NavParams,
               private devicesService: DevicesService,
               private utils: UtilsService,
@@ -33,7 +33,7 @@ export class VirtualTilesPage {
   	// A id variable is stored in the navParams, and .get set this value to the local variable id
   	this.activeApp = navParams.get('app');
 
-  	// Sets the title of the page (found in virtual-tiles.html) to id, capitalized. 
+  	// Sets the title of the page (found in virtual-tiles.html) to id, capitalized.
   	this.applicationTitle = utils.capitalize(this.activeApp._id);
     this.setDevices();
     this.tilesApi.setVirtualTiles(this.activeApp._id);
@@ -46,7 +46,7 @@ export class VirtualTilesPage {
   setDevices = (): void => {
     this.devices = this.devicesService.getDevices();
   }
-  
+
   /**
    * Set the virtual tiles equal to the ones stores for the app
    */
@@ -64,7 +64,7 @@ export class VirtualTilesPage {
         } else {
           this.unpairedVirtualTiles.push(tile);
         }
-      })
+      });
     });
   }
 
@@ -102,13 +102,13 @@ export class VirtualTilesPage {
           text: 'Pair',
           handler: data => {
             this.tilesApi.pairDeviceToVirualTile(data, virtualTile._id, this.activeApp._id);
-            
+
             // Refreshes the lists of paired and unpaired virtual tiles
             this.setVirtualTiles();
           },
       }],
     }).present();
-    } 
+    }
     else {
       this.alertCtrl.create({
         title: 'Pair to physical tile',

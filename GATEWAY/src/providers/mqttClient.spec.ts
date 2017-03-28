@@ -5,7 +5,6 @@ import { Events } from 'ionic-angular';
 import { Storage } from '@ionic/storage';
 import { TilesApi } from './tilesApi.service';
 import { MqttClient } from './mqttClient';
-import { BleService } from './ble.service';
 import { StorageMock } from '../mocks';
 
 describe('mqttClient', () => {

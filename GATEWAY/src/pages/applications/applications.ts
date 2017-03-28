@@ -31,7 +31,7 @@ export class ApplicationsPage {
               private tilesApi: TilesApi,
               private storage: Storage) {}
   /**
-   * Called when the view is loaded to present login page if 
+   * Called when the view is loaded to present login page if
    * the user is not logged in
    */
   ionViewDidLoad() {
@@ -81,7 +81,7 @@ export class ApplicationsPage {
   }
 
   /**
-   * Logout - empties the list of applications, changes the refreshstate 
+   * Logout - empties the list of applications, changes the refreshstate
    * and presents login window.
    */
   logout = () => {

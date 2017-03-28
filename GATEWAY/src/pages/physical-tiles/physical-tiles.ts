@@ -52,7 +52,7 @@ export class PhysicalTilesPage {
         this.refreshed = true;
       }
     }, 2000);
-  };
+  }
 
   /**
    * Triggers an event on a tile to identify which tile is which

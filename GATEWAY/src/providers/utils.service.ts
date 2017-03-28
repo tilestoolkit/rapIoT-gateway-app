@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage';
 import { Events } from 'ionic-angular';
 
-/** 
+/**
  * Class to describe the structure of an application
  */
 export class Application {
@@ -15,8 +15,8 @@ export class Application {
   virtualTiles: string[];
 }
 
-/** 
- * Class to describe the structure of a command 
+/**
+ * Class to describe the structure of a command
  */
 export class CommandObject {
   name: string;
@@ -36,11 +36,11 @@ export class Device {
   buttonPressed?: boolean;
 }
 
-/** 
+/**
  * Class to describe a login data object
  */
 export class LoginData {
-  constructor(user: string, host: string, port: number, remember?:boolean) {
+  constructor(user: string, host: string, port: number, remember?: boolean) {
     this.user = user;
     this.host = host;
     this.port = port;
@@ -77,17 +77,17 @@ export class UtilsService {
     try {
       console.log('Attempting to send data to device via BLE.');
       let dataArray = new Uint8Array(str.length);
-      for(let i = 0; i < str.length; i ++){
+      for (let i = 0; i < str.length; i ++){
         dataArray[i] = str.charCodeAt(i);
       }
       return dataArray;
-    } catch (err) {
-      console.log('Converting string of data to bytes unsuccessful!')
+    }  catch (err) {
+      console.log('Converting string of data to bytes unsuccessful!');
       return null;
     }
-  };
+  }
 
-  /** 
+  /**
    * Returns an object with name and properties from the inputstring
    * @param {string} eventString - A string on the format eventName,properties...
    */
@@ -100,17 +100,17 @@ export class UtilsService {
       return temp;
     }
     return null;
-  };
+  }
 
-  /** 
+  /**
    * Returns a string from the given commandObject
    * @param {CommansObject} cmdObj - the command to turn into a string
    */
   getCommandObjectAsString = (cmdObj: CommandObject): string => {
     return `${cmdObj.name},${cmdObj.properties.toString()}`;
-  };
+  }
 
-  /** 
+  /**
    * Create a new object that has all the attributes from both inputobjects
    * @param {any} obj1 - The first object
    * @param {any} obj2 - The second object
@@ -129,7 +129,7 @@ export class UtilsService {
       }
     }
     return extended;
-  };
+  }
 
   /**
    * Verify that input of user login is valid
@@ -139,7 +139,7 @@ export class UtilsService {
    */
   verifyLoginCredentials = (user: string, host: string, port: number): boolean => {
     const validUsername = user.match(/^[a-zA-Z0-9\_\-\.]+$/);
-    const validHost = host.match(/^([0-9]{1,3}.){3}[0-9]{1,3}/) || host.match(/^[a-zA-Z0-9\_\-\.]+$/);
+    const validHost = host.match(/^([0-9]{1,3}.){3}[0-9]{1,3}/) ||  host.match(/^[a-zA-Z0-9\_\-\.]+$/);
 
     if (validUsername != null && validHost != null) {
       return true;
@@ -153,8 +153,8 @@ export class UtilsService {
    * @param {string} string - a string
    */
   capitalize = (string: string): string => {
-    return string.charAt(0).toUpperCase() + string.slice(1)
-  };
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  }
 }
 
 export default { CommandObject, Device, UtilsService, VirtualTile };

@@ -68,7 +68,7 @@ export class BleService {
                     //alert('Failed to enable bluetooth, try doing it manually');
                   });
 		  		  });
-  };
+  }
 
   /**
    * Checking to see if any bluetooth devices are in reach
@@ -76,7 +76,7 @@ export class BleService {
   scanBLE = (): void => {
     // A list of the discovered devices
     let newDevices: Array<Device> = [];
-    const virtualTiles = this.tilesApi.getVirtualTiles()
+    const virtualTiles = this.tilesApi.getVirtualTiles();
     this.ble.scan([], 30).subscribe(
       // function to be called for each new device discovered
       bleDevice => {
@@ -100,8 +100,8 @@ export class BleService {
       err => {
         alert('Error when scanning for devices: ' + err);
       },
-      () => {})
-  };
+      () => {});
+  }
 
   /**
    * Connect to a device
@@ -111,7 +111,7 @@ export class BleService {
   	this.ble.connect(device.id)
   		  .subscribe(
           res => {
-            console.log('connecting to : '+ device.name);
+            console.log('connecting to : ' + device.name);
     		  	// Setting information about the device
             device.connected = true;
             this.startDeviceNotification(device);
@@ -123,8 +123,8 @@ export class BleService {
             this.events.publish('updateDevices');
             this.disconnect(device);
           },
-          () => {})
-  };
+          () => {});
+  }
 
   /**
    * Connect and rename a device
@@ -135,9 +135,9 @@ export class BleService {
         .subscribe(
           res => {
             this.sendData(device, 'led,on,red');
-            setTimeout(()=> {
-              this.sendData(device, 'led,off'); 
-              if(!device.connected) {
+            setTimeout(() => {
+              this.sendData(device, 'led,off');
+              if (!device.connected) {
                 this.disconnect(device);
               }
             }, 3000);
@@ -145,8 +145,8 @@ export class BleService {
           err => {
             console.log(err);
           },
-          () => {})
-  };
+          () => {});
+  }
 
   /**
    * Start getting notifications of events from a device
@@ -172,7 +172,7 @@ export class BleService {
           device.connected = false;
           this.mqttClient.unregisterDevice(device);
         });
-  };
+  }
 
   /**
    * Disconnect from device
@@ -187,7 +187,7 @@ export class BleService {
   					.catch( err => {
               console.log('Failed to disconnect');
             });
-  };
+  }
 
   /**
    * Send data to a device using BLE
@@ -207,5 +207,5 @@ export class BleService {
     } catch (err) {
       alert('Failed when trying to send data to the device!');
     }
-  };
+  }
 }

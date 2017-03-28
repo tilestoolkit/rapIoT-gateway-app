@@ -16,15 +16,15 @@ export class TilesApi {
               private storage: Storage) {
   }
 
-  /** 
+  /**
    * Tests if a device is a tile
    * @param {any} device - the device to test
    */
   isTilesDevice = (device: any): boolean => {
     return device.name != null && device.name.substring(0, 4) === 'Tile';
-  };
+  }
 
-  /** 
+  /**
    * Sets login data for the user
    * @param {LoginData} loginData - the device to test
    */
@@ -32,7 +32,7 @@ export class TilesApi {
     this.loginData = loginData;
   }
 
-  /** 
+  /**
    * Gets login data for the user
    */
   getLoginData = (): LoginData => {
@@ -40,12 +40,12 @@ export class TilesApi {
       this.storage.get('loginData').then((loginData) => {
         this.setLoginData(loginData);
         return loginData;
-      })
+      });
     }
-    else { 
+    else {
       return this.loginData;
     }
-    
+
   }
 
   /**
@@ -55,21 +55,21 @@ export class TilesApi {
     this.getApplicationTiles(appId).then(res => {
       this.virtualTiles = res;
     });
-  };
+  }
 
   /**
    * Get the virtual tiles
    */
   getVirtualTiles = (): VirtualTile[] => {
     return this.virtualTiles;
-  };
+  }
 
-  /** 
+  /**
    * Get all registered applications for all users
    */
   getAllApplications = (): Promise<any> => {
     const url = `http://${this.loginData.host}:${this.apiPort}/applications`;
-    console.log(url)
+    console.log(url);
     return this.http.get(url)
             .toPromise()
             .then(res => {
@@ -78,9 +78,9 @@ export class TilesApi {
             .catch(err => {
               //alert('failed getting applications with error: ' + err);
             });
-  };
+  }
 
-  /** 
+  /**
    * Get the details of an application
    * @param {string} applicationId - The application ID
    */
@@ -94,18 +94,18 @@ export class TilesApi {
             })
             .catch(err => {
               console.log('failed getting applications with error: ' + err);
-              console.log('url '+url)
+              console.log('url ' + url);
               return null;
             });
-  };
+  }
 
-  /** 
+  /**
    * Get the tiles belonging to an application
    * @param {string} applicationId - The application ID
    */
   getApplicationTiles = (applicationId: string): Promise<any> => {
     return this.getApplicationDetails(applicationId).then(res => res.virtualTiles);
-  };
+  }
 
   /**
    * Pair a physical tile with a virtual tile registered on the app
@@ -117,10 +117,10 @@ export class TilesApi {
     const url = `http://${this.loginData.host}:${this.apiPort}/applications/${applicationId}/${virtualTileId}`;
     const body = JSON.stringify({ tile: deviceId });
     const headerFields = new Headers({'Content-Type': 'application/json'});
-    console.log('url: ' + url + ' body: ' + body)
+    console.log('url: ' + url + ' body: ' + body);
     return this.http.post(url, body, {headers: headerFields}).toPromise()
              .catch(err => {
                console.log('An error occured preventing the pairing of the physical and virtual tile');
              });
-  };
+  }
 }

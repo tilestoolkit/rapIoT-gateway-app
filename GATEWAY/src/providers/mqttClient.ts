@@ -14,7 +14,7 @@ export class MqttClient {
   private mqttConnectionData: LoginData;
 
   constructor(private events: Events,
-              private tilesApi: TilesApi) { 
+              private tilesApi: TilesApi) {
     this.mqttConnectionData = this.tilesApi.getLoginData();
   }
 
@@ -26,7 +26,7 @@ export class MqttClient {
   getDeviceSpecificTopic = (deviceId: string, isEvent: boolean): string => {
   	const type = isEvent ? 'evt' : 'cmd';
   	return `tiles/${type}/${this.mqttConnectionData.user}/${deviceId}`;
-  };
+  }
 
   /**
    * Create a connection to the server and return a javascript promise
@@ -35,7 +35,7 @@ export class MqttClient {
    * @param {number} port - the port to send to
    */
   connect = (): void => {
-    if (this.mqttConnectionData === undefined || this.mqttConnectionData === null) {
+    if (this.mqttConnectionData === undefined ||  this.mqttConnectionData === null) {
       this.mqttConnectionData = this.tilesApi.getLoginData();
     }
 
@@ -46,11 +46,11 @@ export class MqttClient {
 
     // Instantiate a mqtt-client from the host and port
     this.client = mqtt.connect({
-      host: this.mqttConnectionData.host,//'test.mosquitto.org'
+      host: this.mqttConnectionData.host, //'test.mosquitto.org'
       port: this.mqttConnectionData.port,
       keepalive: 0,
 		});
-    
+
     // Handle events from the broker
     this.client.on('message', (topic, message) => {
       try {
@@ -90,7 +90,7 @@ export class MqttClient {
         this.client.end();
       }
     }, this.connectionTimeout);
-  };
+  }
 
   /**
    * Register a device at the server
@@ -113,7 +113,7 @@ export class MqttClient {
       );
       console.log('Registered device: ' + device.name + ' (' + device.tileId + ')');
     }
-  };
+  }
 
   /**
    * Unregister a device at the server
@@ -130,7 +130,7 @@ export class MqttClient {
       	this.getDeviceSpecificTopic(device.tileId, false),
       );
     }
-  };
+  }
 
   /**
    * Send an event to the server
@@ -150,7 +150,7 @@ export class MqttClient {
         },
     	);
     }
-  };
+  }
 
   /**
    * End the connection to a device
@@ -161,5 +161,5 @@ export class MqttClient {
     if (this.client) {
     	this.client.end();
     }
-  };
+  }
 }

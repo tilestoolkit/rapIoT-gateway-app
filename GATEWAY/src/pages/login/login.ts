@@ -35,7 +35,7 @@ export class LoginPage {
       this.storage.set('loggedIn', loginData.remember);
       this.viewCtrl.dismiss('logged_in');
     } else {
-      alert("Invalid login credentials.");
+      alert('Invalid login credentials.');
     }
   }
 
