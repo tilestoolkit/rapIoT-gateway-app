@@ -17,27 +17,13 @@
   </ion-refresher>
 
   <ion-list>
-    <ion-item *ngFor="let device of devices">
-      <div class="row row-center">
-        <div id="devName" class="col col-75">
-          <b>{{device.name}}</b><br>
-        </div>
-        <div class="col">
-        </div>
+    <ion-item color="light" class="devices" *ngFor="let device of devices" no-lines>
+      <b>{{device.name}}</b><br><br>
+      <div>
+        <button ion-button small color="positive" (click)="changeNamePop(device)">CHANGE NAME</button>
+        <button ion-button small color="positive" (click)="devicesService.resetDeviceName(device)">RESET NAME</button>
+        <button ion-button small color="positive" (click)="bleService.locate(device)">LOCATE</button>
       </div>
-      <ion-list no-lines>
-        <div class="row row-center">
-          <div class="col col-75">
-          </div>
-          <div class="col">
-            <button class="bttn" ion-button small color="positive" (click)="changeNamePop(device)">CHANGE NAME</button>
-            <button class="bttn" ion-button small color="positive" (click)="devicesService.resetDeviceName(device)">RESET NAME</button>
-          </div>
-          <div class="col">
-            <button class="bttn" ion-button small color="positive" (click)="bleService.locate(device)">LOCATE</button>
-          </div>
-        </div>
-      </ion-list>
     </ion-item>
   </ion-list>
   <ion-item *ngIf="refreshed" style="text-align: center;">Pull down to refresh list</ion-item>

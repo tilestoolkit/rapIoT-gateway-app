@@ -1,12 +1,12 @@
-import { Component, Injectable } from '@angular/core';
-import { NavController, NavParams, AlertController } from 'ionic-angular';
+import { Component } from '@angular/core';
+import { NavController, NavParams } from 'ionic-angular';
 import { ModalController } from 'ionic-angular';
 import { ModalPage } from './modal-page';
 import { LoginPage } from '../login/login';
 import { VirtualTilesPage } from '../virtual-tiles/virtual-tiles';
 
 import { TilesApi } from '../../providers/tilesApi.service';
-import { Application, UtilsService } from '../../providers/utils.service';
+import { Application } from '../../providers/utils.service';
 import { MqttClient } from '../../providers/mqttClient';
 
 import { Storage } from '@ionic/storage';
@@ -27,11 +27,9 @@ export class ApplicationsPage {
   constructor(public navCtrl: NavController,
               public navParams: NavParams,
               public modalCtrl: ModalController,
-              public alertCtrl: AlertController,
               private mqttClient: MqttClient,
               private tilesApi: TilesApi,
-              private utils: UtilsService,
-              private storage: Storage,) {}
+              private storage: Storage) {}
   /**
    * Called when the view is loaded to present login page if 
    * the user is not logged in
@@ -40,6 +38,12 @@ export class ApplicationsPage {
     this.storage.get('loggedIn').then((val) => {
       if (val == null || val == false) {
         this.presentLoginModal();
+      } else {
+        this.storage.get('loginData').then((loginData) => {
+          this.tilesApi.setLoginData(loginData);
+          this.mqttClient.connect();
+          this.setApplications();
+        });
       }
     });
   }
@@ -70,7 +74,10 @@ export class ApplicationsPage {
    */
   presentLoginModal() {
     let modal = this.modalCtrl.create(LoginPage);
-    modal.present();
+    modal.onDidDismiss(data => {
+        this.setApplications();
+   });
+   modal.present();
   }
 
   /**
@@ -90,10 +97,10 @@ export class ApplicationsPage {
    * @param {Application} application - a tiles application created in the web view
    */
   viewApplication = (application: Application): void => {
-    //push another page onto the history stack
-    //causing the nav controller to animate the new page in
+    // Push another page onto the history stack
+    // causing the nav controller to animate the new page in
     this.navCtrl.push(VirtualTilesPage, {
-    	_id: application._id
+    	app: application,
     });
   }
 }

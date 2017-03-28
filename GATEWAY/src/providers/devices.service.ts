@@ -14,15 +14,6 @@ export class DevicesService {
   }
 
   /**
-   * Returns mock devices for testing purposes
-   */
-  getMockDevices = (): Device[] => ([
-  	{id: '01:23:45:67:89:AB', tileId: 'Tile1', name: 'TI SensorTag1', connected: false, loading: false, ledOn: false, buttonPressed: true},
-  	{id: '01:23:45:67:89:AC', tileId: 'Tile2', name: 'TI SensorTag2', connected: true, loading: false, ledOn: true, buttonPressed: true},
-  	{id: '01:23:45:67:89:AD', tileId: 'Tile3', name: 'TI SensorTag3', connected: false, loading: false, ledOn: false, buttonPressed: true},
-  ]);
-
-  /**
    * Returns the list of devices currently stored
    */
   getDevices = (): Device[] => {
@@ -41,7 +32,6 @@ export class DevicesService {
         temp.tileId = bleDevice.name;
         temp.name = (name !== null && name !== undefined) ? name : bleDevice.name;
         temp.connected = false;
-        temp.loading = false;
         temp.ledOn = false;
         temp.buttonPressed = false;
         return temp;
@@ -52,7 +42,6 @@ export class DevicesService {
         temp.tileId = bleDevice.name;
         temp.name = bleDevice.name;
         temp.connected = false;
-        temp.loading = false;
         temp.ledOn = false;
         temp.buttonPressed = false;
         return temp;
