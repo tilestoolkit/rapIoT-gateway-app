@@ -1,0 +1,21 @@
+{
+    "_id":"58c120c5497df8602fedfbd3",
+    "virtualName":"Tile_a",
+    "application":"test3",
+    "tile":{
+        "_id":"Tile_da",
+        "__v":0,
+        "timestamp":"2017-3-11T0:3:55.352",
+        "user":"TestUser",
+        "active":true,
+        "name":"Tile_da",
+        "state":{
+            "name":"Tile_da",
+            "properties":[
+                "tap",
+                "single"
+            ]
+        }
+    },
+    "__v":0
+}
