@@ -63,12 +63,12 @@ export class MenuMock {
 }
 
 export class StorageMock {
-  public get(any: string): Promise<any>{
+  public get(str: string): Promise<any> {
     return new Promise((resolve: Function) => {
       resolve();
     });
   }
-  public set(any: any, any2: any): any{
+  public set(any1: any, any2: any): any {
     return true;
   }
 }

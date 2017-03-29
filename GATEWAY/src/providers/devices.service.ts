@@ -6,7 +6,7 @@ import { Device } from './utils.service';
 
 @Injectable()
 export class DevicesService {
-	private devices: Device[];
+  private devices: Device[];
 
   constructor(public storage: Storage,
               public events: Events) {
@@ -17,7 +17,7 @@ export class DevicesService {
    * Returns the list of devices currently stored
    */
   getDevices = (): Device[] => {
-  	return this.devices;
+    return this.devices;
   }
 
   /**
@@ -27,7 +27,6 @@ export class DevicesService {
   convertBleDeviceToDevice = (bleDevice: any): Promise<Device>  => {
     let temp = new Device;
     return this.storage.get(bleDevice.name).then( name => {
-      //return {
         temp.id = bleDevice.id;
         temp.tileId = bleDevice.name;
         temp.name = (name !== null && name !== undefined) ? name : bleDevice.name;
@@ -35,9 +34,7 @@ export class DevicesService {
         temp.ledOn = false;
         temp.buttonPressed = false;
         return temp;
-      //};
     }).catch(err => {
-      //return {
         temp.id = bleDevice.id;
         temp.tileId = bleDevice.name;
         temp.name = bleDevice.name;
@@ -45,7 +42,6 @@ export class DevicesService {
         temp.ledOn = false;
         temp.buttonPressed = false;
         return temp;
-     //};
     });
   }
 
@@ -54,9 +50,8 @@ export class DevicesService {
    * @param {Device} device - the device to add
    */
   newDevice = (device: Device) => {
-    if (this.isNewDevice(device)){
+    if (this.isNewDevice(device)) {
       this.devices.push(device);
-      //alert('device added: ' + JSON.stringify(device));
     }
   }
 
@@ -76,7 +71,7 @@ export class DevicesService {
   setCustomDeviceName = (device: Device, name: string): void => {
     this.storage.set(device.tileId, name);
     for (let d of this.devices) {
-      if (d.tileId == device.tileId) {
+      if (d.tileId === device.tileId) {
         d.name = name;
       }
     }
@@ -97,7 +92,7 @@ export class DevicesService {
   clearDisconnectedDevices = (): void => {
     for (let i = 0; i < this.devices.length; i++) {
       const device = this.devices[i];
-      if (device.connected == false) {
+      if (device.connected === false) {
         this.devices.splice(i, 1);
       }
     }

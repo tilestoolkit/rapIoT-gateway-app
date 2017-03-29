@@ -15,7 +15,7 @@ import { Application, CommandObject, Device, UtilsService } from './utils.servic
 export class BleService {
   bleScanner: Subscription;
   activeApp: Application;
-	rfduino = {
+  rfduino = {
     serviceUUID: '2220',
     receiveCharacteristicUUID: '2221',
     sendCharacteristicUUID: '2222',
@@ -26,7 +26,7 @@ export class BleService {
               private ble: BLE,
               private devicesService: DevicesService,
               private mqttClient: MqttClient,
-  						private tilesApi: TilesApi,
+              private tilesApi: TilesApi,
               private utils: UtilsService) {}
 
   /**
@@ -54,20 +54,20 @@ export class BleService {
   scanForDevices = (): void => {
     this.devicesService.clearDisconnectedDevices();
     this.ble.isEnabled()
-		  		  .then( res => {
-		   		 		this.scanBLE();
-		   		 	})
-		  		  .catch( err => {
-		  		 		//alert('Bluetooth not enabled!');
-		  		 		// NB! Android only!! IOS users has to turn bluetooth on manually
-		  		 		this.ble.enable()
-				  		 	 .then( res => {
+            .then( res => {
+              this.scanBLE();
+            })
+            .catch( err => {
+              // alert('Bluetooth not enabled!');
+              // NB! Android only!! IOS users has to turn bluetooth on manually
+              this.ble.enable()
+                 .then( res => {
                     this.scanBLE();
                   })
-				    		 .catch( err => {
-                    //alert('Failed to enable bluetooth, try doing it manually');
+                 .catch( err => {
+                    // alert('Failed to enable bluetooth, try doing it manually');
                   });
-		  		  });
+            });
   }
 
   /**
@@ -82,7 +82,7 @@ export class BleService {
       bleDevice => {
         if (this.tilesApi.isTilesDevice(bleDevice) && this.devicesService.isNewDevice(bleDevice)) {
           this.devicesService.convertBleDeviceToDevice(bleDevice).then( device => {
-            //test that the discovered device is not in the list of new devices
+            // test that the discovered device is not in the list of new devices
             if (!newDevices.map(discoveredDevice => discoveredDevice.id).includes(device.id)) {
               this.mqttClient.registerDevice(device);
               this.devicesService.newDevice(device);
@@ -105,14 +105,14 @@ export class BleService {
 
   /**
    * Connect to a device
-	 * @param {Device} device - the target device
-	 */
+   * @param {Device} device - the target device
+   */
   connect = (device: Device): void => {
-  	this.ble.connect(device.id)
-  		  .subscribe(
+    this.ble.connect(device.id)
+        .subscribe(
           res => {
             console.log('connecting to : ' + device.name);
-    		  	// Setting information about the device
+            // Setting information about the device
             device.connected = true;
             this.startDeviceNotification(device);
             this.mqttClient.registerDevice(device);
@@ -176,15 +176,15 @@ export class BleService {
 
   /**
    * Disconnect from device
-	 * @param {Device} device - the target device
-	 */
+   * @param {Device} device - the target device
+   */
   disconnect = (device: Device): void => {
-  	this.ble.disconnect(device.id)
-  					.then( res => {
-  						device.connected = false;
-  						this.mqttClient.unregisterDevice(device);
-  					})
-  					.catch( err => {
+    this.ble.disconnect(device.id)
+            .then( res => {
+              device.connected = false;
+              this.mqttClient.unregisterDevice(device);
+            })
+            .catch( err => {
               console.log('Failed to disconnect');
             });
   }

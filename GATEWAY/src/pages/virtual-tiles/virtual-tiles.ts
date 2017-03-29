@@ -30,11 +30,11 @@ export class VirtualTilesPage {
               private devicesService: DevicesService,
               private utils: UtilsService,
               private tilesApi: TilesApi) {
-  	// A id variable is stored in the navParams, and .get set this value to the local variable id
-  	this.activeApp = navParams.get('app');
+    // A id variable is stored in the navParams, and .get set this value to the local variable id
+    this.activeApp = navParams.get('app');
 
-  	// Sets the title of the page (found in virtual-tiles.html) to id, capitalized.
-  	this.applicationTitle = utils.capitalize(this.activeApp._id);
+    // Sets the title of the page (found in virtual-tiles.html) to id, capitalized.
+    this.applicationTitle = utils.capitalize(this.activeApp._id);
     this.setDevices();
     this.tilesApi.setVirtualTiles(this.activeApp._id);
     this.setVirtualTiles();
@@ -75,7 +75,7 @@ export class VirtualTilesPage {
   refreshVirtualTiles = (refresher): void => {
     this.setDevices();
     this.setVirtualTiles();
-    //Makes the refresher run for 2 secs
+    // Makes the refresher run for 2 secs
     setTimeout(() => {
       refresher.complete();
     }, 1250);
@@ -108,8 +108,7 @@ export class VirtualTilesPage {
           },
       }],
     }).present();
-    }
-    else {
+    } else {
       this.alertCtrl.create({
         title: 'Pair to physical tile',
         message: 'No physical tiles nearby.',

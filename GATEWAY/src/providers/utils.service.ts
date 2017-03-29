@@ -77,7 +77,7 @@ export class UtilsService {
     try {
       console.log('Attempting to send data to device via BLE.');
       let dataArray = new Uint8Array(str.length);
-      for (let i = 0; i < str.length; i ++){
+      for (let i = 0; i < str.length; i ++) {
         dataArray[i] = str.charCodeAt(i);
       }
       return dataArray;
@@ -93,7 +93,7 @@ export class UtilsService {
    */
   getEventStringAsObject = (eventString: string): CommandObject => {
     const params = eventString.split(',');
-    if (params.length > 1){
+    if (params.length > 1) {
       let temp = new CommandObject();
       temp.name = params[0];
       temp.properties = Array.prototype.slice.call(params, 1);
@@ -152,8 +152,8 @@ export class UtilsService {
    * Capitalize a string
    * @param {string} string - a string
    */
-  capitalize = (string: string): string => {
-    return string.charAt(0).toUpperCase() + string.slice(1);
+  capitalize = (str: string): string => {
+    return str.charAt(0).toUpperCase() + str.slice(1);
   }
 }
 

@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
 import { ModalController } from 'ionic-angular';
-import { ModalPage } from './modal-page';
 import { LoginPage } from '../login/login';
 import { VirtualTilesPage } from '../virtual-tiles/virtual-tiles';
 
@@ -36,7 +35,7 @@ export class ApplicationsPage {
    */
   ionViewDidLoad() {
     this.storage.get('loggedIn').then((val) => {
-      if (val == null || val == false) {
+      if (val == null || val === false) {
         this.presentLoginModal();
       } else {
         this.storage.get('loginData').then((loginData) => {
@@ -63,7 +62,7 @@ export class ApplicationsPage {
    */
   refreshApplications = (refresher): void => {
     this.setApplications();
-    //Makes the refresher run for 2 secs
+    // Makes the refresher run for 2 secs
     setTimeout(() => {
       refresher.complete();
     }, 1250);
@@ -100,7 +99,7 @@ export class ApplicationsPage {
     // Push another page onto the history stack
     // causing the nav controller to animate the new page in
     this.navCtrl.push(VirtualTilesPage, {
-    	app: application,
+      app: application,
     });
   }
 }

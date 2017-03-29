@@ -59,11 +59,11 @@ describe('devicesService:', () => {
     });
 
   });
-  //Needs to be changed. not an aqurate test.
+  // Needs to be changed. not an aqurate test.
   describe('convertBleDeviceToDevice(bleDevice: any): Promise<Device>', () => {
     it('should convert a given BLE Device parameter to a Device', done => {
       const testBLE = bleDevice;
-      //let returnedDevice =
+      // let returnedDevice =
       devicesService.convertBleDeviceToDevice(testBLE)
       .then(returnedDevice => {
         expect(returnedDevice).toEqual(convertedBle);

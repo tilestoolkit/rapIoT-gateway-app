@@ -55,7 +55,7 @@ describe('utilsService', () => {
   });
 
   describe('getEventStringAsObject(eventString: string): CommandObject', () => {
-    //E.g, ´led,on,red´
+    // E.g, ´led,on,red´
     it('should return an object conatining the eventName and the properties of the string parameter', () => {
       let eventString = 'led,on,red';
       let cmdObj = utilsService.getEventStringAsObject(eventString);
@@ -106,9 +106,9 @@ describe('utilsService', () => {
     });
 
     xit('should return false when passing incorrectly formated port parameters', () => {
-      let username: string = 'testUser';
+      /*let username: string = 'testUser';
       let host: string = '178.62.99.218';
-      let port: number = 8080;
+      let port: number = 8080;*/
       expect(true).toBeTruthy;
     });
 

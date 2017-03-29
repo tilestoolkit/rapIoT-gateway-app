@@ -41,8 +41,7 @@ export class TilesApi {
         this.setLoginData(loginData);
         return loginData;
       });
-    }
-    else {
+    } else {
       return this.loginData;
     }
 
@@ -76,7 +75,7 @@ export class TilesApi {
               return res.json();
             })
             .catch(err => {
-              //alert('failed getting applications with error: ' + err);
+              // alert('failed getting applications with error: ' + err);
             });
   }
 
@@ -85,7 +84,6 @@ export class TilesApi {
    * @param {string} applicationId - The application ID
    */
   getApplicationDetails = (applicationId: string): Promise<any> => {
-    //const url = `http://${this.loginData.host}:${this.apiPort}/applications/${applicationId}`;
     const url = `http://${this.loginData.host}:${this.apiPort}/applications/${applicationId}`;
     return this.http.get(url)
             .toPromise()
