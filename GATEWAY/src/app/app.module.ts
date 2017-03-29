@@ -54,5 +54,4 @@ import { UtilsService } from '../providers/utils.service';
     UtilsService,
   ]),
 })
-
 export class AppModule {}

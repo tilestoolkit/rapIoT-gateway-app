@@ -20,6 +20,7 @@ class BLEMock extends BLE {
   scan(services, seconds) {
     const mockBle = [
       {
+
         'name': 'Tile1',
         'id': '01:23:45:67:89:AA',
         'rssi': -79,
