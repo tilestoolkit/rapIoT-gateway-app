@@ -15,7 +15,7 @@ script:
 
 before_install:
   - cd GATEWAY
-  - npm install -g cordova ionic typescript
+  - npm install -g cordova ionic typescript tslint
 
 before_script:
   - npm install
