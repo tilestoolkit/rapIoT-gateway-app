@@ -15,7 +15,7 @@ script:
 
 before_install:
   - cd GATEWAY
-  - npm install -g cordova ionic typescript tslint
+  - npm install -g cordova ionic typescript tslint angular-cli karma
 
 before_script:
   - npm install
