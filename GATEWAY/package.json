@@ -13,8 +13,7 @@
     "lint": "tslint -c ./tslint.json --project ./tsconfig.json"
   },
   "dependencies": {
-    "@angular/common": "2.4.10",
-    "@angular/common": "2.4.8",
+    "@angular/common": "^2.4.10",
     "@angular/compiler": "^2.4.10",
     "@angular/compiler-cli": "^2.4.10",
     "@angular/core": "^2.4.10",
@@ -26,7 +25,6 @@
     "@ionic-native/ble": "^3.2.3",
     "@ionic-native/core": "^3.2.3",
     "@ionic/storage": "1.1.6",
-    "angular-cli": "^1.0.0-beta.28.3",
     "ionic-angular": "^2.1.0",
     "ionic-native": "^2.4.1",
     "ionicons": "^3.0.0",

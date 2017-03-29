@@ -3,8 +3,6 @@ sudo: false
 language: node_js
 node_js:
   - "iojs"
-  - "7"
-  - "6"
 
 notifications:
   email: true
@@ -18,3 +16,6 @@ script:
 before_install:
   - cd GATEWAY
   - npm install -g cordova ionic typescript
+
+before_script:
+  - npm install
