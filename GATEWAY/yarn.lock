@@ -79,9 +79,9 @@
   optionalDependencies:
     node-sass "^4.3.0"
 
-"@angular/common@^2.4.10":
-  version "2.4.10"
-  resolved "https://registry.yarnpkg.com/@angular/common/-/common-2.4.10.tgz#a3a682d2228fa30ec23dd0eb57c8e887fba26997"
+"@angular/common@2.4.8":
+  version "2.4.8"
+  resolved "https://registry.yarnpkg.com/@angular/common/-/common-2.4.8.tgz#e45a77a9d852c8e7135053ff38cf805435458c48"
 
 "@angular/compiler-cli@2.2.3":
   version "2.2.3"

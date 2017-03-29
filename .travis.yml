@@ -9,10 +9,12 @@ node_js:
 notifications:
   email: true
 
+cache: yarn
+
 script:
   - npm run lint
   - npm test
 
 before_install:
   - cd GATEWAY
-  - npm install -g cordova ionic angular-cli
+  - npm install -g cordova ionic typescript
