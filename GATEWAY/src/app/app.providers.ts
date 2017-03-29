@@ -1,5 +1,6 @@
 import { ErrorHandler } from '@angular/core';
-import { IonicErrorHandler } from 'ionic-angular';
+import { Events, IonicErrorHandler } from 'ionic-angular';
+import { Storage } from '@ionic/storage';
 import { BLE } from '@ionic-native/ble';
 import { Observable } from 'rxjs';
 
