@@ -11,7 +11,7 @@ notifications:
 
 script:
   - npm run lint
-#  - npm test
+  - npm test
 
 before_install:
   - npm install -g cordova ionic angular-cli
