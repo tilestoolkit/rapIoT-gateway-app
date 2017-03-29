@@ -7,6 +7,12 @@ node_js:
 notifications:
   email: true
 
+branches:
+  only:
+    - master
+    - Travis
+
+
 cache: yarn
 
 script:
