@@ -6,7 +6,6 @@ import { Storage } from '@ionic/storage';
 
 import { Tiles } from './app.component';
 import { TabsPage } from '../pages/tabs/tabs';
-import { HomePage } from '../pages/home/home';
 import { LoginPage } from '../pages/login/login';
 import { ApplicationsPage } from '../pages/applications/applications';
 import { DevTermPage } from '../pages/dev-term/dev-term';

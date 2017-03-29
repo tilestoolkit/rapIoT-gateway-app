@@ -19,4 +19,4 @@ export class TabsPage {
   }
 }
 
-export default { TabsPage }
+export default { TabsPage };

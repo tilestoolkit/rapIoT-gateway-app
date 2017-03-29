@@ -1,18 +1,18 @@
 import { inject, TestBed } from '@angular/core/testing';
 import { Storage } from '@ionic/storage';
 import { Events } from 'ionic-angular';
-import { UtilsService, CommandObject, Device, VirtualTile }from './utils.service';
+import { UtilsService, CommandObject }from './utils.service';
 import { StorageMock } from '../mocks';
 
 describe('utilsService', () => {
 
   let utilsService: UtilsService = null;
   let comparisonCmdObj = new CommandObject;
-    comparisonCmdObj.name = "led";
-    comparisonCmdObj.properties = ["on","red"];
+    comparisonCmdObj.name = 'led';
+    comparisonCmdObj.properties = ['on', 'red'];
   let comparisonCmdObj2 = new CommandObject;
-    comparisonCmdObj2.name = "light";
-    comparisonCmdObj2.properties = ["on"];
+    comparisonCmdObj2.name = 'light';
+    comparisonCmdObj2.properties = ['on'];
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -43,7 +43,7 @@ describe('utilsService', () => {
     it('should convert the string parameter to an array og bytes', () => {
       let stringParameter = 'test';
       let comparisonArray = new Uint8Array(4);
-      comparisonArray[0] = 116;comparisonArray[1] = 101;comparisonArray[2] = 115;comparisonArray[3] = 116;
+      comparisonArray[0] = 116; comparisonArray[1] = 101; comparisonArray[2] = 115; comparisonArray[3] = 116;
       let returnArray: Uint8Array = utilsService.convertStringtoBytes(stringParameter);
       expect(returnArray).toEqual(comparisonArray);
     });
@@ -55,9 +55,9 @@ describe('utilsService', () => {
   });
 
   describe('getEventStringAsObject(eventString: string): CommandObject', () => {
-    //E.g, ´led,on,red´
+    // E.g, ´led,on,red´
     it('should return an object conatining the eventName and the properties of the string parameter', () => {
-      let eventString = "led,on,red";
+      let eventString = 'led,on,red';
       let cmdObj = utilsService.getEventStringAsObject(eventString);
       expect(cmdObj).toEqual(comparisonCmdObj);
     });
@@ -79,7 +79,7 @@ describe('utilsService', () => {
     xit('should return the combined object of object 1 and 2 from extendObject', () => {
       let obj1 = comparisonCmdObj;
       let obj2 = comparisonCmdObj2;
-      expect(utilsService.extendObject(obj1,obj2)).toEqual('{ }');
+      expect(utilsService.extendObject(obj1, obj2)).toEqual('{ }');
     });
   });
 
@@ -106,9 +106,9 @@ describe('utilsService', () => {
     });
 
     xit('should return false when passing incorrectly formated port parameters', () => {
-      let username: string = 'testUser';
+      /*let username: string = 'testUser';
       let host: string = '178.62.99.218';
-      let port: number = 8080;
+      let port: number = 8080;*/
       expect(true).toBeTruthy;
     });
 

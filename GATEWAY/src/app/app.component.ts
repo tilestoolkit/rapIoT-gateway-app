@@ -25,7 +25,7 @@ export class Tiles {
               platform: Platform,
               private bleService: BleService,
               private devicesService: DevicesService,
-              private utils: UtilsService,) {
+              private utils: UtilsService, ) {
 
     platform.ready().then(() => {
       StatusBar.styleDefault();

@@ -43,7 +43,7 @@ export class PhysicalTilesPage {
   refreshDevices = (refresher): void => {
     console.log('Scanning for more devices...');
     this.bleService.scanForDevices();
-    //Makes the refresher run for 2 secs
+    // Makes the refresher run for 2 secs
     setTimeout(() => {
       refresher.complete();
       if (this.devices.length > 0) {
@@ -52,7 +52,7 @@ export class PhysicalTilesPage {
         this.refreshed = true;
       }
     }, 2000);
-  };
+  }
 
   /**
    * Triggers an event on a tile to identify which tile is which
