@@ -8,6 +8,7 @@ import { MqttClient } from './mqttClient';
 import { BleService } from './ble.service';
 import { LoginData } from './utils.service';
 import { StorageMock } from '../mocks';
+import { StorageMock } from '../mocks';
 
 
 import * as testDevice from '../fixtures/tilesDevice.json';

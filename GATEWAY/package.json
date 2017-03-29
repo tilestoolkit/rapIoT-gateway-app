@@ -9,7 +9,8 @@
     "build": "ionic-app-scripts build --tsconfig ./configs/tsconfig.prod.json",
     "ionic:build": "ionic-app-scripts build --tsconfig ./configs/tsconfig.prod.json",
     "ionic:serve": "ionic-app-scripts serve --tsconfig ./configs/tsconfig.prod.json",
-    "test": "ng test"
+    "test": "ng test",
+    "lint": "tslint -c ./tslint.json --project ./tsconfig.json"
   },
   "dependencies": {
     "@angular/common": "^2.4.10",
@@ -21,8 +22,8 @@
     "@angular/platform-browser": "^2.4.10",
     "@angular/platform-browser-dynamic": "^2.4.10",
     "@angular/platform-server": "^2.4.10",
-    "@ionic-native/core": "^3.2.3",
     "@ionic-native/ble": "^3.2.3",
+    "@ionic-native/core": "^3.2.3",
     "@ionic/storage": "1.1.6",
     "ionic-angular": "^2.1.0",
     "ionic-native": "^2.4.1",
@@ -54,6 +55,7 @@
     "ts-node": "^2.1.0",
     "tslint": "^4.5.1",
     "tslint-eslint-rules": "^3.4.0",
+    "tslint-ionic-rules": "^0.0.8",
     "typescript": "^2.0.9"
   },
   "cordovaPlugins": [

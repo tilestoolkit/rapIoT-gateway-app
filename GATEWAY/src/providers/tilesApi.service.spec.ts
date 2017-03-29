@@ -52,14 +52,14 @@ describe('tilesAPI', () => {
   describe('isTilesDevice(device: any): boolean', () => {
     it('should return true when given a valid device-input', () => {
       let testDevice = {
-        "name" : "TileTest"
+        'name' : 'TileTest'
       };
       expect(tilesApi.isTilesDevice(testDevice)).toBeTruthy;
     });
 
     it('should return false when given a invalid device-input', () => {
       let testDevice2 = {
-        "name" : "NotATilehuehue"
+        'name' : 'NotATilehuehue'
       };
       expect(tilesApi.isTilesDevice(testDevice2)).toBeFalsy;
     });
@@ -67,7 +67,7 @@ describe('tilesAPI', () => {
 
   xdescribe('setUsername(username: string): void', () => {
     it('should set the username of the TilesApi to match input', () => {
-      let newname = "Bobcat";
+      let newname = 'Bobcat';
       tilesApi.setUsername(newname);
       expect(tilesApi.username).toEqual(newname);
     });
@@ -75,9 +75,9 @@ describe('tilesAPI', () => {
 
   xdescribe('setHostAddress(hostAddress: string): void', () => {
     it('should set the hostAddress of the TilesApi to match input', () => {
-      let testhost = "128.0.0.0";
+      let testhost = '128.0.0.0';
       tilesApi.setHostAddress(testhost);
-      expect(tilesApi.hostAddress).toEqual("128.0.0.0");
+      expect(tilesApi.hostAddress).toEqual('128.0.0.0');
     });
   });
 
@@ -120,8 +120,8 @@ describe('tilesAPI', () => {
           })));
         });
 
-        tilesApi.getApplicationDetails("test3").then(application => {
-          expect(application._id).toEqual("test3");
+        tilesApi.getApplicationDetails('test3').then(application => {
+          expect(application._id).toEqual('test3');
         });
 
     }));
@@ -139,7 +139,7 @@ describe('tilesAPI', () => {
           })));
         });
 
-        tilesApi.getApplicationTiles("test3").then(tiles => {
+        tilesApi.getApplicationTiles('test3').then(tiles => {
           expect(tiles.length).toEqual(3);
         });
 

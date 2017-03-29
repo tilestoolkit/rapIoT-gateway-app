@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
 import { ModalController } from 'ionic-angular';
-import { ModalPage } from './modal-page';
 import { LoginPage } from '../login/login';
 import { VirtualTilesPage } from '../virtual-tiles/virtual-tiles';
 
@@ -31,18 +30,23 @@ export class ApplicationsPage {
               private tilesApi: TilesApi,
               private storage: Storage) {}
   /**
-   * Called when the view is loaded to present login page if 
+   * Called when the view is loaded to present login page if
    * the user is not logged in
    */
   ionViewDidLoad() {
     this.storage.get('loggedIn').then((val) => {
-      if (val == null || val == false) {
+      if (val == null || val === false) {
         this.presentLoginModal();
       } else {
         this.storage.get('loginData').then((loginData) => {
-          this.tilesApi.setLoginData(loginData);
-          this.mqttClient.connect();
-          this.setApplications();
+          console.log('login: ' + loginData);
+          if (loginData == null ||  loginData === undefined) {
+            this.presentLoginModal();
+          } else {
+            this.tilesApi.setLoginData(loginData);
+            this.mqttClient.connect();
+            this.setApplications();
+          }
         });
       }
     });
@@ -63,7 +67,7 @@ export class ApplicationsPage {
    */
   refreshApplications = (refresher): void => {
     this.setApplications();
-    //Makes the refresher run for 2 secs
+    // Makes the refresher run for 2 secs
     setTimeout(() => {
       refresher.complete();
     }, 1250);
@@ -81,7 +85,7 @@ export class ApplicationsPage {
   }
 
   /**
-   * Logout - empties the list of applications, changes the refreshstate 
+   * Logout - empties the list of applications, changes the refreshstate
    * and presents login window.
    */
   logout = () => {
@@ -100,7 +104,7 @@ export class ApplicationsPage {
     // Push another page onto the history stack
     // causing the nav controller to animate the new page in
     this.navCtrl.push(VirtualTilesPage, {
-    	app: application,
+      app: application,
     });
   }
 }

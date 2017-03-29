@@ -17,7 +17,7 @@ export class LoginPage {
               private tilesApi: TilesApi,
               private mqttClient: MqttClient,
               private utils: UtilsService,
-              private storage: Storage){}
+              private storage: Storage) {}
 
   /**
    * Connect to the mqttServer
@@ -35,7 +35,7 @@ export class LoginPage {
       this.storage.set('loggedIn', loginData.remember);
       this.viewCtrl.dismiss('logged_in');
     } else {
-      alert("Invalid login credentials.");
+      alert('Invalid login credentials.');
     }
   }
 
@@ -43,7 +43,7 @@ export class LoginPage {
    * Passes the login credidentials from the login form to the connectToServer function.
    */
   loginForm() {
-    this.connectToServer(this.loginInfo.user, this.loginInfo.host, parseInt(this.loginInfo.port), this.loginInfo.remember);
+    this.connectToServer(this.loginInfo.user, this.loginInfo.host, parseInt(this.loginInfo.port, 10), this.loginInfo.remember);
   }
 
   autoLogin() {
