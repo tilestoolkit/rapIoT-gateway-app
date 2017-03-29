@@ -9,7 +9,8 @@
     "build": "ionic-app-scripts build --tsconfig ./configs/tsconfig.prod.json",
     "ionic:build": "ionic-app-scripts build --tsconfig ./configs/tsconfig.prod.json",
     "ionic:serve": "ionic-app-scripts serve --tsconfig ./configs/tsconfig.prod.json",
-    "test": "ng test"
+    "test": "ng test",
+    "lint": "tslint -c ./tslint.json --project ./tsconfig.json"
   },
   "dependencies": {
     "@angular/common": "^2.4.10",

@@ -1,0 +1,21 @@
+
+sudo: false
+language: node_js
+node_js:
+  - "iojs"
+  - "7"
+  - "6"
+
+notifications:
+  email: true
+
+branches:
+  only:
+    - master
+
+script:
+  - npm run lint
+#  - npm test
+
+before_install:
+  - npm install -g cordova ionic angular-cli
