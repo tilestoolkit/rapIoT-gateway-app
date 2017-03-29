@@ -86,7 +86,7 @@ export class BleService {
             if (!newDevices.map(discoveredDevice => discoveredDevice.id).includes(device.id)) {
               this.mqttClient.registerDevice(device);
               this.devicesService.newDevice(device);
-              //console.info(this.devicesService.getDevices());
+              // console.info(this.devicesService.getDevices());
               newDevices.push(device);
               if (virtualTiles.filter(tile => tile.tile != null)
                               .map(tile => tile.tile.name)

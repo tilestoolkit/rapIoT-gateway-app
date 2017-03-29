@@ -1,4 +1,4 @@
-import { inject, TestBed, async } from '@angular/core/testing';
+import { inject, TestBed } from '@angular/core/testing';
 import { Http, BaseRequestOptions } from '@angular/http';
 import { MockBackend } from '@angular/http/testing';
 import { Events } from 'ionic-angular';
@@ -110,7 +110,7 @@ describe('bleService', () => {
       spyOn(bleService, 'sendData').and.returnValue(Observable.of(bleReturnValue));
       bleService.sendData(testDevice, 2345);
       expect(bleService['sendData']).not.toHaveBeenCalled;
-    })
+    });
   });
 
 });

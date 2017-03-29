@@ -7,12 +7,12 @@ import { TabsPage } from '../pages/tabs/tabs';
 import { MqttClient } from '../providers/mqttClient';
 import { TilesApi } from '../providers/tilesApi.service';
 import { StorageMock } from '../mocks';
- 
+
 let tiles: Tiles;
 let fixture: ComponentFixture<Tiles>;
- 
+
 describe('App Component', () => {
- 
+
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             declarations: [Tiles],

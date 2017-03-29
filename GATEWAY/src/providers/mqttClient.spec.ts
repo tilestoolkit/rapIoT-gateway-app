@@ -5,18 +5,13 @@ import { Events } from 'ionic-angular';
 import { Storage } from '@ionic/storage';
 import { TilesApi } from './tilesApi.service';
 import { MqttClient } from './mqttClient';
-import { BleService } from './ble.service';
 import { LoginData } from './utils.service';
 import { StorageMock } from '../mocks';
-import { StorageMock } from '../mocks';
-
-
-import * as testDevice from '../fixtures/tilesDevice.json';
 
 describe('mqttClient', () => {
 
   let mqttClient: MqttClient = null;
-  let loginData: LoginData = new LoginData("TestUser", "172.68.99.218", 8080, false);
+  let loginData: LoginData = new LoginData('TestUser', '172.68.99.218', 8080, false);
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -65,7 +60,7 @@ describe('mqttClient', () => {
       let testID: string = 'testEvent';
       let testEventBool: boolean = false;
       expect(mqttClient.getDeviceSpecificTopic(testID, testEventBool)).toEqual('tiles/cmd/TestUser/testEvent');
-    })
+    });
   });
 
   xdescribe('setMqttConnectionStatus(connected: boolean): void', () => {

@@ -12,7 +12,7 @@ import * as mockTilesApplicationsResponse from '../fixtures/applications.json';
 describe('tilesAPI', () => {
 
   let tilesApi: TilesApi = null;
-  let loginData: LoginData = new LoginData("Test", "172.68.99.218", 8080, false);
+  let loginData: LoginData = new LoginData('Test', '172.68.99.218', 8080, false);
 
   beforeEach(() => {
     TestBed.configureTestingModule({
