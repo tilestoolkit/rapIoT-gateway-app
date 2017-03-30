@@ -149,6 +149,10 @@
   dependencies:
     tsickle "^0.1.7"
 
+"@ionic-native/background-fetch@^3.4.3":
+  version "3.4.3"
+  resolved "https://registry.yarnpkg.com/@ionic-native/background-fetch/-/background-fetch-3.4.3.tgz#46b06be20bc63c283ac907644e715acacbe17284"
+
 "@ionic-native/ble@^3.2.3":
   version "3.3.1"
   resolved "https://registry.yarnpkg.com/@ionic-native/ble/-/ble-3.3.1.tgz#b47206e7312c55d3e72b2557955c74d666c61b33"
