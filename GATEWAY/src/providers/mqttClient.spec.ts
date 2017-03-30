@@ -1,6 +1,7 @@
 import { inject, TestBed } from '@angular/core/testing';
 import { Http, BaseRequestOptions } from '@angular/http';
 import { MockBackend } from '@angular/http/testing';
+import { BackgroundFetch } from '@ionic-native/background-fetch';
 import { Events } from 'ionic-angular';
 import { Storage } from '@ionic/storage';
 import { TilesApi } from './tilesApi.service';
@@ -19,6 +20,7 @@ describe('mqttClient', () => {
         TilesApi,
         MqttClient,
         Events,
+        BackgroundFetch,
         {
           provide: Storage,
           useClass: StorageMock
