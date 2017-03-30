@@ -36,5 +36,4 @@ apt:
 
 before_script:
   - npm install
-  - ng build
 
