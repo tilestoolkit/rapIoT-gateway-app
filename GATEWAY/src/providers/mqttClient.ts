@@ -32,6 +32,14 @@ export class MqttClient {
         });
   }
 
+  setConnectionData = (mqttConnectionData: LoginData = null): void => {
+    if (mqttConnectionData === null) {
+      this.mqttConnectionData = this.tilesApi.getLoginData();
+    } else {
+      this.mqttConnectionData = mqttConnectionData;
+    }
+  }
+
   /**
    * Returns a url for the specific device
    * @param {string} deviceId - the ID of the device

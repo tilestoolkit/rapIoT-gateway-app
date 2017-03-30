@@ -1,3 +1,16 @@
 {
-  "extends": "tslint-ionic-rules"
+  "extends": "tslint-ionic-rules",
+  "exclude": [
+    "node_modules",
+    "src/**/*.spec.ts",
+    "src/app/*.spec.ts",
+    "src/pages/**/*.spec.ts",
+    "src/providers/*.spec.ts",
+    "src/test.ts",
+    "src/polyfill.ts",
+    "src/mocks.ts",
+    "src/envoirment",
+    "src/envoirments",
+    "src/fixtures"
+  ]
 }
