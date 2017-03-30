@@ -60,7 +60,7 @@
     "cordova-plugin-whitelist",
     "cordova-plugin-console",
     "cordova-plugin-statusbar",
-    "cordova-plugin-d:evice",
+    "cordova-plugin-device",
     "cordova-plugin-splashscreen",
     "cordova-sqlite-storage",
     "cordova-plugin-ble-central",
