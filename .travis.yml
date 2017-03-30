@@ -18,7 +18,7 @@ cache: yarn
 script:
   - ionic build
   - npm run lint
-  - npm test
+  - karma start ./karma.conf.js --single-run
 
 before_install:
   - cd GATEWAY
