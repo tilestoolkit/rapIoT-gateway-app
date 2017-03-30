@@ -16,6 +16,7 @@ branches:
 cache: yarn
 
 script:
+  - ionic build
   - npm run lint
   - npm test
 
