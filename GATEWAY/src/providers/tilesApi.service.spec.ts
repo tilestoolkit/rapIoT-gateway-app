@@ -128,7 +128,7 @@ describe('tilesAPI', () => {
         });
 
         tilesApi.getApplicationTiles('test3').then(tiles => {
-          expect(tiles.length).toEqual(3);
+          expect(tiles.length).toEqual(2);
         });
 
     }));
