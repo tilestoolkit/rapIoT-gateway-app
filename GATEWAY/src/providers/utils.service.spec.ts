@@ -114,4 +114,8 @@ describe('utilsService', () => {
 
   });
 
+  describe('capitalize(str: string): void', () => {
+
+  });
+
 });

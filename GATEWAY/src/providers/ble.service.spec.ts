@@ -61,36 +61,32 @@ describe('bleService', () => {
     expect(bleService).toBeTruthy;
   });
 
-  xdescribe('scanForDevices(virtualTiles: VirtualTile[]): void', () => {
-    it('should check if BLE is enabled, scan for BLE-devices and have the tilesApi convert and store them', () => {
-      spyOn(bleService, 'scanBLE').and.returnValue(Observable.of(bleReturnValue));
-      bleService.scanForDevices([virtualTile]);
-      expect(bleService['scanBLE']).toHaveBeenCalled;
-    });
+  describe('startBLEScanner(): void', () => {
+
   });
 
-  xdescribe('scanBLE(virtualTiles: VirtualTile[]): void', () => {
-    it('should scan for BLE-devices and have the tilesApi convert and store them', () => {
-      spyOn(BLE, 'scan').and.returnValue(Observable.of(bleReturnValue));
-      bleService.scanBLE([virtualTile]);
-      expect(BLE['scan']).toHaveBeenCalled;
-    });
+  describe('stopBLEScanner(): void', () => {
+
   });
 
-  xdescribe('connect(device: Device): void', () => {
-    it('should connect successfully to a device after being called with a Device argument', () => {
-      spyOn(BLE, 'connect').and.returnValue(Observable.of(bleReturnValue));
-      bleService.connect(testDevice);
-      expect(BLE['connect']).toHaveBeenCalled;
-    });
+  describe('scanForDevices(): void', () => {
+
   });
 
-  xdescribe('startDeviceNotification(device: Device): void', () => {
-    it('should get notifications of events from a deivce', () => {
-      spyOn(BLE, 'startNotification').and.returnValue(Observable.of(bleReturnValue));
-      bleService.startDeviceNotification(testDevice);
-      expect(BLE['startNotification']).toHaveBeenCalled;
-    });
+  describe('scanBLE(): void', () => {
+
+  });
+
+  describe('connect(device: Device): void', () => {
+
+  });
+
+  describe('locate(device: Device): void', () => {
+
+  });
+
+  describe('startDeviceNotification(device: Device): void', () => {
+
   });
 
   describe('disconnect(device: Device): void', () => {
@@ -110,7 +106,7 @@ describe('bleService', () => {
 
     it('should not be able to send data that is not of the type string', () => {
       spyOn(bleService, 'sendData').and.returnValue(Observable.of(bleReturnValue));
-      bleService.sendData(testDevice, 2345);
+      bleService.sendData(testDevice, "2345");
       expect(bleService['sendData']).not.toHaveBeenCalled;
     });
   });
