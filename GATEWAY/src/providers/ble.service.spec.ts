@@ -1,19 +1,20 @@
 import { inject, TestBed } from '@angular/core/testing';
 import { Http, BaseRequestOptions } from '@angular/http';
 import { MockBackend } from '@angular/http/testing';
-import { Events } from 'ionic-angular';
 import { Storage } from '@ionic/storage';
-import { TilesApi } from './tilesApi.service';
-import { MqttClient } from './mqttClient';
+import { BackgroundFetch } from '@ionic-native/background-fetch';
+import { BLE } from '@ionic-native/ble';
+import { Events } from 'ionic-angular';
+import { Observable } from 'rxjs';
 import { BleService } from './ble.service';
 import { DevicesService }from './devices.service';
-import { UtilsService }from './utils.service';
 import { StorageMock } from '../mocks';
-import { BLE } from '@ionic-native/ble';
-import { Observable } from 'rxjs';
+import { MqttClient } from './mqttClient';
+import { TilesApi } from './tilesApi.service';
+import { UtilsService }from './utils.service';
 
 import * as bleReturnValue from '../fixtures/bleDevice.json';
-import * as virtualTile from '../fixtures/virtualTIle.json';
+import * as virtualTile from '../fixtures/virtualTile.json';
 import * as testDevice from '../fixtures/tilesDevice.json';
 
 describe('bleService', () => {
@@ -24,6 +25,7 @@ describe('bleService', () => {
     TestBed.configureTestingModule({
       providers: [
         Events,
+        BackgroundFetch,
         {
           provide: Storage,
           useClass: StorageMock

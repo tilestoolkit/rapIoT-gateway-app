@@ -1,8 +1,9 @@
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpModule }    from '@angular/http';
-import { IonicApp, IonicModule } from 'ionic-angular';
 import { Storage } from '@ionic/storage';
+import { BackgroundFetch } from '@ionic-native/background-fetch';
+import { IonicApp, IonicModule } from 'ionic-angular';
 
 import { Tiles } from './app.component';
 import { TabsPage } from '../pages/tabs/tabs';
@@ -46,6 +47,7 @@ import { UtilsService } from '../providers/utils.service';
     PhysicalTilesPage
   ],
   providers: AppProviders.getProviders().concat([
+    BackgroundFetch,
     Storage,
     BleService,
     DevicesService,
