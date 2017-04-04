@@ -32,6 +32,11 @@ export class MqttClient {
         });
   }
 
+  /**
+   * For testing purposes. Need the ability to set LoginData whitout being
+   * dependent on the TilesApi-class
+   * @param {LoginData} mqttConnectionData - the login credentials
+   */
   setConnectionData = (mqttConnectionData: LoginData = null): void => {
     if (mqttConnectionData === null) {
       this.mqttConnectionData = this.tilesApi.getLoginData();
