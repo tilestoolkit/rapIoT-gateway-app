@@ -108,7 +108,7 @@ describe('bleService', () => {
 
     it('should not be able to send data that is not of the type string', () => {
       spyOn(bleService, 'sendData').and.returnValue(Observable.of(bleReturnValue));
-      bleService.sendData(testDevice, 2345);
+      bleService.sendData(testDevice, "2345");
       expect(bleService['sendData']).not.toHaveBeenCalled;
     });
   });
