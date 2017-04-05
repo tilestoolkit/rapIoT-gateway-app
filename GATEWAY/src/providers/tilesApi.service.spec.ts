@@ -66,15 +66,28 @@ describe('tilesAPI', () => {
   });
 
   describe('setLoginData(loginData: LoginData): void', () => {
-
+    it('should set the correct login data in the beforeEach', () => {
+      expect(tilesApi.loginData).toEqual(loginData);
+    });
   });
 
   describe('getLoginData(): void', () => {
-
+    it('should return the correct login data', () => {
+      expect(tilesApi.getLoginData()).toEqual(loginData);
+    });
   });
 
   describe('setVirtualTiles(appId: string): void', () => {
-
+    it('should set virtualTiles equal to a list of virtual tiles from an application', () => {
+      spyOn(tilesApi, 'getApplicationTiles').and.callFake( () => {
+        return {
+          then: (callback) => {return callback(mockTilesApplicationDetailsResponse.virtualTiles);}
+        };
+      });
+      tilesApi.setVirtualTiles('test');
+      expect(tilesApi['setVirtualTiles']).toHaveBeenCalled;
+      expect(tilesApi.virtualTiles).toEqual(mockTilesApplicationDetailsResponse.virtualTiles);
+    })
   });
 
   describe('getAllApplications(): Promise<any>', () => {
