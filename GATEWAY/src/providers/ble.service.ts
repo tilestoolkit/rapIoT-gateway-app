@@ -23,14 +23,14 @@ export class BleService {
   };
 
   constructor(private events: Events,
-              private ble: BLE,
-              private devicesService: DevicesService,
-              private mqttClient: MqttClient,
-              private tilesApi: TilesApi,
-              private utils: UtilsService) {}
+              public ble: BLE,
+              public devicesService: DevicesService,
+              public mqttClient: MqttClient,
+              public tilesApi: TilesApi,
+              public utils: UtilsService) {}
 
   /**
-   * Start the BLE scanner making it scan every 30s
+   * Start the BLE scanner making it scan every 10s
    */
   startBLEScanner = (): void => {
     this.scanForDevices();
@@ -58,6 +58,7 @@ export class BleService {
               this.scanBLE();
             })
             .catch( err => {
+              console.info("test");
               // alert('Bluetooth not enabled!');
               // NB! Android only!! IOS users has to turn bluetooth on manually
               this.ble.enable()

@@ -75,10 +75,10 @@ describe('utilsService', () => {
     });
   });
 
-  describe('extendObject(obj1: any, obj2: any): any', () => {
-    xit('should return the combined object of object 1 and 2 from extendObject', () => {
-      let obj1 = comparisonCmdObj;
-      let obj2 = comparisonCmdObj2;
+  xdescribe('extendObject(obj1: any, obj2: any): any', () => {
+    it('should return the combined object of object 1 and 2 from extendObject', () => {
+      let obj1 = {"test1":'test'};
+      let obj2 = {"test2":'tset'};
       expect(utilsService.extendObject(obj1, obj2)).toEqual('{ }');
     });
   });
@@ -103,13 +103,6 @@ describe('utilsService', () => {
       let host: string = '1.1.1.1';
       let port: number = 8080;
       expect(utilsService.verifyLoginCredentials(username, host, port)).toBeFalsy;
-    });
-
-    xit('should return false when passing incorrectly formated port parameters', () => {
-      /*let username: string = 'testUser';
-      let host: string = '178.62.99.218';
-      let port: number = 8080;*/
-      expect(true).toBeTruthy;
     });
 
   });

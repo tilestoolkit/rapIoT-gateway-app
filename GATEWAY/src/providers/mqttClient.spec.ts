@@ -7,7 +7,7 @@ import { Storage } from '@ionic/storage';
 import { TilesApi } from './tilesApi.service';
 import { MqttClient } from './mqttClient';
 import { LoginData } from './utils.service';
-import { StorageMock } from '../mocks';
+import { StorageMock, BackgroundFetchMock } from '../mocks';
 
 describe('mqttClient', () => {
 
@@ -20,7 +20,10 @@ describe('mqttClient', () => {
         TilesApi,
         MqttClient,
         Events,
-        BackgroundFetch,
+        {
+        provide: BackgroundFetch,
+        useClass: BackgroundFetchMock
+        },
         {
           provide: Storage,
           useClass: StorageMock
@@ -51,7 +54,7 @@ describe('mqttClient', () => {
     expect(mqttClient).toBeTruthy;
   });
 
-  describe('sendConnectionData(mqttConnectionData: LoginData): void', () => {
+  describe('setConnectionData(mqttConnectionData: LoginData): void', () => {
 
   });
 
@@ -103,3 +106,22 @@ describe('mqttClient', () => {
   });
 
 });
+
+/** Mock HTTP
+ * it('should return a list of three virtualTiles',
+        inject([MockBackend], (mockBackend) => {
+
+        const mockResponse = mockTilesApplicationDetailsResponse;
+
+        mockBackend.connections.subscribe((connection) => {
+          connection.mockRespond(new Response(new ResponseOptions({
+            body: JSON.stringify(mockResponse)
+          })));
+        });
+
+        tilesApi.getApplicationTiles('test3').then(tiles => {
+          expect(tiles.length).toEqual(2);
+        });
+
+    }));
+ */

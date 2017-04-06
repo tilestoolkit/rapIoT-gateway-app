@@ -5,13 +5,13 @@ import { Storage } from '@ionic/storage';
 import { BackgroundFetch } from '@ionic-native/background-fetch';
 import { BLE } from '@ionic-native/ble';
 import { Events } from 'ionic-angular';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { BleService } from './ble.service';
 import { DevicesService }from './devices.service';
-import { StorageMock } from '../mocks';
+import { StorageMock, BackgroundFetchMock, BLEMock } from '../mocks';
 import { MqttClient } from './mqttClient';
 import { TilesApi } from './tilesApi.service';
-import { UtilsService }from './utils.service';
+import { UtilsService, Device }from './utils.service';
 
 import * as bleReturnValue from '../fixtures/bleDevice.json';
 import * as virtualTile from '../fixtures/virtualTile.json';
@@ -25,10 +25,17 @@ describe('bleService', () => {
     TestBed.configureTestingModule({
       providers: [
         Events,
-        BackgroundFetch,
+        {
+        provide: BackgroundFetch,
+        useClass: BackgroundFetchMock
+        },
         {
           provide: Storage,
           useClass: StorageMock
+        },
+        {
+          provide: BLE,
+          useClass: BLEMock
         },
         MockBackend,
         BaseRequestOptions,
@@ -44,7 +51,6 @@ describe('bleService', () => {
         TilesApi,
         MqttClient,
         BleService,
-        BLE,
       ],
     });
   });
@@ -62,15 +68,61 @@ describe('bleService', () => {
   });
 
   describe('startBLEScanner(): void', () => {
+    it('should scan for BLE devices, and start a scanner that scans for new BLE devices', () => {
+      spyOn(bleService, 'scanForDevices').and.returnValue(Observable.of(bleReturnValue));
 
+      bleService.startBLEScanner();
+
+      expect(bleService['scanForDevices']).toHaveBeenCalled();
+      expect(bleService.bleScanner).toBeDefined();
+    });
   });
 
   describe('stopBLEScanner(): void', () => {
+    it('should unsubscribe bleScanner if defined', () => {
+      bleService.bleScanner = new Subscription;
+      spyOn(bleService.bleScanner, 'unsubscribe');
 
+      bleService.stopBLEScanner();
+
+      expect(bleService.bleScanner['unsubscribe']).toHaveBeenCalled();
+    });
+
+    /**
+     * Can not test for method to do nothing if bleScanner is undefined
+     * Throws unavoidable errors
+     */
+    
   });
 
   describe('scanForDevices(): void', () => {
+    
+    it('should clear disconnected devices before scanning for new ble devices', () => {
+      let tempDevice = new Device;
+      tempDevice.id = "test", tempDevice.tileId = "test", tempDevice.name = "test", tempDevice.connected = false, tempDevice.ledOn = false, tempDevice.buttonPressed = false;
+      bleService.devicesService.setDevices([tempDevice]);
+      spyOn(bleService.devicesService, 'clearDisconnectedDevices').and.callThrough();
 
+      bleService.scanForDevices();
+
+      expect(bleService.devicesService['clearDisconnectedDevices']).toHaveBeenCalled();
+      expect(bleService.devicesService.getDevices().length).toEqual(0);
+    });
+
+    it('should check if BLE is enabled', () => {
+      spyOn(bleService.ble, 'isEnabled').and.callThrough(); 
+        /* Kan være grei å beholde intill videre
+        () => {
+        return {
+          then: (callback) => {return callback();}
+        };
+      });
+      */
+
+      bleService.scanForDevices();
+
+      expect(bleService.ble['isEnabled']).toHaveBeenCalled();
+    });
   });
 
   describe('scanBLE(): void', () => {
@@ -92,23 +144,29 @@ describe('bleService', () => {
   describe('disconnect(device: Device): void', () => {
     it('should disconnect from the current device if it is paired', () => {
       spyOn(bleService, 'disconnect').and.returnValue(Observable.of(bleReturnValue));
+
       bleService.disconnect(testDevice);
-      expect(bleService['disconnect']).toHaveBeenCalled;
+
+      expect(bleService['disconnect']).toHaveBeenCalled();
     });
   });
 
   describe('sendData(device: Device, dataString: string): void', () => {
     it('should successfully send a dataString to a device using BLE', () => {
       spyOn(bleService, 'sendData').and.returnValue(Observable.of(bleReturnValue));
+
       bleService.sendData(testDevice, 'Hello!');
-      expect(bleService['sendData']).toHaveBeenCalled;
+
+      expect(bleService['sendData']).toHaveBeenCalled();
     });
 
-    it('should not be able to send data that is not of the type string', () => {
+    /* Dårlig test
+    xit('should not be able to send data that is not of the type string', () => {
       spyOn(bleService, 'sendData').and.returnValue(Observable.of(bleReturnValue));
-      bleService.sendData(testDevice, "2345");
-      expect(bleService['sendData']).not.toHaveBeenCalled;
+      bleService.sendData(testDevice, 2345);
+      expect(bleService['sendData']).not.toHaveBeenCalled();
     });
+    */
   });
 
 });

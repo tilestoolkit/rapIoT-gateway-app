@@ -84,8 +84,10 @@ describe('tilesAPI', () => {
           then: (callback) => {return callback(mockTilesApplicationDetailsResponse.virtualTiles);}
         };
       });
+      
       tilesApi.setVirtualTiles('test');
-      expect(tilesApi['setVirtualTiles']).toHaveBeenCalled;
+
+      expect(tilesApi['getApplicationTiles']).toHaveBeenCalled();
       expect(tilesApi.virtualTiles).toEqual(mockTilesApplicationDetailsResponse.virtualTiles);
     })
   });

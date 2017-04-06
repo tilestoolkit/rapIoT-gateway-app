@@ -21,6 +21,14 @@ export class DevicesService {
   }
 
   /**
+   * Sets the list of devices equal to the parameter
+   * @param {Devices[]} devices - the list of devices
+   */
+  setDevices = (devices: Device[]): void => {
+    this.devices = devices;
+  }
+
+  /**
    * Converts the device discovered by ble into a device on the tiles format
    * @param {any} bleDevice - the returned device from the ble scan
    */

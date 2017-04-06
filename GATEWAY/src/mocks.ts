@@ -1,3 +1,5 @@
+import { Observable } from 'rxjs';
+
 export class ConfigMock {
 
   public get(): any {
@@ -70,5 +72,34 @@ export class StorageMock {
   }
   public set(any1: any, any2: any): any {
     return true;
+  }
+}
+
+export class BackgroundFetchMock {
+  public configure(): Promise<any> {
+    return new Promise((resolve: Function) => {
+      resolve();
+    });
+  }
+}
+
+export class BLEMock {
+  public isEnabled(): Promise<any> {
+    return new Promise((resolve: Function) => {
+      resolve();
+    });
+  }
+  public enable(): Promise<any> {
+    return new Promise((resolve: Function) => {
+      resolve();
+    });
+  }
+  public scan(): Observable<any> {
+    return Observable.of();
+  }
+  public catch(args): Promise<any> {
+    return new Promise((resolve: Function) => {
+      return resolve();
+    });
   }
 }
