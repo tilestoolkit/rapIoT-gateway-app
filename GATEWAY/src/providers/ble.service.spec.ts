@@ -110,19 +110,51 @@ describe('bleService', () => {
     });
 
     it('should check if BLE is enabled', () => {
-      spyOn(bleService.ble, 'isEnabled').and.callThrough(); 
-        /* Kan være grei å beholde intill videre
-        () => {
-        return {
-          then: (callback) => {return callback();}
-        };
-      });
-      */
+      spyOn(bleService.ble, 'isEnabled').and.callThrough();
 
       bleService.scanForDevices();
 
       expect(bleService.ble['isEnabled']).toHaveBeenCalled();
     });
+
+    //TODO: Ferdigstill denne metoden
+    it('should invoke the method scanBLE() if BLE is enabled', () => {
+      spyOn(bleService.ble, 'isEnabled').and.callFake((): Promise<any> => {
+        return new Promise((resolve: Function) => {
+          resolve(bleService.scanBLE());
+        });
+      });
+      spyOn(bleService, 'scanBLE').and.callThrough();
+
+      bleService.scanForDevices();
+
+      //expect(bleService.ble.isEnabled).toHaveBeenCalled();
+      expect(bleService.scanBLE).toHaveBeenCalledTimes(1);
+    });
+
+    //TODO: Ferdigstill denne metoden
+    xit('should try to enable BLE if method isEnabled throws an error', () => {
+      spyOn(bleService.ble, 'isEnabled').and.callThrough();
+      spyOn(bleService, 'scanBLE').and.throwError("Test Error");
+      spyOn(bleService.ble, 'enable').and.callThrough();
+
+      bleService.scanForDevices();
+
+      //expect(bleService.ble['isEnabled']).toHaveBeenCalled();
+      //expect(bleService['scanBLE']).toThrowError();
+      expect(bleService.ble.enable).toHaveBeenCalled();
+    });
+
+    //TODO: Ferdigstill denne metoden
+    xit('should invoke method scanBLE() if it successfully enables BLE', () => {
+
+    });
+
+    //TODO: Ferdigstill denne metoden
+    xit('should do something if method enable() throws an error', () => {
+
+    });
+
   });
 
   describe('scanBLE(): void', () => {
