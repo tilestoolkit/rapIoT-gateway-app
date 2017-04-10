@@ -52,14 +52,10 @@ export class Tiles {
     });
 
     this.events.subscribe('updateDevices', () => {
-      this.setDevices();
+      this.devices = this.devicesService.getDevices();
     });
   }
 
-  /**
-   * Set the devices equal to the devices from devicesservice
-   */
-  setDevices = (): void => {
-    this.devices = this.devicesService.getDevices();
   }
 }
+

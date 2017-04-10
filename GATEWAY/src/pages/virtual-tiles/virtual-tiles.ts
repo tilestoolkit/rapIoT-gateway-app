@@ -35,16 +35,9 @@ export class VirtualTilesPage {
 
     // Sets the title of the page (found in virtual-tiles.html) to id, capitalized.
     this.applicationTitle = utils.capitalize(this.activeApp._id);
-    this.setDevices();
+    this.devices = this.devicesService.getDevices();
     this.tilesApi.setVirtualTiles(this.activeApp._id);
     this.setVirtualTiles();
-  }
-
-  /**
-   * Set the devices equal to the devices from devicesservice
-   */
-  setDevices = (): void => {
-    this.devices = this.devicesService.getDevices();
   }
 
   /**
@@ -73,7 +66,7 @@ export class VirtualTilesPage {
   * virtualTiles
   */
   refreshVirtualTiles = (refresher): void => {
-    this.setDevices();
+    this.devices = this.devicesService.getDevices();
     this.setVirtualTiles();
     // Makes the refresher run for 2 secs
     setTimeout(() => {
@@ -102,7 +95,6 @@ export class VirtualTilesPage {
           text: 'Pair',
           handler: data => {
             this.tilesApi.pairDeviceToVirualTile(data, virtualTile._id, this.activeApp._id);
-
             // Refreshes the lists of paired and unpaired virtual tiles
             this.setVirtualTiles();
           },
