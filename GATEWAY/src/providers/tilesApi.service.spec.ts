@@ -30,7 +30,6 @@ describe('tilesAPI', () => {
           provide: Storage,
           useClass: StorageMock
         },
-        Device,
         TilesApi,
       ],
     });
@@ -51,16 +50,12 @@ describe('tilesAPI', () => {
 
   describe('isTilesDevice(device: any): boolean', () => {
     it('should return true when given a valid device-input', () => {
-      let testDevice = {
-        'name' : 'TileTest'
-      };
+      const testDevice = new Device('xx', 'xx', 'TileTest', false);
       expect(tilesApi.isTilesDevice(testDevice)).toBeTruthy;
     });
 
     it('should return false when given a invalid device-input', () => {
-      let testDevice2 = {
-        'name' : 'NotATilehuehue'
-      };
+      const testDevice2 = new Device('xx', 'xx', 'NotATile', false);
       expect(tilesApi.isTilesDevice(testDevice2)).toBeFalsy;
     });
   });

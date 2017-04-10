@@ -14,7 +14,6 @@ import { TilesApi } from './tilesApi.service';
 import { UtilsService, Device }from './utils.service';
 
 import * as bleReturnValue from '../fixtures/bleDevice.json';
-import * as virtualTile from '../fixtures/virtualTile.json';
 import * as testDevice from '../fixtures/tilesDevice.json';
 
 describe('bleService', () => {
