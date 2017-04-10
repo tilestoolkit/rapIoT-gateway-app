@@ -8,13 +8,12 @@ import 'rxjs/add/operator/toPromise';
 import { DevicesService }from './devices.service';
 import { MqttClient } from './mqttClient';
 import { TilesApi  } from './tilesApi.service';
-import { Application, CommandObject, Device, UtilsService } from './utils.service';
+import { CommandObject, Device, UtilsService } from './utils.service';
 
 
 @Injectable()
 export class BleService {
   bleScanner: Subscription;
-  activeApp: Application;
   rfduino = {
     serviceUUID: '2220',
     receiveCharacteristicUUID: '2221',
@@ -75,33 +74,35 @@ export class BleService {
    */
   scanBLE = (): void => {
     // A list of the discovered devices
-    let newDevices: Array<Device> = [];
     const virtualTiles = this.tilesApi.getVirtualTiles();
-    this.ble.scan([], 30).subscribe(
+    this.ble.scan([], 30).toArray().subscribe(
       // function to be called for each new device discovered
-      bleDevice => {
-        if (this.tilesApi.isTilesDevice(bleDevice) && this.devicesService.isNewDevice(bleDevice)) {
-          this.devicesService.convertBleDeviceToDevice(bleDevice).then( device => {
-            // test that the discovered device is not in the list of new devices
-            if (!newDevices.map(discoveredDevice => discoveredDevice.id).includes(device.id)) {
-              this.mqttClient.registerDevice(device);
-              this.devicesService.newDevice(device);
-              // console.info(this.devicesService.getDevices());
-              newDevices.push(device);
+      bleDevices => {
+        let devices = new Array();
+        for (let i = 0; i < bleDevices.length; i++) {
+          if (this.tilesApi.isTilesDevice(bleDevices[i])) {
+            this.devicesService.convertBleDeviceToDevice(bleDevices[i]).then( device => {
               if (virtualTiles.filter(tile => tile.tile != null)
                               .map(tile => tile.tile.name)
                               .includes(device.tileId)) {
                 this.connect(device);
               }
-              this.events.publish('updateDevices');
-            }
-          }).catch(err => alert(err));
+              devices.push(device);
+              if (i === bleDevices.length - 1) {
+                this.devicesService.setDevices(devices);
+              }
+            }).catch(err => {
+              alert(err);
+            });
+          }
         }
       },
       err => {
         alert('Error when scanning for devices: ' + err);
       },
-      () => {});
+      () => {
+        console.log('done scanning');
+      });
   }
 
   /**
@@ -184,6 +185,7 @@ export class BleService {
             .then( res => {
               device.connected = false;
               this.mqttClient.unregisterDevice(device);
+              console.log('diconnected from device: ' + device.name);
             })
             .catch( err => {
               console.log('Failed to disconnect');

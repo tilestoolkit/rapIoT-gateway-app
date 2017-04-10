@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { AlertController, NavController, NavParams } from 'ionic-angular';
 
+import { BleService } from '../../providers/ble.service';
 import { DevicesService } from '../../providers/devices.service';
 import { TilesApi } from '../../providers/tilesApi.service';
 import { Application, Device, UtilsService, VirtualTile } from '../../providers/utils.service';
@@ -27,6 +28,7 @@ export class VirtualTilesPage {
   constructor(public alertCtrl: AlertController,
               public navCtrl: NavController,
               public navParams: NavParams,
+              private bleService: BleService,
               private devicesService: DevicesService,
               private utils: UtilsService,
               private tilesApi: TilesApi) {
@@ -108,4 +110,12 @@ export class VirtualTilesPage {
     }
   }
 
+  ionViewDidLeave = () => {
+    console.log('virtual tiles out');
+    this.tilesApi.clearVirtualTiles();
+    for (let device of this.devices) {
+      console.log('device: ' + device.name);
+      this.bleService.disconnect(device);
+    };
+  }
 }
