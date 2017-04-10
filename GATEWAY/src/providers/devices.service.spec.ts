@@ -88,20 +88,6 @@ describe('devicesService:', () => {
 
   });
 
-  describe('isNewDevice(device: Device): boolean', () => {
-
-    it('should return true if the devices-list does not contain the device-parameter', () => {
-      devicesService.newDevice(deviceOne);
-      expect(devicesService.isNewDevice(deviceTwo)).toBeTruthy;
-    });
-
-    it('should return false if the devices-list contains the device-parameter', () => {
-      devicesService.newDevice(deviceOne);
-      expect(devicesService.isNewDevice(deviceTwo)).toBeFalsy;
-    });
-
-  });
-
   describe('setCustomDeviceName(device: Device, name: String): void', () => {
 
     it('should change the name of the device parameter to the name parameter', () => {

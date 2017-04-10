@@ -57,17 +57,9 @@ export class DevicesService {
    * @param {Device} device - the device to add
    */
   newDevice = (device: Device) => {
-    if (this.isNewDevice(device)) {
+    if (!this.devices.map(storedDevice => storedDevice.tileId).includes(device.tileId)) {
       this.devices.push(device);
     }
-  }
-
-  /**
-   * Check if a device already exists among the stored ones
-   * @param {any} device - The device to check
-   */
-  isNewDevice = (device: any): boolean => {
-    return !this.devices.map(storedDevice => storedDevice.tileId).includes(device.tileId);
   }
 
   /**
