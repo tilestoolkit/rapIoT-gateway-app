@@ -43,8 +43,6 @@ export class Tiles {
     this.events.subscribe('command', (deviceId: string, command: CommandObject) => {
       for (let device of this.devices) {
         if (device.tileId === deviceId) {
-          device.ledOn = (command.name === 'led' && command.properties[0] === 'on');
-          console.log('Device led on: ' + device.ledOn);
           const commandString = this.utils.getCommandObjectAsString(command);
           this.bleService.sendData(device, commandString);
         }
@@ -55,7 +53,4 @@ export class Tiles {
       this.devices = this.devicesService.getDevices();
     });
   }
-
-  }
 }
-

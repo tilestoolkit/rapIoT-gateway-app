@@ -13,16 +13,8 @@ describe('devicesService:', () => {
   let devicesService: DevicesService = null;
   let deviceOne: Device = null;
   let deviceTwo: Device = null;
-  let convertedBle = new Device;
-      convertedBle.tileId = 'Tile_9e';
-      convertedBle.name = 'Tile_9e';
-      convertedBle.id = '01:23:45:67:89:AB';
-      convertedBle.connected = false;
-      convertedBle.ledOn = false;
-      convertedBle.buttonPressed = false;
-      convertedBle.connected = false;
-      convertedBle.ledOn = false;
-      convertedBle.buttonPressed = false;
+  let convertedBle = new Device('01:23:45:67:89:AB', 'Tile_9e', 'Tile_9e', false);
+
 
   beforeEach(() => {
     TestBed.configureTestingModule({
