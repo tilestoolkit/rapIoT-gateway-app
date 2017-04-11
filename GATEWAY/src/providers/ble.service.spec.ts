@@ -91,14 +91,13 @@ describe('bleService', () => {
      * Can not test for method to do nothing if bleScanner is undefined
      * Throws unavoidable errors
      */
-    
+
   });
 
   describe('scanForDevices(): void', () => {
-    
+
     it('should clear disconnected devices before scanning for new ble devices', () => {
-      let tempDevice = new Device;
-      tempDevice.id = "test", tempDevice.tileId = "test", tempDevice.name = "test", tempDevice.connected = false, tempDevice.ledOn = false, tempDevice.buttonPressed = false;
+      let tempDevice = new Device('test', 'test', 'test', false);
       bleService.devicesService.setDevices([tempDevice]);
       spyOn(bleService.devicesService, 'clearDisconnectedDevices').and.callThrough();
 
