@@ -97,6 +97,7 @@ describe('bleService', () => {
 
   describe('scanForDevices(): void', () => {
     
+    //Test funker egentlig ikke. Gir feil om man forsøker med 2 eller flere devices
     it('should clear disconnected devices before scanning for new ble devices', () => {
       let tempDevice = new Device;
       tempDevice.id = "test", tempDevice.tileId = "test", tempDevice.name = "test", tempDevice.connected = false, tempDevice.ledOn = false, tempDevice.buttonPressed = false;
@@ -154,6 +155,16 @@ describe('bleService', () => {
   });
 
   describe('scanBLE(): void', () => {
+
+    it('make an array and fill it with new devices discovered', () => {
+      spyOn(bleService.ble, 'scan').and.returnValue(Observable.of(bleReturnValue));
+      spyOn(bleService.devicesService, 'convertBleDeviceToDevice').and.callThrough();
+
+      let tempArray = bleService.scanBLE();
+
+      expect(bleService.ble.scan).toHaveBeenCalled();
+      expect(bleService.devicesService.convertBleDeviceToDevice).toHaveBeenCalled();
+    });
 
   });
 
