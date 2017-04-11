@@ -29,7 +29,7 @@ export class BleService {
               public utils: UtilsService) {}
 
   /**
-   * Start the BLE scanner making it scan every 10s
+   * Start the BLE scanner making it scan every 30s
    */
   startBLEScanner = (): void => {
     this.scanForDevices();

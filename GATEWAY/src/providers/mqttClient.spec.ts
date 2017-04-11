@@ -54,10 +54,6 @@ describe('mqttClient', () => {
     expect(mqttClient).toBeTruthy;
   });
 
-  describe('setConnectionData(mqttConnectionData: LoginData): void', () => {
-
-  });
-
   describe('getDeviceSpecificTopic(deviceId: string, isEvent: boolean): string', () => {
     it('should return a correct url adress for the specific device', () => {
       let testID: string = 'testEvent';
