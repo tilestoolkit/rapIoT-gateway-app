@@ -30,7 +30,7 @@
         <b>{{tile.virtualName}}</b><br>
       </div>
       <div class="col">
-        <button class="bttn" ion-button small color="positive" (click)="pairTilePopUp(tile)" >PAIR</button>
+        <button class="bttn" ion-button small color="positive" (click)="pairTilePopUp(tile)">PAIR</button>
       </div>
     </div>
   </ion-item>
@@ -41,6 +41,9 @@
       <div id="devName" class="col col-75">
         <b>Virtual tile: {{tile.virtualName}}</b><br>
         <b>Physical tile: {{tile.tile._id}}</b>
+      </div>
+      <div class="col">
+        <button class="bttn" ion-button small color="positive" (click)="pairTilePopUp(tile)">PAIR ANOTHER</button>
       </div>
     </div>
   </ion-item>
