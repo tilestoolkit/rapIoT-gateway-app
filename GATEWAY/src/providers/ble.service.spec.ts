@@ -11,10 +11,9 @@ import { DevicesService }from './devices.service';
 import { StorageMock, BackgroundFetchMock, BLEMock } from '../mocks';
 import { MqttClient } from './mqttClient';
 import { TilesApi } from './tilesApi.service';
-import { UtilsService, Device }from './utils.service';
+import { UtilsService, Device, CommandObject }from './utils.service';
 
 import * as bleReturnValue from '../fixtures/bleDevice.json';
-import * as virtualTile from '../fixtures/virtualTile.json';
 import * as testDevice from '../fixtures/tilesDevice.json';
 
 describe('bleService', () => {
@@ -92,15 +91,14 @@ describe('bleService', () => {
      * Can not test for method to do nothing if bleScanner is undefined
      * Throws unavoidable errors
      */
-    
+
   });
 
   describe('scanForDevices(): void', () => {
     
     //Test funker egentlig ikke. Gir feil om man forsøker med 2 eller flere devices
     it('should clear disconnected devices before scanning for new ble devices', () => {
-      let tempDevice = new Device;
-      tempDevice.id = "test", tempDevice.tileId = "test", tempDevice.name = "test", tempDevice.connected = false, tempDevice.ledOn = false, tempDevice.buttonPressed = false;
+      let tempDevice = new Device('test', 'test', 'test', false);
       bleService.devicesService.setDevices([tempDevice]);
       spyOn(bleService.devicesService, 'clearDisconnectedDevices').and.callThrough();
 
@@ -156,7 +154,7 @@ describe('bleService', () => {
 
   describe('scanBLE(): void', () => {
 
-    it('make an array and fill it with new devices discovered', () => {
+    it('should run functions ble.scan and devicesService.convertBleDeviceToDevice', () => {
       spyOn(bleService.ble, 'scan').and.returnValue(Observable.of(bleReturnValue));
       spyOn(bleService.devicesService, 'convertBleDeviceToDevice').and.callThrough();
 
@@ -170,13 +168,105 @@ describe('bleService', () => {
 
   describe('connect(device: Device): void', () => {
 
+    it('should run method startDeviceNotification if ble.connect returns no error', () => {
+      spyOn(bleService.ble, 'connect').and.returnValue(Observable.of(testDevice));
+      spyOn(bleService, 'startDeviceNotification');
+      spyOn(bleService.devicesService, 'clearDisconnectedDevices');
+      let tempDevice = new Device('test', 'test', 'test', false);
+
+      bleService.connect(tempDevice);
+
+      expect(bleService.ble.connect).toHaveBeenCalled();
+      expect(bleService.startDeviceNotification).toHaveBeenCalled();
+      expect(bleService.devicesService.clearDisconnectedDevices).not.toHaveBeenCalled();
+    });
+
+    it('should run method devicesService.clearDisconnectedDevices if ble.connect returns an error', () => {
+      spyOn(bleService.ble, 'connect').and.returnValue(Observable.throw(new Error()));
+      spyOn(bleService, 'startDeviceNotification');
+      spyOn(bleService.devicesService, 'clearDisconnectedDevices');
+      let tempDevice = new Device('test', 'test', 'test', false);
+
+      bleService.connect(tempDevice);
+
+      expect(bleService.ble.connect).toHaveBeenCalled();
+      expect(bleService.startDeviceNotification).not.toHaveBeenCalled();
+      expect(bleService.devicesService.clearDisconnectedDevices).toHaveBeenCalled();
+    });
+
   });
 
   describe('locate(device: Device): void', () => {
 
+    it('should run the method sendData if ble.connect returns no error', () => {
+      spyOn(bleService.ble, 'connect').and.returnValue(Observable.of(testDevice));
+      spyOn(bleService, 'sendData');
+      let tempDevice = new Device('test', 'test', 'test', false);
+
+      bleService.locate(tempDevice);
+
+      expect(bleService.ble.connect).toHaveBeenCalled();
+      expect(bleService.sendData).toHaveBeenCalled();
+    });
+
+    it('should not run the method sendData if ble.connect returns an error', () => {
+      spyOn(bleService.ble, 'connect').and.returnValue(Observable.throw(new Error()));
+      spyOn(bleService, 'sendData');
+      let tempDevice = new Device('test', 'test', 'test', false);
+
+      bleService.locate(tempDevice);
+
+      expect(bleService.ble.connect).toHaveBeenCalled();
+      expect(bleService.sendData).not.toHaveBeenCalled();
+    });
+
   });
 
   describe('startDeviceNotification(device: Device): void', () => {
+
+    it('should run the method utils.getEventStringAsObject and mqttClient.sendEvent if ble.startNotification returns no error and message is not null', () => {
+      spyOn(bleService.ble, 'startNotification').and.returnValue(Observable.of('led,on,red'));
+      spyOn(bleService.utils, 'getEventStringAsObject').and.callFake( () => {
+        let comparisonCmdObj = new CommandObject;
+          comparisonCmdObj.name = 'led';
+          comparisonCmdObj.properties = ['on', 'red'];
+        return comparisonCmdObj;
+      });
+      spyOn(bleService.mqttClient, 'sendEvent');
+      let tempDevice = new Device('test', 'test', 'test', false);
+
+      bleService.startDeviceNotification(tempDevice);
+
+      expect(bleService.ble.startNotification).toHaveBeenCalled();
+      expect(bleService.utils.getEventStringAsObject).toHaveBeenCalled();
+      expect(bleService.mqttClient.sendEvent).toHaveBeenCalled();
+    });
+
+    it('should run the method utils.getEventStringAsObject but not the method mqttClient.sendEvent if ble.startNotification returns no error, but message is null', () => {
+      spyOn(bleService.ble, 'startNotification').and.returnValue(Observable.of('led,on,red'));
+      spyOn(bleService.utils, 'getEventStringAsObject').and.callThrough();
+      spyOn(bleService.mqttClient, 'sendEvent');
+      let tempDevice = new Device('test', 'test', 'test', false);
+
+      bleService.startDeviceNotification(tempDevice);
+
+      expect(bleService.ble.startNotification).toHaveBeenCalled();
+      expect(bleService.utils.getEventStringAsObject).toHaveBeenCalled();
+      expect(bleService.mqttClient.sendEvent).not.toHaveBeenCalled();
+    });
+
+    it('should not run  method utils.getEventStringAsObject and mqttClient.sendEvent if ble.startNotification returns an error', () => {
+      spyOn(bleService.ble, 'startNotification').and.returnValue(Observable.throw(new Error()));
+      spyOn(bleService.utils, 'getEventStringAsObject');
+      spyOn(bleService.mqttClient, 'sendEvent');
+      let tempDevice = new Device('test', 'test', 'test', false);
+
+      bleService.startDeviceNotification(tempDevice);
+
+      expect(bleService.ble.startNotification).toHaveBeenCalled();
+      expect(bleService.utils.getEventStringAsObject).not.toHaveBeenCalled();
+      expect(bleService.mqttClient.sendEvent).not.toHaveBeenCalled();
+    });
 
   });
 

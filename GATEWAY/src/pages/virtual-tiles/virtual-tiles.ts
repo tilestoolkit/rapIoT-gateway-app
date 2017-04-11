@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { AlertController, NavController, NavParams } from 'ionic-angular';
 
+import { BleService } from '../../providers/ble.service';
 import { DevicesService } from '../../providers/devices.service';
 import { TilesApi } from '../../providers/tilesApi.service';
 import { Application, Device, UtilsService, VirtualTile } from '../../providers/utils.service';
@@ -27,6 +28,7 @@ export class VirtualTilesPage {
   constructor(public alertCtrl: AlertController,
               public navCtrl: NavController,
               public navParams: NavParams,
+              private bleService: BleService,
               private devicesService: DevicesService,
               private utils: UtilsService,
               private tilesApi: TilesApi) {
@@ -35,16 +37,9 @@ export class VirtualTilesPage {
 
     // Sets the title of the page (found in virtual-tiles.html) to id, capitalized.
     this.applicationTitle = utils.capitalize(this.activeApp._id);
-    this.setDevices();
+    this.devices = this.devicesService.getDevices();
     this.tilesApi.setVirtualTiles(this.activeApp._id);
     this.setVirtualTiles();
-  }
-
-  /**
-   * Set the devices equal to the devices from devicesservice
-   */
-  setDevices = (): void => {
-    this.devices = this.devicesService.getDevices();
   }
 
   /**
@@ -73,7 +68,7 @@ export class VirtualTilesPage {
   * virtualTiles
   */
   refreshVirtualTiles = (refresher): void => {
-    this.setDevices();
+    this.devices = this.devicesService.getDevices();
     this.setVirtualTiles();
     // Makes the refresher run for 2 secs
     setTimeout(() => {
@@ -102,7 +97,6 @@ export class VirtualTilesPage {
           text: 'Pair',
           handler: data => {
             this.tilesApi.pairDeviceToVirualTile(data, virtualTile._id, this.activeApp._id);
-
             // Refreshes the lists of paired and unpaired virtual tiles
             this.setVirtualTiles();
           },
@@ -116,4 +110,12 @@ export class VirtualTilesPage {
     }
   }
 
+  ionViewDidLeave = () => {
+    console.log('virtual tiles out');
+    this.tilesApi.clearVirtualTiles();
+    for (let device of this.devices) {
+      console.log('device: ' + device.name);
+      this.bleService.disconnect(device);
+    };
+  }
 }

@@ -4,9 +4,11 @@ import { ModalController } from 'ionic-angular';
 import { LoginPage } from '../login/login';
 import { VirtualTilesPage } from '../virtual-tiles/virtual-tiles';
 
+import { BleService } from '../../providers/ble.service';
+import { DevicesService } from '../../providers/devices.service';
+import { MqttClient } from '../../providers/mqttClient';
 import { TilesApi } from '../../providers/tilesApi.service';
 import { Application } from '../../providers/utils.service';
-import { MqttClient } from '../../providers/mqttClient';
 
 import { Storage } from '@ionic/storage';
 /*
@@ -26,6 +28,8 @@ export class ApplicationsPage {
   constructor(public navCtrl: NavController,
               public navParams: NavParams,
               public modalCtrl: ModalController,
+              private bleService: BleService,
+              private devicesService: DevicesService,
               private mqttClient: MqttClient,
               private tilesApi: TilesApi,
               private storage: Storage) {}
@@ -33,7 +37,7 @@ export class ApplicationsPage {
    * Called when the view is loaded to present login page if
    * the user is not logged in
    */
-  ionViewDidLoad() {
+  ionViewDidLoad = () => {
     this.storage.get('loggedIn').then((val) => {
       if (val == null || val === false) {
         this.presentLoginModal();

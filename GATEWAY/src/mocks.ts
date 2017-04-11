@@ -102,4 +102,15 @@ export class BLEMock {
       return resolve();
     });
   }
+  public connect(): Observable<any> {
+    return Observable.of();
+  }
+  public startNotification(val1: any, val2: any, val3: any): Observable<any> {
+    return Observable.of();
+  }
+  public disconnect(args): Promise<any> {
+    return new Promise((resolve: Function) => {
+      return resolve();
+    });
+  }
 }
