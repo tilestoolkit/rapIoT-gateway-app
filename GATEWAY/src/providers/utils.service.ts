@@ -28,12 +28,17 @@ export class CommandObject {
  * device type in typescript to avoid getting invalid device-objects
  */
 export class Device {
+  constructor(id: string, tileId: string, name: string, connected: boolean) {
+    this.id = id;
+    // IOS and android gets different id from the ble, so we use the tilename as a second id
+    this.tileId = tileId;
+    this.name = name;
+    this.connected = connected;
+  }
   id: string;
-  tileId: string; // IOS and android gets different id from the ble, so we use the tilename as a seond id
+  tileId: string;
   name: string;
   connected: boolean;
-  ledOn: boolean;
-  buttonPressed?: boolean;
 }
 
 /**

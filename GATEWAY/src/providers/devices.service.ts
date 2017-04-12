@@ -21,27 +21,34 @@ export class DevicesService {
   }
 
   /**
+   * Sets the list of devices
+   * @param {Device[]} devices - New list of devices
+   */
+  setDevices = (devices: Array<Device>) => {
+    for (let i = 0; i < this.devices.length; i++) {
+      // If a device is no longer found it must be removed from the list
+      if (!devices.map(newDevice => newDevice.id).includes(this.devices[i].id)) {
+        this.devices.splice(i, 1);
+      }
+    }
+
+    // Add the new devices found
+    for (let device of devices) {
+      this.newDevice(device);
+    }
+    this.events.publish('updateDevices');
+  }
+
+  /**
    * Converts the device discovered by ble into a device on the tiles format
    * @param {any} bleDevice - the returned device from the ble scan
    */
   convertBleDeviceToDevice = (bleDevice: any): Promise<Device>  => {
-    let temp = new Device;
     return this.storage.get(bleDevice.name).then( name => {
-        temp.id = bleDevice.id;
-        temp.tileId = bleDevice.name;
-        temp.name = (name !== null && name !== undefined) ? name : bleDevice.name;
-        temp.connected = false;
-        temp.ledOn = false;
-        temp.buttonPressed = false;
-        return temp;
+      const deviceName = (name !== null && name !== undefined) ? name : bleDevice.name;
+      return new Device(bleDevice.id, bleDevice.name, deviceName, false);
     }).catch(err => {
-        temp.id = bleDevice.id;
-        temp.tileId = bleDevice.name;
-        temp.name = bleDevice.name;
-        temp.connected = false;
-        temp.ledOn = false;
-        temp.buttonPressed = false;
-        return temp;
+      return new Device(bleDevice.id, bleDevice.name, bleDevice.name, false);
     });
   }
 
@@ -50,17 +57,9 @@ export class DevicesService {
    * @param {Device} device - the device to add
    */
   newDevice = (device: Device) => {
-    if (this.isNewDevice(device)) {
+    if (!this.devices.map(storedDevice => storedDevice.tileId).includes(device.tileId)) {
       this.devices.push(device);
     }
-  }
-
-  /**
-   * Check if a device already exists among the stored ones
-   * @param {any} device - The device to check
-   */
-  isNewDevice = (device: any): boolean => {
-    return !this.devices.map(storedDevice => storedDevice.tileId).includes(device.tileId);
   }
 
   /**

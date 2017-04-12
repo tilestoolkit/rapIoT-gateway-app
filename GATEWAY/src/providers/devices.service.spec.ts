@@ -13,16 +13,8 @@ describe('devicesService:', () => {
   let devicesService: DevicesService = null;
   let deviceOne: Device = null;
   let deviceTwo: Device = null;
-  let convertedBle = new Device;
-      convertedBle.tileId = 'Tile_9e';
-      convertedBle.name = 'Tile_9e';
-      convertedBle.id = '01:23:45:67:89:AB';
-      convertedBle.connected = false;
-      convertedBle.ledOn = false;
-      convertedBle.buttonPressed = false;
-      convertedBle.connected = false;
-      convertedBle.ledOn = false;
-      convertedBle.buttonPressed = false;
+  let convertedBle = new Device('01:23:45:67:89:AB', 'Tile_9e', 'Tile_9e', false);
+
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -92,20 +84,6 @@ describe('devicesService:', () => {
       devicesService.newDevice(tilesDevice);
       let devicesListNewLength = devicesService.getDevices().length;
       expect(devicesListNewLength).toEqual(devicesListOldLength);
-    });
-
-  });
-
-  describe('isNewDevice(device: Device): boolean', () => {
-
-    it('should return true if the devices-list does not contain the device-parameter', () => {
-      devicesService.newDevice(deviceOne);
-      expect(devicesService.isNewDevice(deviceTwo)).toBeTruthy;
-    });
-
-    it('should return false if the devices-list contains the device-parameter', () => {
-      devicesService.newDevice(deviceOne);
-      expect(devicesService.isNewDevice(deviceTwo)).toBeFalsy;
     });
 
   });

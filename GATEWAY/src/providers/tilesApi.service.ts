@@ -64,6 +64,13 @@ export class TilesApi {
   }
 
   /**
+   * Set the virtual tiles list to empty
+   */
+  clearVirtualTiles = (): void => {
+    this.virtualTiles = [];
+  }
+
+  /**
    * Get all registered applications for all users
    */
   getAllApplications = (): Promise<any> => {
