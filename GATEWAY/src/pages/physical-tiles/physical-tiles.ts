@@ -20,20 +20,13 @@ export class PhysicalTilesPage {
               private events: Events,
               private bleService: BleService,
               private devicesService: DevicesService) {
-    this.setDevices();
+    this.devices = this.devicesService.getDevices();
     this.events.subscribe('offline', () => {
       this.serverConnectStatusMsg = 'Client gone offline';
     });
     this.events.subscribe('updateDevices', () => {
-      this.setDevices();
+      this.devices = this.devicesService.getDevices();
     });
-  }
-
-  /**
-   * Set the devices equal to the devices from devicesservice
-   */
-  setDevices = (): void => {
-    this.devices = this.devicesService.getDevices();
   }
 
   /**

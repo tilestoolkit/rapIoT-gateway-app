@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { AlertController, NavController, NavParams } from 'ionic-angular';
 
+import { BleService } from '../../providers/ble.service';
 import { DevicesService } from '../../providers/devices.service';
 import { TilesApi } from '../../providers/tilesApi.service';
 import { Application, Device, UtilsService, VirtualTile } from '../../providers/utils.service';
@@ -25,6 +26,7 @@ export class VirtualTilesPage {
   constructor(public alertCtrl: AlertController,
               public navCtrl: NavController,
               public navParams: NavParams,
+              private bleService: BleService,
               private devicesService: DevicesService,
               private utils: UtilsService,
               private tilesApi: TilesApi) {
@@ -33,16 +35,9 @@ export class VirtualTilesPage {
 
     // Sets the title of the page (found in virtual-tiles.html) to id, capitalized.
     this.applicationTitle = utils.capitalize(this.activeApp._id);
-    this.setDevices();
+    this.devices = this.devicesService.getDevices();
     this.tilesApi.setVirtualTiles(this.activeApp._id);
     this.setVirtualTiles();
-  }
-
-  /**
-   * Set the devices equal to the devices from devicesservice
-   */
-  setDevices = (): void => {
-    this.devices = this.devicesService.getDevices();
   }
 
   /**
@@ -59,7 +54,7 @@ export class VirtualTilesPage {
   * virtualTiles
   */
   refreshVirtualTiles = (refresher): void => {
-    this.setDevices();
+    this.devices = this.devicesService.getDevices();
     this.setVirtualTiles();
     // Makes the refresher run for 1.25 secs
     setTimeout(() => {
@@ -99,5 +94,14 @@ export class VirtualTilesPage {
         message: 'No physical tiles nearby.',
        buttons: ['Dismiss']}).present();
     }
+  }
+
+  ionViewDidLeave = () => {
+    console.log('virtual tiles out');
+    this.tilesApi.clearVirtualTiles();
+    for (let device of this.devices) {
+      console.log('device: ' + device.name);
+      this.bleService.disconnect(device);
+    };
   }
 }
