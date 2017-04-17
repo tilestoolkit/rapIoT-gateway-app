@@ -42,7 +42,6 @@ export class ApplicationsPage {
         this.presentLoginModal();
       } else {
         this.storage.get('loginData').then((loginData) => {
-          console.log('login: ' + loginData);
           if (loginData == null ||  loginData === undefined) {
             this.presentLoginModal();
           } else {
@@ -59,9 +58,8 @@ export class ApplicationsPage {
    * Set the list of applications from the api
    */
   setApplications = (): void => {
-    this.tilesApi.getAllApplications().then( data => {
-      this.applications = data;
-    }).catch (err => console.log(err));
+    this.tilesApi.getAllApplications().then(data => this.applications = data)
+                                      .catch(err => console.log(err));
   }
 
   /**
@@ -79,11 +77,9 @@ export class ApplicationsPage {
    *  Pushes the modal on the viewStack.
    */
   presentLoginModal() {
-    let modal = this.modalCtrl.create(LoginPage);
-    modal.onDidDismiss(data => {
-        this.setApplications();
-   });
-   modal.present();
+    const modal = this.modalCtrl.create(LoginPage);
+    modal.onDidDismiss(data => this.setApplications());
+    modal.present();
   }
 
   /**

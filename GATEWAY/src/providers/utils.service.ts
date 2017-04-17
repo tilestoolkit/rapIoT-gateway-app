@@ -78,13 +78,11 @@ export class VirtualTile {
 export class UtilsService {
   constructor(public storage: Storage,
               public events: Events) {}
-
   /**
    * Convert a string to an attay of bytes
    */
   convertStringtoBytes = (str: String): any => {
     try {
-      console.log('Attempting to send data to device via BLE.');
       let dataArray = new Uint8Array(str.length);
       for (let i = 0; i < str.length; i ++) {
         dataArray[i] = str.charCodeAt(i);
