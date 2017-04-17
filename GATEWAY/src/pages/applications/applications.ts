@@ -23,7 +23,6 @@ import { Storage } from '@ionic/storage';
 })
 export class ApplicationsPage {
   applications: Application[];
-  public refreshed = true;
 
   constructor(public navCtrl: NavController,
               public navParams: NavParams,
@@ -37,7 +36,7 @@ export class ApplicationsPage {
    * Called when the view is loaded to present login page if
    * the user is not logged in
    */
-  ionViewDidLoad = () => {
+  ionViewDidLoad = (): void => {
     this.storage.get('loggedIn').then((val) => {
       if (val == null || val === false) {
         this.presentLoginModal();
@@ -61,7 +60,6 @@ export class ApplicationsPage {
    */
   setApplications = (): void => {
     this.tilesApi.getAllApplications().then( data => {
-      this.refreshed = false;
       this.applications = data;
     }).catch (err => console.log(err));
   }
@@ -71,7 +69,7 @@ export class ApplicationsPage {
    */
   refreshApplications = (refresher): void => {
     this.setApplications();
-    // Makes the refresher run for 2 secs
+    // Makes the refresher run for 1.25 sec
     setTimeout(() => {
       refresher.complete();
     }, 1250);
@@ -95,7 +93,6 @@ export class ApplicationsPage {
   logout = () => {
     this.storage.set('loggedIn', false);
     this.applications = [];
-    this.refreshed = true;
     this.presentLoginModal();
   }
 

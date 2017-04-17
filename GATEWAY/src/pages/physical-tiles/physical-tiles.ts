@@ -13,7 +13,6 @@ export class PhysicalTilesPage {
   devices: Device[];
   serverConnectStatusMsg: string;
   statusMsg: string;
-  public refreshed = true;
 
   constructor(public navCtrl: NavController,
               public alertCtrl: AlertController,
@@ -39,11 +38,6 @@ export class PhysicalTilesPage {
     // Makes the refresher run for 2 secs
     setTimeout(() => {
       refresher.complete();
-      if (this.devices.length > 0) {
-        this.refreshed = false;
-      } else {
-        this.refreshed = true;
-      }
     }, 2000);
   }
 
