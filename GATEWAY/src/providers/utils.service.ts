@@ -19,6 +19,10 @@ export class Application {
  * Class to describe the structure of a command
  */
 export class CommandObject {
+  constructor(name: string, properties: string[]) {
+    this.name = name;
+    this.properties = properties;
+  }
   name: string;
   properties: string[];
 }
@@ -99,10 +103,7 @@ export class UtilsService {
   getEventStringAsObject = (eventString: string): CommandObject => {
     const params = eventString.split(',');
     if (params.length > 1) {
-      let temp = new CommandObject();
-      temp.name = params[0];
-      temp.properties = Array.prototype.slice.call(params, 1);
-      return temp;
+      return new CommandObject(params[0], params.slice(1));
     }
     return null;
   }
@@ -116,27 +117,6 @@ export class UtilsService {
   }
 
   /**
-   * Create a new object that has all the attributes from both inputobjects
-   * @param {any} obj1 - The first object
-   * @param {any} obj2 - The second object
-   */
-  extendObject = (obj1: any, obj2: any): any => {
-    let extended = {};
-    for (let attrname of obj1) {
-      extended[attrname] = obj1[attrname];
-    }
-    for (let attrname of obj2) {
-      if (extended[attrname] !== undefined) {
-        extended[attrname] = obj2[attrname];
-      } else {
-        // Adds a 1 to the key if the key already exists
-        extended[attrname + '1'] = obj2[attrname];
-      }
-    }
-    return extended;
-  }
-
-  /**
    * Verify that input of user login is valid
    * @param {string} user - username
    * @param {string} host - api host address
@@ -144,13 +124,8 @@ export class UtilsService {
    */
   verifyLoginCredentials = (user: string, host: string, port: number): boolean => {
     const validUsername = user.match(/^[a-zA-Z0-9\_\-\.]+$/);
-    const validHost = host.match(/^([0-9]{1,3}.){3}[0-9]{1,3}/) ||  host.match(/^[a-zA-Z0-9\_\-\.]+$/);
-
-    if (validUsername != null && validHost != null) {
-      return true;
-    } else {
-      return false;
-    }
+    const validHost = host.match(/^([0-9]{1,3}.){3}[0-9]{1,3}/) || host.match(/^[a-zA-Z0-9\_\-\.]+$/);
+    return validUsername !== null && validHost !== null;
   }
 
   /**
