@@ -22,8 +22,6 @@ export class VirtualTilesPage {
   applicationTitle: string;
   virtualTiles: VirtualTile[];
   activeApp: Application;
-  pairedVirtualTiles = [];
-  unpairedVirtualTiles = [];
 
   constructor(public alertCtrl: AlertController,
               public navCtrl: NavController,
@@ -48,18 +46,6 @@ export class VirtualTilesPage {
   setVirtualTiles = (): void => {
     this.tilesApi.getApplicationTiles(this.activeApp._id).then(res => {
       this.virtualTiles = res;
-
-      // This is the already paired virtual tiles
-      this.pairedVirtualTiles = [];
-      this.unpairedVirtualTiles = [];
-
-      this.virtualTiles.map(tile => {
-        if (tile.tile != null) {
-          this.pairedVirtualTiles.push(tile);
-        } else {
-          this.unpairedVirtualTiles.push(tile);
-        }
-      });
     });
   }
 
@@ -70,7 +56,7 @@ export class VirtualTilesPage {
   refreshVirtualTiles = (refresher): void => {
     this.devices = this.devicesService.getDevices();
     this.setVirtualTiles();
-    // Makes the refresher run for 2 secs
+    // Makes the refresher run for 1.25 secs
     setTimeout(() => {
       refresher.complete();
     }, 1250);
@@ -96,9 +82,9 @@ export class VirtualTilesPage {
         {
           text: 'Pair',
           handler: data => {
-            this.tilesApi.pairDeviceToVirualTile(data, virtualTile._id, this.activeApp._id);
-            // Refreshes the lists of paired and unpaired virtual tiles
-            this.setVirtualTiles();
+            this.tilesApi.pairDeviceToVirualTile(data, virtualTile._id, this.activeApp._id).then(
+              res => this.setVirtualTiles()
+            );
           },
       }],
     }).present();
