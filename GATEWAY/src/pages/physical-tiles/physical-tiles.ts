@@ -11,8 +11,6 @@ import { Device } from '../../providers/utils.service';
 })
 export class PhysicalTilesPage {
   devices: Device[];
-  serverConnectStatusMsg: string;
-  statusMsg: string;
 
   constructor(public navCtrl: NavController,
               public alertCtrl: AlertController,
@@ -20,9 +18,6 @@ export class PhysicalTilesPage {
               private bleService: BleService,
               private devicesService: DevicesService) {
     this.devices = this.devicesService.getDevices();
-    this.events.subscribe('offline', () => {
-      this.serverConnectStatusMsg = 'Client gone offline';
-    });
     this.events.subscribe('updateDevices', () => {
       this.devices = this.devicesService.getDevices();
     });
