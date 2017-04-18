@@ -26,11 +26,6 @@ export class DevTermPage {
 
     this.messages = [];
 
-    //  THIS IS REALLY REALLY BAD, BUT JUST FOR TESTING
-    for (var i = 0; i < 20; i++) {
-      this.messages.push({'text': 'test', 'datetime': this.currentTime()});
-    }
-
     this.events.subscribe('serverConnected', () => {
     	console.log('broker connected')
     	this.addNewMessage('Connected to MQTT-broker');
