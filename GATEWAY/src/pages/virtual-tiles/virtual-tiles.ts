@@ -94,6 +94,13 @@ export class VirtualTilesPage {
     }
   }
 
+  unpairTile = (): void => {
+     this.tilesApi.pairDeviceToVirualTile(null, virtualTile._id, this.activeApp._id);
+ 
+     // Refreshes the lists of paired and unpaired virtual tiles
+     this.setVirtualTiles();
+  }
+
   ionViewDidLeave = () => {
     console.log('virtual tiles out');
     this.tilesApi.clearVirtualTiles();
