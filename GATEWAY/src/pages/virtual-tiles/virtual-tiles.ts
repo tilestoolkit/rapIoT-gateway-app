@@ -94,7 +94,7 @@ export class VirtualTilesPage {
     }
   }
 
-  unpairTile = (virtualTile: VirtualTile): void => {
+  unpairTile = (): void => {
      this.tilesApi.pairDeviceToVirualTile(null, virtualTile._id, this.activeApp._id);
  
      // Refreshes the lists of paired and unpaired virtual tiles
