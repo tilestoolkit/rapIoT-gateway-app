@@ -1,5 +1,5 @@
-import { Events, NavController, NavParams, Content} from 'ionic-angular';
 import { Component, ViewChild } from '@angular/core';
+import { Events, NavController, NavParams, Content } from 'ionic-angular';
 
 import { MqttClient } from '../../providers/mqttClient';
 import { CommandObject, UtilsService } from '../../providers/utils.service';
