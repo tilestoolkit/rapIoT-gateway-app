@@ -1,27 +1,39 @@
-#Setup guide:
+# Tiles gateway
 
-
-### Clone the project
-
+## Setting up project environment
+To set up the project, clone the repository and navigate into the gateway folder:
+`$ git clone git@github.com:nornes/tiles-rapIoT.git`
 `$ cd tiles-rapIoT/GATEWAY`
-
+Install the required global npm packages:
+`$ npm install -g angular-cli ionic cordova tslint
+Install the local npm packages with
+`$ yarn install`
+or
 `$ npm install`
 
-### Install cross-platform tools for CLI-commands (Needed to build and test the solution)
-(This is needed because the development-team works on both IOS and Windows, and needed a copy-command that works on both platforms)
-
-`$ npm install -g cp-cli`
-
 ## Running the app
-Now there are a few possible ways to run the app. The simplest is to run the ionic lab which gives you a collective view of how the app will look on different mobile platforms. This is done by running: 
+### Browser
+The app runs using either npm commands or the ionic cli. To run the app in the browser (mind that the browser does not have support for cordova, so the BLE results will be mock data) use
 `$ ionic serve -l`
-You will notice a runtime-error message saying cordova is not available, but this can be closed in the top right corner. This is caused by the browser not being able to run cordova plugins. 
+This will open up a browser window with the possibility to view the app on IOS, Android and Windows phone.
 
-
-To avoud this runtime-error you can run the app on different emulator platforms. To do this you first have to install the cordova platform: 
-`$ cordova platform add <platform>` 
-There are a lot of possible platforms to choose from, but for this projects we use ios, android and browser. 
-With the platform added run 
+### On a device
+To run the app on a device you have to have android studio for android or xcode and a mac for IOS.
+Install the cordova platform for your device with the command
+`$ ionic platform add <platform>`
+where platform is either ios or android. Other platforms are also available, but we are not focusing on making the app work on these.
+Connect your phone to the computer by the usb cord and run
 `$ ionic run <platform>`
+This should open the app on your phone.
+You can also add the -l flag to trigger hot reloading, but this has been known to cause some problems from Ionic's side.
+NB! Note that apple is strict when it comes to accessing the native components of the phone, so many of the native components of the code, amongst them the BLE will not work. You can circumvent this by using the [Ionic view](http://view.ionic.io/) app instead, following [this guide](https://docs.ionic.io/tools/view/).
 
-When using `ionic serve` or `ionic run <platform> -l` you might run into troubles with the api not working. This is because of CORS and can be solved by using onli `ionic run <platform>` withour the live reloading for running it on a simulator/mobile or by downloading the chrome extension [Allow-Control-Allow-Origin: *](https://chrome.google.com/webstore/detail/allow-control-allow-origi/nlfbmbojpeacfghkpbjhddihlkkiljbi)
+### Problems
+When using `$ ionic serve` or `$ ionic run <platform> -l` you might run into troubles with the API not working. This is because of CORS and can be solved by using only `$ ionic run <platform>` without the live reloading for running it on a simulator/mobile or by downloading the chrome extension [Allow-Control-Allow-Origin: *](https://chrome.google.com/webstore/detail/allow-control-allow-origi/nlfbmbojpeacfghkpbjhddihlkkiljbi) for the browser.
+
+
+## Before making a pull request
+We are using travis as a tool for CI to make sure the contributing code does not break any tests and is linted according to the linting rules. Before making a pull request check that these are ok by running the commands:
+`$ npm test`
+and
+`$ npm run lint`

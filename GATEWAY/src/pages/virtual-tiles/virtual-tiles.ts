@@ -16,14 +16,11 @@ import { Application, Device, UtilsService, VirtualTile } from '../../providers/
   selector: 'page-virtual-tiles',
   templateUrl: 'virtual-tiles.html'
 })
-
 export class VirtualTilesPage {
   devices: Device[];
   applicationTitle: string;
   virtualTiles: VirtualTile[];
   activeApp: Application;
-  pairedVirtualTiles = [];
-  unpairedVirtualTiles = [];
 
   constructor(public alertCtrl: AlertController,
               public navCtrl: NavController,
@@ -34,7 +31,6 @@ export class VirtualTilesPage {
               private tilesApi: TilesApi) {
     // A id variable is stored in the navParams, and .get set this value to the local variable id
     this.activeApp = navParams.get('app');
-
     // Sets the title of the page (found in virtual-tiles.html) to id, capitalized.
     this.applicationTitle = utils.capitalize(this.activeApp._id);
     this.devices = this.devicesService.getDevices();
@@ -48,18 +44,6 @@ export class VirtualTilesPage {
   setVirtualTiles = (): void => {
     this.tilesApi.getApplicationTiles(this.activeApp._id).then(res => {
       this.virtualTiles = res;
-
-      // This is the already paired virtual tiles
-      this.pairedVirtualTiles = [];
-      this.unpairedVirtualTiles = [];
-
-      this.virtualTiles.map(tile => {
-        if (tile.tile != null) {
-          this.pairedVirtualTiles.push(tile);
-        } else {
-          this.unpairedVirtualTiles.push(tile);
-        }
-      });
     });
   }
 
@@ -70,7 +54,7 @@ export class VirtualTilesPage {
   refreshVirtualTiles = (refresher): void => {
     this.devices = this.devicesService.getDevices();
     this.setVirtualTiles();
-    // Makes the refresher run for 2 secs
+    // Makes the refresher run for 1.25 secs
     setTimeout(() => {
       refresher.complete();
     }, 1250);
@@ -90,15 +74,15 @@ export class VirtualTilesPage {
       title: 'Pair to physical tile',
       inputs: deviceRadioButtons,
       buttons: [{
-          text: 'Cancel',
-          role: 'cancel',
+        text: 'Cancel',
+        role: 'cancel',
         },
         {
           text: 'Pair',
           handler: data => {
-            this.tilesApi.pairDeviceToVirualTile(data, virtualTile._id, this.activeApp._id);
-            // Refreshes the lists of paired and unpaired virtual tiles
-            this.setVirtualTiles();
+            this.tilesApi.pairDeviceToVirualTile(data, virtualTile._id, this.activeApp._id).then(
+              res => this.setVirtualTiles()
+            );
           },
       }],
     }).present();
@@ -106,7 +90,7 @@ export class VirtualTilesPage {
       this.alertCtrl.create({
         title: 'Pair to physical tile',
         message: 'No physical tiles nearby.',
-       buttons: ['Dismiss']}).present();
+        buttons: ['Dismiss']}).present();
     }
   }
 

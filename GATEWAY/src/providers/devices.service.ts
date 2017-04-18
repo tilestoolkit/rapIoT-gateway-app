@@ -25,17 +25,10 @@ export class DevicesService {
    * @param {Device[]} devices - New list of devices
    */
   setDevices = (devices: Array<Device>) => {
-    for (let i = 0; i < this.devices.length; i++) {
-      // If a device is no longer found it must be removed from the list
-      if (!devices.map(newDevice => newDevice.id).includes(this.devices[i].id)) {
-        this.devices.splice(i, 1);
-      }
-    }
-
+    // Only keep devices that were still found by the BLE
+    this.devices.filter(device => devices.map(newDevice => newDevice.id).includes(device.id));
     // Add the new devices found
-    for (let device of devices) {
-      this.newDevice(device);
-    }
+    devices.forEach(device => this.newDevice(device));
     this.events.publish('updateDevices');
   }
 
@@ -69,11 +62,8 @@ export class DevicesService {
    */
   setCustomDeviceName = (device: Device, name: string): void => {
     this.storage.set(device.tileId, name);
-    for (let d of this.devices) {
-      if (d.tileId === device.tileId) {
-        d.name = name;
-      }
-    }
+    this.devices.map(storedDevice => storedDevice.name = storedDevice.tileId === device.tileId
+                                                       ? name : storedDevice.name);
     this.events.publish('updateDevices');
   }
 
@@ -89,11 +79,6 @@ export class DevicesService {
    * Go through the list of registered devices and keep only those connected
    */
   clearDisconnectedDevices = (): void => {
-    for (let i = 0; i < this.devices.length; i++) {
-      const device = this.devices[i];
-      if (device.connected === false) {
-        this.devices.splice(i, 1);
-      }
-    }
+    this.devices = this.devices.filter(device => device.connected);
   }
 }
