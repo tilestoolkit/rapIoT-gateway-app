@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Storage } from '@ionic/storage';
-import { ViewController } from 'ionic-angular';
+import { ViewController, AlertController } from 'ionic-angular';
 
 import { TilesApi } from '../../providers/tilesApi.service';
 import { MqttClient } from '../../providers/mqttClient';
@@ -17,7 +17,8 @@ export class LoginPage {
               private tilesApi: TilesApi,
               private mqttClient: MqttClient,
               private utils: UtilsService,
-              private storage: Storage) {}
+              private storage: Storage,
+              private alertCtrl: AlertController) {}
 
   /**
    * Connect to the mqttServer
@@ -27,15 +28,26 @@ export class LoginPage {
    */
   connectToServer = (user: string, host: string, port: number, remember: boolean): void => {
     if (this.utils.verifyLoginCredentials(user, host, port)) {
-      const loginData = new LoginData(user, host, port, remember);
-      this.storage.set('loginData', loginData).then(res => {
-        this.tilesApi.setLoginData(loginData);
-        this.mqttClient.connect();
+      
+      this.tilesApi.getAllUsers(user, host).then(data => {
+        if (data) {
+          const loginData = new LoginData(user, host, port, remember);
+          this.storage.set('loginData', loginData).then(res => {
+            this.tilesApi.setLoginData(loginData);
+            this.mqttClient.connect();
+          });
+          this.storage.set('loggedIn', loginData.remember);
+          this.viewCtrl.dismiss('logged_in');
+        } else {
+          this.alertCtrl.create({
+            title: 'Invalid login credentials',
+            subTitle: 'Please try again.',
+            buttons: [{
+              text: 'Dismiss',
+            }]
+          }).present();
+        }
       });
-      this.storage.set('loggedIn', loginData.remember);
-      this.viewCtrl.dismiss('logged_in');
-    } else {
-      alert('Invalid login credentials.');
     }
   }
 
@@ -49,7 +61,7 @@ export class LoginPage {
   /**
    * Login with these fixed values.
    */
-  autoLogin = (): void => {
-    this.connectToServer('Andrea', '178.62.99.218', 8080, true);
-  }
+  // autoLogin() {
+  //   this.connectToServer('Testuser', '178.62.99.218', 3000, true);
+  // }
 }

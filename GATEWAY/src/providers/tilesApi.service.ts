@@ -69,6 +69,23 @@ export class TilesApi {
     this.virtualTiles = [];
   }
 
+  getAllUsers = (userName: string, host: string): Promise<any> => {
+    const url = `http://${host}:${this.apiPort}/users`;
+    return this.http.get(url)
+            .toPromise()
+            .then(res => {
+              for (let user of res.json()) {
+                if (user._id === userName) {
+                  return true;
+                }
+              }
+            })
+            .catch(err => {
+               return false;
+              // alert('failed getting applications with error: ' + err);
+            });
+  }
+
   /**
    * Get all registered applications for all users
    */
