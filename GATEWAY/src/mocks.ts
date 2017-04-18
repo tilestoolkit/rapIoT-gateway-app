@@ -81,6 +81,12 @@ export class BackgroundFetchMock {
       resolve();
     });
   }
+  public start() {
+    return true;
+  }
+  public stop() {
+    return true;
+  }
 }
 
 export class BLEMock {
@@ -112,5 +118,26 @@ export class BLEMock {
     return new Promise((resolve: Function) => {
       return resolve();
     });
+  }
+}
+
+export class MqttMock {
+  public connect(val1: any){
+    return true;
+  }
+  public on(val1: any, val2: any){
+    return true;
+  }
+  public end() {
+    return true;
+  }
+  public publish(val1: any, val2: any, val3: any){
+    return true;
+  }
+  public subscribe(val1: any, val2: any){
+    return true;
+  }
+  public unsubscribe(val1: any, val2: any){
+    return true;
   }
 }

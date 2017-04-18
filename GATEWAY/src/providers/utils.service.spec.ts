@@ -7,12 +7,8 @@ import { StorageMock } from '../mocks';
 describe('utilsService', () => {
 
   let utilsService: UtilsService = null;
-  let comparisonCmdObj = new CommandObject;
-    comparisonCmdObj.name = 'led';
-    comparisonCmdObj.properties = ['on', 'red'];
-  let comparisonCmdObj2 = new CommandObject;
-    comparisonCmdObj2.name = 'light';
-    comparisonCmdObj2.properties = ['on'];
+  let comparisonCmdObj = new CommandObject('led', ['on', 'red']);
+  let comparisonCmdObj2 = new CommandObject('light', ['on']);
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -72,14 +68,6 @@ describe('utilsService', () => {
     it('should return the CommandObjects contents as a string', () => {
       let testObj: CommandObject = comparisonCmdObj;
       expect(utilsService.getCommandObjectAsString(testObj)).toEqual('led,on,red');
-    });
-  });
-
-  xdescribe('extendObject(obj1: any, obj2: any): any', () => {
-    it('should return the combined object of object 1 and 2 from extendObject', () => {
-      let obj1 = {"test1":'test'};
-      let obj2 = {"test2":'tset'};
-      expect(utilsService.extendObject(obj1, obj2)).toEqual('{ }');
     });
   });
 

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BackgroundFetch } from '@ionic-native/background-fetch';
 import { Events } from 'ionic-angular';
-import mqtt from 'mqtt';
+import * as mqtt from 'mqtt';
 
 import { CommandObject, Device, LoginData } from './utils.service';
 import { TilesApi } from './tilesApi.service';
@@ -41,6 +41,24 @@ export class MqttClient {
       this.mqttConnectionData = mqttConnectionData === null
                               ? this.tilesApi.getLoginData()
                               : this.mqttConnectionData = mqttConnectionData;
+  }
+  /**
+   * Mainly for testing purposes.
+   */
+  setClient = (client: any): void => {
+    this.client = client;
+  }
+  getClient = (): any => {
+    return this.client;
+  }
+  getMqttConnectionData = (): LoginData => {
+    return this.mqttConnectionData;
+  }
+  getTilesApi = (): TilesApi => {
+    return this.tilesApi;
+  }
+  getBackgroundFetch = (): BackgroundFetch => {
+    return this.backgroundFetch;
   }
 
   /**

@@ -116,6 +116,10 @@ describe('bleService', () => {
       expect(bleService.ble['isEnabled']).toHaveBeenCalled();
     });
 
+    /**
+     * Disse viser seg å ikke være mulige å teste
+     * Fjærner de ved neste commit
+     */
     //TODO: Ferdigstill denne metoden
     xit('should invoke the method scanBLE() if BLE is enabled', () => {
       spyOn(bleService.ble, 'isEnabled').and.callThrough();
@@ -227,9 +231,7 @@ describe('bleService', () => {
     it('should run the method utils.getEventStringAsObject and mqttClient.sendEvent if ble.startNotification returns no error and message is not null', () => {
       spyOn(bleService.ble, 'startNotification').and.returnValue(Observable.of('led,on,red'));
       spyOn(bleService.utils, 'getEventStringAsObject').and.callFake( () => {
-        let comparisonCmdObj = new CommandObject;
-          comparisonCmdObj.name = 'led';
-          comparisonCmdObj.properties = ['on', 'red'];
+        let comparisonCmdObj = new CommandObject('led', ['on', 'red']);
         return comparisonCmdObj;
       });
       spyOn(bleService.mqttClient, 'sendEvent');
