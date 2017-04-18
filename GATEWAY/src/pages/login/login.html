@@ -10,7 +10,7 @@
   <form (ngSubmit)="loginForm()" #registerForm="ngForm">
     <ion-item>
       <ion-label>Username</ion-label>
-      <ion-input type="text" [(ngModel)]="loginInfo.user" name="username" placeholder='andrea'></ion-input>
+      <ion-input type="text" [(ngModel)]="loginInfo.user" name="username" placeholder='Testuser'></ion-input>
     </ion-item>
     <ion-item>
       <ion-label>Host</ion-label>
@@ -18,7 +18,7 @@
     </ion-item>
     <ion-item>
       <ion-label>Port</ion-label>
-      <ion-input type="number" [(ngModel)]="loginInfo.port" name="port" placeholder='8080'></ion-input>
+      <ion-input type="number" [(ngModel)]="loginInfo.port" name="port" placeholder='3000'></ion-input>
     </ion-item>
     <ion-item>
       <ion-label>Remember me</ion-label>
@@ -27,5 +27,5 @@
     <button ion-button type="submit" block>Log In!</button>
   </form>
   
-  <button ion-button type="submit" (click)="autoLogin()" block>Auto login</button>
+  <!-- <button ion-button type="submit" (click)="autoLogin()" block>Auto login</button> -->
 </ion-content>
