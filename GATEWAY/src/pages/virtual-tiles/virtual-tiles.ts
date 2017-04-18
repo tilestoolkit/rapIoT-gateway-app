@@ -16,7 +16,6 @@ import { Application, Device, UtilsService, VirtualTile } from '../../providers/
   selector: 'page-virtual-tiles',
   templateUrl: 'virtual-tiles.html'
 })
-
 export class VirtualTilesPage {
   devices: Device[];
   applicationTitle: string;
@@ -32,7 +31,6 @@ export class VirtualTilesPage {
               private tilesApi: TilesApi) {
     // A id variable is stored in the navParams, and .get set this value to the local variable id
     this.activeApp = navParams.get('app');
-
     // Sets the title of the page (found in virtual-tiles.html) to id, capitalized.
     this.applicationTitle = utils.capitalize(this.activeApp._id);
     this.devices = this.devicesService.getDevices();
@@ -76,8 +74,8 @@ export class VirtualTilesPage {
       title: 'Pair to physical tile',
       inputs: deviceRadioButtons,
       buttons: [{
-          text: 'Cancel',
-          role: 'cancel',
+        text: 'Cancel',
+        role: 'cancel',
         },
         {
           text: 'Pair',
@@ -92,7 +90,7 @@ export class VirtualTilesPage {
       this.alertCtrl.create({
         title: 'Pair to physical tile',
         message: 'No physical tiles nearby.',
-       buttons: ['Dismiss']}).present();
+        buttons: ['Dismiss']}).present();
     }
   }
 

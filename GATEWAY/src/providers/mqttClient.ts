@@ -38,11 +38,9 @@ export class MqttClient {
    * @param {LoginData} mqttConnectionData - the login credentials
    */
   setConnectionData = (mqttConnectionData: LoginData = null): void => {
-    if (mqttConnectionData === null) {
-      this.mqttConnectionData = this.tilesApi.getLoginData();
-    } else {
-      this.mqttConnectionData = mqttConnectionData;
-    }
+      this.mqttConnectionData = mqttConnectionData === null
+                              ? this.tilesApi.getLoginData()
+                              : this.mqttConnectionData = mqttConnectionData;
   }
 
   /**

@@ -44,7 +44,6 @@ export class TilesApi {
     } else {
       return this.loginData;
     }
-
   }
 
   /**
@@ -82,7 +81,7 @@ export class TilesApi {
               return res.json();
             })
             .catch(err => {
-              // alert('failed getting applications with error: ' + err);
+              console.log('failed getting applications with error: ' + err);
             });
   }
 
@@ -125,7 +124,7 @@ export class TilesApi {
     console.log('url: ' + url + ' body: ' + body);
     return this.http.post(url, body, {headers: headerFields}).toPromise()
              .catch(err => {
-               console.log('An error occured preventing the pairing of the physical and virtual tile');
+               console.log('Feiled pairing of the physical and virtual tile with error: ' + err);
              });
   }
 }
