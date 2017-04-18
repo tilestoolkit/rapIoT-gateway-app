@@ -69,7 +69,6 @@ export class TilesApi {
     this.virtualTiles = [];
   }
 
-  
   getAllUsers = (userName: string, host: string, port: number): Promise<any> => {
     const url = `http://${host}:${port}/users`;
     return this.http.get(url)
