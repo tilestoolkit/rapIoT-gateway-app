@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
+import { BackgroundFetch } from '@ionic-native/background-fetch';
 import { Events } from 'ionic-angular';
 import mqtt from 'mqtt';
 
-import { CommandObject, Device } from './utils.service';
+import { CommandObject, Device, LoginData } from './utils.service';
 import { TilesApi } from './tilesApi.service';
 
 
@@ -10,35 +11,47 @@ import { TilesApi } from './tilesApi.service';
 export class MqttClient {
   private publishOpts = { retain: true };
   private connectionTimeout: number = 10000; // 10 seconds
-  private connectedToBroker: boolean = false;
   private client;
-  private mqttConnectionData = {
-    username: this.tilesApi.username,
-    host: this.tilesApi.hostAddress,//'178.62.99.218',//
-    port: this.tilesApi.mqttPort,
-  };
+  private mqttConnectionData: LoginData;
 
-  constructor(private events: Events,
-              private tilesApi: TilesApi) { 
+  constructor(private backgroundFetch: BackgroundFetch,
+              private events: Events,
+              private tilesApi: TilesApi) {
+    this.mqttConnectionData = this.tilesApi.getLoginData();
+    this.backgroundFetch.configure({ stopOnTerminate: false })
+        .then(() => {
+          if (this.mqttConnectionData.user !== undefined ||
+              this.mqttConnectionData.host !== undefined ||
+              this.mqttConnectionData.port !== undefined ) {
+            this.connect();
+          };
+          this.backgroundFetch.finish();
+        })
+        .catch(err => {
+          console.log('Error initializing background fetch', err);
+        });
+  }
+
+  /**
+   * For testing purposes. Need the ability to set LoginData whitout being
+   * dependent on the TilesApi-class
+   * @param {LoginData} mqttConnectionData - the login credentials
+   */
+  setConnectionData = (mqttConnectionData: LoginData = null): void => {
+      this.mqttConnectionData = mqttConnectionData === null
+                              ? this.tilesApi.getLoginData()
+                              : this.mqttConnectionData = mqttConnectionData;
   }
 
   /**
    * Returns a url for the specific device
-	 * @param {string} deviceId - the ID of the device
-	 * @param {boolean} isEvent - true if we are sending an event
+   * @param {string} deviceId - the ID of the device
+   * @param {boolean} isEvent - true if we are sending an event
    */
   getDeviceSpecificTopic = (deviceId: string, isEvent: boolean): string => {
-  	const type = isEvent ? 'evt' : 'cmd';
-  	return `tiles/${type}/${this.tilesApi.username}/${deviceId}`;
-  };
-
-  /**
-   * Set the connection status for the server
-   * @param {boolean} connected - The new status of the connection
-   */
-  setMqttConnectionStatus = (connected: boolean): void => {
-    this.connectedToBroker = connected;
-  };
+    const type = isEvent ? 'evt' : 'cmd';
+    return `tiles/${type}/${this.mqttConnectionData.user}/${deviceId}`;
+  }
 
   /**
    * Create a connection to the server and return a javascript promise
@@ -46,22 +59,23 @@ export class MqttClient {
    * @param {string} host - the host url / ip
    * @param {number} port - the port to send to
    */
-  connect = (user: string, host: string, port: number): void => {
-		// Check if a previous server connection exists
-		// and end it if it does
-  //connect = (host: string, port: number): void => {
-		// Check if a previous server connection exists and end it if it does
-		if (this.client) {
-			this.client.end();
+  connect = (): void => {
+    if (this.mqttConnectionData === undefined ||  this.mqttConnectionData === null) {
+      this.mqttConnectionData = this.tilesApi.getLoginData();
+    }
+
+    // Check if a previous server connection exists and end it if it does
+    if (this.client) {
+      this.client.end();
     }
 
     // Instantiate a mqtt-client from the host and port
     this.client = mqtt.connect({
-      host: host || this.mqttConnectionData.host,//'test.mosquitto.org'
-      port: port || this.mqttConnectionData.port,
+      host: this.mqttConnectionData.host, // 'test.mosquitto.org'
+      port: this.mqttConnectionData.port,
       keepalive: 0,
-		});
-    
+    });
+
     // Handle events from the broker
     this.client.on('message', (topic, message) => {
       try {
@@ -74,12 +88,10 @@ export class MqttClient {
     });
 
     this.client.on('offline', () => {
-      this.connectedToBroker = false;
       this.events.publish('offline');
     });
 
     this.client.on('close', () => {
-      this.connectedToBroker = false;
       this.events.publish('close');
     });
 
@@ -88,24 +100,14 @@ export class MqttClient {
     });
 
     this.client.on('error', error => {
-      this.connectedToBroker = false;
       this.events.publish('error', error);
     });
 
-    // Client is connected to the server
-		this.client.on('connect', () => {
+    this.client.on('connect', () => {
       console.log('connected to broker');
-			clearTimeout(failedConnectionTimeout);
-      this.connectedToBroker = true;
+      clearTimeout(failedConnectionTimeout);
       this.events.publish('serverConnected');
-      // NB: temporary for testing only
-      const time = new Date();
-      this.client.publish(
-        this.getDeviceSpecificTopic('Tile_da', true),
-        'connect at time:  ' + time.getDate()+'/'+time.getMonth()+' . '+time.getHours()+':'+time.getMinutes(),
-        this.publishOpts,
-        );
-		});
+    });
 
     // Ends the connection attempt if the timeout rus out
     const failedConnectionTimeout = setTimeout(function(){
@@ -113,30 +115,30 @@ export class MqttClient {
         this.client.end();
       }
     }, this.connectionTimeout);
-  };
+  }
 
   /**
    * Register a device at the server
    * @param {Device} device - the device to register
    */
-	registerDevice = (device: Device): void => {
+  registerDevice = (device: Device): void => {
     if (this.client) {
-			this.client.publish(
-				this.getDeviceSpecificTopic(device.tileId, true) + '/active',
-				'true',
-				this.publishOpts,
-			);
       this.client.publish(
-      	this.getDeviceSpecificTopic(device.tileId, true) + '/name',
-      	device.name,
-      	this.publishOpts,
+        this.getDeviceSpecificTopic(device.tileId, true) + '/active',
+        'true',
+        this.publishOpts,
+      );
+      this.client.publish(
+        this.getDeviceSpecificTopic(device.tileId, true) + '/name',
+        device.name,
+        this.publishOpts,
       );
       this.client.subscribe(
-      	this.getDeviceSpecificTopic(device.tileId, false),
+        this.getDeviceSpecificTopic(device.tileId, false),
       );
       console.log('Registered device: ' + device.name + ' (' + device.tileId + ')');
     }
-  };
+  }
 
   /**
    * Unregister a device at the server
@@ -145,15 +147,15 @@ export class MqttClient {
   unregisterDevice = (device: Device): void => {
     if (this.client) {
       this.client.publish(
-      	this.getDeviceSpecificTopic(device.tileId, true) + '/active',
-      	'false',
-      	this.publishOpts,
+        this.getDeviceSpecificTopic(device.tileId, true) + '/active',
+        'false',
+        this.publishOpts,
       );
       this.client.unsubscribe(
-      	this.getDeviceSpecificTopic(device.tileId, false),
+        this.getDeviceSpecificTopic(device.tileId, false),
       );
     }
-  };
+  }
 
   /**
    * Send an event to the server
@@ -161,18 +163,19 @@ export class MqttClient {
    * @param {CommandObject} event - An event represented as a CommandObject (name, params...)
    */
   sendEvent = (deviceId: string, event: CommandObject): void => {
+    console.log('Sending mqtt event: ' + JSON.stringify(event) + ' To topic: ' + this.getDeviceSpecificTopic(deviceId, true));
     if (this.client) {
-    	this.client.publish(
-    		this.getDeviceSpecificTopic(deviceId, true),
-    		JSON.stringify(event),
-    		this.publishOpts, err => {
+      this.client.publish(
+        this.getDeviceSpecificTopic(deviceId, true),
+        JSON.stringify(event),
+        this.publishOpts, err => {
           if (err !== undefined) {
             alert('error sending message: ' + err);
           }
         },
-    	);
+      );
     }
-  };
+  }
 
   /**
    * End the connection to a device
@@ -181,7 +184,24 @@ export class MqttClient {
    */
   endConnection = (deviceId: string, event: any): void => {
     if (this.client) {
-    	this.client.end();
+      this.client.end();
     }
-  };
+    this.stopBackgroundFetch();
+  }
+
+  /**
+   * Run a background update for IOS. This will run every 15 minutes at most and less when
+   * the phone thinks it is less likely to be used (at night, etc.). There is nothing to do to
+   * make it run more often as this is set by apple. (As of 22.03.2017)
+   */
+  startBackgroundFetch = () => {
+    this.backgroundFetch.start();
+  }
+
+  /**
+   * Stop background update for IOS
+   */
+  stopBackgroundFetch = () => {
+    this.backgroundFetch.stop();
+  }
 }

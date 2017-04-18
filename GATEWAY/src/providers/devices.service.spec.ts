@@ -1,4 +1,4 @@
-import { inject, TestBed, async } from '@angular/core/testing';
+import { inject, TestBed } from '@angular/core/testing';
 import { Storage } from '@ionic/storage';
 import { Events } from 'ionic-angular';
 import { DevicesService }from './devices.service';
@@ -13,14 +13,8 @@ describe('devicesService:', () => {
   let devicesService: DevicesService = null;
   let deviceOne: Device = null;
   let deviceTwo: Device = null;
-  let convertedBle = new Device;
-      convertedBle.tileId = "TI SensorTag";
-      convertedBle.name = "TI SensorTag";
-      convertedBle.id = "01:23:45:67:89:AB";
-      convertedBle.connected = false;
-      convertedBle.loading = false;
-      convertedBle.ledOn = false;
-      convertedBle.buttonPressed = false;
+  let convertedBle = new Device('01:23:45:67:89:AB', 'Tile_9e', 'Tile_9e', false);
+
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -39,7 +33,7 @@ describe('devicesService:', () => {
     devicesService = temp;
     deviceOne = tilesDevice;
     deviceTwo = tilesDevice;
-    deviceTwo.id = "01:23:45:67:89:CB";
+    deviceTwo.id = '01:23:45:67:89:CB';
   }));
 
   afterEach(() => {
@@ -60,11 +54,11 @@ describe('devicesService:', () => {
     });
 
   });
-  //Needs to be changed. not an aqurate test.
+  // Needs to be changed. not an aqurate test.
   describe('convertBleDeviceToDevice(bleDevice: any): Promise<Device>', () => {
     it('should convert a given BLE Device parameter to a Device', done => {
       const testBLE = bleDevice;
-      //let returnedDevice = 
+      // let returnedDevice =
       devicesService.convertBleDeviceToDevice(testBLE)
       .then(returnedDevice => {
         expect(returnedDevice).toEqual(convertedBle);
@@ -94,26 +88,12 @@ describe('devicesService:', () => {
 
   });
 
-  describe('isNewDevice(device: Device): boolean', () => {
-
-    it('should return true if the devices-list does not contain the device-parameter', () => {
-      devicesService.newDevice(deviceOne);
-      expect(devicesService.isNewDevice(deviceTwo)).toBeTruthy;
-    });
-
-    it('should return false if the devices-list contains the device-parameter', () => {
-      devicesService.newDevice(deviceOne);
-      expect(devicesService.isNewDevice(deviceTwo)).toBeFalsy;
-    });
-
-  });
-
   describe('setCustomDeviceName(device: Device, name: String): void', () => {
 
     it('should change the name of the device parameter to the name parameter', () => {
       devicesService.newDevice(deviceOne);
-      devicesService.setCustomDeviceName(deviceOne, "NewName");
-      expect(devicesService.getDevices()[0].name).toEqual("NewName");
+      devicesService.setCustomDeviceName(deviceOne, 'NewName');
+      expect(devicesService.getDevices()[0].name).toEqual('NewName');
     });
 
   });
@@ -121,10 +101,10 @@ describe('devicesService:', () => {
   describe('resetDeviceName(device: Device): void', () => {
 
     it('should reset the name of the device parameter to the tileId', () => {
-      const oldName = "Tile1";
+      const oldName = 'Tile1';
       console.log(oldName);
       devicesService.newDevice(deviceOne);
-      devicesService.setCustomDeviceName(deviceOne, "NewName");
+      devicesService.setCustomDeviceName(deviceOne, 'NewName');
       devicesService.resetDeviceName(deviceOne);
       expect(devicesService.getDevices()[0].tileId).toEqual(oldName);
     });

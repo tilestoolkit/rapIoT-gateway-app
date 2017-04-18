@@ -1,13 +1,14 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams, AlertController } from 'ionic-angular';
+import { NavController, NavParams } from 'ionic-angular';
 import { ModalController } from 'ionic-angular';
-import { ModalPage } from './modal-page';
 import { LoginPage } from '../login/login';
 import { VirtualTilesPage } from '../virtual-tiles/virtual-tiles';
 
-import { TilesApi } from '../../providers/tilesApi.service';
-import { Application, UtilsService } from '../../providers/utils.service';
+import { BleService } from '../../providers/ble.service';
+import { DevicesService } from '../../providers/devices.service';
 import { MqttClient } from '../../providers/mqttClient';
+import { TilesApi } from '../../providers/tilesApi.service';
+import { Application } from '../../providers/utils.service';
 
 import { Storage } from '@ionic/storage';
 /*
@@ -22,28 +23,33 @@ import { Storage } from '@ionic/storage';
 })
 export class ApplicationsPage {
   applications: Application[];
-  public refreshed = true;
 
   constructor(public navCtrl: NavController,
               public navParams: NavParams,
               public modalCtrl: ModalController,
-              public alertCtrl: AlertController,
+              private bleService: BleService,
+              private devicesService: DevicesService,
               private mqttClient: MqttClient,
               private tilesApi: TilesApi,
-              private utils: UtilsService,
-              private storage: Storage,) {}
+              private storage: Storage) {}
   /**
-   * Called when the view is loaded to present login page if 
+   * Called when the view is loaded to present login page if
    * the user is not logged in
    */
-  ionViewDidLoad() {
+  ionViewDidLoad = (): void => {
     this.storage.get('loggedIn').then((val) => {
-      if (val == null || val == false) {
+      if (val == null || val === false) {
         this.presentLoginModal();
       } else {
-        this.setApplications();
-        this.mqttClient.connect(val.username, val.host, val.port);
-        this.setApplications();
+        this.storage.get('loginData').then((loginData) => {
+          if (loginData == null ||  loginData === undefined) {
+            this.presentLoginModal();
+          } else {
+            this.tilesApi.setLoginData(loginData);
+            this.mqttClient.connect();
+            this.setApplications();
+          }
+        });
       }
     });
   }
@@ -52,10 +58,8 @@ export class ApplicationsPage {
    * Set the list of applications from the api
    */
   setApplications = (): void => {
-    this.tilesApi.getAllApplications().then( data => {
-      this.refreshed = false;
-      this.applications = data;
-    }).catch (err => console.log(err));
+    this.tilesApi.getAllApplications().then(data => this.applications = data)
+                                      .catch(err => console.log(err));
   }
 
   /**
@@ -63,32 +67,28 @@ export class ApplicationsPage {
    */
   refreshApplications = (refresher): void => {
     this.setApplications();
-    //Makes the refresher run for 2 secs
+    // Makes the refresher run for 1.25 sec
     setTimeout(() => {
       refresher.complete();
     }, 1250);
   }
 
-
   /**
    *  Pushes the modal on the viewStack.
    */
   presentLoginModal() {
-    let modal = this.modalCtrl.create(LoginPage);
-    modal.onDidDismiss(data => {
-        this.setApplications();
-   });
-   modal.present();
+    const modal = this.modalCtrl.create(LoginPage);
+    modal.onDidDismiss(data => this.setApplications());
+    modal.present();
   }
 
   /**
-   * Logout - empties the list of applications, changes the refreshstate 
+   * Logout - empties the list of applications, changes the refreshstate
    * and presents login window.
    */
   logout = () => {
     this.storage.set('loggedIn', false);
     this.applications = [];
-    this.refreshed = true;
     this.presentLoginModal();
   }
 
@@ -98,10 +98,10 @@ export class ApplicationsPage {
    * @param {Application} application - a tiles application created in the web view
    */
   viewApplication = (application: Application): void => {
-    //push another page onto the history stack
-    //causing the nav controller to animate the new page in
+    // Push another page onto the history stack
+    // causing the nav controller to animate the new page in
     this.navCtrl.push(VirtualTilesPage, {
-    	app: application,
+      app: application,
     });
   }
 }

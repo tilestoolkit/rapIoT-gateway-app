@@ -19,8 +19,8 @@ export class DevTermPage {
   messages = [];
 
   constructor(private events: Events,
-              public navCtrl: NavController, 
-  						public navParams: NavParams,
+              public navCtrl: NavController,
+              public navParams: NavParams,
               private mqttClient: MqttClient,
               private utils: UtilsService) {
 
@@ -102,6 +102,4 @@ export class DevTermPage {
                    date.getSeconds();
     return datetime;
   }
-
-
 }

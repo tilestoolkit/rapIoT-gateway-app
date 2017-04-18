@@ -1,6 +1,7 @@
-import { Component, Pipe, Injectable } from '@angular/core';
+import { Component } from '@angular/core';
 import { AlertController, NavController, NavParams } from 'ionic-angular';
 
+import { BleService } from '../../providers/ble.service';
 import { DevicesService } from '../../providers/devices.service';
 import { TilesApi } from '../../providers/tilesApi.service';
 import { Application, Device, UtilsService, VirtualTile } from '../../providers/utils.service';
@@ -15,56 +16,34 @@ import { Application, Device, UtilsService, VirtualTile } from '../../providers/
   selector: 'page-virtual-tiles',
   templateUrl: 'virtual-tiles.html'
 })
-
 export class VirtualTilesPage {
   devices: Device[];
   applicationTitle: string;
   virtualTiles: VirtualTile[];
   activeApp: Application;
-  pairedVirtualTiles = [];
-  unpairedVirtualTiles = [];
 
   constructor(public alertCtrl: AlertController,
-              public navCtrl: NavController, 
+              public navCtrl: NavController,
               public navParams: NavParams,
+              private bleService: BleService,
               private devicesService: DevicesService,
               private utils: UtilsService,
-              private tilesApi: TilesApi,) {
-  	// A id variable is stored in the navParams, and .get set this value to the local variable id
-  	this.activeApp = navParams.get('app');
-
-  	// Sets the title of the page (found in virtual-tiles.html) to id, capitalized. 
-  	this.applicationTitle = utils.capitalize(this.activeApp._id);
-    this.setDevices();
+              private tilesApi: TilesApi) {
+    // A id variable is stored in the navParams, and .get set this value to the local variable id
+    this.activeApp = navParams.get('app');
+    // Sets the title of the page (found in virtual-tiles.html) to id, capitalized.
+    this.applicationTitle = utils.capitalize(this.activeApp._id);
+    this.devices = this.devicesService.getDevices();
     this.tilesApi.setVirtualTiles(this.activeApp._id);
     this.setVirtualTiles();
   }
 
-  /**
-   * Set the devices equal to the devices from devicesservice
-   */
-  setDevices = (): void => {
-    this.devices = this.devicesService.getDevices();
-  }
-  
   /**
    * Set the virtual tiles equal to the ones stores for the app
    */
   setVirtualTiles = (): void => {
     this.tilesApi.getApplicationTiles(this.activeApp._id).then(res => {
       this.virtualTiles = res;
-
-      // This is the already paired virtual tiles
-      this.pairedVirtualTiles = [];
-      this.unpairedVirtualTiles = [];
-
-      this.virtualTiles.map(tile => {
-        if (tile.tile != null) {
-          this.pairedVirtualTiles.push(tile);
-        } else {
-          this.unpairedVirtualTiles.push(tile);
-        }
-      })
     });
   }
 
@@ -73,9 +52,9 @@ export class VirtualTilesPage {
   * virtualTiles
   */
   refreshVirtualTiles = (refresher): void => {
-    this.setDevices();
+    this.devices = this.devicesService.getDevices();
     this.setVirtualTiles();
-    //Makes the refresher run for 2 secs
+    // Makes the refresher run for 1.25 secs
     setTimeout(() => {
       refresher.complete();
     }, 1250);
@@ -95,26 +74,32 @@ export class VirtualTilesPage {
       title: 'Pair to physical tile',
       inputs: deviceRadioButtons,
       buttons: [{
-          text: 'Cancel',
-          role: 'cancel',
+        text: 'Cancel',
+        role: 'cancel',
         },
         {
           text: 'Pair',
           handler: data => {
-            this.tilesApi.pairDeviceToVirualTile(data, virtualTile._id, this.activeApp._id);
-            
-            // Refreshes the lists of paired and unpaired virtual tiles
-            this.setVirtualTiles();
+            this.tilesApi.pairDeviceToVirualTile(data, virtualTile._id, this.activeApp._id).then(
+              res => this.setVirtualTiles()
+            );
           },
       }],
     }).present();
-    } 
-    else {
+    } else {
       this.alertCtrl.create({
         title: 'Pair to physical tile',
         message: 'No physical tiles nearby.',
-       buttons: ['Dismiss']}).present();
+        buttons: ['Dismiss']}).present();
     }
   }
 
+  ionViewDidLeave = () => {
+    console.log('virtual tiles out');
+    this.tilesApi.clearVirtualTiles();
+    for (let device of this.devices) {
+      console.log('device: ' + device.name);
+      this.bleService.disconnect(device);
+    };
+  }
 }

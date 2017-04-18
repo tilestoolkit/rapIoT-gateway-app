@@ -1,8 +1,7 @@
 import { Component } from '@angular/core';
-import { AlertController, Events, NavController, Platform } from 'ionic-angular';
+import { AlertController, Events, NavController } from 'ionic-angular';
 import { BleService } from '../../providers/ble.service';
 import { DevicesService } from '../../providers/devices.service';
-import { MqttClient } from '../../providers/mqttClient';
 import { Device } from '../../providers/utils.service';
 
 
@@ -12,34 +11,16 @@ import { Device } from '../../providers/utils.service';
 })
 export class PhysicalTilesPage {
   devices: Device[];
-  serverConnectStatusMsg: string;
-  statusMsg: string;
-  public refreshed = true;
 
   constructor(public navCtrl: NavController,
               public alertCtrl: AlertController,
-              public platform: Platform,
               private events: Events,
               private bleService: BleService,
-              private devicesService: DevicesService,
-              private mqttClient: MqttClient,) {
-    this.setDevices();
-
-    this.events.subscribe('offline', () => {
-      this.mqttClient.setMqttConnectionStatus(false);
-      this.serverConnectStatusMsg = 'Client gone offline';
-    });
-
-    this.events.subscribe('updateDevices', () => {
-      this.setDevices();
-    });
-  }
-
-  /**
-   * Set the devices equal to the devices from devicesservice
-   */
-  setDevices = (): void => {
+              private devicesService: DevicesService) {
     this.devices = this.devicesService.getDevices();
+    this.events.subscribe('updateDevices', () => {
+      this.devices = this.devicesService.getDevices();
+    });
   }
 
   /**
@@ -49,16 +30,11 @@ export class PhysicalTilesPage {
   refreshDevices = (refresher): void => {
     console.log('Scanning for more devices...');
     this.bleService.scanForDevices();
-    //Makes the refresher run for 2 secs
+    // Makes the refresher run for 2 secs
     setTimeout(() => {
       refresher.complete();
-      if (this.devices.length > 0) {
-        this.refreshed = false;
-      } else {
-        this.refreshed = true;
-      }
     }, 2000);
-  };
+  }
 
   /**
    * Triggers an event on a tile to identify which tile is which

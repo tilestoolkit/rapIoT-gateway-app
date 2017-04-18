@@ -2,7 +2,7 @@ import { inject, TestBed } from '@angular/core/testing';
 import { Http, Response, ResponseOptions, BaseRequestOptions, RequestMethod } from '@angular/http';
 import { Storage } from '@ionic/storage';
 import { MockBackend, MockConnection } from '@angular/http/testing';
-import { Device } from './utils.service';
+import { Device, LoginData } from './utils.service';
 import { TilesApi } from './tilesApi.service';
 import { StorageMock } from '../mocks';
 
@@ -12,6 +12,7 @@ import * as mockTilesApplicationsResponse from '../fixtures/applications.json';
 describe('tilesAPI', () => {
 
   let tilesApi: TilesApi = null;
+  let loginData: LoginData = new LoginData('Test', '172.68.99.218', 8080, false);
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -29,7 +30,6 @@ describe('tilesAPI', () => {
           provide: Storage,
           useClass: StorageMock
         },
-        Device,
         TilesApi,
       ],
     });
@@ -37,6 +37,7 @@ describe('tilesAPI', () => {
 
   beforeEach(inject([TilesApi], (temp: TilesApi) => {
     tilesApi = temp;
+    tilesApi.setLoginData(loginData);
   }));
 
   afterEach(() => {
@@ -49,42 +50,26 @@ describe('tilesAPI', () => {
 
   describe('isTilesDevice(device: any): boolean', () => {
     it('should return true when given a valid device-input', () => {
-      let testDevice = {
-        "name" : "TileTest"
-      };
+      const testDevice = new Device('xx', 'xx', 'TileTest', false);
       expect(tilesApi.isTilesDevice(testDevice)).toBeTruthy;
     });
 
     it('should return false when given a invalid device-input', () => {
-      let testDevice2 = {
-        "name" : "NotATilehuehue"
-      };
+      const testDevice2 = new Device('xx', 'xx', 'NotATile', false);
       expect(tilesApi.isTilesDevice(testDevice2)).toBeFalsy;
     });
   });
 
-  describe('setUsername(username: string): void', () => {
-    it('should set the username of the TilesApi to match input', () => {
-      let newname = "Bobcat";
-      tilesApi.setUsername(newname);
-      expect(tilesApi.username).toEqual(newname);
-    });
+  describe('setLoginData(loginData: LoginData): void', () => {
+
   });
 
-  describe('setHostAddress(hostAddress: string): void', () => {
-    it('should set the hostAddress of the TilesApi to match input', () => {
-      let testhost = "128.0.0.0";
-      tilesApi.setHostAddress(testhost);
-      expect(tilesApi.hostAddress).toEqual("128.0.0.0");
-    });
+  describe('getLoginData(): void', () => {
+
   });
 
-  describe('setHostMqttPort(hostMqttPort: number): void', () => {
-    it('should set the hostMqttPort of the TilesApi to match input', () => {
-      let testmqqt: number = 8080;
-      tilesApi.setHostMqttPort(testmqqt);
-      expect(tilesApi.mqttPort).toEqual(8080);
-    });
+  describe('setVirtualTiles(appId: string): void', () => {
+
   });
 
   describe('getAllApplications(): Promise<any>', () => {
@@ -118,8 +103,8 @@ describe('tilesAPI', () => {
           })));
         });
 
-        tilesApi.getApplicationDetails("test3").then(application => {
-          expect(application._id).toEqual("test3");
+        tilesApi.getApplicationDetails('test3').then(application => {
+          expect(application._id).toEqual('test3');
         });
 
     }));
@@ -137,15 +122,15 @@ describe('tilesAPI', () => {
           })));
         });
 
-        tilesApi.getApplicationTiles("test3").then(tiles => {
-          expect(tiles.length).toEqual(3);
+        tilesApi.getApplicationTiles('test3').then(tiles => {
+          expect(tiles.length).toEqual(2);
         });
 
     }));
   });
 
   describe('pairDeviceToVirtualTile(deviceId: string, virtualTileId: string, applicationId: string): void', () => {
-    it('should insert new blog entries', inject([MockBackend], (mockBackend) => {
+    it('should pair a device to a virtual tile and return status code 201', inject([MockBackend], (mockBackend) => {
 
       mockBackend.connections.subscribe((connection: MockConnection) => {
         // is it the correct REST type for an insert? (POST)

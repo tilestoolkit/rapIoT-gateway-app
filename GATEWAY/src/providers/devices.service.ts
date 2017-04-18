@@ -6,7 +6,7 @@ import { Device } from './utils.service';
 
 @Injectable()
 export class DevicesService {
-	private devices: Device[];
+  private devices: Device[];
 
   constructor(public storage: Storage,
               public events: Events) {
@@ -14,70 +14,46 @@ export class DevicesService {
   }
 
   /**
-   * Returns mock devices for testing purposes
-   */
-  getMockDevices = (): Device[] => ([
-  	{id: '01:23:45:67:89:AB', tileId: 'Tile1', name: 'TI SensorTag1', connected: false, loading: false, ledOn: false, buttonPressed: true},
-  	{id: '01:23:45:67:89:AC', tileId: 'Tile2', name: 'TI SensorTag2', connected: true, loading: false, ledOn: true, buttonPressed: true},
-  	{id: '01:23:45:67:89:AD', tileId: 'Tile3', name: 'TI SensorTag3', connected: false, loading: false, ledOn: false, buttonPressed: true},
-  ]);
-
-  /**
    * Returns the list of devices currently stored
    */
   getDevices = (): Device[] => {
-  	return this.devices;
-  };
+    return this.devices;
+  }
+
+  /**
+   * Sets the list of devices
+   * @param {Device[]} devices - New list of devices
+   */
+  setDevices = (devices: Array<Device>) => {
+    // Only keep devices that were still found by the BLE
+    this.devices.filter(device => devices.map(newDevice => newDevice.id).includes(device.id));
+    // Add the new devices found
+    devices.forEach(device => this.newDevice(device));
+    this.events.publish('updateDevices');
+  }
 
   /**
    * Converts the device discovered by ble into a device on the tiles format
    * @param {any} bleDevice - the returned device from the ble scan
    */
   convertBleDeviceToDevice = (bleDevice: any): Promise<Device>  => {
-    let temp = new Device;
     return this.storage.get(bleDevice.name).then( name => {
-      //return {
-        temp.id = bleDevice.id;
-        temp.tileId = bleDevice.name;
-        temp.name = (name !== null && name !== undefined) ? name : bleDevice.name;
-        temp.connected = false;
-        temp.loading = false;
-        temp.ledOn = false;
-        temp.buttonPressed = false;
-        return temp;
-      //};
+      const deviceName = (name !== null && name !== undefined) ? name : bleDevice.name;
+      return new Device(bleDevice.id, bleDevice.name, deviceName, false);
     }).catch(err => {
-      //return {
-        temp.id = bleDevice.id;
-        temp.tileId = bleDevice.name;
-        temp.name = bleDevice.name;
-        temp.connected = false;
-        temp.loading = false;
-        temp.ledOn = false;
-        temp.buttonPressed = false;
-        return temp;
-     //};
-    })
-  };
+      return new Device(bleDevice.id, bleDevice.name, bleDevice.name, false);
+    });
+  }
 
   /**
    * Adds a new device to the list of devices
    * @param {Device} device - the device to add
    */
   newDevice = (device: Device) => {
-    if (this.isNewDevice(device)){
+    if (!this.devices.map(storedDevice => storedDevice.tileId).includes(device.tileId)) {
       this.devices.push(device);
-      //alert('device added: ' + JSON.stringify(device));
     }
-  };
-
-  /**
-   * Check if a device already exists among the stored ones
-   * @param {any} device - The device to check
-   */
-  isNewDevice = (device: any): boolean => {
-    return !this.devices.map(storedDevice => storedDevice.tileId).includes(device.tileId);
-  };
+  }
 
   /**
    * Sets a custom name for the device
@@ -86,13 +62,10 @@ export class DevicesService {
    */
   setCustomDeviceName = (device: Device, name: string): void => {
     this.storage.set(device.tileId, name);
-    for(let d of this.devices) {
-      if(d.tileId == device.tileId) {
-        d.name = name;
-      }
-    }
+    this.devices.map(storedDevice => storedDevice.name = storedDevice.tileId === device.tileId
+                                                       ? name : storedDevice.name);
     this.events.publish('updateDevices');
-  };
+  }
 
   /**
    * Sets the device name to the ble name
@@ -100,17 +73,12 @@ export class DevicesService {
    */
   resetDeviceName = (device: Device): void => {
     this.setCustomDeviceName(device, device.tileId);
-  };
+  }
 
   /**
    * Go through the list of registered devices and keep only those connected
    */
   clearDisconnectedDevices = (): void => {
-    for(let i = 0; i < this.devices.length; i++) {
-      const device = this.devices[i];
-      if (device.connected == false) {
-        this.devices.splice(i, 1);
-      }
-    }
-  };
+    this.devices = this.devices.filter(device => device.connected);
+  }
 }
