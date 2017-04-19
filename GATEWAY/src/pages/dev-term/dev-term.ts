@@ -27,12 +27,12 @@ export class DevTermPage {
     this.messages = [];
 
     this.events.subscribe('serverConnected', () => {
-    	console.log('broker connected')
-    	this.addNewMessage('Connected to MQTT-broker');
+      console.log('broker connected');
+      this.addNewMessage('Connected to MQTT-broker');
     });
 
     this.events.subscribe('offline', () => {
-    	console.log('broker offline')
+      console.log('broker offline');
       this.addNewMessage('MQTT-broker offline');
     });
 
@@ -41,20 +41,20 @@ export class DevTermPage {
     });
 
     this.events.subscribe('reconnect', () => {
-    	console.log('reconnecting')
+      console.log('reconnecting');
       this.addNewMessage('MQTT-broker reconnecting');
     });
 
-	  this.events.subscribe('command', (deviceId: string, command: CommandObject) => {
-    	console.log('sending command')
-	  	const message = `Sending message to BLE device: ${deviceId} : ${this.utils.getCommandObjectAsString(command)}`;
+    this.events.subscribe('command', (deviceId: string, command: CommandObject) => {
+      console.log('sending command');
+      const message = `Sending message to BLE device: ${deviceId} : ${this.utils.getCommandObjectAsString(command)}`;
       this.addNewMessage(message);
     });
 
     this.events.subscribe('recievedEvent', (deviceId: string, event: CommandObject) => {
-    	console.log('recieved event')
-	  	const message = `Recieved event from BLE device: ${deviceId} : ${this.utils.getCommandObjectAsString(event)}`;
-			this.addNewMessage(message);
+      console.log('recieved event');
+      const message = `Recieved event from BLE device: ${deviceId} : ${this.utils.getCommandObjectAsString(event)}`;
+      this.addNewMessage(message);
     });
   }
 
@@ -96,7 +96,7 @@ export class DevTermPage {
   }
 
   currentTime = () => {
-    var date = new Date(); 
+    var date = new Date();
     var datetime = date.getHours() + ':' +
                    date.getMinutes() + ':' +
                    date.getSeconds();

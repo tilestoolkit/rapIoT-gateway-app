@@ -94,9 +94,13 @@ export class VirtualTilesPage {
     }
   }
 
-  unpairTile = (): void => {
+  /**
+   * Called when the unpair button is pushed from the 
+   * virtual tiles view.
+   * @param {VirtualTile} virtualTile - the target device
+   */
+  unpairTile = (virtualTile: VirtualTile): void => {
      this.tilesApi.pairDeviceToVirualTile(null, virtualTile._id, this.activeApp._id);
- 
      // Refreshes the lists of paired and unpaired virtual tiles
      this.setVirtualTiles();
   }
