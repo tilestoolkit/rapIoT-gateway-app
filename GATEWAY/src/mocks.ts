@@ -119,6 +119,11 @@ export class BLEMock {
       return resolve();
     });
   }
+  public writeWithoutResponse(args): Promise<any> {
+    return new Promise((resolve: Function) => {
+      return resolve();
+    });
+  }
 }
 
 export class MqttMock {

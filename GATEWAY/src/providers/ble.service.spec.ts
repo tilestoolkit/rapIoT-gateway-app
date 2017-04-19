@@ -274,21 +274,23 @@ describe('bleService', () => {
 
   describe('disconnect(device: Device): void', () => {
     it('should disconnect from the current device if it is paired', () => {
-      spyOn(bleService, 'disconnect').and.returnValue(Observable.of(bleReturnValue));
+      spyOn(bleService.ble, 'disconnect').and.callThrough();
+      testDevice.conncted = true;
 
       bleService.disconnect(testDevice);
 
-      expect(bleService['disconnect']).toHaveBeenCalled();
+      expect(bleService.ble.disconnect).toHaveBeenCalled();
+      expect(testDevice.connected).toEqual(false);
     });
   });
 
   describe('sendData(device: Device, dataString: string): void', () => {
     it('should successfully send a dataString to a device using BLE', () => {
-      spyOn(bleService, 'sendData').and.returnValue(Observable.of(bleReturnValue));
+      spyOn(bleService.ble, 'writeWithoutResponse').and.callThrough();
 
-      bleService.sendData(testDevice, 'Hello!');
+      bleService.sendData(testDevice, 'led,on,red');
 
-      expect(bleService['sendData']).toHaveBeenCalled();
+      expect(bleService.ble.writeWithoutResponse).toHaveBeenCalled();
     });
 
     /* Dårlig test
