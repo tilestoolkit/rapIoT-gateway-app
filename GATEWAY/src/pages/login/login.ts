@@ -28,7 +28,6 @@ export class LoginPage {
    */
   connectToServer = (user: string, host: string, port: number, remember: boolean): void => {
     if (this.utils.verifyLoginCredentials(user, host, port)) {
-      
       this.tilesApi.getAllUsers(user, host).then(data => {
         if (data) {
           const loginData = new LoginData(user, host, port, remember);
