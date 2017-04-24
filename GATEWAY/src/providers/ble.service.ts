@@ -75,26 +75,22 @@ export class BleService {
   scanBLE = (): void => {
     // A list of the discovered devices
     const virtualTiles = this.tilesApi.getVirtualTiles();
-    this.ble.scan([], 30).toArray().subscribe(
+    let newDevices: Array<Device> = [];
+    this.ble.scan([], 30).subscribe(
       // function to be called for each new device discovered
-      bleDevices => {
-        let devices = new Array();
-        for (let i = 0; i < bleDevices.length; i++) {
-          if (this.tilesApi.isTilesDevice(bleDevices[i])) {
-            this.devicesService.convertBleDeviceToDevice(bleDevices[i]).then( device => {
-              if (virtualTiles.filter(tile => tile.tile != null)
-                              .map(tile => tile.tile.name)
-                              .includes(device.tileId)) {
-                this.connect(device);
-              }
-              devices.push(device);
-              if (i === bleDevices.length - 1) {
-                this.devicesService.setDevices(devices);
-              }
-            }).catch(err => {
-              alert(err);
-            });
-          }
+      bleDevice => {
+        if (this.tilesApi.isTilesDevice(bleDevice)) {
+          this.devicesService.convertBleDeviceToDevice(bleDevice).then( device => {
+            this.mqttClient.registerDevice(device);
+            this.devicesService.newDevice(device);
+            newDevices.push(device);
+            if (virtualTiles.filter(tile => tile.tile !== null)
+                            .map(tile => tile.tile.name)
+                            .includes(device.tileId)) {
+              this.connect(device);
+            }
+            this.events.publish('updateDevices');
+          }).catch(err => alert(err));
         }
       },
       err => {
