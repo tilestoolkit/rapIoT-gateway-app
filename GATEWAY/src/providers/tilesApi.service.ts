@@ -3,7 +3,7 @@ import { Headers, Http, Response }    from '@angular/http';
 import { Storage } from '@ionic/storage';
 import 'rxjs/add/operator/toPromise';
 
-import { LoginData, VirtualTile } from './utils.service';
+import { Application, LoginData, VirtualTile } from './utils.service';
 
 
 @Injectable()
@@ -11,6 +11,7 @@ export class TilesApi {
   apiPort: number = 3000;
   virtualTiles: VirtualTile[] = [];
   loginData: LoginData;
+  activeApp: Application;
 
   constructor(private http: Http,
               private storage: Storage) {
@@ -33,6 +34,21 @@ export class TilesApi {
   }
 
   /**
+   * Sets the active app
+   * @param {activeApp} activeApp - the active application
+   */
+  setActiveApp = (activeApp: Application): void => {
+    this.activeApp = activeApp;
+  }
+
+  /**
+   * Gets the active app
+   */
+  getActiveApp = (): Application => {
+    return this.activeApp !== undefined ? this.activeApp : new Application('test3', '', '', false, false, 8080, []);
+  }
+
+  /**
    * Gets login data for the user
    */
   getLoginData = (): LoginData => {
@@ -47,10 +63,10 @@ export class TilesApi {
   }
 
   /**
-   * Set the virtual tiles equal to the ones stores for the app
+   * Set the virtual tiles equal to the ones stored for the app
    */
-  setVirtualTiles = (appId: string): void => {
-    this.getApplicationTiles(appId).then(res => {
+  setVirtualTiles = (): void => {
+    this.getApplicationTiles().then(res => {
       this.virtualTiles = res;
     });
   }
@@ -69,7 +85,12 @@ export class TilesApi {
     this.virtualTiles = [];
   }
 
-  getAllUsers = (userName: string, host: string): Promise<any> => {
+  /**
+   * Checks if the user is registered on the hose server
+   * @param {string} username - username to check for
+   * @param {host} string - the host ip/url
+   */
+  isTilesUser = (userName: string, host: string): Promise<any> => {
     const url = `http://${host}:${this.apiPort}/users`;
     return this.http.get(url)
             .toPromise()
@@ -91,7 +112,6 @@ export class TilesApi {
    */
   getAllApplications = (): Promise<any> => {
     const url = `http://${this.loginData.host}:${this.apiPort}/applications`;
-    console.log(url);
     return this.http.get(url)
             .toPromise()
             .then(res => {
@@ -106,8 +126,8 @@ export class TilesApi {
    * Get the details of an application
    * @param {string} applicationId - The application ID
    */
-  getApplicationDetails = (applicationId: string): Promise<any> => {
-    const url = `http://${this.loginData.host}:${this.apiPort}/applications/${applicationId}`;
+  getApplicationDetails = (): Promise<any> => {
+    const url = `http://${this.loginData.host}:${this.apiPort}/applications/${this.activeApp._id}`;
     return this.http.get(url)
             .toPromise()
             .then(res => {
@@ -124,8 +144,8 @@ export class TilesApi {
    * Get the tiles belonging to an application
    * @param {string} applicationId - The application ID
    */
-  getApplicationTiles = (applicationId: string): Promise<any> => {
-    return this.getApplicationDetails(applicationId).then(res => res.virtualTiles);
+  getApplicationTiles = (): Promise<any> => {
+    return this.getApplicationDetails().then(res => res.virtualTiles);
   }
 
   /**
@@ -134,8 +154,8 @@ export class TilesApi {
    * @param {string} virtualTileId - The virtual tile
    * @param {string} applicationId - The application the virtual tile is registered to
    */
-  pairDeviceToVirualTile = (deviceId: string, virtualTileId: string, applicationId: string): Promise<Response> => {
-    const url = `http://${this.loginData.host}:${this.apiPort}/applications/${applicationId}/${virtualTileId}`;
+  pairDeviceToVirualTile = (deviceId: string, virtualTileId: string): Promise<Response> => {
+    const url = `http://${this.loginData.host}:${this.apiPort}/applications/${this.activeApp._id}/${virtualTileId}`;
     const body = JSON.stringify({ tile: deviceId });
     const headerFields = new Headers({'Content-Type': 'application/json'});
     console.log('url: ' + url + ' body: ' + body);

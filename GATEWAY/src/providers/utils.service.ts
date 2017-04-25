@@ -6,6 +6,21 @@ import { Events } from 'ionic-angular';
  * Class to describe the structure of an application
  */
 export class Application {
+  constructor(_id: string,
+              devEnvironment: string,
+              user: string,
+              environmentOnline: boolean,
+              appOnline: boolean,
+              port: number,
+              virtualTiles: string[]) {
+    this._id = _id;
+    this.devEnvironment = devEnvironment;
+    this.user = user;
+    this.environmentOnline = environmentOnline;
+    this.appOnline = appOnline;
+    this.port = port;
+    this.virtualTiles = virtualTiles;
+  }
   _id: string;
   devEnvironment: string;
   user: string;
