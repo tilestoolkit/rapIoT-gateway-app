@@ -50,7 +50,8 @@ export class MqttClient {
    */
   getDeviceSpecificTopic = (deviceId: string, isEvent: boolean): string => {
     const type = isEvent ? 'evt' : 'cmd';
-    return `tiles/${type}/${this.mqttConnectionData.user}/${deviceId}`;
+    const activeApp = this.tilesApi.getActiveApp();
+    return `tiles/${type}/${this.mqttConnectionData.user}/${activeApp._id}/${deviceId}`;
   }
 
   /**
@@ -71,7 +72,7 @@ export class MqttClient {
 
     // Instantiate a mqtt-client from the host and port
     this.client = mqtt.connect({
-      host: this.mqttConnectionData.host, // 'test.mosquitto.org'
+      host: this.mqttConnectionData.host,
       port: this.mqttConnectionData.port,
       keepalive: 0,
     });
@@ -101,6 +102,8 @@ export class MqttClient {
 
     this.client.on('error', error => {
       this.events.publish('error', error);
+      console.log('mqtt error occured');
+
     });
 
     this.client.on('connect', () => {

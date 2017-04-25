@@ -6,6 +6,21 @@ import { Events } from 'ionic-angular';
  * Class to describe the structure of an application
  */
 export class Application {
+  constructor(_id: string,
+              devEnvironment: string,
+              user: string,
+              environmentOnline: boolean,
+              appOnline: boolean,
+              port: number,
+              virtualTiles: string[]) {
+    this._id = _id;
+    this.devEnvironment = devEnvironment;
+    this.user = user;
+    this.environmentOnline = environmentOnline;
+    this.appOnline = appOnline;
+    this.port = port;
+    this.virtualTiles = virtualTiles;
+  }
   _id: string;
   devEnvironment: string;
   user: string;
@@ -32,17 +47,19 @@ export class CommandObject {
  * device type in typescript to avoid getting invalid device-objects
  */
 export class Device {
-  constructor(id: string, tileId: string, name: string, connected: boolean) {
+  constructor(id: string, tileId: string, name: string, connected: boolean, lastDiscovered?: number) {
     this.id = id;
     // IOS and android gets different id from the ble, so we use the tilename as a second id
     this.tileId = tileId;
     this.name = name;
     this.connected = connected;
+    this.lastDiscovered = lastDiscovered !== undefined ? lastDiscovered : (new Date).getTime();
   }
   id: string;
   tileId: string;
   name: string;
   connected: boolean;
+  lastDiscovered: number;
 }
 
 /**

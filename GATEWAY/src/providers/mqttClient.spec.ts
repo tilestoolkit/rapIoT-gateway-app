@@ -59,13 +59,13 @@ describe('mqttClient', () => {
     it('should return a correct url adress for the specific device', () => {
       let testID: string = 'testEvent';
       let testEventBool: boolean = true;
-      expect(mqttClient.getDeviceSpecificTopic(testID, testEventBool)).toEqual('tiles/evt/TestUser/testEvent');
+      expect(mqttClient.getDeviceSpecificTopic(testID, testEventBool)).toEqual('tiles/evt/TestUser/test3/testEvent');
     });
 
     it('should return a correct url adress for the specific device when no event is passed as an argument', () => {
       let testID: string = 'testEvent';
       let testEventBool: boolean = false;
-      expect(mqttClient.getDeviceSpecificTopic(testID, testEventBool)).toEqual('tiles/cmd/TestUser/testEvent');
+      expect(mqttClient.getDeviceSpecificTopic(testID, testEventBool)).toEqual('tiles/cmd/TestUser/test3/testEvent');
     });
   });
 

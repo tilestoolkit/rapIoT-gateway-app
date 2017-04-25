@@ -2,7 +2,7 @@ import { inject, TestBed } from '@angular/core/testing';
 import { Http, Response, ResponseOptions, BaseRequestOptions, RequestMethod } from '@angular/http';
 import { Storage } from '@ionic/storage';
 import { MockBackend, MockConnection } from '@angular/http/testing';
-import { Device, LoginData } from './utils.service';
+import { Application, Device, LoginData } from './utils.service';
 import { TilesApi } from './tilesApi.service';
 import { StorageMock } from '../mocks';
 
@@ -38,6 +38,7 @@ describe('tilesAPI', () => {
   beforeEach(inject([TilesApi], (temp: TilesApi) => {
     tilesApi = temp;
     tilesApi.setLoginData(loginData);
+    tilesApi.setActiveApp(new Application('test3', '', '', false, false, 8080, []));
   }));
 
   afterEach(() => {
@@ -103,7 +104,7 @@ describe('tilesAPI', () => {
           })));
         });
 
-        tilesApi.getApplicationDetails('test3').then(application => {
+        tilesApi.getApplicationDetails().then(application => {
           expect(application._id).toEqual('test3');
         });
 
@@ -122,7 +123,7 @@ describe('tilesAPI', () => {
           })));
         });
 
-        tilesApi.getApplicationTiles('test3').then(tiles => {
+        tilesApi.getApplicationTiles().then(tiles => {
           expect(tiles.length).toEqual(2);
         });
 
@@ -139,7 +140,7 @@ describe('tilesAPI', () => {
         connection.mockRespond(new Response(new ResponseOptions({status: 201})));
       });
 
-      tilesApi.pairDeviceToVirualTile('test', '58c120c5497df8602fedfbd3', 'test3').then(
+      tilesApi.pairDeviceToVirualTile('test', '58c120c5497df8602fedfbd3').then(
         (successResult) => {
           expect(successResult).toBeDefined();
           expect(successResult.status).toBe(201);

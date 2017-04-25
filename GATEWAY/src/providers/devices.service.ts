@@ -21,18 +21,6 @@ export class DevicesService {
   }
 
   /**
-   * Sets the list of devices
-   * @param {Device[]} devices - New list of devices
-   */
-  setDevices = (devices: Array<Device>) => {
-    // Only keep devices that were still found by the BLE
-    this.devices.filter(device => devices.map(newDevice => newDevice.id).includes(device.id));
-    // Add the new devices found
-    devices.forEach(device => this.newDevice(device));
-    this.events.publish('updateDevices');
-  }
-
-  /**
    * Converts the device discovered by ble into a device on the tiles format
    * @param {any} bleDevice - the returned device from the ble scan
    */
@@ -79,6 +67,7 @@ export class DevicesService {
    * Go through the list of registered devices and keep only those connected
    */
   clearDisconnectedDevices = (): void => {
-    this.devices = this.devices.filter(device => device.connected);
+    const currentTime = (new Date()).getTime();
+    this.devices = this.devices.filter(device => device.lastDiscovered - currentTime < 60000);
   }
 }
