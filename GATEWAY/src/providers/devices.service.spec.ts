@@ -61,7 +61,7 @@ describe('devicesService:', () => {
       // let returnedDevice =
       devicesService.convertBleDeviceToDevice(testBLE)
       .then(returnedDevice => {
-        expect(returnedDevice).toEqual(convertedBle);
+        expect(returnedDevice.name).toEqual(convertedBle.name);
         done();
       });
 
@@ -111,8 +111,9 @@ describe('devicesService:', () => {
   });
 
   describe('clearDisconnectedDevices(): void', () => {
-    it('should remove the unconnected devices from devices list', () => {
-      deviceOne.connected = true;
+    it('should remove the devices that has not been discovered for the past 60 seconds', () => {
+      deviceOne.lastDiscovered = (new Date).getTime() - 61;
+      deviceTwo.lastDiscovered = (new Date).getTime();
       devicesService.newDevice(deviceOne);
       devicesService.newDevice(deviceTwo);
       devicesService.clearDisconnectedDevices();

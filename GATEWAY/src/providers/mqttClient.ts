@@ -102,6 +102,8 @@ export class MqttClient {
 
     this.client.on('error', error => {
       this.events.publish('error', error);
+      console.log('mqtt error occured');
+
     });
 
     this.client.on('connect', () => {
