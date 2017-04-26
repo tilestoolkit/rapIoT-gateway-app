@@ -20,13 +20,13 @@ export class TilesApi {
   }
 
   /**
-   * The following code will mailny be used for getting private parameters
+   * The following code will mainly be used for getting private parameters
    * for testing purposes
    */
-  getHttp = (): Http => {
+  public getHttp = (): Http => {
     return this.http;
   }
-  getStorage = (): Storage => {
+  public getStorage = (): Storage => {
     return this.storage;
   }
 

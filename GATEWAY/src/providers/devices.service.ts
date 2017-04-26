@@ -19,6 +19,9 @@ export class DevicesService {
   public getDevices = (): Device[] => {
     return this.devices;
   }
+  public setDevices = (dev: Device[]): void => {
+    this.devices = dev;
+  }
 
   /**
    * Converts the device discovered by ble into a device on the tiles format
@@ -68,6 +71,6 @@ export class DevicesService {
    */
   public clearDisconnectedDevices = (): void => { // TODO: Change name?
     const currentTime = (new Date()).getTime();
-    this.devices = this.devices.filter(device => device.lastDiscovered - currentTime < 60000);
+    this.devices = this.devices.filter(device => currentTime - device.lastDiscovered < 60000);
   }
 }

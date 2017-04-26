@@ -115,6 +115,14 @@ describe('tilesAPI', () => {
 
   });
 
+  describe('setActiveApp(activeApp: Application): void', () => {
+
+  });
+
+  describe('getActiveApp(): Application', () => {
+
+  });
+
   describe('setVirtualTiles(appId: string): void', () => {
     it('should set virtualTiles equal to a list of virtual tiles from an application', () => {
       spyOn(tilesApi, 'getApplicationTiles').and.callFake( () => {

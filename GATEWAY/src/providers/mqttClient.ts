@@ -34,17 +34,8 @@ export class MqttClient {
   }
 
   /**
-   * For testing purposes. Need the ability to set LoginData whitout being
-   * dependent on the TilesApi-class
-   * @param {LoginData} mqttConnectionData - the login credentials
-   */
-  public setConnectionData = (mqttConnectionData: LoginData = null): void => {
-      this.mqttConnectionData = mqttConnectionData === null
-                              ? this.tilesApi.getLoginData()
-                              : this.mqttConnectionData = mqttConnectionData;
-  }
-  /**
-   * Mainly for testing purposes.
+   * The following code will mainly be used for getting private parameters
+   * for testing purposes
    */
   setClient = (client: any): void => {
     this.client = client;
@@ -60,6 +51,17 @@ export class MqttClient {
   }
   getBackgroundFetch = (): BackgroundFetch => {
     return this.backgroundFetch;
+  }
+  
+  /**
+   * For testing purposes. Need the ability to set LoginData whitout being
+   * dependent on the TilesApi-class
+   * @param {LoginData} mqttConnectionData - the login credentials
+   */
+  public setConnectionData = (mqttConnectionData: LoginData = null): void => {
+      this.mqttConnectionData = mqttConnectionData === null
+                              ? this.tilesApi.getLoginData()
+                              : this.mqttConnectionData = mqttConnectionData;
   }
 
   /**
