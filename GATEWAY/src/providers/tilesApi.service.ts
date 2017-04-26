@@ -8,12 +8,12 @@ import { Application, LoginData, VirtualTile } from './utils.service';
 
 @Injectable()
 export class TilesApi {
+  public flagThen: boolean = false;
+  public flagCatch: boolean = false;
   public apiPort: number = 3000;
   private virtualTiles: VirtualTile[] = [];
   private loginData: LoginData;
   private activeApp: Application;
-  flagThen: boolean = false;
-  flagCatch: boolean = false;
 
   constructor(private http: Http,
               private storage: Storage) {
@@ -51,7 +51,7 @@ export class TilesApi {
    */
   public getLoginData = (): LoginData => {
     if (this.loginData === undefined || this.loginData === null) {
-      this.storage.get('loginData').then((loginData) => {
+      this.storage.get('loginData').then(loginData => {
         this.flagThen = true;
         this.setLoginData(loginData);
         return loginData;

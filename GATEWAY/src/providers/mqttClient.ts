@@ -37,22 +37,22 @@ export class MqttClient {
    * The following code will mainly be used for getting private parameters
    * for testing purposes
    */
-  setClient = (client: any): void => {
+  public setClient = (client: any): void => {
     this.client = client;
   }
-  getClient = (): any => {
+  public getClient = (): any => {
     return this.client;
   }
-  getMqttConnectionData = (): LoginData => {
+  public getMqttConnectionData = (): LoginData => {
     return this.mqttConnectionData;
   }
-  getTilesApi = (): TilesApi => {
+  public getTilesApi = (): TilesApi => {
     return this.tilesApi;
   }
-  getBackgroundFetch = (): BackgroundFetch => {
+  public getBackgroundFetch = (): BackgroundFetch => {
     return this.backgroundFetch;
   }
-  
+
   /**
    * For testing purposes. Need the ability to set LoginData whitout being
    * dependent on the TilesApi-class
