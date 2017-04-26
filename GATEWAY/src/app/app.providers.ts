@@ -1,3 +1,4 @@
+/* tslint:disable:max-classes-per-file */
 import { ErrorHandler } from '@angular/core';
 import { BLE } from '@ionic-native/ble';
 import { Storage } from '@ionic/storage';
@@ -5,6 +6,7 @@ import { Events, IonicErrorHandler } from 'ionic-angular';
 import { Observable } from 'rxjs';
 
 import { UtilsService } from '../providers/utils.service';
+
 
 /**
  * This is a class to mock the native BLE module for browser development.

@@ -17,7 +17,7 @@ import { CommandObject, Device, UtilsService } from '../providers/utils.service'
   templateUrl: 'app.html',
 })
 export class Tiles {
-  private rootPage = TabsPage;
+  private rootPage = TabsPage; // tslint:disable-line
   private devices: Device[];
 
   constructor(private events: Events,

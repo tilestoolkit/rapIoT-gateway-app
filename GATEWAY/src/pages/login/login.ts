@@ -13,12 +13,12 @@ import { LoginData, UtilsService } from '../../providers/utils.service';
 export class LoginPage {
   loginInfo = { user: '', host: '', port: '', remember: false };
 
-  constructor(public viewCtrl: ViewController,
-              private tilesApi: TilesApi,
+  constructor(private alertCtrl: AlertController,
               private mqttClient: MqttClient,
-              private utils: UtilsService,
               private storage: Storage,
-              private alertCtrl: AlertController) {}
+              private tilesApi: TilesApi,
+              private utils: UtilsService,
+              public viewCtrl: ViewController) {}
 
   /**
    * Connect to the mqttServer
