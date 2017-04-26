@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Headers, Http, Response }    from '@angular/http';
 import { Storage } from '@ionic/storage';
+import { AlertController } from 'ionic-angular';
 import 'rxjs/add/operator/toPromise';
 
 import { Application, LoginData, VirtualTile } from './utils.service';
@@ -13,7 +14,8 @@ export class TilesApi {
   private loginData: LoginData;
   private activeApp: Application;
 
-  constructor(private http: Http,
+  constructor(private alertCtrl: AlertController,
+              private http: Http,
               private storage: Storage) {
   }
 
@@ -102,8 +104,13 @@ export class TilesApi {
               }
             })
             .catch(err => {
-              return false;
-              // alert('failed getting applications with error: ' + err);
+              try {
+                if (err.status === 0) {
+                  this.presentErrorAlert();
+                }
+              } finally {
+                return false;
+              }
             });
   }
 
@@ -118,7 +125,13 @@ export class TilesApi {
               return res.json();
             })
             .catch(err => {
-              console.log('failed getting applications with error: ' + err);
+              try {
+                if (err.status === 0) {
+                  this.presentErrorAlert();
+                }
+              } finally {
+                console.log('failed getting applications with error: ' + err);
+              }
             });
   }
 
@@ -134,9 +147,15 @@ export class TilesApi {
               return res.json();
             })
             .catch(err => {
-              console.log('failed getting applications with error: ' + err);
-              console.log('url ' + url);
-              return null;
+              try {
+                if (err.status === 0) {
+                  this.presentErrorAlert();
+                }
+              } finally {
+                console.log('failed getting applications with error: ' + err);
+                console.log('url ' + url);
+                return null;
+              }
             });
   }
 
@@ -161,7 +180,26 @@ export class TilesApi {
     console.log('url: ' + url + ' body: ' + body);
     return this.http.post(url, body, {headers: headerFields}).toPromise()
              .catch(err => {
-               console.log('Feiled pairing of the physical and virtual tile with error: ' + err);
+                try {
+                  if (err.status === 0) {
+                    this.presentErrorAlert();
+                  }
+                } finally {
+                  console.log('Feiled pairing of the physical and virtual tile with error: ' + err);
+                }
              });
+  }
+
+  /**
+  */
+  private presentErrorAlert = (): void => {
+    this.alertCtrl.create({
+      title: 'Could not get data from remote source',
+      subTitle: 'Make sure you have internet connection and that you have provided the correct host address.' +
+                 'If it still won\'t work the error might be on the host. Try again later or contact the host owners.',
+      buttons: [{
+        text: 'Dismiss',
+      }]
+    }).present();
   }
 }
