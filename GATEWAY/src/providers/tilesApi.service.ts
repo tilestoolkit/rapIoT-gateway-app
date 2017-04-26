@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Headers, Http, Response }    from '@angular/http';
 import { Storage } from '@ionic/storage';
-import { ViewController, AlertController } from 'ionic-angular';
 import 'rxjs/add/operator/toPromise';
 
 import { Application, LoginData, VirtualTile } from './utils.service';
