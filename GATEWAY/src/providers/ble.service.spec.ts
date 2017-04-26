@@ -116,46 +116,6 @@ describe('bleService', () => {
       expect(bleService.getBle()['isEnabled']).toHaveBeenCalled();
     });
 
-    /**
-     * Disse blir vanskelige å teste
-     * Blir nødt til å kjøre en hacky hack for å teste
-     * Typ bool-flag som settes i hovedklassene og sjekkes etter gjennomføring
-     */
-    //TODO: Ferdigstill denne metoden
-    xit('should invoke the method scanBLE() if BLE is enabled', () => {
-      //spyOn(bleService.ble, 'isEnabled').and.callThrough();
-      
-      let spy = spyOn(bleService, 'scanBLE').and.callThrough();
-
-      bleService.scanForDevices();
-
-      //expect(bleService.ble.isEnabled).toHaveBeenCalled();
-      expect(spy).toHaveBeenCalled();
-    });
-
-    //TODO: Ferdigstill denne metoden
-    xit('should try to enable BLE if method isEnabled throws an error', () => {
-      spyOn(bleService.getBle(), 'isEnabled').and.callThrough();
-      spyOn(bleService, 'scanBLE').and.throwError("Test Error");
-      spyOn(bleService.getBle(), 'enable').and.callThrough();
-
-      bleService.scanForDevices();
-
-      //expect(bleService.ble['isEnabled']).toHaveBeenCalled();
-      //expect(bleService['scanBLE']).toThrowError();
-      expect(bleService.getBle().enable).toHaveBeenCalled();
-    });
-
-    //TODO: Ferdigstill denne metoden
-    xit('should invoke method scanBLE() if it successfully enables BLE', () => {
-
-    });
-
-    //TODO: Ferdigstill denne metoden
-    xit('should do something if method enable() throws an error', () => {
-
-    });
-
   });
 
   describe('scanBLE(): void', () => {
