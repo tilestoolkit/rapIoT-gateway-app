@@ -24,13 +24,13 @@ export class FormMock {
 export class NavMock {
 
   public pop(): any {
-    return new Promise(function(resolve: Function): void {
+    return new Promise((resolve: Function): void => {
       resolve();
     });
   }
 
   public push(): any {
-    return new Promise(function(resolve: Function): void {
+    return new Promise((resolve: Function): void => {
       resolve();
     });
   }
@@ -127,22 +127,22 @@ export class BLEMock {
 }
 
 export class MqttMock {
-  public connect(val1: any){
+  public connect(val1: any) {
     return true;
   }
-  public on(val1: any, val2: any){
+  public on(val1: any, val2: any) {
     return true;
   }
   public end() {
     return true;
   }
-  public publish(val1: any, val2: any, val3: any){
+  public publish(val1: any, val2: any, val3: any) {
     return true;
   }
-  public subscribe(val1: any, val2: any){
+  public subscribe(val1: any, val2: any) {
     return true;
   }
-  public unsubscribe(val1: any, val2: any){
+  public unsubscribe(val1: any, val2: any) {
     return true;
   }
 }
