@@ -3,14 +3,15 @@ import { Headers, Http, Response }    from '@angular/http';
 import { Storage } from '@ionic/storage';
 import 'rxjs/add/operator/toPromise';
 
-import { LoginData, VirtualTile } from './utils.service';
+import { Application, LoginData, VirtualTile } from './utils.service';
 
 
 @Injectable()
 export class TilesApi {
-  apiPort: number = 3000;
-  virtualTiles: VirtualTile[] = [];
-  loginData: LoginData;
+  public apiPort: number = 3000;
+  private virtualTiles: VirtualTile[] = [];
+  private loginData: LoginData;
+  private activeApp: Application;
   flagThen: boolean = false;
   flagCatch: boolean = false;
 
@@ -33,7 +34,7 @@ export class TilesApi {
    * Tests if a device is a tile
    * @param {any} device - the device to test
    */
-  isTilesDevice = (device: any): boolean => {
+  public isTilesDevice = (device: any): boolean => {
     return device.name != null && device.name.substring(0, 4) === 'Tile';
   }
 
@@ -41,14 +42,14 @@ export class TilesApi {
    * Sets login data for the user
    * @param {LoginData} loginData - the loginData
    */
-  setLoginData = (loginData: LoginData): void => {
+  public setLoginData = (loginData: LoginData): void => {
     this.loginData = loginData;
   }
 
   /**
    * Gets login data for the user
    */
-  getLoginData = (): LoginData => {
+  public getLoginData = (): LoginData => {
     if (this.loginData === undefined || this.loginData === null) {
       this.storage.get('loginData').then((loginData) => {
         this.flagThen = true;
@@ -61,10 +62,25 @@ export class TilesApi {
   }
 
   /**
-   * Set the virtual tiles equal to the ones stores for the app
+   * Sets the active app
+   * @param {activeApp} activeApp - the active application
    */
-  setVirtualTiles = (appId: string): void => {
-    this.getApplicationTiles(appId).then(res => {
+  public setActiveApp = (activeApp: Application): void => {
+    this.activeApp = activeApp;
+  }
+
+  /**
+   * Gets the active app
+   */
+  public getActiveApp = (): Application => {
+    return this.activeApp !== undefined ? this.activeApp : new Application('test3', '', '', false, false, 8080, []);
+  }
+
+  /**
+   * Set the virtual tiles equal to the ones stored for the app
+   */
+  public setVirtualTiles = (): void => {
+    this.getApplicationTiles().then(res => {
       this.virtualTiles = res;
     });
   }
@@ -72,18 +88,23 @@ export class TilesApi {
   /**
    * Get the virtual tiles
    */
-  getVirtualTiles = (): VirtualTile[] => {
+  public getVirtualTiles = (): VirtualTile[] => {
     return this.virtualTiles;
   }
 
   /**
    * Set the virtual tiles list to empty
    */
-  clearVirtualTiles = (): void => {
+  public clearVirtualTiles = (): void => {
     this.virtualTiles = [];
   }
 
-  getAllUsers = (userName: string, host: string): Promise<any> => {
+  /**
+   * Checks if the user is registered on the hose server
+   * @param {string} username - username to check for
+   * @param {host} string - the host ip/url
+   */
+  public isTilesUser = (userName: string, host: string): Promise<any> => {
     const url = `http://${host}:${this.apiPort}/users`;
     return this.http.get(url)
             .toPromise()
@@ -95,7 +116,7 @@ export class TilesApi {
               }
             })
             .catch(err => {
-               return false;
+              return false;
               // alert('failed getting applications with error: ' + err);
             });
   }
@@ -103,9 +124,8 @@ export class TilesApi {
   /**
    * Get all registered applications for all users
    */
-  getAllApplications = (): Promise<any> => {
+  public getAllApplications = (): Promise<any> => {
     const url = `http://${this.loginData.host}:${this.apiPort}/applications`;
-    console.log(url);
     return this.http.get(url)
             .toPromise()
             .then(res => {
@@ -120,8 +140,8 @@ export class TilesApi {
    * Get the details of an application
    * @param {string} applicationId - The application ID
    */
-  getApplicationDetails = (applicationId: string): Promise<any> => {
-    const url = `http://${this.loginData.host}:${this.apiPort}/applications/${applicationId}`;
+  public getApplicationDetails = (): Promise<any> => {
+    const url = `http://${this.loginData.host}:${this.apiPort}/applications/${this.activeApp._id}`;
     return this.http.get(url)
             .toPromise()
             .then(res => {
@@ -138,8 +158,8 @@ export class TilesApi {
    * Get the tiles belonging to an application
    * @param {string} applicationId - The application ID
    */
-  getApplicationTiles = (applicationId: string): Promise<any> => {
-    return this.getApplicationDetails(applicationId).then(res => res.virtualTiles);
+  public getApplicationTiles = (): Promise<any> => {
+    return this.getApplicationDetails().then(res => res.virtualTiles);
   }
 
   /**
@@ -148,8 +168,8 @@ export class TilesApi {
    * @param {string} virtualTileId - The virtual tile
    * @param {string} applicationId - The application the virtual tile is registered to
    */
-  pairDeviceToVirualTile = (deviceId: string, virtualTileId: string, applicationId: string): Promise<Response> => {
-    const url = `http://${this.loginData.host}:${this.apiPort}/applications/${applicationId}/${virtualTileId}`;
+  public pairDeviceToVirualTile = (deviceId: string, virtualTileId: string): Promise<Response> => {
+    const url = `http://${this.loginData.host}:${this.apiPort}/applications/${this.activeApp._id}/${virtualTileId}`;
     const body = JSON.stringify({ tile: deviceId });
     const headerFields = new Headers({'Content-Type': 'application/json'});
     console.log('url: ' + url + ' body: ' + body);

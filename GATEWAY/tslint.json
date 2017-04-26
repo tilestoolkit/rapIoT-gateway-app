@@ -1,16 +1,33 @@
 {
-  "extends": "tslint-ionic-rules",
+  "extends": ["tslint:recommended", "tslint-ionic-rules"],
   "exclude": [
     "node_modules",
-    "src/**/*.spec.ts",
-    "src/app/*.spec.ts",
-    "src/pages/**/*.spec.ts",
-    "src/providers/*.spec.ts",
+    "**/src/**/*.spec.ts",
     "src/test.ts",
     "src/polyfill.ts",
     "src/mocks.ts",
     "src/envoirment",
     "src/envoirments",
     "src/fixtures"
-  ]
+  ],
+  "rules": {
+    "max-line-length": {
+      "options": [120]
+    },
+    "new-parens": true,
+    "no-arg": true,
+    "arrow-parens": [true, "ban-single-arg-parens"],
+    "no-bitwise": true,
+    "no-conditional-assignment": true,
+    "no-consecutive-blank-lines": false,
+    "no-console": {
+      "options": [
+        "debug",
+        "info",
+        "time",
+        "timeEnd",
+        "trace"
+      ]
+    }
+  }
 }

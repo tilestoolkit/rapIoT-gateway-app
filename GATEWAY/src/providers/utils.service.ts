@@ -1,3 +1,4 @@
+/* tslint:disable:max-classes-per-file */
 import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage';
 import { Events } from 'ionic-angular';
@@ -6,25 +7,40 @@ import { Events } from 'ionic-angular';
  * Class to describe the structure of an application
  */
 export class Application {
-  _id: string;
-  devEnvironment: string;
-  user: string;
-  environmentOnline: boolean;
-  appOnline: boolean;
-  port: number;
-  virtualTiles: string[];
+  public _id: string;
+  public devEnvironment: string;
+  public user: string;
+  public environmentOnline: boolean;
+  public appOnline: boolean;
+  public port: number;
+  public virtualTiles: string[];
+  constructor(_id: string,
+              devEnvironment: string,
+              user: string,
+              environmentOnline: boolean,
+              appOnline: boolean,
+              port: number,
+              virtualTiles: string[]) {
+    this._id = _id;
+    this.devEnvironment = devEnvironment;
+    this.user = user;
+    this.environmentOnline = environmentOnline;
+    this.appOnline = appOnline;
+    this.port = port;
+    this.virtualTiles = virtualTiles;
+  }
 }
 
 /**
  * Class to describe the structure of a command
  */
 export class CommandObject {
+  public name: string;
+  public properties: string[];
   constructor(name: string, properties: string[]) {
     this.name = name;
     this.properties = properties;
   }
-  name: string;
-  properties: string[];
 }
 
 /**
@@ -32,33 +48,35 @@ export class CommandObject {
  * device type in typescript to avoid getting invalid device-objects
  */
 export class Device {
-  constructor(id: string, tileId: string, name: string, connected: boolean) {
+  public id: string;
+  public tileId: string;
+  public name: string;
+  public connected: boolean;
+  public lastDiscovered: number;
+  constructor(id: string, tileId: string, name: string, connected: boolean, lastDiscovered?: number) {
     this.id = id;
     // IOS and android gets different id from the ble, so we use the tilename as a second id
     this.tileId = tileId;
     this.name = name;
     this.connected = connected;
+    this.lastDiscovered = lastDiscovered !== undefined ? lastDiscovered : (new Date()).getTime();
   }
-  id: string;
-  tileId: string;
-  name: string;
-  connected: boolean;
 }
 
 /**
  * Class to describe a login data object
  */
 export class LoginData {
+  public user: string;
+  public host: string;
+  public port: number;
+  public remember?: boolean;
   constructor(user: string, host: string, port: number, remember?: boolean) {
     this.user = user;
     this.host = host;
     this.port = port;
     this.remember = remember;
   }
-  user: string;
-  host: string;
-  port: number;
-  remember?: boolean;
 }
 
 
@@ -66,11 +84,11 @@ export class LoginData {
  * Class to describe the structure of a virtual tile
  */
 export class VirtualTile {
-  _id: string;
-  virtualName: string;
-  application: string;
-  tile: any;
-  __v: number;
+  public _id: string;
+  public virtualName: string;
+  public application: string;
+  public tile: any;
+  public __v: number;
 }
 
 
@@ -81,7 +99,7 @@ export class UtilsService {
   /**
    * Convert a string to an attay of bytes
    */
-  convertStringtoBytes = (str: String): any => {
+  public convertStringtoBytes = (str: String): any => {
     try {
       let dataArray = new Uint8Array(str.length);
       for (let i = 0; i < str.length; i ++) {
@@ -98,7 +116,7 @@ export class UtilsService {
    * Returns an object with name and properties from the inputstring
    * @param {string} eventString - A string on the format eventName,properties...
    */
-  getEventStringAsObject = (eventString: string): CommandObject => {
+  public getEventStringAsObject = (eventString: string): CommandObject => {
     const params = eventString.split(',');
     if (params.length > 1) {
       return new CommandObject(params[0], params.slice(1));
@@ -110,7 +128,7 @@ export class UtilsService {
    * Returns a string from the given commandObject
    * @param {CommansObject} cmdObj - the command to turn into a string
    */
-  getCommandObjectAsString = (cmdObj: CommandObject): string => {
+  public getCommandObjectAsString = (cmdObj: CommandObject): string => {
     return `${cmdObj.name},${cmdObj.properties.toString()}`;
   }
 
@@ -120,7 +138,7 @@ export class UtilsService {
    * @param {string} host - api host address
    * @param {number} port - mqtt port number
    */
-  verifyLoginCredentials = (user: string, host: string, port: number): boolean => {
+  public verifyLoginCredentials = (user: string, host: string, port: number): boolean => {
     const validUsername = user.match(/^[a-zA-Z0-9\_\-\.]+$/);
     const validHost = host.match(/^([0-9]{1,3}.){3}[0-9]{1,3}/) || host.match(/^[a-zA-Z0-9\_\-\.]+$/);
     return validUsername !== null && validHost !== null;
@@ -130,7 +148,7 @@ export class UtilsService {
    * Capitalize a string
    * @param {string} string - a string
    */
-  capitalize = (str: string): string => {
+  public capitalize = (str: string): string => {
     return str.charAt(0).toUpperCase() + str.slice(1);
   }
 }

@@ -1,31 +1,30 @@
 import { Component } from '@angular/core';
 import { Events, Platform } from 'ionic-angular';
-import { StatusBar, Splashscreen } from 'ionic-native';
+import { Splashscreen, StatusBar } from 'ionic-native';
+
 import { TabsPage } from '../pages/tabs/tabs';
-
-
 import { BleService } from '../providers/ble.service';
 import { DevicesService } from '../providers/devices.service';
 import { CommandObject, Device, UtilsService } from '../providers/utils.service';
 
 
 @Component({
-  templateUrl: 'app.html',
   providers: [
-    DevicesService,
     BleService,
+    DevicesService,
     UtilsService,
   ],
+  templateUrl: 'app.html',
 })
 export class Tiles {
-  rootPage = TabsPage;
-  devices: Device[];
+  private rootPage = TabsPage; // tslint:disable-line
+  private devices: Device[];
 
   constructor(private events: Events,
-              platform: Platform,
+              private platform: Platform,
               private bleService: BleService,
               private devicesService: DevicesService,
-              private utils: UtilsService, ) {
+              private utils: UtilsService ) {
 
     platform.ready().then(() => {
       StatusBar.styleDefault();

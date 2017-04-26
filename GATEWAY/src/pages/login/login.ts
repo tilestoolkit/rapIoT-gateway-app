@@ -13,12 +13,12 @@ import { LoginData, UtilsService } from '../../providers/utils.service';
 export class LoginPage {
   loginInfo = { user: '', host: '', port: '', remember: false };
 
-  constructor(public viewCtrl: ViewController,
-              private tilesApi: TilesApi,
+  constructor(private alertCtrl: AlertController,
               private mqttClient: MqttClient,
-              private utils: UtilsService,
               private storage: Storage,
-              private alertCtrl: AlertController) {}
+              private tilesApi: TilesApi,
+              private utils: UtilsService,
+              public viewCtrl: ViewController) {}
 
   /**
    * Connect to the mqttServer
@@ -29,7 +29,7 @@ export class LoginPage {
    */
   connectToServer = (user: string, host: string, port: number, remember: boolean): void => {
     if (this.utils.verifyLoginCredentials(user, host, port)) {
-      this.tilesApi.getAllUsers(user, host).then(data => {
+      this.tilesApi.isTilesUser(user, host).then(data => {
         if (data) {
           const loginData = new LoginData(user, host, port, remember);
           this.storage.set('loginData', loginData).then(res => {

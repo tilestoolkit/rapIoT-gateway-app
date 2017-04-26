@@ -31,10 +31,11 @@ export class VirtualTilesPage {
               private tilesApi: TilesApi) {
     // A id variable is stored in the navParams, and .get set this value to the local variable id
     this.activeApp = navParams.get('app');
+    this.tilesApi.setActiveApp(navParams.get('app'));
     // Sets the title of the page (found in virtual-tiles.html) to id, capitalized.
     this.applicationTitle = utils.capitalize(this.activeApp._id);
     this.devices = this.devicesService.getDevices();
-    this.tilesApi.setVirtualTiles(this.activeApp._id);
+    this.tilesApi.setVirtualTiles();
     this.setVirtualTiles();
   }
 
@@ -42,7 +43,7 @@ export class VirtualTilesPage {
    * Set the virtual tiles equal to the ones stores for the app
    */
   setVirtualTiles = (): void => {
-    this.tilesApi.getApplicationTiles(this.activeApp._id).then(res => {
+    this.tilesApi.getApplicationTiles().then(res => {
       this.virtualTiles = res;
     });
   }
@@ -80,7 +81,7 @@ export class VirtualTilesPage {
         {
           text: 'Pair',
           handler: data => {
-            this.tilesApi.pairDeviceToVirualTile(data, virtualTile._id, this.activeApp._id).then(
+            this.tilesApi.pairDeviceToVirualTile(data, virtualTile._id).then(
               res => this.setVirtualTiles()
             );
           },
@@ -95,12 +96,12 @@ export class VirtualTilesPage {
   }
 
   /**
-   * Called when the unpair button is pushed from the 
+   * Called when the unpair button is pushed from the
    * virtual tiles view.
    * @param {VirtualTile} virtualTile - the target device
    */
   unpairTile = (virtualTile: VirtualTile): void => {
-     this.tilesApi.pairDeviceToVirualTile(null, virtualTile._id, this.activeApp._id);
+     this.tilesApi.pairDeviceToVirualTile(null, virtualTile._id);
      // Refreshes the lists of paired and unpaired virtual tiles
      this.setVirtualTiles();
   }

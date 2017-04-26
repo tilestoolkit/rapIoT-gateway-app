@@ -1,7 +1,7 @@
 
 import { Injectable } from '@angular/core';
-import { Events } from 'ionic-angular';
 import { BLE } from '@ionic-native/ble';
+import { Events } from 'ionic-angular';
 import { Observable, Subscription } from 'rxjs';
 import 'rxjs/add/operator/toPromise';
 
@@ -13,12 +13,12 @@ import { CommandObject, Device, UtilsService } from './utils.service';
 
 @Injectable()
 export class BleService {
-  bleScanner: Subscription;
-  rfduino = {
-    serviceUUID: '2220',
+  private bleScanner: Subscription;
+  private rfduino = {
+    disconnectCharacteristicUUID: '2223',
     receiveCharacteristicUUID: '2221',
     sendCharacteristicUUID: '2222',
-    disconnectCharacteristicUUID: '2223',
+    serviceUUID: '2220',
   };
 
   constructor(private events: Events,
@@ -31,7 +31,7 @@ export class BleService {
   /**
    * Start the BLE scanner making it scan every 30s
    */
-  startBLEScanner = (): void => {
+  public startBLEScanner = (): void => {
     this.scanForDevices();
     this.bleScanner = Observable.interval(10000).subscribe(res => {
       this.scanForDevices();
@@ -41,7 +41,7 @@ export class BleService {
   /**
    * Stop the BLE scanner
    */
-  stopBLEScanner = (): void => {
+  public stopBLEScanner = (): void => {
     if (this.bleScanner !== undefined) {
       this.bleScanner.unsubscribe();
     }
@@ -50,7 +50,7 @@ export class BleService {
   /**
    * Checking if bluetooth is enabled and enable on android if not
    */
-  scanForDevices = (): void => {
+  public scanForDevices = (): void => {
     this.devicesService.clearDisconnectedDevices();
     this.ble.isEnabled()
             .then( res => {
@@ -64,53 +64,17 @@ export class BleService {
                  .then( res => {
                     this.scanBLE();
                   })
-                 .catch( err => {
+                 .catch( errEnable => {
                     // alert('Failed to enable bluetooth, try doing it manually');
                   });
             });
   }
 
   /**
-   * Checking to see if any bluetooth devices are in reach
-   */
-  scanBLE = (): void => {
-    // A list of the discovered devices
-    const virtualTiles = this.tilesApi.getVirtualTiles();
-    this.ble.scan([], 30).toArray().subscribe(
-      // function to be called for each new device discovered
-      bleDevices => {
-        let devices = new Array();
-        for (let i = 0; i < bleDevices.length; i++) {
-          if (this.tilesApi.isTilesDevice(bleDevices[i])) {
-            this.devicesService.convertBleDeviceToDevice(bleDevices[i]).then( device => {
-              if (virtualTiles.filter(tile => tile.tile != null)
-                              .map(tile => tile.tile.name)
-                              .includes(device.tileId)) {
-                this.connect(device);
-              }
-              devices.push(device);
-              if (i === bleDevices.length - 1) {
-                this.devicesService.setDevices(devices);
-              }
-            }).catch(err => {
-              alert(err);
-            });
-          }
-        }
-      },
-      err => {
-        alert('Error when scanning for devices: ' + err);
-      },
-      () => {
-        console.log('done scanning');
-      });
-  }
-
-  /**
    * Connect to a device
    * @param {Device} device - the target device
    */
-  connect = (device: Device): void => {
+  public connect = (device: Device): void => {
     this.ble.connect(device.id)
         .subscribe(
           res => {
@@ -125,15 +89,14 @@ export class BleService {
             this.devicesService.clearDisconnectedDevices();
             this.events.publish('updateDevices');
             this.disconnect(device);
-          },
-          () => {});
+          });
   }
 
   /**
    * Connect and rename a device
    * @param {Device} device - the target device
    */
-  locate = (device: Device): void => {
+  public locate = (device: Device): void => {
     this.ble.connect(device.id)
         .subscribe(
           res => {
@@ -147,15 +110,82 @@ export class BleService {
           },
           err => {
             console.log(err);
-          },
-          () => {});
+          });
+  }
+
+  /**
+   * Disconnect from device
+   * @param {Device} device - the target device
+   */
+  public disconnect = (device: Device): void => {
+    this.ble.disconnect(device.id)
+            .then( res => {
+              device.connected = false;
+              this.mqttClient.unregisterDevice(device);
+              console.log('diconnected from device: ' + device.name);
+            })
+            .catch( err => {
+              console.log('Failed to disconnect');
+            });
+  }
+
+  /**
+   * Send data to a device using BLE
+   * @param {Device} device - the target device
+   * @param {string} dataString - the string of data to send to the device
+   */
+  public sendData = (device: Device, dataString: string): void => {
+    try {
+      const dataArray = this.utils.convertStringtoBytes(dataString);
+      // Attempting to send the array of bytes to the device
+      this.ble.writeWithoutResponse(device.id,
+                               this.rfduino.serviceUUID,
+                               this.rfduino.sendCharacteristicUUID,
+                               dataArray.buffer)
+              .then( res => console.log('Success sending the string: ' + dataString))
+              .catch( err => alert('Failed when trying to send data to the device!'));
+    } catch (err) {
+      alert('Failed when trying to send data to the device!');
+    }
+  }
+
+  /**
+   * Checking to see if any bluetooth devices are in reach
+   */
+  private scanBLE = (): void => {
+    // A list of the discovered devices
+    const virtualTiles = this.tilesApi.getVirtualTiles();
+    let newDevices: Device[] = [];
+    this.ble.scan([], 30).subscribe(
+      // function to be called for each new device discovered
+      bleDevice => {
+        if (this.tilesApi.isTilesDevice(bleDevice)) {
+          this.devicesService.convertBleDeviceToDevice(bleDevice).then( device => {
+            this.mqttClient.registerDevice(device);
+            this.devicesService.newDevice(device);
+            newDevices.push(device);
+            if (virtualTiles.filter(tile => tile.tile !== null)
+                            .map(tile => tile.tile.name)
+                            .includes(device.tileId)) {
+              this.connect(device);
+            }
+            this.events.publish('updateDevices');
+          }).catch(err => alert(err));
+        }
+      },
+      err => {
+        alert('Error when scanning for devices: ' + err);
+      },
+      () => {
+        console.log('done scanning');
+      });
   }
 
   /**
    * Start getting notifications of events from a device
    * @param {Device} device - the id from the target device
    */
-  startDeviceNotification = (device: Device): void => {
+  private startDeviceNotification = (device: Device): void => {
     this.ble.startNotification(device.id, this.rfduino.serviceUUID, this.rfduino.receiveCharacteristicUUID)
       .subscribe(
         res => {
@@ -175,41 +205,5 @@ export class BleService {
           device.connected = false;
           this.mqttClient.unregisterDevice(device);
         });
-  }
-
-  /**
-   * Disconnect from device
-   * @param {Device} device - the target device
-   */
-  disconnect = (device: Device): void => {
-    this.ble.disconnect(device.id)
-            .then( res => {
-              device.connected = false;
-              this.mqttClient.unregisterDevice(device);
-              console.log('diconnected from device: ' + device.name);
-            })
-            .catch( err => {
-              console.log('Failed to disconnect');
-            });
-  }
-
-  /**
-   * Send data to a device using BLE
-   * @param {Device} device - the target device
-   * @param {string} dataString - the string of data to send to the device
-   */
-  sendData = (device: Device, dataString: string): void => {
-    try {
-      const dataArray = this.utils.convertStringtoBytes(dataString);
-      // Attempting to send the array of bytes to the device
-      this.ble.writeWithoutResponse(device.id,
-                               this.rfduino.serviceUUID,
-                               this.rfduino.sendCharacteristicUUID,
-                               dataArray.buffer)
-              .then( res => console.log('Success sending the string: ' + dataString))
-              .catch( err => alert('Failed when trying to send data to the device!'));
-    } catch (err) {
-      alert('Failed when trying to send data to the device!');
-    }
   }
 }
