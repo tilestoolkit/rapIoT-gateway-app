@@ -117,18 +117,20 @@ describe('bleService', () => {
     });
 
     /**
-     * Disse viser seg å ikke være mulige å teste
-     * Fjærner de ved neste commit
+     * Disse blir vanskelige å teste
+     * Blir nødt til å kjøre en hacky hack for å teste
+     * Typ bool-flag som settes i hovedklassene og sjekkes etter gjennomføring
      */
     //TODO: Ferdigstill denne metoden
     xit('should invoke the method scanBLE() if BLE is enabled', () => {
-      spyOn(bleService.ble, 'isEnabled').and.callThrough();
-      spyOn(bleService, 'scanBLE').and.callThrough();
+      //spyOn(bleService.ble, 'isEnabled').and.callThrough();
+      
+      let spy = spyOn(bleService, 'scanBLE').and.callThrough();
 
-      bleService.scanForDevices();
+      bleService.scanForDevices(spy);
 
       //expect(bleService.ble.isEnabled).toHaveBeenCalled();
-      expect(bleService.scanBLE).toHaveBeenCalledTimes(1);
+      expect(spy).toHaveBeenCalled();
     });
 
     //TODO: Ferdigstill denne metoden

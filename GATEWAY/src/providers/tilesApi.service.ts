@@ -11,9 +11,22 @@ export class TilesApi {
   apiPort: number = 3000;
   virtualTiles: VirtualTile[] = [];
   loginData: LoginData;
+  flagThen: boolean = false;
+  flagCatch: boolean = false;
 
   constructor(private http: Http,
               private storage: Storage) {
+  }
+
+  /**
+   * The following code will mailny be used for getting private parameters
+   * for testing purposes
+   */
+  getHttp = (): Http => {
+    return this.http;
+  }
+  getStorage = (): Storage => {
+    return this.storage;
   }
 
   /**
@@ -26,7 +39,7 @@ export class TilesApi {
 
   /**
    * Sets login data for the user
-   * @param {LoginData} loginData - the device to test
+   * @param {LoginData} loginData - the loginData
    */
   setLoginData = (loginData: LoginData): void => {
     this.loginData = loginData;
@@ -38,6 +51,7 @@ export class TilesApi {
   getLoginData = (): LoginData => {
     if (this.loginData === undefined || this.loginData === null) {
       this.storage.get('loginData').then((loginData) => {
+        this.flagThen = true;
         this.setLoginData(loginData);
         return loginData;
       });

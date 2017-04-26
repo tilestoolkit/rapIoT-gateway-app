@@ -65,7 +65,7 @@ export class MenuMock {
 }
 
 export class StorageMock {
-  public get(str: string): Promise<any> {
+  public get(val1: any): Promise<any> {
     return new Promise((resolve: Function) => {
       resolve();
     });

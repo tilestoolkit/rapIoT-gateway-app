@@ -62,14 +62,56 @@ describe('tilesAPI', () => {
 
   describe('setLoginData(loginData: LoginData): void', () => {
     it('should set the correct login data in the beforeEach', () => {
+      /**
+       * tilesApi.loginData is set before each test
+       * Therefore it is only necessary to test if the correct data
+       * is set here
+       */
       expect(tilesApi.loginData).toEqual(loginData);
     });
   });
 
   describe('getLoginData(): void', () => {
+
     it('should return the correct login data', () => {
       expect(tilesApi.getLoginData()).toEqual(loginData);
+      expect(tilesApi.flagThen).toBeFalsy();
     });
+
+    it('should get loginData from storage if loginData is undefined', () => {
+      tilesApi.setLoginData(undefined);
+      spyOn(tilesApi.getStorage(), 'get').and.callFake( () => {
+        return {
+          then: (callback) => {return callback(loginData);}
+        };
+      });
+      expect(tilesApi.flagThen).toBeFalsy();
+
+      let returnedLoginData = tilesApi.getLoginData();
+      
+      setTimeout(() => {
+        expect(tilesApi.flagThen).toBeTruthy();
+        expect(returnedLoginData).toEqual(loginData);
+      }, 0);
+    });
+
+    it('should get loginData from storage if loginData is null', () => {
+      tilesApi.setLoginData(null);
+      spyOn(tilesApi.getStorage(), 'get').and.callFake( () => {
+        return {
+          then: (callback) => {return callback(loginData);}
+        };
+      });
+      expect(tilesApi.flagThen).toBeFalsy();
+
+      let returnedLoginData = tilesApi.getLoginData();
+      
+      setTimeout(() => {
+        expect(tilesApi.flagThen).toBeTruthy();
+        expect(returnedLoginData).toEqual(loginData);
+      }, 0);
+    });
+
   });
 
   describe('setVirtualTiles(appId: string): void', () => {
