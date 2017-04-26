@@ -191,7 +191,8 @@ export class TilesApi {
   }
 
   /**
-  */
+   * Presents a popup on the users screen explaining that an error occured whith an api
+   */
   private presentErrorAlert = (): void => {
     this.alertCtrl.create({
       title: 'Could not get data from remote source',
