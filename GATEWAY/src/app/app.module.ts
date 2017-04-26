@@ -1,50 +1,50 @@
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpModule }    from '@angular/http';
-import { Storage } from '@ionic/storage';
 import { BackgroundFetch } from '@ionic-native/background-fetch';
+import { Storage } from '@ionic/storage';
 import { IonicApp, IonicModule } from 'ionic-angular';
 
-import { Tiles } from './app.component';
-import { TabsPage } from '../pages/tabs/tabs';
-import { LoginPage } from '../pages/login/login';
 import { ApplicationsPage } from '../pages/applications/applications';
 import { DevTermPage } from '../pages/dev-term/dev-term';
-import { VirtualTilesPage } from '../pages/virtual-tiles/virtual-tiles';
+import { LoginPage } from '../pages/login/login';
 import { PhysicalTilesPage } from '../pages/physical-tiles/physical-tiles';
+import { TabsPage } from '../pages/tabs/tabs';
+import { VirtualTilesPage } from '../pages/virtual-tiles/virtual-tiles';
+import { Tiles } from './app.component';
 
-import { AppProviders } from './app.providers';
 import { BleService } from '../providers/ble.service';
+import { DevicesService } from '../providers/devices.service';
 import { MqttClient } from '../providers/mqttClient';
 import { TilesApi } from '../providers/tilesApi.service';
-import { DevicesService } from '../providers/devices.service';
 import { UtilsService } from '../providers/utils.service';
+import { AppProviders } from './app.providers';
 
 
 @NgModule({
+  bootstrap: [IonicApp],
   declarations: [
-    Tiles,
-    TabsPage,
-    LoginPage,
-    DevTermPage,
     ApplicationsPage,
+    DevTermPage,
+    LoginPage,
+    PhysicalTilesPage,
+    TabsPage,
+    Tiles,
     VirtualTilesPage,
-    PhysicalTilesPage
+  ],
+  entryComponents: [
+    ApplicationsPage,
+    DevTermPage,
+    LoginPage,
+    PhysicalTilesPage,
+    TabsPage,
+    Tiles,
+    VirtualTilesPage,
   ],
   imports: [
     FormsModule,
     HttpModule,
     IonicModule.forRoot(Tiles),
-  ],
-  bootstrap: [IonicApp],
-  entryComponents: [
-    Tiles,
-    TabsPage,
-    LoginPage,
-    DevTermPage,
-    ApplicationsPage,
-    VirtualTilesPage,
-    PhysicalTilesPage
   ],
   providers: AppProviders.getProviders().concat([
     BackgroundFetch,

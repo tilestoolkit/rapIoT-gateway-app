@@ -16,7 +16,7 @@ export class DevicesService {
   /**
    * Returns the list of devices currently stored
    */
-  getDevices = (): Device[] => {
+  public getDevices = (): Device[] => {
     return this.devices;
   }
 
@@ -24,7 +24,7 @@ export class DevicesService {
    * Converts the device discovered by ble into a device on the tiles format
    * @param {any} bleDevice - the returned device from the ble scan
    */
-  convertBleDeviceToDevice = (bleDevice: any): Promise<Device>  => {
+  public convertBleDeviceToDevice = (bleDevice: any): Promise<Device>  => {
     return this.storage.get(bleDevice.name).then( name => {
       const deviceName = (name !== null && name !== undefined) ? name : bleDevice.name;
       return new Device(bleDevice.id, bleDevice.name, deviceName, false);
@@ -37,7 +37,7 @@ export class DevicesService {
    * Adds a new device to the list of devices
    * @param {Device} device - the device to add
    */
-  newDevice = (device: Device) => {
+  public newDevice = (device: Device) => {
     if (!this.devices.map(storedDevice => storedDevice.tileId).includes(device.tileId)) {
       this.devices.push(device);
     }
@@ -48,7 +48,7 @@ export class DevicesService {
    * @param {Device} device - a tile device
    * @param {string} name - the new name for the device
    */
-  setCustomDeviceName = (device: Device, name: string): void => {
+  public setCustomDeviceName = (device: Device, name: string): void => {
     this.storage.set(device.tileId, name);
     this.devices.map(storedDevice => storedDevice.name = storedDevice.tileId === device.tileId
                                                        ? name : storedDevice.name);
@@ -59,14 +59,14 @@ export class DevicesService {
    * Sets the device name to the ble name
    * @param {Device} device - a tile device
    */
-  resetDeviceName = (device: Device): void => {
+  public resetDeviceName = (device: Device): void => {
     this.setCustomDeviceName(device, device.tileId);
   }
 
   /**
    * Go through the list of registered devices and keep only those connected
    */
-  clearDisconnectedDevices = (): void => {
+  public clearDisconnectedDevices = (): void => { // TODO: Change name?
     const currentTime = (new Date()).getTime();
     this.devices = this.devices.filter(device => device.lastDiscovered - currentTime < 60000);
   }

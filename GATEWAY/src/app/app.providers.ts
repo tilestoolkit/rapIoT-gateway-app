@@ -1,7 +1,7 @@
 import { ErrorHandler } from '@angular/core';
-import { Events, IonicErrorHandler } from 'ionic-angular';
-import { Storage } from '@ionic/storage';
 import { BLE } from '@ionic-native/ble';
+import { Storage } from '@ionic/storage';
+import { Events, IonicErrorHandler } from 'ionic-angular';
 import { Observable } from 'rxjs';
 
 import { UtilsService } from '../providers/utils.service';
@@ -12,44 +12,43 @@ import { UtilsService } from '../providers/utils.service';
  * data to our app.
  */
 class BLEMock extends BLE {
-  isEnabled() {
+  public isEnabled() {
     return new Promise<void>(resolve => resolve());
   }
-  enable() {
+  public enable() {
     return new Promise<void>(resolve => resolve());
   }
-  scan(services, seconds) {
+  public scan(services, seconds) {
     const mockBle = [
       {
-
-        'name': 'Tile1',
-        'id': '01:23:45:67:89:AA',
-        'rssi': -79,
-        'advertising': null,
+        advertising: null,
+        id: '01:23:45:67:89:AA',
+        name: 'Tile1',
+        rssi: -79,
       }, {
-        'name': 'Tile_da',
-        'id': '01:23:45:67:89:AB',
-        'rssi': -79,
-        'advertising': null,
+        advertising: null,
+        id: '01:23:45:67:89:AB',
+        name: 'Tile_da',
+        rssi: -79,
       },
     ];
     return Observable.from(mockBle);
   }
-  connect(device) {
+  public connect(device) {
     return Observable.create(observer => {
       observer.next();
     });
   }
-  startNotification(deviceId, serviceUUID, characteristicUUID) {
-    const utils = new UtilsService(new Storage, new Events);
+  public startNotification(deviceId, serviceUUID, characteristicUUID) {
+    const utils = new UtilsService(new Storage(), new Events());
     return Observable.create(observer => {
       observer.next(utils.convertStringtoBytes('tap,single.'));
     });
   }
-  disconnect(device) {
+  public disconnect(device) {
     return new Promise<void>(resolve => resolve());
   }
-  writeWithoutResponse(deviceId, serviceUUID, characteristicUUID, value) {
+  public writeWithoutResponse(deviceId, serviceUUID, characteristicUUID, value) {
     return new Promise<void>(resolve => resolve());
   }
 }
@@ -64,13 +63,13 @@ export class AppProviders {
       // Use browser providers
       providers = [
         {provide: BLE, useClass: BLEMock},
-        {provide: ErrorHandler, useClass: IonicErrorHandler}
+        {provide: ErrorHandler, useClass: IonicErrorHandler},
       ];
     } else {
       // Use device providers
       providers = [
         BLE,
-        {provide: ErrorHandler, useClass: IonicErrorHandler}
+        {provide: ErrorHandler, useClass: IonicErrorHandler},
       ];
     }
     return providers;
