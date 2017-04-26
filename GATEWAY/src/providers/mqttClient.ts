@@ -3,8 +3,8 @@ import { BackgroundFetch } from '@ionic-native/background-fetch';
 import { Events } from 'ionic-angular';
 import mqtt from 'mqtt';
 
-import { CommandObject, Device, LoginData } from './utils.service';
 import { TilesApi } from './tilesApi.service';
+import { CommandObject, Device, LoginData } from './utils.service';
 
 
 @Injectable()
@@ -24,8 +24,9 @@ export class MqttClient {
               this.mqttConnectionData.host !== undefined ||
               this.mqttConnectionData.port !== undefined ) {
             this.connect();
-          };
-          this.backgroundFetch.finish();
+            ;
+            this.backgroundFetch.finish();
+          }
         })
         .catch(err => {
           console.log('Error initializing background fetch', err);
@@ -37,7 +38,7 @@ export class MqttClient {
    * dependent on the TilesApi-class
    * @param {LoginData} mqttConnectionData - the login credentials
    */
-  setConnectionData = (mqttConnectionData: LoginData = null): void => {
+  public setConnectionData = (mqttConnectionData: LoginData = null): void => {
       this.mqttConnectionData = mqttConnectionData === null
                               ? this.tilesApi.getLoginData()
                               : this.mqttConnectionData = mqttConnectionData;
@@ -48,7 +49,7 @@ export class MqttClient {
    * @param {string} deviceId - the ID of the device
    * @param {boolean} isEvent - true if we are sending an event
    */
-  getDeviceSpecificTopic = (deviceId: string, isEvent: boolean): string => {
+  public getDeviceSpecificTopic = (deviceId: string, isEvent: boolean): string => {
     const type = isEvent ? 'evt' : 'cmd';
     const activeApp = this.tilesApi.getActiveApp();
     return `tiles/${type}/${this.mqttConnectionData.user}/${activeApp._id}/${deviceId}`;
@@ -60,7 +61,7 @@ export class MqttClient {
    * @param {string} host - the host url / ip
    * @param {number} port - the port to send to
    */
-  connect = (): void => {
+  public connect = (): void => {
     if (this.mqttConnectionData === undefined ||  this.mqttConnectionData === null) {
       this.mqttConnectionData = this.tilesApi.getLoginData();
     }
@@ -74,7 +75,7 @@ export class MqttClient {
     this.client = mqtt.connect({
       host: this.mqttConnectionData.host,
       port: this.mqttConnectionData.port,
-      keepalive: 0,
+      keepalive: 0, // tslint:disable-line
     });
 
     // Handle events from the broker
@@ -85,7 +86,7 @@ export class MqttClient {
           const deviceId = topic.split('/')[3];
           this.events.publish('command', deviceId, command);
         }
-      } finally {}
+      } finally {} // tslint:disable-line
     });
 
     this.client.on('offline', () => {
@@ -113,7 +114,7 @@ export class MqttClient {
     });
 
     // Ends the connection attempt if the timeout rus out
-    const failedConnectionTimeout = setTimeout(function(){
+    const failedConnectionTimeout = setTimeout(() => {
       if (this.client) {
         this.client.end();
       }
@@ -124,7 +125,7 @@ export class MqttClient {
    * Register a device at the server
    * @param {Device} device - the device to register
    */
-  registerDevice = (device: Device): void => {
+  public registerDevice = (device: Device): void => {
     if (this.client) {
       this.client.publish(
         this.getDeviceSpecificTopic(device.tileId, true) + '/active',
@@ -147,7 +148,7 @@ export class MqttClient {
    * Unregister a device at the server
    * @param {Device} device - the device to register
    */
-  unregisterDevice = (device: Device): void => {
+  public unregisterDevice = (device: Device): void => {
     if (this.client) {
       this.client.publish(
         this.getDeviceSpecificTopic(device.tileId, true) + '/active',
@@ -165,7 +166,7 @@ export class MqttClient {
    * @param {string} deviceId - the ID of the device to register
    * @param {CommandObject} event - An event represented as a CommandObject (name, params...)
    */
-  sendEvent = (deviceId: string, event: CommandObject): void => {
+  public sendEvent = (deviceId: string, event: CommandObject): void => {
     console.log('Sending mqtt event: ' + JSON.stringify(event) + ' To topic: ' + this.getDeviceSpecificTopic(deviceId, true));
     if (this.client) {
       this.client.publish(
@@ -185,7 +186,7 @@ export class MqttClient {
    * @param {string} deviceId - the ID of the device to register
    * @param event - ??
    */
-  endConnection = (deviceId: string, event: any): void => {
+  public endConnection = (deviceId: string, event: any): void => {
     if (this.client) {
       this.client.end();
     }
@@ -197,14 +198,14 @@ export class MqttClient {
    * the phone thinks it is less likely to be used (at night, etc.). There is nothing to do to
    * make it run more often as this is set by apple. (As of 22.03.2017)
    */
-  startBackgroundFetch = () => {
+  public startBackgroundFetch = () => {
     this.backgroundFetch.start();
   }
 
   /**
    * Stop background update for IOS
    */
-  stopBackgroundFetch = () => {
+  public stopBackgroundFetch = () => {
     this.backgroundFetch.stop();
   }
 }
