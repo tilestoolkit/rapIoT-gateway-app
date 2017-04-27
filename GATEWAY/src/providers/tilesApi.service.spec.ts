@@ -13,6 +13,7 @@ describe('tilesAPI', () => {
 
   let tilesApi: TilesApi = null;
   let loginData: LoginData = new LoginData('Test', '172.68.99.218', 8080, false);
+  let activeApp: Application = new Application('test3', '', '', false, false, 8080, []);
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -38,7 +39,7 @@ describe('tilesAPI', () => {
   beforeEach(inject([TilesApi], (temp: TilesApi) => {
     tilesApi = temp;
     tilesApi.setLoginData(loginData);
-    tilesApi.setActiveApp(new Application('test3', '', '', false, false, 8080, []));
+    tilesApi.setActiveApp(activeApp);
   }));
 
   afterEach(() => {
@@ -88,12 +89,14 @@ describe('tilesAPI', () => {
       });
       expect(tilesApi.flagThen).toBeFalsy();
 
-      let returnedLoginData = tilesApi.getLoginData();
-      
-      setTimeout(() => {
+      let returnedLoginData = new Promise( resolve => {
+                                  let temp = tilesApi.getLoginData();
+                                  resolve(temp);
+                              });
+      returnedLoginData.then( res => {
         expect(tilesApi.flagThen).toBeTruthy();
-        expect(returnedLoginData).toEqual(loginData);
-      }, 50);
+        expect(res).toEqual(loginData);
+      });
     }));
 
     it('should get loginData from storage if loginData is null', (() => {
@@ -105,17 +108,28 @@ describe('tilesAPI', () => {
       });
       expect(tilesApi.flagThen).toBeFalsy();
 
-      let returnedLoginData = tilesApi.getLoginData();
-      
-      setTimeout(() => {
+      let returnedLoginData = new Promise( resolve => {
+                                  let temp = tilesApi.getLoginData();
+                                  resolve(temp);
+                              });
+      returnedLoginData.then( res => {
         expect(tilesApi.flagThen).toBeTruthy();
-        expect(returnedLoginData).toEqual(loginData);
-      }, 50);
+        expect(res).toEqual(loginData);
+      });
     }));
 
   });
 
   describe('setActiveApp(activeApp: Application): void', () => {
+
+    it('should set the activeApp equal to the parameter', () => {
+      tilesApi.activeApp = undefined;
+      expect(tilesApi.activeApp).toBeUndefined();
+
+      tilesApi.setActiveApp(activeApp);
+      
+      expect(tilesApi.activeApp).toEqual(activeApp);
+    });
 
   });
 
@@ -136,6 +150,18 @@ describe('tilesAPI', () => {
       expect(tilesApi['getApplicationTiles']).toHaveBeenCalled();
       expect(tilesApi.getVirtualTiles()).toEqual(mockTilesApplicationDetailsResponse.virtualTiles);
     })
+  });
+
+  describe('getVirtualTiles(): VirtualTile[]', () => {
+
+  });
+
+  describe('clearVirtualTiles(): void', () => {
+
+  });
+
+  describe('isTilesUser(userName: string, host: string): Promise<any>', () => {
+
   });
 
   describe('getAllApplications(): Promise<any>', () => {

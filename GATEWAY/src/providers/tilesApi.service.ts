@@ -10,10 +10,10 @@ import { Application, LoginData, VirtualTile } from './utils.service';
 export class TilesApi {
   public flagThen: boolean = false;
   public flagCatch: boolean = false;
+  public activeApp: Application;
   public apiPort: number = 3000;
   private virtualTiles: VirtualTile[] = [];
   private loginData: LoginData;
-  private activeApp: Application;
 
   constructor(public http: Http,
               public storage: Storage) {
