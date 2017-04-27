@@ -9,14 +9,14 @@ import { CommandObject, Device, LoginData } from './utils.service';
 
 @Injectable()
 export class MqttClient {
+  public client;
+  public mqttConnectionData: LoginData;
   private publishOpts = { retain: true };
   private connectionTimeout: number = 10000; // 10 seconds
-  private client;
-  private mqttConnectionData: LoginData;
 
-  constructor(private backgroundFetch: BackgroundFetch,
+  constructor(public backgroundFetch: BackgroundFetch,
               private events: Events,
-              private tilesApi: TilesApi) {
+              public tilesApi: TilesApi) {
     this.mqttConnectionData = this.tilesApi.getLoginData();
     this.backgroundFetch.configure({ stopOnTerminate: false })
         .then(() => {
@@ -31,26 +31,6 @@ export class MqttClient {
         .catch(err => {
           console.log('Error initializing background fetch', err);
         });
-  }
-
-  /**
-   * The following code will mainly be used for getting private parameters
-   * for testing purposes
-   */
-  public setClient = (client: any): void => {
-    this.client = client;
-  }
-  public getClient = (): any => {
-    return this.client;
-  }
-  public getMqttConnectionData = (): LoginData => {
-    return this.mqttConnectionData;
-  }
-  public getTilesApi = (): TilesApi => {
-    return this.tilesApi;
-  }
-  public getBackgroundFetch = (): BackgroundFetch => {
-    return this.backgroundFetch;
   }
 
   /**

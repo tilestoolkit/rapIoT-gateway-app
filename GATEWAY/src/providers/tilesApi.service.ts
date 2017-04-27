@@ -15,8 +15,8 @@ export class TilesApi {
   private loginData: LoginData;
   private activeApp: Application;
 
-  constructor(private http: Http,
-              private storage: Storage) {
+  constructor(public http: Http,
+              public storage: Storage) {
   }
 
   /**

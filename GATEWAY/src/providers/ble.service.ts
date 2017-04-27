@@ -13,7 +13,7 @@ import { CommandObject, Device, UtilsService } from './utils.service';
 
 @Injectable()
 export class BleService {
-  private bleScanner: Subscription;
+  public bleScanner: Subscription;
   private rfduino = {
     disconnectCharacteristicUUID: '2223',
     receiveCharacteristicUUID: '2221',
@@ -22,11 +22,11 @@ export class BleService {
   };
 
   constructor(private events: Events,
-              private ble: BLE,
-              private devicesService: DevicesService,
-              private mqttClient: MqttClient,
-              private tilesApi: TilesApi,
-              private utils: UtilsService) {}
+              public ble: BLE,
+              public devicesService: DevicesService,
+              public mqttClient: MqttClient,
+              public tilesApi: TilesApi,
+              public utils: UtilsService) {}
 
   /**
    * The following code will mainly be used for getting private parameters
