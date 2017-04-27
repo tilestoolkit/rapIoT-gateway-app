@@ -45,26 +45,32 @@ describe('devicesService:', () => {
   it('should create an instance of the DevicesService', () => {
     expect(devicesService).toBeTruthy;
   });
-
-  describe('getDevices()', () => {
-
-    it('should initiate with an empty devices-list', () => {
-      let devicesList = devicesService.devices;
-      expect(devicesList.length).toEqual(0);
-    });
-
-  });
-  // Needs to be changed. not an aqurate test.
+  
   describe('convertBleDeviceToDevice(bleDevice: any): Promise<Device>', () => {
+    
     it('should convert a given BLE Device parameter to a Device', done => {
       const testBLE = bleDevice;
-      // let returnedDevice =
+      
       devicesService.convertBleDeviceToDevice(testBLE)
       .then(returnedDevice => {
+        expect(devicesService.flagThen).toBeTruthy();
         expect(returnedDevice.name).toEqual(convertedBle.name);
         done();
       });
-
+    });
+    
+    it('should convert a given BLE Device parameter to a Device, but use bleDevice.name if an error is thrown', done => {
+      const testBLE = bleDevice;
+      spyOn(devicesService.storage, "get").and.callFake( () => {
+        return Promise.reject({data: {message: 'Error message'}});
+      });
+      
+      devicesService.convertBleDeviceToDevice(testBLE)
+      .then(returnedDevice => {
+        expect(devicesService.flagCatch).toBeTruthy();
+        expect(returnedDevice.name).toEqual(convertedBle.name);
+        done();
+      });
     });
 
   });

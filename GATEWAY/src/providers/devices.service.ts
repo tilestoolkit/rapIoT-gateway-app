@@ -7,6 +7,8 @@ import { Device } from './utils.service';
 @Injectable()
 export class DevicesService {
   public devices: Device[];
+  public flagThen: boolean = false;
+  public flagCatch: boolean = false;
 
   constructor(public storage: Storage,
               public events: Events) {
@@ -19,9 +21,11 @@ export class DevicesService {
    */
   public convertBleDeviceToDevice = (bleDevice: any): Promise<Device>  => {
     return this.storage.get(bleDevice.name).then( name => {
+      this.flagThen = true;
       const deviceName = (name !== null && name !== undefined) ? name : bleDevice.name;
       return new Device(bleDevice.id, bleDevice.name, deviceName, false);
     }).catch(err => {
+      this.flagCatch = true;
       return new Device(bleDevice.id, bleDevice.name, bleDevice.name, false);
     });
   }
