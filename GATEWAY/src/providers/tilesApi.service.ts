@@ -12,8 +12,8 @@ export class TilesApi {
   public flagCatch: boolean = false;
   public activeApp: Application;
   public apiPort: number = 3000;
-  private virtualTiles: VirtualTile[] = [];
-  private loginData: LoginData;
+  public virtualTiles: VirtualTile[] = [];
+  public loginData: LoginData;
 
   constructor(public http: Http,
               public storage: Storage) {
@@ -132,6 +132,7 @@ export class TilesApi {
               return res.json();
             })
             .catch(err => {
+              this.flagCatch = true;
               console.log('failed getting applications with error: ' + err);
             });
   }
@@ -175,6 +176,7 @@ export class TilesApi {
     console.log('url: ' + url + ' body: ' + body);
     return this.http.post(url, body, {headers: headerFields}).toPromise()
              .catch(err => {
+               this.flagCatch = true;
                console.log('Feiled pairing of the physical and virtual tile with error: ' + err);
              });
   }
