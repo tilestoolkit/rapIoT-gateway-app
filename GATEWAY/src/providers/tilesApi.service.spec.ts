@@ -89,11 +89,12 @@ describe('tilesAPI', () => {
       });
       expect(tilesApi.flagThen).toBeFalsy();
 
-      let returnedLoginData = new Promise( resolve => {
+      let returnedLoginData = (): Promise<any> => { return new Promise( () => {
                                   let temp = tilesApi.getLoginData();
-                                  resolve(temp);
-                              });
-      returnedLoginData.then( res => {
+                                  return temp;
+                              })};
+      returnedLoginData().then( res => {
+        expect(tilesApi).toBeDefined();
         expect(tilesApi.flagThen).toBeTruthy();
         expect(res).toEqual(loginData);
       });
@@ -108,11 +109,11 @@ describe('tilesAPI', () => {
       });
       expect(tilesApi.flagThen).toBeFalsy();
 
-      let returnedLoginData = new Promise( resolve => {
+      let returnedLoginData = (): Promise<any> => { return new Promise( () => {
                                   let temp = tilesApi.getLoginData();
-                                  resolve(temp);
-                              });
-      returnedLoginData.then( res => {
+                                  return temp;
+                              })};
+      returnedLoginData().then( res => {
         expect(tilesApi.flagThen).toBeTruthy();
         expect(res).toEqual(loginData);
       });
