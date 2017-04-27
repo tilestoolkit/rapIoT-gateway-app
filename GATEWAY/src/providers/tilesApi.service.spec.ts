@@ -1,4 +1,4 @@
-import { inject, TestBed } from '@angular/core/testing';
+import { inject, TestBed, async } from '@angular/core/testing';
 import { Http, Response, ResponseOptions, BaseRequestOptions, RequestMethod } from '@angular/http';
 import { Storage } from '@ionic/storage';
 import { MockBackend, MockConnection } from '@angular/http/testing';
@@ -13,6 +13,7 @@ describe('tilesAPI', () => {
 
   let tilesApi: TilesApi = null;
   let loginData: LoginData = new LoginData('Test', '172.68.99.218', 8080, false);
+  let activeApp: Application = new Application('test3', '', '', false, false, 8080, []);
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -38,7 +39,7 @@ describe('tilesAPI', () => {
   beforeEach(inject([TilesApi], (temp: TilesApi) => {
     tilesApi = temp;
     tilesApi.setLoginData(loginData);
-    tilesApi.setActiveApp(new Application('test3', '', '', false, false, 8080, []));
+    tilesApi.setActiveApp(activeApp);
   }));
 
   afterEach(() => {
@@ -62,14 +63,104 @@ describe('tilesAPI', () => {
   });
 
   describe('setLoginData(loginData: LoginData): void', () => {
-
+    it('should set the correct login data in the beforeEach', () => {
+      /**
+       * tilesApi.loginData is set before each test
+       * Therefore it is only necessary to test if the correct data
+       * is set here
+       */
+      expect(tilesApi.getLoginData()).toEqual(loginData);
+    });
   });
 
   describe('getLoginData(): void', () => {
 
+    it('should return the correct login data', () => {
+      expect(tilesApi.getLoginData()).toEqual(loginData);
+      expect(tilesApi.flagThen).toBeFalsy();
+    });
+
+    it('should get loginData from storage if loginData is undefined', (() => {
+      tilesApi.setLoginData(undefined);
+      spyOn(tilesApi.getStorage(), 'get').and.callFake( () => {
+        return {
+          then: (callback) => {return callback(loginData);}
+        };
+      });
+      expect(tilesApi.flagThen).toBeFalsy();
+
+      let returnedLoginData = new Promise( resolve => {
+                                  let temp = tilesApi.getLoginData();
+                                  resolve(temp);
+                              });
+      returnedLoginData.then( res => {
+        expect(tilesApi.flagThen).toBeTruthy();
+        expect(res).toEqual(loginData);
+      });
+    }));
+
+    it('should get loginData from storage if loginData is null', (() => {
+      tilesApi.setLoginData(null);
+      spyOn(tilesApi.getStorage(), 'get').and.callFake( () => {
+        return {
+          then: (callback) => {return callback(loginData);}
+        };
+      });
+      expect(tilesApi.flagThen).toBeFalsy();
+
+      let returnedLoginData = new Promise( resolve => {
+                                  let temp = tilesApi.getLoginData();
+                                  resolve(temp);
+                              });
+      returnedLoginData.then( res => {
+        expect(tilesApi.flagThen).toBeTruthy();
+        expect(res).toEqual(loginData);
+      });
+    }));
+
+  });
+
+  describe('setActiveApp(activeApp: Application): void', () => {
+
+    it('should set the activeApp equal to the parameter', () => {
+      tilesApi.activeApp = undefined;
+      expect(tilesApi.activeApp).toBeUndefined();
+
+      tilesApi.setActiveApp(activeApp);
+      
+      expect(tilesApi.activeApp).toEqual(activeApp);
+    });
+
+  });
+
+  describe('getActiveApp(): Application', () => {
+
   });
 
   describe('setVirtualTiles(appId: string): void', () => {
+    it('should set virtualTiles equal to a list of virtual tiles from an application', () => {
+      spyOn(tilesApi, 'getApplicationTiles').and.callFake( () => {
+        return {
+          then: (callback) => {return callback(mockTilesApplicationDetailsResponse.virtualTiles);}
+        };
+      });
+      
+      tilesApi.setVirtualTiles();
+
+      expect(tilesApi['getApplicationTiles']).toHaveBeenCalled();
+      expect(tilesApi.getVirtualTiles()).toEqual(mockTilesApplicationDetailsResponse.virtualTiles);
+    })
+  });
+
+  describe('getVirtualTiles(): VirtualTile[]', () => {
+
+  });
+
+  describe('clearVirtualTiles(): void', () => {
+
+  });
+
+  describe('isTilesUser(userName: string, host: string): Promise<any>', () => {
 
   });
 

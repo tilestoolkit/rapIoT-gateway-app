@@ -25,6 +25,7 @@ export class LoginPage {
    * @param {string} user - username
    * @param {string} host - api host address
    * @param {number} port - mqtt port number
+   * @param {boolean} remember - if the login credentials should be remembered
    */
   connectToServer = (user: string, host: string, port: number, remember: boolean): void => {
     if (this.utils.verifyLoginCredentials(user, host, port)) {

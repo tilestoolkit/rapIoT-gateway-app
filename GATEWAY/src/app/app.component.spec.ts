@@ -7,7 +7,7 @@ import { Tiles } from './app.component';
 import { TabsPage } from '../pages/tabs/tabs';
 import { MqttClient } from '../providers/mqttClient';
 import { TilesApi } from '../providers/tilesApi.service';
-import { StorageMock } from '../mocks';
+import { StorageMock, BackgroundFetchMock } from '../mocks';
 
 let tiles: Tiles;
 let fixture: ComponentFixture<Tiles>;
@@ -25,8 +25,11 @@ describe('App Component', () => {
                     provide: Storage,
                     useClass: StorageMock
                 },
+                {
+                provide: BackgroundFetch,
+                useClass: BackgroundFetchMock
+                },
                 BLE,
-                BackgroundFetch,
                 MqttClient,
                 TilesApi
             ]

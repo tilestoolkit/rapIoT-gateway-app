@@ -6,18 +6,11 @@ import { Device } from './utils.service';
 
 @Injectable()
 export class DevicesService {
-  private devices: Device[];
+  public devices: Device[];
 
   constructor(public storage: Storage,
               public events: Events) {
     this.devices = [];
-  }
-
-  /**
-   * Returns the list of devices currently stored
-   */
-  public getDevices = (): Device[] => {
-    return this.devices;
   }
 
   /**
@@ -68,6 +61,6 @@ export class DevicesService {
    */
   public clearDisconnectedDevices = (): void => { // TODO: Change name?
     const currentTime = (new Date()).getTime();
-    this.devices = this.devices.filter(device => device.lastDiscovered - currentTime < 60000);
+    this.devices = this.devices.filter(device => currentTime - device.lastDiscovered < 60000);
   }
 }
