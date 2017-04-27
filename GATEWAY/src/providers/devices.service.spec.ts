@@ -49,7 +49,7 @@ describe('devicesService:', () => {
   describe('getDevices()', () => {
 
     it('should initiate with an empty devices-list', () => {
-      let devicesList = devicesService.getDevices();
+      let devicesList = devicesService.devices;
       expect(devicesList.length).toEqual(0);
     });
 
@@ -72,17 +72,17 @@ describe('devicesService:', () => {
   describe('newDevice(device: Device)', () => {
 
     it('should add a device to the devices-list if the list does not already contain the device parameter', () => {
-      let devicesListOldLength = devicesService.getDevices().length;
+      let devicesListOldLength = devicesService.devices.length;
       devicesService.newDevice(tilesDevice);
-      let devicesListNewLength = devicesService.getDevices().length;
+      let devicesListNewLength = devicesService.devices.length;
       expect(devicesListNewLength).toEqual(devicesListOldLength + 1);
     });
 
     it('should not add a device to the devices-list if the list already contains the device parameter', () => {
       devicesService.newDevice(tilesDevice);
-      let devicesListOldLength = devicesService.getDevices().length;
+      let devicesListOldLength = devicesService.devices.length;
       devicesService.newDevice(tilesDevice);
-      let devicesListNewLength = devicesService.getDevices().length;
+      let devicesListNewLength = devicesService.devices.length;
       expect(devicesListNewLength).toEqual(devicesListOldLength);
     });
 
@@ -93,7 +93,7 @@ describe('devicesService:', () => {
     it('should change the name of the device parameter to the name parameter', () => {
       devicesService.newDevice(deviceOne);
       devicesService.setCustomDeviceName(deviceOne, 'NewName');
-      expect(devicesService.getDevices()[0].name).toEqual('NewName');
+      expect(devicesService.devices[0].name).toEqual('NewName');
     });
 
   });
@@ -106,7 +106,7 @@ describe('devicesService:', () => {
       devicesService.newDevice(deviceOne);
       devicesService.setCustomDeviceName(deviceOne, 'NewName');
       devicesService.resetDeviceName(deviceOne);
-      expect(devicesService.getDevices()[0].tileId).toEqual(oldName);
+      expect(devicesService.devices[0].tileId).toEqual(oldName);
     });
   });
 
@@ -117,7 +117,7 @@ describe('devicesService:', () => {
       devicesService.newDevice(deviceOne);
       devicesService.newDevice(deviceTwo);
       devicesService.clearDisconnectedDevices();
-      expect(devicesService.getDevices().length).toEqual(1);
+      expect(devicesService.devices.length).toEqual(1);
     });
   });
 

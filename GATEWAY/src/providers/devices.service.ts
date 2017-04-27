@@ -6,21 +6,11 @@ import { Device } from './utils.service';
 
 @Injectable()
 export class DevicesService {
-  private devices: Device[];
+  public devices: Device[];
 
   constructor(public storage: Storage,
               public events: Events) {
     this.devices = [];
-  }
-
-  /**
-   * Returns the list of devices currently stored
-   */
-  public getDevices = (): Device[] => {
-    return this.devices;
-  }
-  public setDevices = (dev: Device[]): void => {
-    this.devices = dev;
   }
 
   /**

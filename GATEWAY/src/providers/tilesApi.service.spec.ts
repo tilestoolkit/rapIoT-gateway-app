@@ -1,4 +1,4 @@
-import { inject, TestBed } from '@angular/core/testing';
+import { inject, TestBed, async } from '@angular/core/testing';
 import { Http, Response, ResponseOptions, BaseRequestOptions, RequestMethod } from '@angular/http';
 import { Storage } from '@ionic/storage';
 import { MockBackend, MockConnection } from '@angular/http/testing';
@@ -79,7 +79,7 @@ describe('tilesAPI', () => {
       expect(tilesApi.flagThen).toBeFalsy();
     });
 
-    it('should get loginData from storage if loginData is undefined', () => {
+    it('should get loginData from storage if loginData is undefined', (() => {
       tilesApi.setLoginData(undefined);
       spyOn(tilesApi.getStorage(), 'get').and.callFake( () => {
         return {
@@ -93,10 +93,10 @@ describe('tilesAPI', () => {
       setTimeout(() => {
         expect(tilesApi.flagThen).toBeTruthy();
         expect(returnedLoginData).toEqual(loginData);
-      }, 0);
-    });
+      }, 50);
+    }));
 
-    it('should get loginData from storage if loginData is null', () => {
+    it('should get loginData from storage if loginData is null', (() => {
       tilesApi.setLoginData(null);
       spyOn(tilesApi.getStorage(), 'get').and.callFake( () => {
         return {
@@ -110,8 +110,8 @@ describe('tilesAPI', () => {
       setTimeout(() => {
         expect(tilesApi.flagThen).toBeTruthy();
         expect(returnedLoginData).toEqual(loginData);
-      }, 0);
-    });
+      }, 50);
+    }));
 
   });
 

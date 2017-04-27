@@ -75,12 +75,12 @@ describe('mqttClient', () => {
       spyOn(mqtt, 'connect').and.callFake( () => {
         return new MqttMock;
       });
-      expect(mqttClient.getMqttConnectionData()).toBeDefined();
-      expect(mqttClient.getClient()).not.toBeDefined();
+      expect(mqttClient.mqttConnectionData).toBeDefined();
+      expect(mqttClient.client).not.toBeDefined();
 
       mqttClient.connect();
 
-      expect(mqttClient.getClient()).toBeDefined();
+      expect(mqttClient.client).toBeDefined();
     });
 
     it('should get connection data from tilesApi if it is undefined or null', () => {
@@ -88,21 +88,21 @@ describe('mqttClient', () => {
         return new MqttMock;
       });
       mqttClient.setConnectionData(undefined);
-      mqttClient.getTilesApi().setLoginData(loginData);
-      expect(mqttClient.getMqttConnectionData()).not.toBeDefined();
+      mqttClient.tilesApi.setLoginData(loginData);
+      expect(mqttClient.mqttConnectionData).not.toBeDefined();
 
       mqttClient.connect();
 
-      expect(mqttClient.getMqttConnectionData()).toBeDefined();
+      expect(mqttClient.mqttConnectionData).toBeDefined();
     });
 
     it('should end an old connection if it exists', () => {
       spyOn(mqtt, 'connect').and.callFake( () => {
         return new MqttMock;
       });
-      mqttClient.setClient(new MqttMock);
-      expect(mqttClient.getClient()).toBeDefined();
-      let spy = spyOn(mqttClient.getClient(), 'end').and.callThrough();
+      mqttClient.client = new MqttMock;
+      expect(mqttClient.client).toBeDefined();
+      let spy = spyOn(mqttClient.client, 'end').and.callThrough();
 
       mqttClient.connect();
 
@@ -129,7 +129,7 @@ describe('mqttClient', () => {
     it('should register a device at the server if client is defined', () => {
       let spyClient = new MqttMock;
       let tempDevice = new Device('test', 'test', 'test', false);
-      mqttClient.setClient(spyClient);
+      mqttClient.client = spyClient;
       let publishSpy = spyOn(spyClient, 'publish');
       let subscribeSpy = spyOn(spyClient, 'subscribe');
       let topicSpy = spyOn(mqttClient, 'getDeviceSpecificTopic');
@@ -148,7 +148,7 @@ describe('mqttClient', () => {
     it('should unregister a device at the server if client is defined', () => {
       let spyClient = new MqttMock;
       let tempDevice = new Device('test', 'test', 'test', false);
-      mqttClient.setClient(spyClient);
+      mqttClient.client = spyClient;
       let publishSpy = spyOn(spyClient, 'publish');
       let unsubscribeSpy = spyOn(spyClient, 'unsubscribe');
       let topicSpy = spyOn(mqttClient, 'getDeviceSpecificTopic');
@@ -167,7 +167,7 @@ describe('mqttClient', () => {
     it('should send an event if client is defined', () => {
       let spyClient = new MqttMock;
       let comparisonCmdObj = new CommandObject('led', ['on', 'red']);
-      mqttClient.setClient(spyClient);
+      mqttClient.client = spyClient;
       let publishSpy = spyOn(spyClient, 'publish');
       let topicSpy = spyOn(mqttClient, 'getDeviceSpecificTopic');
 
@@ -184,7 +184,7 @@ describe('mqttClient', () => {
 
     it('should end the connection to the client if it is defined, and run method stopBackgroundFetch', () => {
       let spyClient = new MqttMock;
-      mqttClient.setClient(spyClient);
+      mqttClient.client = spyClient;
       let endSpy = spyOn(spyClient, 'end');
       let stopSpy = spyOn(mqttClient, 'stopBackgroundFetch');
 
@@ -199,7 +199,7 @@ describe('mqttClient', () => {
   describe('startBackgroundFetch(): void', () => {
 
     it('should start the BackgroundFetch', () => {
-      let startSpy = spyOn(mqttClient.getBackgroundFetch(), 'start');
+      let startSpy = spyOn(mqttClient.backgroundFetch, 'start');
 
       mqttClient.startBackgroundFetch();
 
@@ -211,7 +211,7 @@ describe('mqttClient', () => {
   describe('stopBackgroundFetch(): void', () => {
 
     it('should stop the BackgroundFetch', () => {
-      let stopSpy = spyOn(mqttClient.getBackgroundFetch(), 'stop');
+      let stopSpy = spyOn(mqttClient.backgroundFetch, 'stop');
 
       mqttClient.stopBackgroundFetch();
 
