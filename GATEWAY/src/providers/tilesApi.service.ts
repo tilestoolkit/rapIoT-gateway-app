@@ -182,7 +182,7 @@ export class TilesApi {
     const headerFields = new Headers({'Content-Type': 'application/json'});
     console.log('url: ' + url + ' body: ' + body);
     return this.http.post(url, body, {headers: headerFields}).toPromise()
-              .catch(err => {
+             .catch(err => {
                 try {
                   if (err.status === 0) {
                     this.presentErrorAlert();
@@ -190,7 +190,7 @@ export class TilesApi {
                 } finally {
                   console.log('Feiled pairing of the physical and virtual tile with error: ' + err);
                 }
-              });
+             });
   }
 
   /**

@@ -104,6 +104,7 @@ export class MqttClient {
 
     this.client.on('error', error => {
       this.events.publish('error', error);
+      this.presentErrorAlert();
       console.log('mqtt error occured');
 
     });
@@ -175,10 +176,13 @@ export class MqttClient {
         JSON.stringify(event),
         this.publishOpts, err => {
           if (err !== undefined) {
-            alert('error sending message: ' + err);
-          }
+            this.presentErrorAlert('error sending message: ' + err);
+          } else {
+            this.presentErrorAlert();
+          };
         },
       );
+      this.events.publish('command', JSON.stringify(event));
     }
   }
 
@@ -208,5 +212,22 @@ export class MqttClient {
    */
   public stopBackgroundFetch = () => {
     this.backgroundFetch.stop();
+  }
+
+  /**
+   * Presents a popup on the users screen explaining that an error occured whith mqtt
+   * @param {string} errorInformation - extra error information if needed
+   */
+  private presentErrorAlert = (errorInformation: string = ''): void => {
+    this.alertCtrl.create({
+      title: 'Mqtt error',
+      subTitle: 'An error occured with the mqtt client that is responsible' +
+                'for sending and recieving messages to the application.' +
+                'Make sure the host address and port is correct.' +
+                errorInformation,
+      buttons: [{
+        text: 'Dismiss',
+      }]
+    }).present();
   }
 }
