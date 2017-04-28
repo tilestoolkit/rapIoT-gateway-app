@@ -219,7 +219,7 @@ describe('bleService', () => {
       expect(bleService.sendData).toHaveBeenCalled();
     });
 
-    xit('should not run the method sendData if ble.connect returns an error', () => {
+    it('should not run the method sendData if ble.connect returns an error', () => {
       spyOn(bleService.ble, 'connect').and.returnValue(Observable.throw(new Error()));
       spyOn(bleService, 'sendData');
       let tempDevice = new Device('test', 'test', 'test', false, (new Date()).getTime() - 61000);

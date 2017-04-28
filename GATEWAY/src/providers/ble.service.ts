@@ -121,7 +121,7 @@ export class BleService {
           },
           err => {
             console.log(err);
-            this.errorAlert.present();
+            //this.errorAlert.present();
           });
   }
 
