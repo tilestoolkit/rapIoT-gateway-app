@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BackgroundFetch } from '@ionic-native/background-fetch';
 import { AlertController, Events } from 'ionic-angular';
-import mqtt from 'mqtt';
+import * as mqtt from 'mqtt';
 
 import { TilesApi } from './tilesApi.service';
 import { CommandObject, Device, LoginData } from './utils.service';
@@ -9,15 +9,15 @@ import { CommandObject, Device, LoginData } from './utils.service';
 
 @Injectable()
 export class MqttClient {
+  public client;
+  public mqttConnectionData: LoginData;
   private publishOpts = { retain: true };
   private connectionTimeout: number = 10000; // 10 seconds
-  private client;
-  private mqttConnectionData: LoginData;
 
   constructor(private alertCtrl: AlertController,
-              private backgroundFetch: BackgroundFetch,
+              public backgroundFetch: BackgroundFetch,
               private events: Events,
-              private tilesApi: TilesApi) {
+              public tilesApi: TilesApi) {
     this.mqttConnectionData = this.tilesApi.getLoginData();
     this.backgroundFetch.configure({ stopOnTerminate: false })
         .then(() => {

@@ -7,12 +7,8 @@ import { StorageMock } from '../mocks';
 describe('utilsService', () => {
 
   let utilsService: UtilsService = null;
-  let comparisonCmdObj = new CommandObject;
-    comparisonCmdObj.name = 'led';
-    comparisonCmdObj.properties = ['on', 'red'];
-  let comparisonCmdObj2 = new CommandObject;
-    comparisonCmdObj2.name = 'light';
-    comparisonCmdObj2.properties = ['on'];
+  let comparisonCmdObj = new CommandObject('led', ['on', 'red']);
+  let comparisonCmdObj2 = new CommandObject('light', ['on']);
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -75,14 +71,6 @@ describe('utilsService', () => {
     });
   });
 
-  describe('extendObject(obj1: any, obj2: any): any', () => {
-    xit('should return the combined object of object 1 and 2 from extendObject', () => {
-      let obj1 = comparisonCmdObj;
-      let obj2 = comparisonCmdObj2;
-      expect(utilsService.extendObject(obj1, obj2)).toEqual('{ }');
-    });
-  });
-
   describe('verifyLoginCredentials(user: string, host: string, port: number): boolean', () => {
     it('should return true when passing correctly formated test-user parameters', () => {
       let username: string = 'testUser';
@@ -103,13 +91,6 @@ describe('utilsService', () => {
       let host: string = '1.1.1.1';
       let port: number = 8080;
       expect(utilsService.verifyLoginCredentials(username, host, port)).toBeFalsy;
-    });
-
-    xit('should return false when passing incorrectly formated port parameters', () => {
-      /*let username: string = 'testUser';
-      let host: string = '178.62.99.218';
-      let port: number = 8080;*/
-      expect(true).toBeTruthy;
     });
 
   });

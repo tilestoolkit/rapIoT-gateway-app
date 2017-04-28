@@ -13,7 +13,7 @@ import { CommandObject, Device, UtilsService } from './utils.service';
 
 @Injectable()
 export class BleService {
-  private bleScanner: Subscription;
+  public bleScanner: Subscription;
   private rfduino = {
     disconnectCharacteristicUUID: '2223',
     receiveCharacteristicUUID: '2221',
@@ -22,11 +22,37 @@ export class BleService {
   };
 
   constructor(private events: Events,
-              private ble: BLE,
-              private devicesService: DevicesService,
-              private mqttClient: MqttClient,
-              private tilesApi: TilesApi,
-              private utils: UtilsService) {}
+              public ble: BLE,
+              public devicesService: DevicesService,
+              public mqttClient: MqttClient,
+              public tilesApi: TilesApi,
+              public utils: UtilsService) {}
+
+  /**
+   * The following code will mainly be used for getting private parameters
+   * for testing purposes
+   */
+  public getBleScanner = (): Subscription => {
+    return this.bleScanner;
+  }
+  public setBleScanner = (sub: Subscription): void => {
+    this.bleScanner = sub;
+  }
+  public getBle = (): BLE => {
+    return this.ble;
+  }
+  public getDevicesService = (): DevicesService => {
+    return this.devicesService;
+  }
+  public getMqttClient = (): MqttClient => {
+    return this.mqttClient;
+  }
+  public getTilesApi = (): TilesApi => {
+    return this.tilesApi;
+  }
+  public getUtils = (): UtilsService => {
+    return this.utils;
+  }
 
   /**
    * Start the BLE scanner making it scan every 30s
@@ -151,7 +177,7 @@ export class BleService {
   /**
    * Checking to see if any bluetooth devices are in reach
    */
-  private scanBLE = (): void => {
+  public scanBLE = (): void => {
     // A list of the discovered devices
     const virtualTiles = this.tilesApi.getVirtualTiles();
     let newDevices: Device[] = [];
@@ -184,7 +210,7 @@ export class BleService {
    * Start getting notifications of events from a device
    * @param {Device} device - the id from the target device
    */
-  private startDeviceNotification = (device: Device): void => {
+  public startDeviceNotification = (device: Device): void => {
     this.ble.startNotification(device.id, this.rfduino.serviceUUID, this.rfduino.receiveCharacteristicUUID)
       .subscribe(
         res => {

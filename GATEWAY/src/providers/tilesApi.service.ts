@@ -9,14 +9,16 @@ import { Application, LoginData, VirtualTile } from './utils.service';
 
 @Injectable()
 export class TilesApi {
+  public flagThen: boolean = false;
+  public flagCatch: boolean = false;
+  public activeApp: Application;
   public apiPort: number = 3000;
   private virtualTiles: VirtualTile[] = [];
   private loginData: LoginData;
-  private activeApp: Application;
 
   constructor(private alertCtrl: AlertController,
-              private http: Http,
-              private storage: Storage) {
+              public http: Http,
+              public storage: Storage) {
   }
 
   /**
@@ -29,7 +31,7 @@ export class TilesApi {
 
   /**
    * Sets login data for the user
-   * @param {LoginData} loginData - the device to test
+   * @param {LoginData} loginData - the loginData
    */
   public setLoginData = (loginData: LoginData): void => {
     this.loginData = loginData;
@@ -41,6 +43,7 @@ export class TilesApi {
   public getLoginData = (): LoginData => {
     if (this.loginData === undefined || this.loginData === null) {
       this.storage.get('loginData').then(loginData => {
+        this.flagThen = true;
         this.setLoginData(loginData);
         return loginData;
       });

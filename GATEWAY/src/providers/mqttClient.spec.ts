@@ -6,8 +6,9 @@ import { Events } from 'ionic-angular';
 import { Storage } from '@ionic/storage';
 import { TilesApi } from './tilesApi.service';
 import { MqttClient } from './mqttClient';
-import { LoginData } from './utils.service';
-import { StorageMock } from '../mocks';
+import { LoginData, Device, CommandObject } from './utils.service';
+import { StorageMock, BackgroundFetchMock, MqttMock } from '../mocks';
+import * as mqtt from 'mqtt';
 
 describe('mqttClient', () => {
 
@@ -20,7 +21,10 @@ describe('mqttClient', () => {
         TilesApi,
         MqttClient,
         Events,
-        BackgroundFetch,
+        {
+        provide: BackgroundFetch,
+        useClass: BackgroundFetchMock
+        },
         {
           provide: Storage,
           useClass: StorageMock
@@ -51,10 +55,6 @@ describe('mqttClient', () => {
     expect(mqttClient).toBeTruthy;
   });
 
-  describe('sendConnectionData(mqttConnectionData: LoginData): void', () => {
-
-  });
-
   describe('getDeviceSpecificTopic(deviceId: string, isEvent: boolean): string', () => {
     it('should return a correct url adress for the specific device', () => {
       let testID: string = 'testEvent';
@@ -70,36 +70,173 @@ describe('mqttClient', () => {
   });
 
   describe('connect(user: string, host: string, port: number): void', () => {
-    /*it('should connect to the server and keep the connection alive afterwards until other commands are given', () => {
-      let tUser: string = 'test1';
-      let tHost: string = '127.0.0.0';
-      let tPort: number = 8080;
-      mqttClient.connect(tUser, tHost, tPort);
-    });*/
+    
+    it('should create a connection to the server', () => {
+      spyOn(mqtt, 'connect').and.callFake( () => {
+        return new MqttMock;
+      });
+      expect(mqttClient.mqttConnectionData).toBeDefined();
+      expect(mqttClient.client).not.toBeDefined();
+
+      mqttClient.connect();
+
+      expect(mqttClient.client).toBeDefined();
+    });
+
+    it('should get connection data from tilesApi if it is undefined or null', () => {
+      spyOn(mqtt, 'connect').and.callFake( () => {
+        return new MqttMock;
+      });
+      mqttClient.setConnectionData(undefined);
+      mqttClient.tilesApi.setLoginData(loginData);
+      expect(mqttClient.mqttConnectionData).not.toBeDefined();
+
+      mqttClient.connect();
+
+      expect(mqttClient.mqttConnectionData).toBeDefined();
+    });
+
+    it('should end an old connection if it exists', () => {
+      spyOn(mqtt, 'connect').and.callFake( () => {
+        return new MqttMock;
+      });
+      mqttClient.client = new MqttMock;
+      expect(mqttClient.client).toBeDefined();
+      let spy = spyOn(mqttClient.client, 'end').and.callThrough();
+
+      mqttClient.connect();
+
+      expect(spy).toHaveBeenCalled();
+      expect(spy.calls.count()).toEqual(1);
+    });
+
+    it('should call client.on a total of 6 (six) times', () => {
+      let spyClient = new MqttMock;
+      spyOn(mqtt, 'connect').and.callFake( () => {
+        return spyClient;
+      });
+      let spy = spyOn(spyClient, 'on');
+
+      mqttClient.connect();
+
+      expect(spy.calls.count()).toEqual(6);
+    });
+
   });
 
   describe('registerDevice(device: Device): void', () => {
+
+    it('should register a device at the server if client is defined', () => {
+      let spyClient = new MqttMock;
+      let tempDevice = new Device('test', 'test', 'test', false);
+      mqttClient.client = spyClient;
+      let publishSpy = spyOn(spyClient, 'publish');
+      let subscribeSpy = spyOn(spyClient, 'subscribe');
+      let topicSpy = spyOn(mqttClient, 'getDeviceSpecificTopic');
+
+      mqttClient.registerDevice(tempDevice);
+
+      expect(publishSpy.calls.count()).toEqual(2);
+      expect(subscribeSpy.calls.count()).toEqual(1);
+      expect(topicSpy.calls.count()).toEqual(3);
+    });
 
   });
 
   describe('unregisterDevice(device: Device): void', () => {
 
+    it('should unregister a device at the server if client is defined', () => {
+      let spyClient = new MqttMock;
+      let tempDevice = new Device('test', 'test', 'test', false);
+      mqttClient.client = spyClient;
+      let publishSpy = spyOn(spyClient, 'publish');
+      let unsubscribeSpy = spyOn(spyClient, 'unsubscribe');
+      let topicSpy = spyOn(mqttClient, 'getDeviceSpecificTopic');
+
+      mqttClient.unregisterDevice(tempDevice);
+
+      expect(publishSpy.calls.count()).toEqual(1);
+      expect(unsubscribeSpy.calls.count()).toEqual(1);
+      expect(topicSpy.calls.count()).toEqual(2);
+    });
+
   });
 
   describe('sendEvent(deviceId: string, event: CommandObject): void', () => {
+
+    it('should send an event if client is defined', () => {
+      let spyClient = new MqttMock;
+      let comparisonCmdObj = new CommandObject('led', ['on', 'red']);
+      mqttClient.client = spyClient;
+      let publishSpy = spyOn(spyClient, 'publish');
+      let topicSpy = spyOn(mqttClient, 'getDeviceSpecificTopic');
+
+      mqttClient.sendEvent('test', comparisonCmdObj);
+
+      expect(publishSpy.calls.count()).toEqual(1);
+      //getDeviceSpecificTopic returns 2 calls as it is also used in a console.log
+      expect(topicSpy.calls.count()).toEqual(2);
+    });
 
   });
 
   describe('endConnection(deviceId: string, event: any): void', () => {
 
+    it('should end the connection to the client if it is defined, and run method stopBackgroundFetch', () => {
+      let spyClient = new MqttMock;
+      mqttClient.client = spyClient;
+      let endSpy = spyOn(spyClient, 'end');
+      let stopSpy = spyOn(mqttClient, 'stopBackgroundFetch');
+
+      mqttClient.endConnection('test', true);
+
+      expect(endSpy).toHaveBeenCalled();
+      expect(stopSpy).toHaveBeenCalled();
+    });
+
   });
 
   describe('startBackgroundFetch(): void', () => {
+
+    it('should start the BackgroundFetch', () => {
+      let startSpy = spyOn(mqttClient.backgroundFetch, 'start');
+
+      mqttClient.startBackgroundFetch();
+
+      expect(startSpy).toHaveBeenCalled();
+    });
 
   });
 
   describe('stopBackgroundFetch(): void', () => {
 
+    it('should stop the BackgroundFetch', () => {
+      let stopSpy = spyOn(mqttClient.backgroundFetch, 'stop');
+
+      mqttClient.stopBackgroundFetch();
+
+      expect(stopSpy).toHaveBeenCalled();
+    });
+
   });
 
 });
+
+/** Mock HTTP
+ * it('should return a list of three virtualTiles',
+        inject([MockBackend], (mockBackend) => {
+
+        const mockResponse = mockTilesApplicationDetailsResponse;
+
+        mockBackend.connections.subscribe((connection) => {
+          connection.mockRespond(new Response(new ResponseOptions({
+            body: JSON.stringify(mockResponse)
+          })));
+        });
+
+        tilesApi.getApplicationTiles('test3').then(tiles => {
+          expect(tiles.length).toEqual(2);
+        });
+
+    }));
+ */
