@@ -111,9 +111,8 @@ export class TilesApi {
                 if (err.status === 0) {
                   this.presentErrorAlert();
                 }
-              } finally {
-                return false;
-              }
+              } finally {} // tslint:disable-line
+              return false;
             });
   }
 
@@ -157,8 +156,8 @@ export class TilesApi {
               } finally {
                 console.log('failed getting applications with error: ' + err);
                 console.log('url ' + url);
-                return null;
               }
+              return null;
             });
   }
 
@@ -197,13 +196,14 @@ export class TilesApi {
    * Presents a popup on the users screen explaining that an error occured whith an api
    */
   private presentErrorAlert = (): void => {
+    /* tslint:disable */
     this.alertCtrl.create({
       title: 'Could not get data from remote source',
       subTitle: 'Make sure you have internet connection and that you have provided the correct host address.' +
                  'If it still won\'t work the error might be on the host. Try again later or contact the host owners.',
       buttons: [{
         text: 'Dismiss',
-      }]
+      }],
     }).present();
   }
 }

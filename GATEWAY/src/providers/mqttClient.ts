@@ -174,12 +174,13 @@ export class MqttClient {
       this.client.publish(
         this.getDeviceSpecificTopic(deviceId, true),
         JSON.stringify(event),
-        this.publishOpts, err => {
+        this.publishOpts,
+        err => {
           if (err !== undefined) {
             this.presentErrorAlert('error sending message: ' + err);
           } else {
             this.presentErrorAlert();
-          };
+          }; // tslint:disable-line
         },
       );
       this.events.publish('command', JSON.stringify(event));
@@ -220,6 +221,7 @@ export class MqttClient {
    */
   private presentErrorAlert = (errorInformation: string = ''): void => {
     this.alertCtrl.create({
+    /* tslint:disable */
       title: 'Mqtt error',
       subTitle: 'An error occured with the mqtt client that is responsible' +
                 'for sending and recieving messages to the application.' +
@@ -227,7 +229,7 @@ export class MqttClient {
                 errorInformation,
       buttons: [{
         text: 'Dismiss',
-      }]
+      }],
     }).present();
   }
 }
