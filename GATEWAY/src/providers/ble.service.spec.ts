@@ -4,7 +4,7 @@ import { MockBackend } from '@angular/http/testing';
 import { Storage } from '@ionic/storage';
 import { BackgroundFetch } from '@ionic-native/background-fetch';
 import { BLE } from '@ionic-native/ble';
-import { Events } from 'ionic-angular';
+import {  App, Config, AlertController, Platform, Events } from 'ionic-angular';
 import { Observable, Subscription } from 'rxjs';
 import { BleService } from './ble.service';
 import { DevicesService }from './devices.service';
@@ -23,6 +23,10 @@ describe('bleService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
+        App,
+        Config,
+        AlertController,
+        Platform,
         Events,
         {
         provide: BackgroundFetch,
@@ -95,7 +99,7 @@ describe('bleService', () => {
   });
 
   describe('scanForDevices(): void', () => {
-    
+
     //Test funker egentlig ikke. Gir feil om man forsøker med 2 eller flere devices
     it('should clear disconnected devices before scanning for new ble devices', () => {
       let tempDevice = new Device('test', 'test', 'test', false, (new Date()).getTime() - 61000);
@@ -124,7 +128,7 @@ describe('bleService', () => {
     //TODO: Ferdigstill denne metoden
     xit('should invoke the method scanBLE() if BLE is enabled', () => {
       //spyOn(bleService.ble, 'isEnabled').and.callThrough();
-      
+
       let spy = spyOn(bleService, 'scanBLE').and.callThrough();
 
       bleService.scanForDevices();

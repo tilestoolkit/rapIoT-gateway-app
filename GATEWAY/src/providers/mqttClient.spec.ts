@@ -4,6 +4,7 @@ import { MockBackend } from '@angular/http/testing';
 import { BackgroundFetch } from '@ionic-native/background-fetch';
 import { Events } from 'ionic-angular';
 import { Storage } from '@ionic/storage';
+import { App, Config, AlertController, Platform } from 'ionic-angular';
 import { TilesApi } from './tilesApi.service';
 import { MqttClient } from './mqttClient';
 import { LoginData, Device, CommandObject } from './utils.service';
@@ -18,6 +19,10 @@ describe('mqttClient', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
+        App,
+        Config,
+        AlertController,
+        Platform,
         TilesApi,
         MqttClient,
         Events,
@@ -70,7 +75,7 @@ describe('mqttClient', () => {
   });
 
   describe('connect(user: string, host: string, port: number): void', () => {
-    
+
     it('should create a connection to the server', () => {
       spyOn(mqtt, 'connect').and.callFake( () => {
         return new MqttMock;
