@@ -95,7 +95,7 @@ export class MqttClient {
       try {
         const command: CommandObject = JSON.parse(message);
         if (command) {
-          const deviceId = topic.split('/')[3];
+          const deviceId = topic.split('/')[4];
           this.events.publish('command', deviceId, command);
         }
       } finally {} // tslint:disable-line
