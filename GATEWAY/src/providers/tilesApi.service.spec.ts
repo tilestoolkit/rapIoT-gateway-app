@@ -2,6 +2,8 @@ import { inject, TestBed, async } from '@angular/core/testing';
 import { Http, Response, ResponseOptions, BaseRequestOptions, RequestMethod } from '@angular/http';
 import { Storage } from '@ionic/storage';
 import { MockBackend, MockConnection } from '@angular/http/testing';
+import { AlertController } from 'ionic-angular';
+
 import { Application, Device, LoginData } from './utils.service';
 import { TilesApi } from './tilesApi.service';
 import { StorageMock } from '../mocks';
@@ -18,6 +20,7 @@ describe('tilesAPI', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
+        AlertController,
         MockBackend,
         BaseRequestOptions,
         {
@@ -128,7 +131,7 @@ describe('tilesAPI', () => {
       expect(tilesApi.activeApp).toBeUndefined();
 
       tilesApi.setActiveApp(activeApp);
-      
+
       expect(tilesApi.activeApp).toEqual(activeApp);
     });
 
@@ -145,7 +148,7 @@ describe('tilesAPI', () => {
           then: (callback) => {return callback(mockTilesApplicationDetailsResponse.virtualTiles);}
         };
       });
-      
+
       tilesApi.setVirtualTiles();
 
       expect(tilesApi['getApplicationTiles']).toHaveBeenCalled();
