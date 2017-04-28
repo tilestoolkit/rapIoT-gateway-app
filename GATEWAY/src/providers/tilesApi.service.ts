@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Headers, Http, Response }    from '@angular/http';
 import { Storage } from '@ionic/storage';
-import { AlertController } from 'ionic-angular';
+import { Alert, AlertController } from 'ionic-angular';
 import 'rxjs/add/operator/toPromise';
 
 import { Application, LoginData, VirtualTile } from './utils.service';
@@ -15,10 +15,22 @@ export class TilesApi {
   public apiPort: number = 3000;
   private virtualTiles: VirtualTile[] = [];
   private loginData: LoginData;
+  private errorAlert: Alert;
 
   constructor(private alertCtrl: AlertController,
               public http: Http,
               public storage: Storage) {
+    this.errorAlert = this.alertCtrl.create({
+      buttons: [{
+        text: 'Dismiss',
+      }],
+      enableBackdropDismiss: true,
+      subTitle: 'Make sure you have internet connection and that you ' +
+                'have provided the correct host address when logging ' +
+                'in. If it still won\'t work the error might be on the ' +
+                'host. Try again later or contact the host owners.',
+      title: 'Could not get data from remote source',
+    });
   }
 
   /**
@@ -109,7 +121,7 @@ export class TilesApi {
             .catch(err => {
               try {
                 if (err.status === 0) {
-                  this.presentErrorAlert();
+                  this.errorAlert.present();
                 }
               } finally {} // tslint:disable-line
               return false;
@@ -129,7 +141,7 @@ export class TilesApi {
             .catch(err => {
               try {
                 if (err.status === 0) {
-                  this.presentErrorAlert();
+                  this.errorAlert.present();
                 }
               } finally {
                 console.log('failed getting applications with error: ' + err);
@@ -151,7 +163,7 @@ export class TilesApi {
             .catch(err => {
               try {
                 if (err.status === 0) {
-                  this.presentErrorAlert();
+                  this.errorAlert.present();
                 }
               } finally {
                 console.log('failed getting applications with error: ' + err);
@@ -184,27 +196,12 @@ export class TilesApi {
              .catch(err => {
                 try {
                   if (err.status === 0) {
-                    this.presentErrorAlert();
+                    this.errorAlert.present();
                   }
                 } finally {
                   console.log('Feiled pairing of the physical and virtual tile with error: ' + err);
                 }
              });
-  }
-
-  /**
-   * Presents a popup on the users screen explaining that an error occured whith an api
-   */
-  private presentErrorAlert = (): void => {
-    /* tslint:disable */
-    this.alertCtrl.create({
-      title: 'Could not get data from remote source',
-      subTitle: 'Make sure you have internet connection and that you have provided the correct host address.' +
-                 'If it still won\'t work the error might be on the host. Try again later or contact the host owners.',
-      buttons: [{
-        text: 'Dismiss',
-      }],
-    }).present();
   }
 }
 

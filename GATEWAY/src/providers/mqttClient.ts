@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BackgroundFetch } from '@ionic-native/background-fetch';
-import { AlertController, Events } from 'ionic-angular';
+import { Alert, AlertController, Events } from 'ionic-angular';
 import * as mqtt from 'mqtt';
 
 import { TilesApi } from './tilesApi.service';
@@ -13,6 +13,7 @@ export class MqttClient {
   public mqttConnectionData: LoginData;
   private publishOpts = { retain: true };
   private connectionTimeout: number = 10000; // 10 seconds
+  private errorAlert: Alert;
 
   constructor(private alertCtrl: AlertController,
               public backgroundFetch: BackgroundFetch,
@@ -32,6 +33,16 @@ export class MqttClient {
         .catch(err => {
           console.log('Error initializing background fetch', err);
         });
+    this.errorAlert = this.alertCtrl.create({
+     buttons: [{
+        text: 'Dismiss',
+      }],
+      enableBackdropDismiss: true,
+      subTitle: 'An error occured with the mqtt client that is responsible' +
+                'for sending and recieving messages to the application.' +
+                'Make sure the host address and port is correct. \n',
+      title: 'Mqtt error',
+    });
   }
 
   /**
@@ -104,7 +115,7 @@ export class MqttClient {
 
     this.client.on('error', error => {
       this.events.publish('error', error);
-      this.presentErrorAlert();
+      this.errorAlert.present();
       console.log('mqtt error occured');
 
     });
@@ -177,9 +188,7 @@ export class MqttClient {
         this.publishOpts,
         err => {
           if (err !== undefined) {
-            this.presentErrorAlert('error sending message: ' + err);
-          } else {
-            this.presentErrorAlert();
+            this.errorAlert.present();
           }; // tslint:disable-line
         },
       );
@@ -213,23 +222,5 @@ export class MqttClient {
    */
   public stopBackgroundFetch = () => {
     this.backgroundFetch.stop();
-  }
-
-  /**
-   * Presents a popup on the users screen explaining that an error occured whith mqtt
-   * @param {string} errorInformation - extra error information if needed
-   */
-  private presentErrorAlert = (errorInformation: string = ''): void => {
-    this.alertCtrl.create({
-    /* tslint:disable */
-      title: 'Mqtt error',
-      subTitle: 'An error occured with the mqtt client that is responsible' +
-                'for sending and recieving messages to the application.' +
-                'Make sure the host address and port is correct.' +
-                errorInformation,
-      buttons: [{
-        text: 'Dismiss',
-      }],
-    }).present();
   }
 }
