@@ -16,20 +16,9 @@ export class TilesApi {
   private virtualTiles: VirtualTile[] = [];
   private loginData: LoginData;
 
-  constructor(private alertCtrl: AlertController, 
-	      public http: Http,
+  constructor(private alertCtrl: AlertController,
+              public http: Http,
               public storage: Storage) {
-  }
-
-  /**
-   * The following code will mainly be used for getting private parameters
-   * for testing purposes
-   */
-  public getHttp = (): Http => {
-    return this.http;
-  }
-  public getStorage = (): Storage => {
-    return this.storage;
   }
 
   /**

@@ -14,8 +14,8 @@ export class MqttClient {
   private publishOpts = { retain: true };
   private connectionTimeout: number = 10000; // 10 seconds
 
-  constructor(private alertCtrl: AlertController, 
-	      public backgroundFetch: BackgroundFetch,
+  constructor(private alertCtrl: AlertController,
+              public backgroundFetch: BackgroundFetch,
               private events: Events,
               public tilesApi: TilesApi) {
     this.mqttConnectionData = this.tilesApi.getLoginData();
