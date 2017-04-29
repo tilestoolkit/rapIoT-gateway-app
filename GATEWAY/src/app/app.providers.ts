@@ -68,7 +68,7 @@ export class AppProviders {
         {provide: ErrorHandler, useClass: IonicErrorHandler},
       ];
     } else {
-      // Use device providers
+      // Use the standard platform providers
       providers = [
         BLE,
         {provide: ErrorHandler, useClass: IonicErrorHandler},

@@ -25,10 +25,9 @@ export class PhysicalTilesPage {
 
   /**
    * Called when the refresher is triggered by pulling down on the view of
-   * the devices. TODO: Not sure if needed when refresh is done every 30s anyways.
+   * the devices.
    */
   refreshDevices = (refresher): void => {
-    console.log('Scanning for more devices...');
     this.bleService.scanForDevices();
     // Makes the refresher run for 2 secs
     setTimeout(() => {
@@ -37,7 +36,7 @@ export class PhysicalTilesPage {
   }
 
   /**
-   * Triggers an event on a tile to identify which tile is which
+   * Triggers a tile to light red for 3 seconds to identify which tile is which
    * @param {Device} device - A tile
    */
   identifyDevice = (device: Device): void => {
