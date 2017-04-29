@@ -274,7 +274,7 @@ describe('tilesAPI', () => {
       mockBackend.connections.subscribe((connection) => {
         connection.mockRespond(new Error());
       });
-      expect(tilesApi.flagCatch).toBeFalsy();
+      expect(tilesApi.http.get.calls.any()).toEqual(false);
 
       let returnedApplications = (): Promise<any> => { return new Promise( () => {
                                   let temp = tilesApi.getAllApplications();
@@ -282,7 +282,7 @@ describe('tilesAPI', () => {
                               })};
       returnedApplications().then( res => {
         expect(tilesApi.http.get).toThrowError();
-        expect(tilesApi.flagCatch).toBeTruthy();
+        expect(res).toEqual(null);
       });
     }));
 
@@ -361,7 +361,7 @@ describe('tilesAPI', () => {
       mockBackend.connections.subscribe((connection) => {
         connection.mockRespond(new Error());
       });
-      expect(tilesApi.flagCatch).toBeFalsy();
+      expect(tilesApi.http.post.calls.any()).toEqual(false);
 
       let returnedApplications = (): Promise<any> => { return new Promise( () => {
                                   let temp = tilesApi.pairDeviceToVirualTile('test', '58c120c5497df8602fedfbd3');
@@ -369,7 +369,7 @@ describe('tilesAPI', () => {
                               })};
       returnedApplications().then( res => {
         expect(tilesApi.http.post).toThrowError();
-        expect(tilesApi.flagThen).toBeTruthy();
+        //expect(tilesApi.flagThen).toBeTruthy();
       });
     }));
 

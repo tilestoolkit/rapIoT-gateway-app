@@ -8,7 +8,6 @@ import { Application, LoginData, VirtualTile } from './utils.service';
 
 @Injectable()
 export class TilesApi {
-  public flagCatch: boolean = false;
   public activeApp: Application;
   public apiPort: number = 3000;
   public virtualTiles: VirtualTile[] = [];
@@ -130,8 +129,8 @@ export class TilesApi {
               return res.json();
             })
             .catch(err => {
-              this.flagCatch = true;
               console.log('failed getting applications with error: ' + err);
+              return null;
             });
   }
 
@@ -174,7 +173,6 @@ export class TilesApi {
     console.log('url: ' + url + ' body: ' + body);
     return this.http.post(url, body, {headers: headerFields}).toPromise()
              .catch(err => {
-               this.flagCatch = true;
                console.log('Feiled pairing of the physical and virtual tile with error: ' + err);
              });
   }
