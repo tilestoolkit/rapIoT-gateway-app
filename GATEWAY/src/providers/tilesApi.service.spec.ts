@@ -78,18 +78,20 @@ describe('tilesAPI', () => {
   describe('getLoginData(): void', () => {
 
     it('should return the correct login data', () => {
+      spyOn(tilesApi.storage, 'get');
       expect(tilesApi.getLoginData()).toEqual(loginData);
-      expect(tilesApi.flagThen).toBeFalsy();
+      expect(tilesApi.storage.get.calls.any()).toEqual(false);
     });
 
     it('should get loginData from storage if loginData is undefined', (() => {
+      spyOn(tilesApi, 'setLoginData');
       tilesApi.loginData = undefined;
       spyOn(tilesApi.getStorage(), 'get').and.callFake( () => {
         return {
           then: (callback) => {return callback(loginData);}
         };
       });
-      expect(tilesApi.flagThen).toBeFalsy();
+      expect(tilesApi.setLoginData.calls.any()).toEqual(false);
 
       let returnedLoginData = (): Promise<any> => { return new Promise( () => {
                                   let temp = tilesApi.getLoginData();
@@ -97,26 +99,27 @@ describe('tilesAPI', () => {
                               })};
       returnedLoginData().then( res => {
         expect(tilesApi).toBeDefined();
-        expect(tilesApi.flagThen).toBeTruthy();
+        expect(tilesApi.setLoginData.calls.any()).toEqual(true);
         expect(res).toEqual(loginData);
       });
     }));
 
     it('should get loginData from storage if loginData is null', (() => {
+      spyOn(tilesApi, 'setLoginData');
       tilesApi.loginData = null;
       spyOn(tilesApi.getStorage(), 'get').and.callFake( () => {
         return {
           then: (callback) => {return callback(loginData);}
         };
       });
-      expect(tilesApi.flagThen).toBeFalsy();
+      expect(tilesApi.setLoginData.calls.any()).toEqual(false);
 
       let returnedLoginData = (): Promise<any> => { return new Promise( () => {
                                   let temp = tilesApi.getLoginData();
                                   return temp;
                               })};
       returnedLoginData().then( res => {
-        expect(tilesApi.flagThen).toBeTruthy();
+        expect(tilesApi.setLoginData.calls.any()).toEqual(true);
         expect(res).toEqual(loginData);
       });
     }));
@@ -130,7 +133,7 @@ describe('tilesAPI', () => {
       expect(tilesApi.activeApp).toBeUndefined();
 
       tilesApi.setActiveApp(activeApp);
-      
+
       expect(tilesApi.activeApp).toEqual(activeApp);
     });
 
@@ -149,7 +152,7 @@ describe('tilesAPI', () => {
       //The mock application returned is the same as 'activeApp'
       tilesApi.activeApp = undefined;
       expect(tilesApi.activeApp).toBeUndefined();
-      
+
       let returnedApp = tilesApi.getActiveApp();
 
       expect(returnedApp).toEqual(activeApp);
@@ -164,7 +167,7 @@ describe('tilesAPI', () => {
           then: (callback) => {return callback(mockTilesApplicationDetailsResponse.virtualTiles);}
         };
       });
-      
+
       tilesApi.setVirtualTiles();
 
       expect(tilesApi['getApplicationTiles']).toHaveBeenCalled();
