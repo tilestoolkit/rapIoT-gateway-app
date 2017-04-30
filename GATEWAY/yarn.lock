@@ -47,11 +47,7 @@
   version "2.2.3"
   resolved "https://registry.yarnpkg.com/@angular/core/-/core-2.2.3.tgz#18b09740bf51bdeb906153704e771bce53fecdf6"
 
-"@angular/core@^2.0.0":
-  version "2.4.8"
-  resolved "https://registry.yarnpkg.com/@angular/core/-/core-2.4.8.tgz#bf1a4fc324827516e6c3222047a9b2cbdaee6976"
-
-"@angular/core@^2.4.10":
+"@angular/core@^2.0.0", "@angular/core@^2.4.10":
   version "2.4.10"
   resolved "https://registry.yarnpkg.com/@angular/core/-/core-2.4.10.tgz#0b8320a65065965d998645b1f5cd3cf769b441ea"
 
@@ -77,12 +73,6 @@
   dependencies:
     parse5 "^2.2.1"
 
-"@angular/tsc-wrapped@0.5.0":
-  version "0.5.0"
-  resolved "https://registry.yarnpkg.com/@angular/tsc-wrapped/-/tsc-wrapped-0.5.0.tgz#e50f81af02c6817dcaba22032e49ba8060d628b4"
-  dependencies:
-    tsickle "^0.2"
-
 "@angular/tsc-wrapped@0.5.2", "@angular/tsc-wrapped@^0.5.0":
   version "0.5.2"
   resolved "https://registry.yarnpkg.com/@angular/tsc-wrapped/-/tsc-wrapped-0.5.2.tgz#2eddf472c467fcb334ea94deddaaa71990c5a482"
@@ -95,17 +85,21 @@
   dependencies:
     tsickle "^0.1.7"
 
-"@ionic-native/background-fetch@^3.4.3":
-  version "3.4.3"
-  resolved "https://registry.yarnpkg.com/@ionic-native/background-fetch/-/background-fetch-3.4.3.tgz#46b06be20bc63c283ac907644e715acacbe17284"
+"@ionic-native/background-fetch@^3.6.1":
+  version "3.6.1"
+  resolved "https://registry.yarnpkg.com/@ionic-native/background-fetch/-/background-fetch-3.6.1.tgz#ee0718e08c797aa49e230e86d2eafd619d860fc6"
 
-"@ionic-native/ble@^3.2.3":
-  version "3.4.2"
-  resolved "https://registry.yarnpkg.com/@ionic-native/ble/-/ble-3.4.2.tgz#44f4d5170275eba6570fe82cdb327521a22389a5"
+"@ionic-native/background-mode@^3.6.1":
+  version "3.6.1"
+  resolved "https://registry.yarnpkg.com/@ionic-native/background-mode/-/background-mode-3.6.1.tgz#5ecf1afd40ca76d38f252301812c071b88d55007"
 
-"@ionic-native/core@^3.2.3":
-  version "3.4.2"
-  resolved "https://registry.yarnpkg.com/@ionic-native/core/-/core-3.4.2.tgz#6fa8956ff7d96f06cdd58fe523b316b9a7a2121b"
+"@ionic-native/ble@^3.6.1":
+  version "3.6.1"
+  resolved "https://registry.yarnpkg.com/@ionic-native/ble/-/ble-3.6.1.tgz#fe1b530b2990563453b003badff21dbf980c9c10"
+
+"@ionic-native/core@^3.6.1":
+  version "3.6.1"
+  resolved "https://registry.yarnpkg.com/@ionic-native/core/-/core-3.6.1.tgz#fb0dd23f611dbb33ae9bf54c897c46343968aab6"
 
 "@ionic/app-scripts@1.1.3":
   version "1.1.3"
