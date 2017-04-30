@@ -26,6 +26,7 @@
     "@ionic-native/background-fetch": "^3.4.3",
     "@ionic-native/ble": "^3.2.3",
     "@ionic-native/core": "^3.2.3",
+    "@ionic-native/diagnostic": "^3.6.1",
     "@ionic/storage": "1.1.6",
     "ionic-angular": "^2.1.0",
     "ionic-native": "^2.4.1",

@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpModule }    from '@angular/http';
 import { BackgroundFetch } from '@ionic-native/background-fetch';
+import { Diagnostic } from '@ionic-native/diagnostic';
 import { Storage } from '@ionic/storage';
 import { AlertController, IonicApp, IonicModule } from 'ionic-angular';
 
@@ -52,6 +53,7 @@ import { AppProviders } from './app.providers';
     Storage,
     BleService,
     DevicesService,
+    Diagnostic,
     MqttClient,
     TilesApi,
     UtilsService,
