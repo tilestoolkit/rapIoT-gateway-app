@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BackgroundFetch } from '@ionic-native/background-fetch';
-import { Events } from 'ionic-angular';
+import { Alert, AlertController, Events } from 'ionic-angular';
 import * as mqtt from 'mqtt';
 
 import { TilesApi } from './tilesApi.service';
@@ -13,8 +13,10 @@ export class MqttClient {
   public mqttConnectionData: LoginData;
   private publishOpts = { retain: true };
   private connectionTimeout: number = 10000; // 10 seconds
+  private errorAlert: Alert;
 
-  constructor(public backgroundFetch: BackgroundFetch,
+  constructor(private alertCtrl: AlertController,
+              public backgroundFetch: BackgroundFetch,
               private events: Events,
               public tilesApi: TilesApi) {
     this.mqttConnectionData = this.tilesApi.getLoginData();
@@ -31,6 +33,16 @@ export class MqttClient {
         .catch(err => {
           console.log('Error initializing background fetch', err);
         });
+    this.errorAlert = this.alertCtrl.create({
+     buttons: [{
+        text: 'Dismiss',
+      }],
+      enableBackdropDismiss: true,
+      subTitle: 'An error occured with the mqtt client that is responsible' +
+                'for sending and recieving messages to the application.' +
+                'Make sure the host address and port is correct. \n',
+      title: 'Mqtt error',
+    });
   }
 
   /**
@@ -83,7 +95,7 @@ export class MqttClient {
       try {
         const command: CommandObject = JSON.parse(message);
         if (command) {
-          const deviceId = topic.split('/')[3];
+          const deviceId = topic.split('/')[4];
           this.events.publish('command', deviceId, command);
         }
       } finally {} // tslint:disable-line
@@ -103,6 +115,7 @@ export class MqttClient {
 
     this.client.on('error', error => {
       this.events.publish('error', error);
+      this.errorAlert.present();
       console.log('mqtt error occured');
 
     });
@@ -172,12 +185,14 @@ export class MqttClient {
       this.client.publish(
         this.getDeviceSpecificTopic(deviceId, true),
         JSON.stringify(event),
-        this.publishOpts, err => {
+        this.publishOpts,
+        err => {
           if (err !== undefined) {
-            alert('error sending message: ' + err);
-          }
+            this.errorAlert.present();
+          }; // tslint:disable-line
         },
       );
+      this.events.publish('command', JSON.stringify(event));
     }
   }
 

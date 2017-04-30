@@ -3,7 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { HttpModule }    from '@angular/http';
 import { BackgroundFetch } from '@ionic-native/background-fetch';
 import { Storage } from '@ionic/storage';
-import { IonicApp, IonicModule } from 'ionic-angular';
+import { AlertController, IonicApp, IonicModule } from 'ionic-angular';
 
 import { ApplicationsPage } from '../pages/applications/applications';
 import { DevTermPage } from '../pages/dev-term/dev-term';
@@ -47,6 +47,7 @@ import { AppProviders } from './app.providers';
     IonicModule.forRoot(Tiles),
   ],
   providers: AppProviders.getProviders().concat([
+    AlertController,
     BackgroundFetch,
     Storage,
     BleService,
