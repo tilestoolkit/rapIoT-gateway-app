@@ -106,11 +106,13 @@ export class VirtualTilesPage {
      this.setVirtualTiles();
   }
 
+  /**
+   * Called when the page has exited. Disconnects from connected devices
+   * and clears the virtual device list of tilesApi
+   */
   ionViewDidLeave = () => {
-    console.log('virtual tiles out');
     this.tilesApi.clearVirtualTiles();
     for (let device of this.devices) {
-      console.log('device: ' + device.name);
       this.bleService.disconnect(device);
     };
   }

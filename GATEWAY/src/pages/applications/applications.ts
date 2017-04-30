@@ -11,12 +11,8 @@ import { TilesApi } from '../../providers/tilesApi.service';
 import { Application } from '../../providers/utils.service';
 
 import { Storage } from '@ionic/storage';
-/*
-  Generated class for the Applications page.
 
-  See http://ionicframework.com/docs/v2/components/#navigation for more info on
-  Ionic pages and navigation.
-*/
+
 @Component({
   selector: 'page-applications',
   templateUrl: 'applications.html',
@@ -32,6 +28,7 @@ export class ApplicationsPage {
               private mqttClient: MqttClient,
               private tilesApi: TilesApi,
               private storage: Storage) {}
+
   /**
    * Called when the view is loaded to present login page if
    * the user is not logged in
@@ -63,11 +60,21 @@ export class ApplicationsPage {
   }
 
   /**
+   * Logout - empties the list of applications, changes the refreshstate
+   * and presents login window.
+   */
+  logout = () => {
+    this.storage.set('loggedIn', false);
+    this.applications = [];
+    this.presentLoginModal();
+  }
+
+  /**
    * Called when the refresher is triggered by pulling down on the view of
    */
   refreshApplications = (refresher): void => {
     this.setApplications();
-    // Makes the refresher run for 1.25 sec
+    // Makes the refresher symbol run for 1.25 sec
     setTimeout(() => {
       refresher.complete();
     }, 1250);
@@ -83,19 +90,9 @@ export class ApplicationsPage {
   }
 
   /**
-   * Logout - empties the list of applications, changes the refreshstate
-   * and presents login window.
-   */
-  logout = () => {
-    this.storage.set('loggedIn', false);
-    this.applications = [];
-    this.presentLoginModal();
-  }
-
-  /**
    * Pushes the virtualTilesPage on viewStack and passes the pressed
    * application ID.
-   * @param {Application} application - a tiles application created in the web view
+   * @param {Application} application - a tiles application fetched from the api
    */
   viewApplication = (application: Application): void => {
     // Push another page onto the history stack

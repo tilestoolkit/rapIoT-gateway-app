@@ -4,12 +4,7 @@ import { Events, NavController, NavParams, Content } from 'ionic-angular';
 import { MqttClient } from '../../providers/mqttClient';
 import { CommandObject, UtilsService } from '../../providers/utils.service';
 
-/*
-  Generated class for the DevTerm page.
 
-  See http://ionicframework.com/docs/v2/components/#navigation for more info on
-  Ionic pages and navigation.
-*/
 @Component({
   selector: 'page-dev-term',
   templateUrl: 'dev-term.html'
@@ -27,12 +22,10 @@ export class DevTermPage {
     this.messages = [];
 
     this.events.subscribe('serverConnected', () => {
-      console.log('broker connected');
       this.addNewMessage('Connected to MQTT-broker');
     });
 
     this.events.subscribe('offline', () => {
-      console.log('broker offline');
       this.addNewMessage('MQTT-broker offline');
     });
 
@@ -41,36 +34,45 @@ export class DevTermPage {
     });
 
     this.events.subscribe('reconnect', () => {
-      console.log('reconnecting');
       this.addNewMessage('MQTT-broker reconnecting');
     });
 
     this.events.subscribe('command', (deviceId: string, command: CommandObject) => {
-      console.log('sending command');
       const message = `Sending message to BLE device: ${deviceId} : ${this.utils.getCommandObjectAsString(command)}`;
       this.addNewMessage(message);
     });
 
     this.events.subscribe('recievedEvent', (deviceId: string, event: CommandObject) => {
-      console.log('recieved event');
       const message = `Recieved event from BLE device: ${deviceId} : ${this.utils.getCommandObjectAsString(event)}`;
       this.addNewMessage(message);
     });
   }
 
+  /**
+   * called when the view enters
+   */
   ionViewDidEnter() {
-    this.jumpBottomOfList();
-  }
-
-  addNewMessage = (message) => {
-    this.messages.push({'text': message, 'datetime': this.currentTime()});
     this.scrollBottomOfList();
   }
 
+  /**
+   * add a new message to the list
+   */
+  addNewMessage = (message) => {
+    this.messages.push({'text': message, 'datetime': this.utils.currentTime()});
+    this.scrollBottomOfList();
+  }
+
+  /**
+   * Clear the terminal messages
+   */
   clearTerminal = () => {
     this.messages = [];
   }
 
+  /**
+   * scroll to the bottom of the list
+   */
   scrollBottomOfList = () => {
     // Check if scrolled to bottom of list
     if (this.getListLocation() === 0) {
@@ -81,25 +83,12 @@ export class DevTermPage {
     }
   }
 
-  jumpBottomOfList = () => {
-    setTimeout(() => {
-      this.content.scrollToBottom(50);
-    }, 10);
-  }
-
+  /**
+   * Get the current list location
+   */
   getListLocation = () => {
     let dim = this.content.getContentDimensions();
     let distanceToBottom = dim.scrollHeight - (dim.contentHeight + dim.scrollTop);
-    console.log(distanceToBottom);
-
     return distanceToBottom;
-  }
-
-  currentTime = () => {
-    var date = new Date();
-    var datetime = date.getHours() + ':' +
-                   date.getMinutes() + ':' +
-                   date.getSeconds();
-    return datetime;
   }
 }
