@@ -105,15 +105,4 @@ export class VirtualTilesPage {
      // Refreshes the lists of paired and unpaired virtual tiles
      this.setVirtualTiles();
   }
-
-  /**
-   * Called when the page has exited. Disconnects from connected devices
-   * and clears the virtual device list of tilesApi
-   */
-  ionViewDidLeave = () => {
-    this.tilesApi.clearVirtualTiles();
-    for (let device of this.devices) {
-      this.bleService.disconnect(device);
-    };
-  }
 }

@@ -26,7 +26,6 @@ export class MqttClient {
               this.mqttConnectionData.host !== undefined ||
               this.mqttConnectionData.port !== undefined ) {
             this.connect();
-            ;
             this.backgroundFetch.finish();
           }
         })
@@ -93,7 +92,8 @@ export class MqttClient {
     // Handle events from the broker
     this.client.on('message', (topic, message) => {
       try {
-        const command: CommandObject = JSON.parse(message);
+        const response = JSON.parse(message);
+        const command: CommandObject = new CommandObject(response.name, response.properties);
         if (command) {
           const deviceId = topic.split('/')[4];
           this.events.publish('command', deviceId, command);
@@ -116,12 +116,9 @@ export class MqttClient {
     this.client.on('error', error => {
       this.events.publish('error', error);
       this.errorAlert.present();
-      console.log('mqtt error occured');
-
     });
 
     this.client.on('connect', () => {
-      console.log('connected to broker');
       clearTimeout(failedConnectionTimeout);
       this.events.publish('serverConnected');
     });
