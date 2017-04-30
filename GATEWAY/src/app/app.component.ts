@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { BackgroundMode } from '@ionic-native/background-mode';
 import { Events, Platform } from 'ionic-angular';
 import { Splashscreen, StatusBar } from 'ionic-native';
 
@@ -19,11 +20,14 @@ import { CommandObject, UtilsService } from '../providers/utils.service';
 export class Tiles {
   private rootPage = TabsPage; // tslint:disable-line
 
-  constructor(private events: Events,
+  constructor(private backgroundMode: BackgroundMode,
+              private events: Events,
               private platform: Platform,
               private bleService: BleService,
               private devicesService: DevicesService,
               private utils: UtilsService ) {
+
+    this.backgroundMode.enable();
 
     platform.ready().then(() => {
       StatusBar.styleDefault();

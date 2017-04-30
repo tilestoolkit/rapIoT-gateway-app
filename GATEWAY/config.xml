@@ -38,4 +38,5 @@
     <plugin name="cordova-plugin-splashscreen" spec="~4.0.1" />
     <plugin name="cordova-sqlite-storage" spec="~2.0.2" />
     <plugin name="cordova.plugins.diagnostic" spec="~3.5.0" />
+    <plugin name="cordova-plugin-background-mode" spec="~0.7.2" />
 </widget>

@@ -4,6 +4,7 @@ import { Storage } from '@ionic/storage';
 import { BLE } from '@ionic-native/ble';
 import { BackgroundFetch } from '@ionic-native/background-fetch';
 import { Diagnostic } from '@ionic-native/diagnostic';
+import { BackgroundMode } from '@ionic-native/background-mode';
 import { Tiles } from './app.component';
 import { TabsPage } from '../pages/tabs/tabs';
 import { MqttClient } from '../providers/mqttClient';
@@ -30,6 +31,7 @@ describe('App Component', () => {
                 provide: BackgroundFetch,
                 useClass: BackgroundFetchMock
                 },
+                BackgroundMode,
                 BLE,
                 Diagnostic,
                 MqttClient,
