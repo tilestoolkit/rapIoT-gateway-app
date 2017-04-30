@@ -43,8 +43,8 @@ export class ApplicationsPage {
             this.presentLoginModal();
           } else {
             this.tilesApi.setLoginData(loginData);
-            this.mqttClient.connect();
             this.setApplications();
+            this.mqttClient.connect();
           }
         });
       }
@@ -100,5 +100,16 @@ export class ApplicationsPage {
     this.navCtrl.push(VirtualTilesPage, {
       app: application,
     });
+  }
+
+  /**
+   * Called when the page has exited. Disconnects from connected devices
+   * and clears the virtual device list of tilesApi
+   */
+  ionViewDidEnter = () => {
+    this.tilesApi.clearVirtualTiles();
+    for (let device of this.devicesService.getDevices()) {
+      this.bleService.disconnect(device);
+    };
   }
 }
