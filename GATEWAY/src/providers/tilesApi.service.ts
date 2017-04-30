@@ -174,6 +174,7 @@ export class TilesApi {
     return this.http.post(url, body, {headers: headerFields}).toPromise()
              .catch(err => {
                console.log('Feiled pairing of the physical and virtual tile with error: ' + err);
+               return null;
              });
   }
 }
