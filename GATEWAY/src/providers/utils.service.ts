@@ -135,7 +135,7 @@ export class UtilsService {
   /**
    * getThe current time in the format HH:MM:SS
    */
-  currentTime = () => {
+  public currentTime = () => {
     var date = new Date();
     var datetime = date.getHours() + ':' +
                    date.getMinutes() + ':' +
