@@ -27,6 +27,13 @@ export class DevicesService {
   }
 
   /**
+   * Returns the list of devices currently stored
+   */
+  public getDevices = (): Device[] => {
+    return this.devices;
+  }
+
+  /**
    * Adds a new device to the list of devices
    * @param {Device} device - the device to add
    */

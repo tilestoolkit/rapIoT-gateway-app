@@ -2,6 +2,8 @@ import { inject, TestBed, async } from '@angular/core/testing';
 import { Http, Response, ResponseOptions, BaseRequestOptions, RequestMethod } from '@angular/http';
 import { Storage } from '@ionic/storage';
 import { MockBackend, MockConnection } from '@angular/http/testing';
+import { App, Config, AlertController, Platform } from 'ionic-angular';
+
 import { Application, Device, LoginData } from './utils.service';
 import { TilesApi } from './tilesApi.service';
 import { StorageMock } from '../mocks';
@@ -18,6 +20,9 @@ describe('tilesAPI', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
+        App,
+        Config,
+        AlertController,
         MockBackend,
         BaseRequestOptions,
         {
@@ -31,6 +36,7 @@ describe('tilesAPI', () => {
           provide: Storage,
           useClass: StorageMock
         },
+        Platform,
         TilesApi,
       ],
     });
@@ -82,7 +88,7 @@ describe('tilesAPI', () => {
 
     it('should get loginData from storage if loginData is undefined', (() => {
       tilesApi.setLoginData(undefined);
-      spyOn(tilesApi.getStorage(), 'get').and.callFake( () => {
+      spyOn(tilesApi.storage, 'get').and.callFake( () => {
         return {
           then: (callback) => {return callback(loginData);}
         };
@@ -102,7 +108,7 @@ describe('tilesAPI', () => {
 
     it('should get loginData from storage if loginData is null', (() => {
       tilesApi.setLoginData(null);
-      spyOn(tilesApi.getStorage(), 'get').and.callFake( () => {
+      spyOn(tilesApi.storage, 'get').and.callFake( () => {
         return {
           then: (callback) => {return callback(loginData);}
         };
@@ -128,7 +134,7 @@ describe('tilesAPI', () => {
       expect(tilesApi.activeApp).toBeUndefined();
 
       tilesApi.setActiveApp(activeApp);
-      
+
       expect(tilesApi.activeApp).toEqual(activeApp);
     });
 
@@ -145,7 +151,7 @@ describe('tilesAPI', () => {
           then: (callback) => {return callback(mockTilesApplicationDetailsResponse.virtualTiles);}
         };
       });
-      
+
       tilesApi.setVirtualTiles();
 
       expect(tilesApi['getApplicationTiles']).toHaveBeenCalled();

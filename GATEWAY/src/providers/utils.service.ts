@@ -164,4 +164,4 @@ export class UtilsService {
   }
 }
 
-export default { CommandObject, Device, UtilsService, VirtualTile };
+export default { UtilsService };
