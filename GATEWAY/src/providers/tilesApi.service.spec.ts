@@ -3,6 +3,7 @@ import { Http, Response, ResponseOptions, BaseRequestOptions, RequestMethod } fr
 import { Storage } from '@ionic/storage';
 import { MockBackend, MockConnection } from '@angular/http/testing';
 import { Application, Device, LoginData, VirtualTile } from './utils.service';
+import { App, Config, AlertController, Platform } from 'ionic-angular';
 import { TilesApi } from './tilesApi.service';
 import { StorageMock } from '../mocks';
 
@@ -20,8 +21,13 @@ describe('tilesAPI', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
+        App,
+        Config,
+        AlertController,
         MockBackend,
         BaseRequestOptions,
+        Platform,
+        TilesApi,
         {
           provide : Http,
           useFactory: (backendInstance: MockBackend, defaultOptions: BaseRequestOptions) => {
@@ -33,7 +39,6 @@ describe('tilesAPI', () => {
           provide: Storage,
           useClass: StorageMock
         },
-        TilesApi,
       ],
     });
   });
@@ -86,7 +91,7 @@ describe('tilesAPI', () => {
     it('should get loginData from storage if loginData is undefined', (() => {
       let spy = spyOn(tilesApi, 'setLoginData').and.callThrough();
       tilesApi.loginData = undefined;
-      spyOn(tilesApi.getStorage(), 'get').and.callFake( () => {
+      spyOn(tilesApi.storage, 'get').and.callFake( () => {
         return {
           then: (callback) => {return callback(loginData);}
         };
@@ -106,7 +111,7 @@ describe('tilesAPI', () => {
     it('should get loginData from storage if loginData is null', (() => {
       let spy = spyOn(tilesApi, 'setLoginData').and.callThrough();
       tilesApi.loginData = null;
-      spyOn(tilesApi.getStorage(), 'get').and.callFake( () => {
+      spyOn(tilesApi.storage, 'get').and.callFake( () => {
         return {
           then: (callback) => {return callback(loginData);}
         };

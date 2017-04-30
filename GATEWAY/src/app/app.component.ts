@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
+import { BackgroundMode } from '@ionic-native/background-mode';
 import { Events, Platform } from 'ionic-angular';
 import { Splashscreen, StatusBar } from 'ionic-native';
 
 import { TabsPage } from '../pages/tabs/tabs';
 import { BleService } from '../providers/ble.service';
 import { DevicesService } from '../providers/devices.service';
-import { CommandObject, Device, UtilsService } from '../providers/utils.service';
+import { CommandObject, UtilsService } from '../providers/utils.service';
 
 
 @Component({
@@ -18,13 +19,15 @@ import { CommandObject, Device, UtilsService } from '../providers/utils.service'
 })
 export class Tiles {
   private rootPage = TabsPage; // tslint:disable-line
-  private devices: Device[];
 
-  constructor(private events: Events,
+  constructor(private backgroundMode: BackgroundMode,
+              private events: Events,
               private platform: Platform,
               private bleService: BleService,
               private devicesService: DevicesService,
               private utils: UtilsService ) {
+
+    this.backgroundMode.enable();
 
     platform.ready().then(() => {
       StatusBar.styleDefault();
@@ -40,16 +43,13 @@ export class Tiles {
     });
 
     this.events.subscribe('command', (deviceId: string, command: CommandObject) => {
-      for (let device of this.devices) {
+      const devices = this.devicesService.getDevices();
+      for (let device of devices) {
         if (device.tileId === deviceId) {
           const commandString = this.utils.getCommandObjectAsString(command);
           this.bleService.sendData(device, commandString);
         }
       }
-    });
-
-    this.events.subscribe('updateDevices', () => {
-      this.devices = this.devicesService.getDevices();
     });
   }
 }

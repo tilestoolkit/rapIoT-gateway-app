@@ -133,6 +133,17 @@ export class UtilsService {
   }
 
   /**
+   * getThe current time in the format HH:MM:SS
+   */
+  public currentTime = () => {
+    var date = new Date();
+    var datetime = date.getHours() + ':' +
+                   date.getMinutes() + ':' +
+                   date.getSeconds();
+    return datetime;
+  }
+
+  /**
    * Verify that input of user login is valid
    * @param {string} user - username
    * @param {string} host - api host address
@@ -153,4 +164,4 @@ export class UtilsService {
   }
 }
 
-export default { CommandObject, Device, UtilsService, VirtualTile };
+export default { UtilsService };

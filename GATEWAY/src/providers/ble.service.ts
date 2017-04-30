@@ -1,7 +1,7 @@
 
 import { Injectable } from '@angular/core';
 import { BLE } from '@ionic-native/ble';
-import { Events } from 'ionic-angular';
+import { Alert, AlertController, Events } from 'ionic-angular';
 import { Observable, Subscription } from 'rxjs';
 import 'rxjs/add/operator/toPromise';
 
@@ -20,38 +20,24 @@ export class BleService {
     sendCharacteristicUUID: '2222',
     serviceUUID: '2220',
   };
+  private errorAlert: Alert;
 
-  constructor(private events: Events,
+  constructor(private alertCtrl: AlertController,
+              private events: Events,
               public ble: BLE,
               public devicesService: DevicesService,
               public mqttClient: MqttClient,
               public tilesApi: TilesApi,
-              public utils: UtilsService) {}
-
-  /**
-   * The following code will mainly be used for getting private parameters
-   * for testing purposes
-   */
-  public getBleScanner = (): Subscription => {
-    return this.bleScanner;
-  }
-  public setBleScanner = (sub: Subscription): void => {
-    this.bleScanner = sub;
-  }
-  public getBle = (): BLE => {
-    return this.ble;
-  }
-  public getDevicesService = (): DevicesService => {
-    return this.devicesService;
-  }
-  public getMqttClient = (): MqttClient => {
-    return this.mqttClient;
-  }
-  public getTilesApi = (): TilesApi => {
-    return this.tilesApi;
-  }
-  public getUtils = (): UtilsService => {
-    return this.utils;
+              public utils: UtilsService) {
+    this.errorAlert = this.alertCtrl.create({
+      buttons: [{
+        text: 'Dismiss',
+      }],
+      enableBackdropDismiss: true,
+      subTitle: 'An error occured when trying to communicate to ' +
+                      'the tile via Bluetooth Low Energy.',
+      title: 'Bluetooth error',
+    });
   }
 
   /**
@@ -83,14 +69,14 @@ export class BleService {
               this.scanBLE();
             })
             .catch( err => {
-              // alert('Bluetooth not enabled!');
+              this.errorAlert.present();
               // NB! Android only!! IOS users has to turn bluetooth on manually
               this.ble.enable()
                  .then( res => {
                     this.scanBLE();
                   })
                  .catch( errEnable => {
-                    // alert('Failed to enable bluetooth, try doing it manually');
+                    this.errorAlert.present();
                   });
             });
   }
@@ -135,6 +121,7 @@ export class BleService {
           },
           err => {
             console.log(err);
+            // this.errorAlert.present();
           });
   }
 
@@ -168,9 +155,11 @@ export class BleService {
                                this.rfduino.sendCharacteristicUUID,
                                dataArray.buffer)
               .then( res => console.log('Success sending the string: ' + dataString))
-              .catch( err => alert('Failed when trying to send data to the device!'));
+              .catch( err => {
+                this.errorAlert.present();
+              });
     } catch (err) {
-      alert('Failed when trying to send data to the device!');
+      this.errorAlert.present();
     }
   }
 
@@ -181,7 +170,7 @@ export class BleService {
     // A list of the discovered devices
     const virtualTiles = this.tilesApi.getVirtualTiles();
     let newDevices: Device[] = [];
-    this.ble.scan([], 30).subscribe(
+    this.ble.scan([], 10).subscribe(
       // function to be called for each new device discovered
       bleDevice => {
         if (this.tilesApi.isTilesDevice(bleDevice)) {
@@ -195,11 +184,11 @@ export class BleService {
               this.connect(device);
             }
             this.events.publish('updateDevices');
-          }).catch(err => alert(err));
+          }).catch(err => this.errorAlert.present());
         }
       },
       err => {
-        alert('Error when scanning for devices: ' + err);
+        this.errorAlert.present();
       },
       () => {
         console.log('done scanning');
