@@ -38,7 +38,7 @@ export class DevTermPage {
     });
 
     this.events.subscribe('command', (deviceId: string, command: CommandObject) => {
-      const message = `Sending message to cloud from device: ${deviceId} : ${this.utils.getCommandObjectAsString(command)}`;
+      const message = `Got message from cloud from device: ${deviceId} \n${this.utils.getCommandObjectAsString(command)}`;
       this.addNewMessage(message);
     });
 
