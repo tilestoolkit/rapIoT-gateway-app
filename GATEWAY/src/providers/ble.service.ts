@@ -95,7 +95,6 @@ export class BleService {
     this.ble.connect(device.id)
         .subscribe(
           res => {
-            console.log('connecting to : ' + device.name);
             // Setting information about the device
             device.connected = true;
             this.startDeviceNotification(device);
@@ -104,7 +103,7 @@ export class BleService {
           err => {
             device.connected = false;
             this.devicesService.clearDisconnectedDevices();
-            // this.events.publish('updateDevices');
+
             this.disconnect(device);
           });
   }
@@ -126,8 +125,7 @@ export class BleService {
             }, 3000);
           },
           err => {
-            console.log(err);
-            // this.errorAlert.present();
+            this.errorAlert.present();
           });
   }
 
@@ -176,7 +174,6 @@ export class BleService {
   public scanBLE = (): void => {
     // A list of the discovered devices
     const virtualTiles = this.tilesApi.getVirtualTiles();
-    let newDevices: Device[] = [];
     this.ble.scan([], 5).subscribe(
       // function to be called for each new device discovered
       bleDevice => {
@@ -184,7 +181,6 @@ export class BleService {
           this.devicesService.convertBleDeviceToDevice(bleDevice).then( device => {
             this.mqttClient.registerDevice(device);
             this.devicesService.newDevice(device);
-            newDevices.push(device);
             if (virtualTiles.filter(tile => tile.tile !== null)
                             .map(tile => tile.tile.name)
                             .includes(device.tileId)) {
@@ -210,6 +206,7 @@ export class BleService {
     this.ble.startNotification(device.id, this.rfduino.serviceUUID, this.rfduino.receiveCharacteristicUUID)
       .subscribe(
         res => {
+          device.lastDiscovered = (new Date()).getTime();
           const responseString = ((String.fromCharCode.apply(null, new Uint8Array(res))).slice(0, -1)).trim();
           const message: CommandObject = this.utils.getEventStringAsObject(responseString);
           if (message === null) {
@@ -220,7 +217,7 @@ export class BleService {
           }
         },
         err => {
-          console.log('Failed to start notification');
+          this.errorAlert.present();
         },
         () => { // called when the device disconnects
           device.connected = false;
