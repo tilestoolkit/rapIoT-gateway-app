@@ -104,7 +104,7 @@ export class BleService {
           err => {
             device.connected = false;
             this.devicesService.clearDisconnectedDevices();
-            this.events.publish('updateDevices');
+            // this.events.publish('updateDevices');
             this.disconnect(device);
           });
   }
@@ -189,7 +189,7 @@ export class BleService {
                             .includes(device.tileId)) {
               this.connect(device);
             }
-            this.events.publish('updateDevices');
+            // this.events.publish('updateDevices');
           }).catch(err => this.errorAlert.present());
         }
       },
