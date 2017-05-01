@@ -140,6 +140,7 @@ export class BleService {
             .then( res => {
               device.connected = false;
               this.mqttClient.unregisterDevice(device);
+              this.devicesService.clearDisconnectedDevices();
               console.log('diconnected from device: ' + device.name);
             })
             .catch( err => {
@@ -223,6 +224,7 @@ export class BleService {
         },
         () => { // called when the device disconnects
           device.connected = false;
+          this.devicesService.clearDisconnectedDevices();
           this.mqttClient.unregisterDevice(device);
         });
   }
