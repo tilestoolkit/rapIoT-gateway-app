@@ -184,22 +184,6 @@ describe('mqttClient', () => {
 
   });
 
-  describe('endConnection(deviceId: string, event: any): void', () => {
-
-    it('should end the connection to the client if it is defined, and run method stopBackgroundFetch', () => {
-      let spyClient = new MqttMock;
-      mqttClient.client = spyClient;
-      let endSpy = spyOn(spyClient, 'end');
-      let stopSpy = spyOn(mqttClient, 'stopBackgroundFetch');
-
-      mqttClient.endConnection('test', true);
-
-      expect(endSpy).toHaveBeenCalled();
-      expect(stopSpy).toHaveBeenCalled();
-    });
-
-  });
-
   describe('startBackgroundFetch(): void', () => {
 
     it('should start the BackgroundFetch', () => {

@@ -193,18 +193,6 @@ export class MqttClient {
   }
 
   /**
-   * End the connection to a device
-   * @param {string} deviceId - the ID of the device to register
-   * @param event - ??
-   */
-  public endConnection = (deviceId: string, event: any): void => {
-    if (this.client) {
-      this.client.end();
-    }
-    this.stopBackgroundFetch();
-  }
-
-  /**
    * Run a background update for IOS. This will run every 15 minutes at most and less when
    * the phone thinks it is less likely to be used (at night, etc.). There is nothing to do to
    * make it run more often as this is set by apple. (As of 22.03.2017)
