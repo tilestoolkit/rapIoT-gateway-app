@@ -67,42 +67,35 @@ export class BleService {
    */
   public scanForDevices = (): void => {
     this.devicesService.clearDisconnectedDevices();
-    this.ble.isEnabled()
-            .then( res => {
+    this.ble.isEnabled().then( res => {
               if (!this.platform.is('ios')) {
-                this.diagnostic.isLocationEnabled()
-                  .then(diagnosticRes => {
-                    if (diagnosticRes) {
-                      this.scanBLE();
-                    } else {
-                      alert('Location is not activated, please activate it.');
-                      this.diagnostic.switchToLocationSettings();
-                    }
-                  });
+                this.checkLocation();
               } else {
                 this.scanBLE();
               }
-            })
-            .catch( err => {
+            }).catch( err => {
               this.errorAlert.present();
               // NB! Android only!! IOS users has to turn bluetooth on manually
-              this.ble.enable()
-                .then( res => {
-                  this.diagnostic.isLocationEnabled()
-                    .then( diagnosticRes => {
-                      this.scanBLE();
-                    })
-                    .catch( diagnosticErr => {
-                      console.log(diagnosticErr);
-                      alert('Location is not activated, please activate it.');
-                      this.diagnostic.switchToLocationSettings();
-                    });
-                })
-                .catch( errEnable => {
-                  console.log(errEnable);
-                  this.errorAlert.present();
-                });
+              if (!this.platform.is('ios')) {
+                this.ble.enable().then( res => {
+                    this.checkLocation();
+                  }).catch( errEnable => {
+                    console.log(errEnable);
+                    this.errorAlert.present();
+                  });
+              }
             });
+  }
+
+  private checkLocation = () => {
+    this.diagnostic.isLocationEnabled().then(diagnosticRes => {
+        if (diagnosticRes) {
+          this.scanBLE();
+        } else {
+          alert('Location is not activated, please activate it.');
+          this.diagnostic.switchToLocationSettings();
+        }
+      });
   }
 
   /**
