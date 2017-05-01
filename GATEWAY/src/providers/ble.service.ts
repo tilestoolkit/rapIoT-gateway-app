@@ -87,17 +87,6 @@ export class BleService {
             });
   }
 
-  private checkLocation = () => {
-    this.diagnostic.isLocationEnabled().then(diagnosticRes => {
-        if (diagnosticRes) {
-          this.scanBLE();
-        } else {
-          alert('Location is not activated, please activate it.');
-          this.diagnostic.switchToLocationSettings();
-        }
-      });
-  }
-
   /**
    * Connect to a device
    * @param {Device} device - the target device
@@ -236,5 +225,16 @@ export class BleService {
           device.connected = false;
           this.mqttClient.unregisterDevice(device);
         });
+  }
+
+  private checkLocation = () => {
+    this.diagnostic.isLocationEnabled().then(diagnosticRes => {
+        if (diagnosticRes) {
+          this.scanBLE();
+        } else {
+          alert('Location is not activated, please activate it.');
+          this.diagnostic.switchToLocationSettings();
+        }
+      });
   }
 }
