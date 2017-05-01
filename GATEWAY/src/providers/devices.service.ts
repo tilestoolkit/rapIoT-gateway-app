@@ -20,8 +20,20 @@ export class DevicesService {
   public convertBleDeviceToDevice = (bleDevice: any): Promise<Device>  => {
     return this.storage.get(bleDevice.name).then( name => {
       const deviceName = (name !== null && name !== undefined) ? name : bleDevice.name;
+      this.devices.forEach(device => {
+        if (bleDevice.id === device.tileId) {
+          device.lastDiscovered = (new Date()).getTime();
+          return device;
+        }
+      });
       return new Device(bleDevice.id, bleDevice.name, deviceName, false);
     }).catch(err => {
+      this.devices.forEach(device => {
+        if (bleDevice.id === device.tileId) {
+          device.lastDiscovered = (new Date()).getTime();
+          return device;
+        }
+      });
       return new Device(bleDevice.id, bleDevice.name, bleDevice.name, false);
     });
   }
