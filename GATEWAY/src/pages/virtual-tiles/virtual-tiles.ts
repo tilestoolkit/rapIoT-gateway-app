@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { AlertController, NavController, NavParams } from 'ionic-angular';
+import { AlertController, Events, NavController, NavParams } from 'ionic-angular';
 
 import { BleService } from '../../providers/ble.service';
 import { DevicesService } from '../../providers/devices.service';
@@ -23,6 +23,7 @@ export class VirtualTilesPage {
   activeApp: Application;
 
   constructor(public alertCtrl: AlertController,
+              public events: Events,
               public navCtrl: NavController,
               public navParams: NavParams,
               private bleService: BleService,
@@ -37,6 +38,11 @@ export class VirtualTilesPage {
     this.devices = this.devicesService.getDevices();
     this.tilesApi.setVirtualTiles();
     this.setVirtualTiles();
+
+    this.events.subscribe('updateDevices', () => {
+      this.devices = this.devicesService.getDevices();
+      this.setVirtualTiles();
+    });
   }
 
   /**

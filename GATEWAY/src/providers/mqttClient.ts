@@ -189,7 +189,6 @@ export class MqttClient {
           }; // tslint:disable-line
         },
       );
-      this.events.publish('command', JSON.stringify(event));
     }
   }
 
