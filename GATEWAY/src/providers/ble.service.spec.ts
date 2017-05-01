@@ -4,6 +4,7 @@ import { MockBackend } from '@angular/http/testing';
 import { Storage } from '@ionic/storage';
 import { BackgroundFetch } from '@ionic-native/background-fetch';
 import { BLE } from '@ionic-native/ble';
+import { Diagnostic } from '@ionic-native/diagnostic';
 import { App, Config, AlertController, Platform, Events } from 'ionic-angular';
 import { Observable, Subscription } from 'rxjs';
 import { BleService } from './ble.service';
@@ -50,6 +51,7 @@ describe('bleService', () => {
           deps: [MockBackend, BaseRequestOptions],
         },
         DevicesService,
+        Diagnostic,
         UtilsService,
         TilesApi,
         MqttClient,

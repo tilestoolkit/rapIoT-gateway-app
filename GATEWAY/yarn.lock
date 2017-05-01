@@ -101,6 +101,10 @@
   version "3.6.1"
   resolved "https://registry.yarnpkg.com/@ionic-native/core/-/core-3.6.1.tgz#fb0dd23f611dbb33ae9bf54c897c46343968aab6"
 
+"@ionic-native/diagnostic@^3.6.1":
+  version "3.6.1"
+  resolved "https://registry.yarnpkg.com/@ionic-native/diagnostic/-/diagnostic-3.6.1.tgz#9ad09112251095070ab171be3182f918c048da83"
+
 "@ionic/app-scripts@1.1.3":
   version "1.1.3"
   resolved "https://registry.yarnpkg.com/@ionic/app-scripts/-/app-scripts-1.1.3.tgz#ef510d64b8e4d9e8219717b98e00624c072c2221"
