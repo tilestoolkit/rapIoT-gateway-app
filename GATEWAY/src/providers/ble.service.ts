@@ -176,7 +176,7 @@ export class BleService {
     // A list of the discovered devices
     const virtualTiles = this.tilesApi.getVirtualTiles();
     let newDevices: Device[] = [];
-    this.ble.scan([], 10).subscribe(
+    this.ble.scan([], 5).subscribe(
       // function to be called for each new device discovered
       bleDevice => {
         if (this.tilesApi.isTilesDevice(bleDevice)) {

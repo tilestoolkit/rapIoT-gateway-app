@@ -69,4 +69,12 @@ export class PhysicalTilesPage {
       }],
     }).present();
   }
+
+
+  /**
+   * Called when the page has entered. Updates devices list
+   */
+  ionViewDidEnter = () => {
+    this.devices = this.devicesService.getDevices();
+  }
 }

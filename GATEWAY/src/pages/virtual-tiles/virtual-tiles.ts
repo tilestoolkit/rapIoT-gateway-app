@@ -111,4 +111,12 @@ export class VirtualTilesPage {
      // Refreshes the lists of paired and unpaired virtual tiles
      this.setVirtualTiles();
   }
+
+  /**
+   * Called when the page has entered. Updates devices lists
+   */
+  ionViewDidEnter = () => {
+    this.devices = this.devicesService.getDevices();
+    this.setVirtualTiles();
+  }
 }

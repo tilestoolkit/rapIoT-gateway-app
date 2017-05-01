@@ -70,7 +70,7 @@ export class DevicesService {
   public clearDisconnectedDevices = (): void => { // TODO: Change name?
     const currentTime = (new Date()).getTime();
     this.devices = this.devices.filter(device => {
-      return currentTime - device.lastDiscovered < 60000 || device.connected;
+      return currentTime - device.lastDiscovered < 30000 || device.connected;
     });
   }
 }
