@@ -1,7 +1,8 @@
 
 import { Injectable } from '@angular/core';
 import { BLE } from '@ionic-native/ble';
-import { Alert, AlertController, Events } from 'ionic-angular';
+import { Diagnostic } from '@ionic-native/diagnostic';
+import { Alert, AlertController, Events, Platform } from 'ionic-angular';
 import { Observable, Subscription } from 'rxjs';
 import 'rxjs/add/operator/toPromise';
 
@@ -23,7 +24,9 @@ export class BleService {
   private errorAlert: Alert;
 
   constructor(private alertCtrl: AlertController,
+              private diagnostic: Diagnostic,
               private events: Events,
+              private platform: Platform,
               public ble: BLE,
               public devicesService: DevicesService,
               public mqttClient: MqttClient,
@@ -64,20 +67,23 @@ export class BleService {
    */
   public scanForDevices = (): void => {
     this.devicesService.clearDisconnectedDevices();
-    this.ble.isEnabled()
-            .then( res => {
-              this.scanBLE();
-            })
-            .catch( err => {
+    this.ble.isEnabled().then( res => {
+              if (!this.platform.is('ios')) {
+                this.checkLocation();
+              } else {
+                this.scanBLE();
+              }
+            }).catch( err => {
               this.errorAlert.present();
               // NB! Android only!! IOS users has to turn bluetooth on manually
-              this.ble.enable()
-                 .then( res => {
-                    this.scanBLE();
-                  })
-                 .catch( errEnable => {
+              if (!this.platform.is('ios')) {
+                this.ble.enable().then( res => {
+                    this.checkLocation();
+                  }).catch( errEnable => {
+                    console.log(errEnable);
                     this.errorAlert.present();
                   });
+              }
             });
   }
 
@@ -219,5 +225,16 @@ export class BleService {
           device.connected = false;
           this.mqttClient.unregisterDevice(device);
         });
+  }
+
+  private checkLocation = () => {
+    this.diagnostic.isLocationEnabled().then(diagnosticRes => {
+        if (diagnosticRes) {
+          this.scanBLE();
+        } else {
+          alert('Location is not activated, please activate it.');
+          this.diagnostic.switchToLocationSettings();
+        }
+      });
   }
 }
