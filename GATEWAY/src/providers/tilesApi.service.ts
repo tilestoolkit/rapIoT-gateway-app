@@ -142,7 +142,6 @@ export class TilesApi {
                 }
               } finally {
                 console.log('failed getting applications with error: ' + err);
-                return null;
               }
             });
   }
@@ -166,7 +165,6 @@ export class TilesApi {
               } finally {
                 console.log('failed getting applications with error: ' + err);
                 console.log('url ' + url);
-                return null;
               }
             });
   }
@@ -198,7 +196,6 @@ export class TilesApi {
                   }
                 } finally {
                   console.log('Feiled pairing of the physical and virtual tile with error: ' + err);
-                  return null;
                 }
              });
   }

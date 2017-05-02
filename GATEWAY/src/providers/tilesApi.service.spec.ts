@@ -311,7 +311,7 @@ describe('tilesAPI', () => {
       });
 
       tilesApi.getApplicationDetails().then(application => {
-        expect(application).toBeNull();
+        expect(application).toBeUndefined();
       });
     }));
 
