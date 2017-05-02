@@ -2,20 +2,21 @@ import { inject, TestBed, async } from '@angular/core/testing';
 import { Http, Response, ResponseOptions, BaseRequestOptions, RequestMethod } from '@angular/http';
 import { Storage } from '@ionic/storage';
 import { MockBackend, MockConnection } from '@angular/http/testing';
+import { Application, Device, LoginData, VirtualTile } from './utils.service';
 import { App, Config, AlertController, Platform } from 'ionic-angular';
-
-import { Application, Device, LoginData } from './utils.service';
 import { TilesApi } from './tilesApi.service';
 import { StorageMock } from '../mocks';
 
 import * as mockTilesApplicationDetailsResponse from '../fixtures/applicationDetails.json';
 import * as mockTilesApplicationsResponse from '../fixtures/applications.json';
+import * as mockUsersResponse from '../fixtures/users.json';
 
 describe('tilesAPI', () => {
 
   let tilesApi: TilesApi = null;
   let loginData: LoginData = new LoginData('Test', '172.68.99.218', 8080, false);
   let activeApp: Application = new Application('test3', '', '', false, false, 8080, []);
+  let virtualTile: VirtualTile = new VirtualTile();
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -25,6 +26,8 @@ describe('tilesAPI', () => {
         AlertController,
         MockBackend,
         BaseRequestOptions,
+        Platform,
+        TilesApi,
         {
           provide : Http,
           useFactory: (backendInstance: MockBackend, defaultOptions: BaseRequestOptions) => {
@@ -36,16 +39,14 @@ describe('tilesAPI', () => {
           provide: Storage,
           useClass: StorageMock
         },
-        Platform,
-        TilesApi,
       ],
     });
   });
 
   beforeEach(inject([TilesApi], (temp: TilesApi) => {
     tilesApi = temp;
-    tilesApi.setLoginData(loginData);
-    tilesApi.setActiveApp(activeApp);
+    tilesApi.loginData = loginData;
+    tilesApi.activeApp = activeApp;
   }));
 
   afterEach(() => {
@@ -70,57 +71,55 @@ describe('tilesAPI', () => {
 
   describe('setLoginData(loginData: LoginData): void', () => {
     it('should set the correct login data in the beforeEach', () => {
-      /**
-       * tilesApi.loginData is set before each test
-       * Therefore it is only necessary to test if the correct data
-       * is set here
-       */
-      expect(tilesApi.getLoginData()).toEqual(loginData);
+      tilesApi.setLoginData(loginData);
+
+      expect(tilesApi.loginData).toEqual(loginData);
     });
   });
 
   describe('getLoginData(): void', () => {
 
     it('should return the correct login data', () => {
+      let spy = spyOn(tilesApi.storage, 'get').and.callThrough();
       expect(tilesApi.getLoginData()).toEqual(loginData);
-      expect(tilesApi.flagThen).toBeFalsy();
+        expect(spy).not.toHaveBeenCalled();
     });
 
     it('should get loginData from storage if loginData is undefined', (() => {
-      tilesApi.setLoginData(undefined);
+      let spy = spyOn(tilesApi, 'setLoginData').and.callThrough();
+      tilesApi.loginData = undefined;
       spyOn(tilesApi.storage, 'get').and.callFake( () => {
         return {
           then: (callback) => {return callback(loginData);}
         };
       });
-      expect(tilesApi.flagThen).toBeFalsy();
 
-      let returnedLoginData = (): Promise<any> => { return new Promise( () => {
-                                  let temp = tilesApi.getLoginData();
-                                  return temp;
+      let returnedLoginData = (): Promise<any> => { return new Promise( (resolve) => {
+                                  tilesApi.getLoginData();
+                                  resolve(tilesApi.getLoginData());
                               })};
       returnedLoginData().then( res => {
         expect(tilesApi).toBeDefined();
-        expect(tilesApi.flagThen).toBeTruthy();
+        expect(spy).toHaveBeenCalled();
         expect(res).toEqual(loginData);
       });
     }));
 
     it('should get loginData from storage if loginData is null', (() => {
-      tilesApi.setLoginData(null);
+      let spy = spyOn(tilesApi, 'setLoginData').and.callThrough();
+      tilesApi.loginData = null;
       spyOn(tilesApi.storage, 'get').and.callFake( () => {
         return {
           then: (callback) => {return callback(loginData);}
         };
       });
-      expect(tilesApi.flagThen).toBeFalsy();
 
-      let returnedLoginData = (): Promise<any> => { return new Promise( () => {
-                                  let temp = tilesApi.getLoginData();
-                                  return temp;
+      let returnedLoginData = (): Promise<any> => { return new Promise( (resolve) => {
+                                  tilesApi.getLoginData();
+                                  resolve(tilesApi.getLoginData());
                               })};
       returnedLoginData().then( res => {
-        expect(tilesApi.flagThen).toBeTruthy();
+        expect(spy).toHaveBeenCalled();
         expect(res).toEqual(loginData);
       });
     }));
@@ -142,10 +141,27 @@ describe('tilesAPI', () => {
 
   describe('getActiveApp(): Application', () => {
 
+    it('should return the active app', () => {
+      //Active app is set beforeEach, so here it is only necessary to test the return value
+      let returnedApp = tilesApi.getActiveApp();
+
+      expect(returnedApp).toEqual(activeApp);
+    });
+
+    it('should return a mock application if activeApp is undefined', () => {
+      //The mock application returned is the same as 'activeApp'
+      tilesApi.activeApp = undefined;
+      expect(tilesApi.activeApp).toBeUndefined();
+
+      let returnedApp = tilesApi.getActiveApp();
+
+      expect(returnedApp).toEqual(activeApp);
+    });
+
   });
 
   describe('setVirtualTiles(appId: string): void', () => {
-    it('should set virtualTiles equal to a list of virtual tiles from an application', () => {
+    it('should set virtualTiles equal to a list of Virtual Tiles from an application', () => {
       spyOn(tilesApi, 'getApplicationTiles').and.callFake( () => {
         return {
           then: (callback) => {return callback(mockTilesApplicationDetailsResponse.virtualTiles);}
@@ -161,17 +177,80 @@ describe('tilesAPI', () => {
 
   describe('getVirtualTiles(): VirtualTile[]', () => {
 
+    it('should return a list of the Virtual Tiles', () => {
+      tilesApi.virtualTiles = [virtualTile];
+
+      let returnedVirtualTiles = tilesApi.getVirtualTiles();
+
+      expect(returnedVirtualTiles.length).toEqual(1);
+      expect(returnedVirtualTiles[0]).toEqual(virtualTile);
+    });
+
   });
 
   describe('clearVirtualTiles(): void', () => {
+
+    it('should clear the list of Virtual Tiles', () => {
+      tilesApi.virtualTiles = [virtualTile];
+
+      tilesApi.clearVirtualTiles();
+
+      expect(tilesApi.virtualTiles.length).toEqual(0);
+      expect(tilesApi.virtualTiles[0]).toBeUndefined();
+    });
 
   });
 
   describe('isTilesUser(userName: string, host: string): Promise<any>', () => {
 
+    it('should return true if the userName is registered in the server',
+    inject([MockBackend], mockBackend => {
+
+      const mockResponse = mockUsersResponse;
+
+      mockBackend.connections.subscribe((connection) => {
+        connection.mockRespond(new Response(new ResponseOptions({
+          body: JSON.stringify(mockResponse)
+        })));
+      });
+
+      tilesApi.isTilesUser("TestUser", "1.1.1.1").then(registered => {
+        expect(registered).toBeTruthy();
+      });
+    }));
+
+    it('should return false if the userName is not registered in the server',
+    inject([MockBackend], mockBackend => {
+
+      const mockResponse = mockUsersResponse;
+
+      mockBackend.connections.subscribe((connection) => {
+        connection.mockRespond(new Response(new ResponseOptions({
+          body: JSON.stringify(mockResponse)
+        })));
+      });
+
+      tilesApi.isTilesUser("notRegistered", "1.1.1.1").then(registered => {
+        expect(registered).toBeFalsy();
+      });
+    }));
+
+    it('should return false if there is an error',
+    inject([MockBackend], mockBackend => {
+
+      mockBackend.connections.subscribe((connection) => {
+        connection.mockRespond(new Error());
+      });
+
+      tilesApi.isTilesUser("TestUser", "1.1.1.1").then(registered => {
+        expect(registered).toBeFalsy();
+      });
+    }));
+
   });
 
   describe('getAllApplications(): Promise<any>', () => {
+
     it('should return all available applications registered for all users',
       inject([MockBackend], mockBackend => {
 
@@ -188,6 +267,23 @@ describe('tilesAPI', () => {
         expect(applications[2]._id).toEqual('asd');
       });
     }));
+
+    it('should catch if there is an error',
+    inject([MockBackend], mockBackend => {
+      mockBackend.connections.subscribe((connection) => {
+        connection.mockRespond(new Error());
+      });
+
+      let returnedApplications = (): Promise<any> => { return new Promise( () => {
+                                  let temp = tilesApi.getAllApplications();
+                                  return temp;
+                              })};
+      returnedApplications().then( res => {
+        expect(tilesApi.http.get).toThrowError();
+        expect(res).toEqual(null);
+      });
+    }));
+
   });
 
   describe('getApplicationDetails(applicationId: string): Promise<any>', () => {
@@ -207,6 +303,18 @@ describe('tilesAPI', () => {
         });
 
     }));
+
+    it('should return null if there is an error',
+    inject([MockBackend], mockBackend => {
+      mockBackend.connections.subscribe((connection) => {
+        connection.mockRespond(new Error());
+      });
+
+      tilesApi.getApplicationDetails().then(application => {
+        expect(application).toBeUndefined();
+      });
+    }));
+
   });
 
   describe('getApplicationTiles(applicationId: string): Promise<any>', () => {
@@ -244,5 +352,23 @@ describe('tilesAPI', () => {
           expect(successResult.status).toBe(201);
         });
     }));
+
+    it('should catch if there is an error',
+    inject([MockBackend], mockBackend => {
+      spyOn(tilesApi.http, "post").and.callThrough();
+      mockBackend.connections.subscribe((connection) => {
+        connection.mockRespond(new Error());
+      });
+
+      let returnedStatuscode = (): Promise<any> => { return new Promise( () => {
+                                  let temp = tilesApi.pairDeviceToVirualTile('test', '58c120c5497df8602fedfbd3');
+                                  return temp;
+                              })};
+      returnedStatuscode().then( res => {
+        expect(tilesApi.http.post).toThrowError();
+        expect(res).toBeNull();
+      });
+    }));
+
   });
 });

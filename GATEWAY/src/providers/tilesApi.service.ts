@@ -9,12 +9,10 @@ import { Application, LoginData, VirtualTile } from './utils.service';
 
 @Injectable()
 export class TilesApi {
-  public flagThen: boolean = false;
-  public flagCatch: boolean = false;
   public activeApp: Application;
   public apiPort: number = 3000;
-  private virtualTiles: VirtualTile[] = [];
-  private loginData: LoginData;
+  public virtualTiles: VirtualTile[] = [];
+  public loginData: LoginData;
   private errorAlert: Alert;
 
   constructor(private alertCtrl: AlertController,
@@ -55,7 +53,6 @@ export class TilesApi {
   public getLoginData = (): LoginData => {
     if (this.loginData === undefined || this.loginData === null) {
       this.storage.get('loginData').then(loginData => {
-        this.flagThen = true;
         this.setLoginData(loginData);
         return loginData;
       });
@@ -169,7 +166,6 @@ export class TilesApi {
                 console.log('failed getting applications with error: ' + err);
                 console.log('url ' + url);
               }
-              return null;
             });
   }
 

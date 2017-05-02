@@ -146,3 +146,23 @@ export class MqttMock {
     return true;
   }
 }
+
+export class BackgroundModeMock {
+  public configure(): Promise<any> {
+    return new Promise((resolve: Function) => {
+      resolve();
+    });
+  }
+  public enable() {
+    return true;
+  }
+  public stop() {
+    return true;
+  }
+}
+
+export class DiagnosticMock {
+  public isLocationEnabled(): any {
+    return true;
+  }
+}
