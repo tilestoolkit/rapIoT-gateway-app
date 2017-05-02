@@ -8,7 +8,7 @@ import { Tiles } from './app.component';
 import { TabsPage } from '../pages/tabs/tabs';
 import { MqttClient } from '../providers/mqttClient';
 import { TilesApi } from '../providers/tilesApi.service';
-import { StorageMock, BackgroundFetchMock } from '../mocks';
+import { StorageMock, BackgroundFetchMock, BackgroundModeMock } from '../mocks';
 
 let tiles: Tiles;
 let fixture: ComponentFixture<Tiles>;
@@ -22,6 +22,13 @@ describe('App Component', () => {
                 IonicModule.forRoot(Tiles)
             ],
             providers: [
+                BLE,
+                MqttClient,
+                TilesApi,
+                {
+                provide: BackgroundMode,
+                useClass: BackgroundModeMock
+                },
                 {
                     provide: Storage,
                     useClass: StorageMock
@@ -30,10 +37,6 @@ describe('App Component', () => {
                 provide: BackgroundFetch,
                 useClass: BackgroundFetchMock
                 },
-                BackgroundMode,
-                BLE,
-                MqttClient,
-                TilesApi
             ]
         }).compileComponents();
     }));
