@@ -21,7 +21,7 @@ export class DevicesService {
     return this.storage.get(bleDevice.name).then( name => {
       const deviceName = (name !== null && name !== undefined) ? name : bleDevice.name;
       this.devices.forEach(device => {
-        if (bleDevice.id === device.tileId) {
+        if (bleDevice.name === device.tileId) {
           device.lastDiscovered = (new Date()).getTime();
           return device;
         }
@@ -29,7 +29,7 @@ export class DevicesService {
       return new Device(bleDevice.id, bleDevice.name, deviceName, false);
     }).catch(err => {
       this.devices.forEach(device => {
-        if (bleDevice.id === device.tileId) {
+        if (bleDevice.name === device.tileId) {
           device.lastDiscovered = (new Date()).getTime();
           return device;
         }

@@ -95,7 +95,6 @@ export class BleService {
     this.ble.connect(device.id)
         .subscribe(
           res => {
-            // Setting information about the device
             device.connected = true;
             this.startDeviceNotification(device);
             this.mqttClient.registerDevice(device);
@@ -103,7 +102,6 @@ export class BleService {
           err => {
             device.connected = false;
             this.devicesService.clearDisconnectedDevices();
-
             this.disconnect(device);
           });
   }
@@ -186,7 +184,6 @@ export class BleService {
                             .includes(device.tileId)) {
               this.connect(device);
             }
-            // this.events.publish('updateDevices');
           }).catch(err => this.errorAlert.present());
         }
       },
