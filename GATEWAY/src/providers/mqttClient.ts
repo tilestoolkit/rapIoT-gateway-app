@@ -150,7 +150,7 @@ export class MqttClient {
       this.client.subscribe(
         this.getDeviceSpecificTopic(device.tileId, false),
       );
-      console.log('Registered device: ' + device.name + ' (' + device.tileId + ')');
+      // console.log('Registered device: ' + device.name + ' (' + device.tileId + ')');
     }
   }
 

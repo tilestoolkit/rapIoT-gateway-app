@@ -74,11 +74,10 @@ export class ApplicationsPage {
    */
   refreshApplications = (refresher): void => {
     this.setApplications();
-    this.bleService.checkBleEnabled();
     // Makes the refresher symbol run for 1.25 sec
     setTimeout(() => {
       refresher.complete();
-    }, 1250);
+    }, 2000);
   }
 
   /**

@@ -53,7 +53,6 @@ export class DevicesService {
     if (!this.devices.map(storedDevice => storedDevice.tileId).includes(device.tileId)) {
       this.devices.push(device);
     }
-    this.events.publish('updateDevices');
   }
 
   /**

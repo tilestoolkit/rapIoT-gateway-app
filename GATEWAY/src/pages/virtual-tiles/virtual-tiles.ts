@@ -65,7 +65,7 @@ export class VirtualTilesPage {
     // Makes the refresher run for 1.25 secs
     setTimeout(() => {
       refresher.complete();
-    }, 1250);
+    }, 2000);
   }
 
   /**

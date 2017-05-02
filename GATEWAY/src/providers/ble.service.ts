@@ -44,11 +44,11 @@ export class BleService {
   }
 
   /**
-   * Start the BLE scanner making it scan every 30s
+   * Start the BLE scanner making it scan every 7,5s
    */
   public startBLEScanner = (): void => {
     this.checkBleEnabled().then(res => {
-      this.bleScanner = Observable.interval(10000).subscribe(res => {
+      this.bleScanner = Observable.interval(7500).subscribe(res => {
         this.scanBLE();
       });
     }).catch(err => {
@@ -69,7 +69,6 @@ export class BleService {
    * Checking if bluetooth is enabled and enable on android if not
    */
   public checkBleEnabled = (): Promise<boolean> => {
-    // - - - - - - this.devicesService.clearDisconnectedDevices();
     return this.ble.isEnabled().then( res => {
               if (!this.platform.is('ios')) {
                 // Checking if location is turned on will not work for ios
@@ -175,6 +174,7 @@ export class BleService {
   public scanBLE = (): void => {
     // A list of the discovered devices
     const virtualTiles = this.tilesApi.getVirtualTiles();
+    this.devicesService.clearDisconnectedDevices();
     this.ble.scan([], 5).subscribe(
       // function to be called for each new device discovered
       bleDevice => {
@@ -192,9 +192,6 @@ export class BleService {
       },
       err => {
         this.errorAlert.present();
-      },
-      () => {
-        console.log('done scanning');
       });
   }
 
@@ -206,6 +203,7 @@ export class BleService {
     this.ble.startNotification(device.id, this.rfduino.serviceUUID, this.rfduino.receiveCharacteristicUUID)
       .subscribe(
         res => {
+          device.connected = true;
           device.lastDiscovered = (new Date()).getTime();
           const responseString = ((String.fromCharCode.apply(null, new Uint8Array(res))).slice(0, -1)).trim();
           const message: CommandObject = this.utils.getEventStringAsObject(responseString);
