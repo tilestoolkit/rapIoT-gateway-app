@@ -160,3 +160,9 @@ export class BackgroundModeMock {
     return true;
   }
 }
+
+export class DiagnosticMock {
+  public isLocationEnabled(): any {
+    return true;
+  }
+}

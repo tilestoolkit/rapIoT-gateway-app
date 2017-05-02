@@ -50,11 +50,13 @@ describe('devicesService:', () => {
     
     it('should convert a given BLE Device parameter to a Device', done => {
       const testBLE = bleDevice;
+      spyOn(devicesService.storage, 'get').and.callFake( () => {
+        return Promise.resolve("TestName");
+      });
       
       devicesService.convertBleDeviceToDevice(testBLE)
       .then(returnedDevice => {
-        expect(devicesService.flagThen).toBeTruthy();
-        expect(returnedDevice.name).toEqual(convertedBle.name);
+        expect(returnedDevice.name).toEqual("TestName");
         done();
       });
     });
@@ -67,7 +69,6 @@ describe('devicesService:', () => {
       
       devicesService.convertBleDeviceToDevice(testBLE)
       .then(returnedDevice => {
-        expect(devicesService.flagCatch).toBeTruthy();
         expect(returnedDevice.name).toEqual(convertedBle.name);
         done();
       });

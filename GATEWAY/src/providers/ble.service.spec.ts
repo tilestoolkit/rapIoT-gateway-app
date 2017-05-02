@@ -9,7 +9,7 @@ import { App, Config, AlertController, Platform, Events } from 'ionic-angular';
 import { Observable, Subscription } from 'rxjs';
 import { BleService } from './ble.service';
 import { DevicesService }from './devices.service';
-import { StorageMock, BackgroundFetchMock, BLEMock } from '../mocks';
+import { StorageMock, BackgroundFetchMock, BLEMock, DiagnosticMock } from '../mocks';
 import { MqttClient } from './mqttClient';
 import { TilesApi } from './tilesApi.service';
 import { UtilsService, Device, CommandObject }from './utils.service';
@@ -26,9 +26,18 @@ describe('bleService', () => {
       providers: [
         App,
         Config,
-        AlertController,
         Platform,
         Events,
+        DevicesService,
+        UtilsService,
+        TilesApi,
+        MqttClient,
+        BleService,
+        AlertController,
+        {
+        provide: Diagnostic,
+        useClass: DiagnosticMock
+        },
         {
         provide: BackgroundFetch,
         useClass: BackgroundFetchMock
@@ -50,12 +59,6 @@ describe('bleService', () => {
           },
           deps: [MockBackend, BaseRequestOptions],
         },
-        DevicesService,
-        Diagnostic,
-        UtilsService,
-        TilesApi,
-        MqttClient,
-        BleService,
       ],
     });
   });
