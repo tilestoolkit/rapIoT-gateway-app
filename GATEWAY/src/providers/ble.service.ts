@@ -104,7 +104,7 @@ export class BleService {
           },
           err => {
             this.devicesService.clearDisconnectedDevices();
-            this.disconnect(device);
+            //this.disconnect(device);
           });
   }
 
