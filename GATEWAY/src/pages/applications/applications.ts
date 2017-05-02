@@ -74,6 +74,7 @@ export class ApplicationsPage {
    */
   refreshApplications = (refresher): void => {
     this.setApplications();
+    this.bleService.checkBleEnabled();
     // Makes the refresher symbol run for 1.25 sec
     setTimeout(() => {
       refresher.complete();
@@ -107,6 +108,7 @@ export class ApplicationsPage {
    * and clears the virtual device list of tilesApi
    */
   ionViewDidEnter = () => {
+    this.bleService.checkBleEnabled();
     this.tilesApi.clearVirtualTiles();
     for (let device of this.devicesService.getDevices()) {
       this.bleService.disconnect(device);

@@ -61,6 +61,7 @@ export class VirtualTilesPage {
   refreshVirtualTiles = (refresher): void => {
     this.devices = this.devicesService.getDevices();
     this.setVirtualTiles();
+    this.bleService.checkBleEnabled();
     // Makes the refresher run for 1.25 secs
     setTimeout(() => {
       refresher.complete();
@@ -118,5 +119,6 @@ export class VirtualTilesPage {
   ionViewDidEnter = () => {
     this.devices = this.devicesService.getDevices();
     this.setVirtualTiles();
+    this.bleService.checkBleEnabled();
   }
 }

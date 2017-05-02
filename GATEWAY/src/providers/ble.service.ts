@@ -47,10 +47,13 @@ export class BleService {
    * Start the BLE scanner making it scan every 30s
    */
   public startBLEScanner = (): void => {
-    this.scanForDevices();
-    this.bleScanner = Observable.interval(10000).subscribe(res => {
-      this.scanForDevices();
-    });
+    this.checkBleEnabled().then(res => {
+      this.bleScanner = Observable.interval(10000).subscribe(res => {
+        this.scanBLE();
+      });
+    }).catch(err => {
+      this.errorAlert.present();
+    })
   }
 
   /**
@@ -65,24 +68,25 @@ export class BleService {
   /**
    * Checking if bluetooth is enabled and enable on android if not
    */
-  public scanForDevices = (): void => {
-    this.devicesService.clearDisconnectedDevices();
-    this.ble.isEnabled().then( res => {
+  public checkBleEnabled = (): Promise<boolean> => {
+    // - - - - - - this.devicesService.clearDisconnectedDevices();
+    return this.ble.isEnabled().then( res => {
               if (!this.platform.is('ios')) {
+                // Checking if location is turned on will not work for ios
                 this.checkLocation();
-              } else {
-                this.scanBLE();
               }
+              return true;
             }).catch( err => {
-              this.errorAlert.present();
-              // NB! Android only!! IOS users has to turn bluetooth on manually
               if (!this.platform.is('ios')) {
+                // Enable will not work for ios
                 this.ble.enable().then( res => {
                     this.checkLocation();
+                    return true;
                   }).catch( errEnable => {
-                    console.log(errEnable);
-                    this.errorAlert.present();
+                    return Promise.reject('ble failed to enable');
                   });
+              } else {
+                return Promise.reject('ble not enabled');
               }
             });
   }
@@ -100,7 +104,6 @@ export class BleService {
             this.mqttClient.registerDevice(device);
           },
           err => {
-            device.connected = false;
             this.devicesService.clearDisconnectedDevices();
             this.disconnect(device);
           });
@@ -223,7 +226,7 @@ export class BleService {
         });
   }
 
-  private checkLocation = () => {
+  private checkLocation = (): void => {
     this.diagnostic.isLocationEnabled().then(diagnosticRes => {
         if (diagnosticRes) {
           this.scanBLE();
