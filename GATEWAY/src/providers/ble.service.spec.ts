@@ -1,4 +1,4 @@
-import { inject, TestBed } from '@angular/core/testing';
+import { inject, TestBed, async } from '@angular/core/testing';
 import { Http, BaseRequestOptions } from '@angular/http';
 import { MockBackend } from '@angular/http/testing';
 import { Storage } from '@ionic/storage';
@@ -119,60 +119,86 @@ describe('bleService', () => {
 
       expect(bleService.ble['isEnabled']).toHaveBeenCalled();
     });
-
-    /**
-     * Disse blir vanskelige å teste
-     * Blir nødt til å kjøre en hacky hack for å teste
-     * Typ bool-flag som settes i hovedklassene og sjekkes etter gjennomføring
-     */
+    
     //TODO: Ferdigstill denne metoden
-    xit('should invoke the method scanBLE() if BLE is enabled', () => {
-      //spyOn(bleService.ble, 'isEnabled').and.callThrough();
+    it('should invoke the method scanBLE() if BLE is enabled', (() => {
+      let spyEnabled = spyOn(bleService.ble, 'isEnabled').and.callThrough();
+      let spyScan = spyOn(bleService, 'scanBLE').and.callThrough();
+      let spyError = spyOn(bleService.errorAlert, "present");
 
-      let spy = spyOn(bleService, 'scanBLE').and.callThrough();
+      let bleScanForDevices = (): Promise<any> => { return new Promise( () => {
+                                  bleService.scanForDevices();
+                              })};
 
-      bleService.scanForDevices();
-
-      //expect(bleService.ble.isEnabled).toHaveBeenCalled();
-      expect(spy).toHaveBeenCalled();
-    });
-
-    //TODO: Ferdigstill denne metoden
-    xit('should try to enable BLE if method isEnabled throws an error', () => {
-      spyOn(bleService.ble, 'isEnabled').and.callThrough();
-      spyOn(bleService, 'scanBLE').and.throwError("Test Error");
-      spyOn(bleService.ble, 'enable').and.callThrough();
-
-      bleService.scanForDevices();
-
-      //expect(bleService.ble['isEnabled']).toHaveBeenCalled();
-      //expect(bleService['scanBLE']).toThrowError();
-      expect(bleService.ble.enable).toHaveBeenCalled();
-    });
+      bleScanForDevices().then( res => {
+        expect(spyEnabled).toHaveBeenCalled();
+        expect(spyScan).toHaveBeenCalled();
+      });
+    }));
 
     //TODO: Ferdigstill denne metoden
-    xit('should invoke method scanBLE() if it successfully enables BLE', () => {
+    it('should try to enable BLE if method isEnabled throws an error', (() => {
+      let spyIsEnabled = spyOn(bleService.ble, 'isEnabled').and.callFake( (resolve, reject) => {
+        return new Promise( () => {
+          reject();
+        });
+      });
+      let spyScan = spyOn(bleService, 'scanBLE').and.callThrough();
+      let spyEnable = spyOn(bleService.ble, 'enable').and.callThrough();
+      let spyError = spyOn(bleService.errorAlert, "present");
 
-    });
+      let bleScanForDevices = (): Promise<any> => { return new Promise( () => {
+                                  bleService.scanForDevices();
+                              })};
+
+      bleScanForDevices().then( res => {
+        expect(spyEnable).toHaveBeenCalled();
+      });
+    }));
 
     //TODO: Ferdigstill denne metoden
-    xit('should do something if method enable() throws an error', () => {
+    it('should invoke method scanBLE() if it successfully enables BLE', (() => {
+      let spyIsEnabled = spyOn(bleService.ble, 'isEnabled').and.callFake( (resolve, reject) => {
+        return new Promise( () => {
+          reject();
+        });
+      });
+      let spyScan = spyOn(bleService, 'scanBLE').and.callThrough();
+      let spyEnable = spyOn(bleService.ble, 'enable').and.callThrough();
+      let spyError = spyOn(bleService.errorAlert, "present");
 
-    });
+      let bleScanForDevices = (): Promise<any> => { return new Promise( () => {
+                                  bleService.scanForDevices();
+                              })};
 
-  });
+      bleScanForDevices().then( res => {
+        expect(spyScan.calls.count()).toEqual(1);
+      });
+    }));
 
-  describe('scanBLE(): void', () => {
+    //TODO: Ferdigstill denne metoden
+    it('should present the error message if method enable() throws an error', (() => {
+      let spyIsEnabled = spyOn(bleService.ble, 'isEnabled').and.callFake( (resolve, reject) => {
+        return new Promise( () => {
+          reject();
+        });
+      });
+      let spyScan = spyOn(bleService, 'scanBLE').and.callThrough();
+      let spyEnable = spyOn(bleService.ble, 'enable').and.callFake( (resolve, reject) => {
+        return new Promise( () => {
+          reject();
+        });
+      });
+      let spyError = spyOn(bleService.errorAlert, "present");
 
-    it('should run functions ble.scan and devicesService.convertBleDeviceToDevice', () => {
-      spyOn(bleService.ble, 'scan').and.returnValue(Observable.of(bleReturnValue));
-      spyOn(bleService.devicesService, 'convertBleDeviceToDevice').and.callThrough();
+      let bleScanForDevices = (): Promise<any> => { return new Promise( () => {
+                                  bleService.scanForDevices();
+                              })};
 
-      let tempArray = bleService.scanBLE();
-
-      expect(bleService.ble.scan).toHaveBeenCalled();
-      expect(bleService.devicesService.convertBleDeviceToDevice).toHaveBeenCalled();
-    });
+      bleScanForDevices().then( res => {
+        expect(spyError).toHaveBeenCalled();
+      });
+    }));
 
   });
 
@@ -232,6 +258,42 @@ describe('bleService', () => {
 
   });
 
+  describe('disconnect(device: Device): void', () => {
+    it('should disconnect from the current device if it is paired', () => {
+      spyOn(bleService.ble, 'disconnect').and.callThrough();
+      testDevice.conncted = true;
+
+      bleService.disconnect(testDevice);
+
+      expect(bleService.ble.disconnect).toHaveBeenCalled();
+      expect(testDevice.connected).toEqual(false);
+    });
+  });
+
+  describe('sendData(device: Device, dataString: string): void', () => {
+    it('should successfully send a dataString to a device using BLE', () => {
+      spyOn(bleService.ble, 'writeWithoutResponse').and.callThrough();
+
+      bleService.sendData(testDevice, 'led,on,red');
+
+      expect(bleService.ble.writeWithoutResponse).toHaveBeenCalled();
+    });
+  });
+
+  describe('scanBLE(): void', () => {
+
+    it('should run functions ble.scan and devicesService.convertBleDeviceToDevice', () => {
+      spyOn(bleService.ble, 'scan').and.returnValue(Observable.of(bleReturnValue));
+      spyOn(bleService.devicesService, 'convertBleDeviceToDevice').and.callThrough();
+
+      let tempArray = bleService.scanBLE();
+
+      expect(bleService.ble.scan).toHaveBeenCalled();
+      expect(bleService.devicesService.convertBleDeviceToDevice).toHaveBeenCalled();
+    });
+
+  });
+
   describe('startDeviceNotification(device: Device): void', () => {
 
     it('should run the method utils.getEventStringAsObject and mqttClient.sendEvent if ble.startNotification returns no error and message is not null', () => {
@@ -276,36 +338,6 @@ describe('bleService', () => {
       expect(bleService.mqttClient.sendEvent).not.toHaveBeenCalled();
     });
 
-  });
-
-  describe('disconnect(device: Device): void', () => {
-    it('should disconnect from the current device if it is paired', () => {
-      spyOn(bleService.ble, 'disconnect').and.callThrough();
-      testDevice.conncted = true;
-
-      bleService.disconnect(testDevice);
-
-      expect(bleService.ble.disconnect).toHaveBeenCalled();
-      expect(testDevice.connected).toEqual(false);
-    });
-  });
-
-  describe('sendData(device: Device, dataString: string): void', () => {
-    it('should successfully send a dataString to a device using BLE', () => {
-      spyOn(bleService.ble, 'writeWithoutResponse').and.callThrough();
-
-      bleService.sendData(testDevice, 'led,on,red');
-
-      expect(bleService.ble.writeWithoutResponse).toHaveBeenCalled();
-    });
-
-    /* Dårlig test
-    xit('should not be able to send data that is not of the type string', () => {
-      spyOn(bleService, 'sendData').and.returnValue(Observable.of(bleReturnValue));
-      bleService.sendData(testDevice, 2345);
-      expect(bleService['sendData']).not.toHaveBeenCalled();
-    });
-    */
   });
 
 });

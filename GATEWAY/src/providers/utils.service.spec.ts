@@ -97,6 +97,13 @@ describe('utilsService', () => {
 
   describe('capitalize(str: string): void', () => {
 
+    it('should return a capitalized string', () => {
+      let testString = "test";
+
+      let result = utilsService.capitalize(testString);
+
+      expect(result).toEqual("Test");
+    });
   });
 
 });

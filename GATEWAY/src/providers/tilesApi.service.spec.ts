@@ -45,8 +45,8 @@ describe('tilesAPI', () => {
 
   beforeEach(inject([TilesApi], (temp: TilesApi) => {
     tilesApi = temp;
-    tilesApi.setLoginData(loginData);
-    tilesApi.setActiveApp(activeApp);
+    tilesApi.loginData = loginData;
+    tilesApi.activeApp = activeApp;
   }));
 
   afterEach(() => {
@@ -71,12 +71,9 @@ describe('tilesAPI', () => {
 
   describe('setLoginData(loginData: LoginData): void', () => {
     it('should set the correct login data in the beforeEach', () => {
-      /**
-       * tilesApi.loginData is set before each test
-       * Therefore it is only necessary to test if the correct data
-       * is set here
-       */
-      expect(tilesApi.getLoginData()).toEqual(loginData);
+      tilesApi.setLoginData(loginData);
+
+      expect(tilesApi.loginData).toEqual(loginData);
     });
   });
 
@@ -85,7 +82,7 @@ describe('tilesAPI', () => {
     it('should return the correct login data', () => {
       let spy = spyOn(tilesApi.storage, 'get').and.callThrough();
       expect(tilesApi.getLoginData()).toEqual(loginData);
-      expect(spy.calls.any()).toEqual(false);
+        expect(spy).not.toHaveBeenCalled();
     });
 
     it('should get loginData from storage if loginData is undefined', (() => {
@@ -97,13 +94,13 @@ describe('tilesAPI', () => {
         };
       });
 
-      let returnedLoginData = (): Promise<any> => { return new Promise( () => {
-                                  let temp = tilesApi.getLoginData();
-                                  return temp;
+      let returnedLoginData = (): Promise<any> => { return new Promise( (resolve) => {
+                                  tilesApi.getLoginData();
+                                  resolve(tilesApi.getLoginData());
                               })};
       returnedLoginData().then( res => {
         expect(tilesApi).toBeDefined();
-        expect(spy.calls.any()).toEqual(true);
+        expect(spy).toHaveBeenCalled();
         expect(res).toEqual(loginData);
       });
     }));
@@ -117,12 +114,12 @@ describe('tilesAPI', () => {
         };
       });
 
-      let returnedLoginData = (): Promise<any> => { return new Promise( () => {
-                                  let temp = tilesApi.getLoginData();
-                                  return temp;
+      let returnedLoginData = (): Promise<any> => { return new Promise( (resolve) => {
+                                  tilesApi.getLoginData();
+                                  resolve(tilesApi.getLoginData());
                               })};
       returnedLoginData().then( res => {
-        expect(spy.calls.any()).toEqual(true);
+        expect(spy).toHaveBeenCalled();
         expect(res).toEqual(loginData);
       });
     }));
@@ -363,11 +360,11 @@ describe('tilesAPI', () => {
         connection.mockRespond(new Error());
       });
 
-      let returnedApplications = (): Promise<any> => { return new Promise( () => {
+      let returnedStatuscode = (): Promise<any> => { return new Promise( () => {
                                   let temp = tilesApi.pairDeviceToVirualTile('test', '58c120c5497df8602fedfbd3');
                                   return temp;
                               })};
-      returnedApplications().then( res => {
+      returnedStatuscode().then( res => {
         expect(tilesApi.http.post).toThrowError();
         expect(res).toBeNull();
       });

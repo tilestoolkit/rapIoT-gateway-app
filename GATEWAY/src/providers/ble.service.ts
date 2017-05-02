@@ -20,7 +20,7 @@ export class BleService {
     sendCharacteristicUUID: '2222',
     serviceUUID: '2220',
   };
-  private errorAlert: Alert;
+  public errorAlert: Alert;
 
   constructor(private alertCtrl: AlertController,
               private events: Events,
