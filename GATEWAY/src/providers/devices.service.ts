@@ -45,6 +45,7 @@ export class DevicesService {
     if (!this.devices.map(storedDevice => storedDevice.tileId).includes(device.tileId)) {
       this.devices.push(device);
     }
+    this.events.publish('updateDevices');
   }
 
   /**
@@ -72,6 +73,8 @@ export class DevicesService {
    */
   public clearDisconnectedDevices = (): void => { // TODO: Change name?
     const currentTime = (new Date()).getTime();
-    this.devices = this.devices.filter(device => currentTime - device.lastDiscovered < 60000);
+    this.devices = this.devices.filter(device => {
+      return currentTime - device.lastDiscovered < 60000 || device.connected;
+    });
   }
 }

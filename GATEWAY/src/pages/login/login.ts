@@ -55,7 +55,7 @@ export class LoginPage {
    * Passes the login credidentials from the login form to the connectToServer function.
    */
   loginForm = (): void => {
-    this.connectToServer(this.loginInfo.user, this.loginInfo.host, parseInt(this.loginInfo.port, 10), this.loginInfo.remember);
+    this.connectToServer(this.loginInfo.user.trim(), this.loginInfo.host.trim(), parseInt(this.loginInfo.port.trim(), 10), this.loginInfo.remember);
   }
 
   /**
