@@ -5,11 +5,11 @@ import { Storage } from '@ionic/storage';
 import { BackgroundFetch } from '@ionic-native/background-fetch';
 import { BLE } from '@ionic-native/ble';
 import { Diagnostic } from '@ionic-native/diagnostic';
-import { App, Config, AlertController, Platform, Events, ViewController } from 'ionic-angular';
+import { App, Config, AlertController, Platform, Events } from 'ionic-angular';
 import { Observable, Subscription } from 'rxjs';
 import { BleService } from './ble.service';
 import { DevicesService }from './devices.service';
-import { StorageMock, BackgroundFetchMock, BLEMock, DiagnosticMock, ViewControllerMock } from '../mocks';
+import { StorageMock, BackgroundFetchMock, BLEMock, DiagnosticMock } from '../mocks';
 import { MqttClient } from './mqttClient';
 import { TilesApi } from './tilesApi.service';
 import { UtilsService, Device, CommandObject }from './utils.service';
@@ -34,10 +34,6 @@ describe('bleService', () => {
         MqttClient,
         BleService,
         AlertController,
-        {
-        provide: ViewController,
-        useClass: ViewControllerMock
-        },
         {
         provide: Diagnostic,
         useClass: DiagnosticMock

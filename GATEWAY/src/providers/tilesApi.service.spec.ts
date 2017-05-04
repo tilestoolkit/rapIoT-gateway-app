@@ -3,9 +3,9 @@ import { Http, Response, ResponseOptions, BaseRequestOptions, RequestMethod } fr
 import { Storage } from '@ionic/storage';
 import { MockBackend, MockConnection } from '@angular/http/testing';
 import { Application, Device, LoginData, VirtualTile } from './utils.service';
-import { App, Config, AlertController, Platform, ViewController } from 'ionic-angular';
+import { App, Config, AlertController, Platform } from 'ionic-angular';
 import { TilesApi } from './tilesApi.service';
-import { StorageMock, ViewControllerMock } from '../mocks';
+import { StorageMock } from '../mocks';
 
 import * as mockTilesApplicationDetailsResponse from '../fixtures/applicationDetails.json';
 import * as mockTilesApplicationsResponse from '../fixtures/applications.json';
@@ -38,10 +38,6 @@ describe('tilesAPI', () => {
         {
           provide: Storage,
           useClass: StorageMock
-        },
-        {
-          provide: ViewController,
-          useClass: ViewControllerMock
         },
       ],
     });

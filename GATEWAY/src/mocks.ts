@@ -166,10 +166,3 @@ export class DiagnosticMock {
     return true;
   }
 }
-
-export class ViewControllerMock {
-  public _setHeader(): any { return {} };
-  public _setNavbar(): any { return {} };
-  public _setIONContent(): any { return {} };
-  public _setIONContentRef(): any { return {} };
-}
