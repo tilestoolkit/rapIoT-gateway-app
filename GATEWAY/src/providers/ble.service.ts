@@ -70,6 +70,7 @@ export class BleService {
     this.ble.isEnabled().then( res => {
               if (!this.platform.is('ios')) {
                 this.checkLocation();
+                console.info("Test");
               } else {
                 this.scanBLE();
               }
