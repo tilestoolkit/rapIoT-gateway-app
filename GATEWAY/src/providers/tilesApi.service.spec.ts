@@ -341,7 +341,7 @@ describe('tilesAPI', () => {
     }));
   });
 
-  xdescribe('pairDeviceToVirtualTile(deviceId: string, virtualTileId: string, applicationId: string): void', () => {
+  describe('pairDeviceToVirtualTile(deviceId: string, virtualTileId: string, applicationId: string): void', () => {
     it('should pair a device to a virtual tile and return status code 201', inject([MockBackend], (mockBackend) => {
 
       mockBackend.connections.subscribe((connection: MockConnection) => {
@@ -350,11 +350,16 @@ describe('tilesAPI', () => {
 
         connection.mockRespond(new Response(new ResponseOptions({status: 201})));
       });
-
+      let returnedStatuscode = (): Promise<any> => { return new Promise( () => {
+                                  let temp = tilesApi.pairDeviceToVirualTile('test', '58c120c5497df8602fedfbd3');
+                                  return temp;
+                              })};
+      returnedStatuscode().then( successResult => {
+        expect(successResult).toBeDefined();
+        expect(successResult.status).toBe(201);
+      });
       tilesApi.pairDeviceToVirualTile('test', '58c120c5497df8602fedfbd3').then(
         (successResult) => {
-          expect(successResult).toBeDefined();
-          expect(successResult.status).toBe(201);
         });
     }));
 
