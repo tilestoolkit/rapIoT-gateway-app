@@ -129,7 +129,7 @@ export class TilesApi {
    * Get all registered applications for all users
    */
   public getAllApplications = (): Promise<any> => {
-    const url = `http://${this.loginData.host}:${this.apiPort}/applications/users/${this.loginData.user}`;
+    const url = `http://${this.loginData.host}:${this.apiPort}/applications/user/${this.loginData.user}`;
     return this.http.get(url)
             .toPromise()
             .then(res => {
