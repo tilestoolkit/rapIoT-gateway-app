@@ -358,9 +358,6 @@ describe('tilesAPI', () => {
         expect(successResult).toBeDefined();
         expect(successResult.status).toBe(201);
       });
-      tilesApi.pairDeviceToVirualTile('test', '58c120c5497df8602fedfbd3').then(
-        (successResult) => {
-        });
     }));
 
     it('should catch if there is an error',
