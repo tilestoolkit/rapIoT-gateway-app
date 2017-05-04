@@ -7,8 +7,6 @@ import { Device } from './utils.service';
 @Injectable()
 export class DevicesService {
   public devices: Device[];
-  public flagThen: boolean = false;
-  public flagCatch: boolean = false;
 
   constructor(public storage: Storage,
               public events: Events) {
@@ -21,11 +19,9 @@ export class DevicesService {
    */
   public convertBleDeviceToDevice = (bleDevice: any): Promise<Device>  => {
     return this.storage.get(bleDevice.name).then( name => {
-      this.flagThen = true;
       const deviceName = (name !== null && name !== undefined) ? name : bleDevice.name;
       return new Device(bleDevice.id, bleDevice.name, deviceName, false);
     }).catch(err => {
-      this.flagCatch = true;
       return new Device(bleDevice.id, bleDevice.name, bleDevice.name, false);
     });
   }
@@ -45,6 +41,7 @@ export class DevicesService {
     if (!this.devices.map(storedDevice => storedDevice.tileId).includes(device.tileId)) {
       this.devices.push(device);
     }
+    this.events.publish('updateDevices');
   }
 
   /**
@@ -72,6 +69,8 @@ export class DevicesService {
    */
   public clearDisconnectedDevices = (): void => { // TODO: Change name?
     const currentTime = (new Date()).getTime();
-    this.devices = this.devices.filter(device => currentTime - device.lastDiscovered < 60000);
+    this.devices = this.devices.filter(device => {
+      return currentTime - device.lastDiscovered < 60000 || device.connected;
+    });
   }
 }

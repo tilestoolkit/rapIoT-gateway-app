@@ -29,10 +29,11 @@ export class PhysicalTilesPage {
    */
   refreshDevices = (refresher): void => {
     this.bleService.scanForDevices();
-    // Makes the refresher run for 2 secs
+    // Makes the refresher run for 1.25 secs
     setTimeout(() => {
       refresher.complete();
-    }, 2000);
+    }, 1250);
+    this.devices = this.devicesService.getDevices();
   }
 
   /**
