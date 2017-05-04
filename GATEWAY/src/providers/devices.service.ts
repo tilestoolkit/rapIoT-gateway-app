@@ -20,8 +20,20 @@ export class DevicesService {
   public convertBleDeviceToDevice = (bleDevice: any): Promise<Device>  => {
     return this.storage.get(bleDevice.name).then( name => {
       const deviceName = (name !== null && name !== undefined) ? name : bleDevice.name;
+      this.devices.forEach(device => {
+        if (bleDevice.name === device.tileId) {
+          device.lastDiscovered = (new Date()).getTime();
+          return device;
+        }
+      });
       return new Device(bleDevice.id, bleDevice.name, deviceName, false);
     }).catch(err => {
+      this.devices.forEach(device => {
+        if (bleDevice.name === device.tileId) {
+          device.lastDiscovered = (new Date()).getTime();
+          return device;
+        }
+      });
       return new Device(bleDevice.id, bleDevice.name, bleDevice.name, false);
     });
   }
@@ -41,7 +53,6 @@ export class DevicesService {
     if (!this.devices.map(storedDevice => storedDevice.tileId).includes(device.tileId)) {
       this.devices.push(device);
     }
-    this.events.publish('updateDevices');
   }
 
   /**
@@ -70,7 +81,8 @@ export class DevicesService {
   public clearDisconnectedDevices = (): void => { // TODO: Change name?
     const currentTime = (new Date()).getTime();
     this.devices = this.devices.filter(device => {
-      return currentTime - device.lastDiscovered < 60000 || device.connected;
+      return currentTime - device.lastDiscovered < 15000 || device.connected;
     });
+    this.events.publish('updateDevices');
   }
 }

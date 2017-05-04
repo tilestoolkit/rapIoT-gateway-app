@@ -61,10 +61,11 @@ export class VirtualTilesPage {
   refreshVirtualTiles = (refresher): void => {
     this.devices = this.devicesService.getDevices();
     this.setVirtualTiles();
+    this.bleService.checkBleEnabled();
     // Makes the refresher run for 1.25 secs
     setTimeout(() => {
       refresher.complete();
-    }, 1250);
+    }, 2000);
   }
 
   /**
@@ -110,5 +111,14 @@ export class VirtualTilesPage {
      this.tilesApi.pairDeviceToVirualTile(null, virtualTile._id);
      // Refreshes the lists of paired and unpaired virtual tiles
      this.setVirtualTiles();
+  }
+
+  /**
+   * Called when the page has entered. Updates devices lists
+   */
+  ionViewDidEnter = () => {
+    this.devices = this.devicesService.getDevices();
+    this.setVirtualTiles();
+    this.bleService.checkBleEnabled();
   }
 }

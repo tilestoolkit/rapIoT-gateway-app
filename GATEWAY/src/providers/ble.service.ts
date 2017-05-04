@@ -44,12 +44,15 @@ export class BleService {
   }
 
   /**
-   * Start the BLE scanner making it scan every 30s
+   * Start the BLE scanner making it scan every 7,5s
    */
   public startBLEScanner = (): void => {
-    this.scanForDevices();
-    this.bleScanner = Observable.interval(10000).subscribe(res => {
-      this.scanForDevices();
+    this.checkBleEnabled().then(res => {
+      this.bleScanner = Observable.interval(7500).subscribe(scanResult => {
+        this.scanBLE();
+      });
+    }).catch(err => {
+      this.errorAlert.present();
     });
   }
 
@@ -65,24 +68,24 @@ export class BleService {
   /**
    * Checking if bluetooth is enabled and enable on android if not
    */
-  public scanForDevices = (): void => {
-    this.devicesService.clearDisconnectedDevices();
-    this.ble.isEnabled().then( res => {
+  public checkBleEnabled = (): Promise<boolean> => {
+    return this.ble.isEnabled().then( res => {
               if (!this.platform.is('ios')) {
+                // Checking if location is turned on will not work for ios
                 this.checkLocation();
-              } else {
-                this.scanBLE();
               }
+              return true;
             }).catch( err => {
-              this.errorAlert.present();
-              // NB! Android only!! IOS users has to turn bluetooth on manually
               if (!this.platform.is('ios')) {
+                // Enable will not work for ios
                 this.ble.enable().then( res => {
                     this.checkLocation();
+                    return true;
                   }).catch( errEnable => {
-                    console.log(errEnable);
-                    this.errorAlert.present();
+                    return Promise.reject('ble failed to enable');
                   });
+              } else {
+                return Promise.reject('ble not enabled');
               }
             });
   }
@@ -95,17 +98,13 @@ export class BleService {
     this.ble.connect(device.id)
         .subscribe(
           res => {
-            console.log('connecting to : ' + device.name);
-            // Setting information about the device
             device.connected = true;
             this.startDeviceNotification(device);
             this.mqttClient.registerDevice(device);
           },
           err => {
-            device.connected = false;
             this.devicesService.clearDisconnectedDevices();
-            // this.events.publish('updateDevices');
-            this.disconnect(device);
+            // this.disconnect(device);
           });
   }
 
@@ -126,8 +125,7 @@ export class BleService {
             }, 3000);
           },
           err => {
-            console.log(err);
-            // this.errorAlert.present();
+            this.errorAlert.present();
           });
   }
 
@@ -140,6 +138,7 @@ export class BleService {
             .then( res => {
               device.connected = false;
               this.mqttClient.unregisterDevice(device);
+              this.devicesService.clearDisconnectedDevices();
               console.log('diconnected from device: ' + device.name);
             })
             .catch( err => {
@@ -175,29 +174,24 @@ export class BleService {
   public scanBLE = (): void => {
     // A list of the discovered devices
     const virtualTiles = this.tilesApi.getVirtualTiles();
-    let newDevices: Device[] = [];
-    this.ble.scan([], 10).subscribe(
+    this.devicesService.clearDisconnectedDevices();
+    this.ble.scan([], 5).subscribe(
       // function to be called for each new device discovered
       bleDevice => {
         if (this.tilesApi.isTilesDevice(bleDevice)) {
           this.devicesService.convertBleDeviceToDevice(bleDevice).then( device => {
             this.mqttClient.registerDevice(device);
             this.devicesService.newDevice(device);
-            newDevices.push(device);
             if (virtualTiles.filter(tile => tile.tile !== null)
                             .map(tile => tile.tile.name)
                             .includes(device.tileId)) {
               this.connect(device);
             }
-            // this.events.publish('updateDevices');
           }).catch(err => this.errorAlert.present());
         }
       },
       err => {
         this.errorAlert.present();
-      },
-      () => {
-        console.log('done scanning');
       });
   }
 
@@ -209,6 +203,8 @@ export class BleService {
     this.ble.startNotification(device.id, this.rfduino.serviceUUID, this.rfduino.receiveCharacteristicUUID)
       .subscribe(
         res => {
+          device.connected = true;
+          device.lastDiscovered = (new Date()).getTime();
           const responseString = ((String.fromCharCode.apply(null, new Uint8Array(res))).slice(0, -1)).trim();
           const message: CommandObject = this.utils.getEventStringAsObject(responseString);
           if (message === null) {
@@ -219,15 +215,16 @@ export class BleService {
           }
         },
         err => {
-          console.log('Failed to start notification');
+          this.errorAlert.present();
         },
         () => { // called when the device disconnects
           device.connected = false;
+          this.devicesService.clearDisconnectedDevices();
           this.mqttClient.unregisterDevice(device);
         });
   }
 
-  private checkLocation = () => {
+  private checkLocation = (): void => {
     this.diagnostic.isLocationEnabled().then(diagnosticRes => {
         if (diagnosticRes) {
           this.scanBLE();
