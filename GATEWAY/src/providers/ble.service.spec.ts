@@ -143,12 +143,8 @@ describe('bleService', () => {
 
     //TODO: Ferdigstill denne metoden
     it('should try to enable BLE if method isEnabled throws an error', (() => {
-      let spyIsEnabled = spyOn(bleService.ble, 'isEnabled').and.callFake( (resolve, reject) => {
-        return new Promise( () => {
-          reject();
-        });
-      });
-      let spyScan = spyOn(bleService, 'scanBLE').and.callThrough();
+      let spyIsEnabled = spyOn(bleService.ble, 'isEnabled').and.callThrough();
+      let spyScan = spyOn(bleService, 'scanBLE').and.throwError("Test Error");
       let spyEnable = spyOn(bleService.ble, 'enable').and.callThrough();
       let spyError = spyOn(bleService.errorAlert, "present");
 
@@ -163,12 +159,8 @@ describe('bleService', () => {
 
     //TODO: Ferdigstill denne metoden
     it('should invoke method scanBLE() if it successfully enables BLE', (() => {
-      let spyIsEnabled = spyOn(bleService.ble, 'isEnabled').and.callFake( (resolve, reject) => {
-        return new Promise( () => {
-          reject();
-        });
-      });
-      let spyScan = spyOn(bleService, 'scanBLE').and.callThrough();
+      let spyIsEnabled = spyOn(bleService.ble, 'isEnabled').and.callThrough();
+      let spyScan = spyOn(bleService, 'scanBLE').and.throwError("Test Error");
       let spyEnable = spyOn(bleService.ble, 'enable').and.callThrough();
       let spyError = spyOn(bleService.errorAlert, "present");
 
@@ -183,17 +175,9 @@ describe('bleService', () => {
 
     //TODO: Ferdigstill denne metoden
     it('should present the error message if method enable() throws an error', (() => {
-      let spyIsEnabled = spyOn(bleService.ble, 'isEnabled').and.callFake( (resolve, reject) => {
-        return new Promise( () => {
-          reject();
-        });
-      });
+      let spyIsEnabled = spyOn(bleService.ble, 'isEnabled').and.callThrough();
       let spyScan = spyOn(bleService, 'scanBLE').and.callThrough();
-      let spyEnable = spyOn(bleService.ble, 'enable').and.callFake( (resolve, reject) => {
-        return new Promise( () => {
-          reject();
-        });
-      });
+      let spyEnable = spyOn(bleService.ble, 'enable').and.callThrough();
       let spyError = spyOn(bleService.errorAlert, "present");
 
       let bleScanForDevices = (): Promise<any> => { return new Promise( () => {

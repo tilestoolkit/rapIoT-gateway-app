@@ -94,9 +94,8 @@ describe('tilesAPI', () => {
         };
       });
 
-      let returnedLoginData = (): Promise<any> => { return new Promise( (resolve) => {
-                                  tilesApi.getLoginData();
-                                  resolve(tilesApi.getLoginData());
+      let returnedLoginData = (): Promise<any> => { return new Promise( () => {
+                                  return tilesApi.getLoginData();
                               })};
       returnedLoginData().then( res => {
         expect(tilesApi).toBeDefined();
@@ -114,9 +113,8 @@ describe('tilesAPI', () => {
         };
       });
 
-      let returnedLoginData = (): Promise<any> => { return new Promise( (resolve) => {
-                                  tilesApi.getLoginData();
-                                  resolve(tilesApi.getLoginData());
+      let returnedLoginData = (): Promise<any> => { return new Promise( () => {
+                                  return tilesApi.getLoginData();
                               })};
       returnedLoginData().then( res => {
         expect(spy).toHaveBeenCalled();
