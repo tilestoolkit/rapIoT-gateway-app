@@ -4,5 +4,6 @@ plugins/
 www/lib/
 www/
 www.zip
+tests/
 
 .io-onfig.json
