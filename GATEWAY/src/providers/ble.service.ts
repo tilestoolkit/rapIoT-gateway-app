@@ -15,13 +15,13 @@ import { CommandObject, Device, UtilsService } from './utils.service';
 @Injectable()
 export class BleService {
   public bleScanner: Subscription;
+  public errorAlert: Alert;
   private rfduino = {
     disconnectCharacteristicUUID: '2223',
     receiveCharacteristicUUID: '2221',
     sendCharacteristicUUID: '2222',
     serviceUUID: '2220',
   };
-  private errorAlert: Alert;
 
   constructor(private alertCtrl: AlertController,
               private diagnostic: Diagnostic,

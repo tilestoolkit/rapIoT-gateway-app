@@ -25,6 +25,8 @@ describe('mqttClient', () => {
         TilesApi,
         MqttClient,
         Events,
+        MockBackend,
+        BaseRequestOptions,
         {
         provide: BackgroundFetch,
         useClass: BackgroundFetchMock
@@ -33,8 +35,6 @@ describe('mqttClient', () => {
           provide: Storage,
           useClass: StorageMock
         },
-        MockBackend,
-        BaseRequestOptions,
         {
           provide : Http,
           useFactory: (backendInstance: MockBackend, defaultOptions: BaseRequestOptions) => {
