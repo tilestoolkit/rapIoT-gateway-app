@@ -146,3 +146,13 @@ export class MqttMock {
     return true;
   }
 }
+
+export class NavParamsMock {
+
+}
+
+export class ViewControllerMock {
+
+}
+
+}
