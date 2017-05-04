@@ -38,12 +38,12 @@ export class DevTermPage {
     });
 
     this.events.subscribe('command', (deviceId: string, command: CommandObject) => {
-      const message = `Got message from cloud to device: ${deviceId} \n ${this.utils.getCommandObjectAsString(command)}`;
+      const message = `Got message from cloud to device: ${deviceId} ${this.utils.getCommandObjectAsString(command)}`;
       this.addNewMessage(message);
     });
 
     this.events.subscribe('recievedEvent', (deviceId: string, event: CommandObject) => {
-      const message = `Recieved event from BLE device: ${deviceId} : ${this.utils.getCommandObjectAsString(event)}`;
+      const message = `Recieved event from BLE device: ${deviceId} ${this.utils.getCommandObjectAsString(event)}`;
       this.addNewMessage(message);
     });
   }
