@@ -69,6 +69,7 @@ describe('bleService', () => {
 
   beforeEach(inject([BleService], (temp: BleService) => {
     bleService = temp;
+    let spyError = spyOn(bleService.errorAlert, "present");
   }));
 
   afterEach(() => {
@@ -133,7 +134,7 @@ describe('bleService', () => {
     it('should invoke the method scanBLE() if BLE is enabled', (() => {
       let spyEnabled = spyOn(bleService.ble, 'isEnabled').and.callThrough();
       let spyScan = spyOn(bleService, 'scanBLE').and.callThrough();
-      let spyError = spyOn(bleService.errorAlert, "present");
+      //let spyError = spyOn(bleService.errorAlert, "present");
 
       let bleScanForDevices = (): Promise<any> => { return new Promise( () => {
                                   bleService.scanForDevices();
@@ -154,7 +155,7 @@ describe('bleService', () => {
       });
       let spyScan = spyOn(bleService, 'scanBLE').and.callThrough();
       let spyEnable = spyOn(bleService.ble, 'enable').and.callThrough();
-      let spyError = spyOn(bleService.errorAlert, "present");
+      //let spyError = spyOn(bleService.errorAlert, "present");
 
       let bleScanForDevices = (): Promise<any> => { return new Promise( () => {
                                   bleService.scanForDevices();
@@ -174,7 +175,7 @@ describe('bleService', () => {
       });
       let spyScan = spyOn(bleService, 'scanBLE').and.callThrough();
       let spyEnable = spyOn(bleService.ble, 'enable').and.callThrough();
-      let spyError = spyOn(bleService.errorAlert, "present");
+      //let spyError = spyOn(bleService.errorAlert, "present");
 
       let bleScanForDevices = (): Promise<any> => { return new Promise( () => {
                                   bleService.scanForDevices();
@@ -198,7 +199,7 @@ describe('bleService', () => {
           reject();
         });
       });
-      let spyError = spyOn(bleService.errorAlert, "present");
+      //let spyError = spyOn(bleService.errorAlert, "present");
 
       let bleScanForDevices = (): Promise<any> => { return new Promise( () => {
                                   bleService.scanForDevices();
@@ -241,7 +242,7 @@ describe('bleService', () => {
 
   });
 
-  xdescribe('locate(device: Device): void', () => {
+  describe('locate(device: Device): void', () => {
 
     it('should run the method sendData if ble.connect returns no error', () => {
       spyOn(bleService.ble, 'connect').and.returnValue(Observable.of(testDevice));
@@ -303,7 +304,7 @@ describe('bleService', () => {
 
   });
 
-  xdescribe('startDeviceNotification(device: Device): void', () => {
+  describe('startDeviceNotification(device: Device): void', () => {
 
     it('should run the method utils.getEventStringAsObject and mqttClient.sendEvent if ble.startNotification returns no error and message is not null', () => {
       spyOn(bleService.ble, 'startNotification').and.returnValue(Observable.of('led,on,red'));

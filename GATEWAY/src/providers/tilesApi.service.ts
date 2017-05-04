@@ -13,7 +13,7 @@ export class TilesApi {
   public apiPort: number = 3000;
   public virtualTiles: VirtualTile[] = [];
   public loginData: LoginData;
-  private errorAlert: Alert;
+  public errorAlert: Alert;
 
   constructor(private alertCtrl: AlertController,
               public http: Http,

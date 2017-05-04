@@ -51,6 +51,7 @@ describe('tilesAPI', () => {
     tilesApi = temp;
     tilesApi.loginData = loginData;
     tilesApi.activeApp = activeApp;
+    let spyError = spyOn(tilesApi.errorAlert, "present");
   }));
 
   afterEach(() => {
@@ -321,7 +322,7 @@ describe('tilesAPI', () => {
 
   });
 
-  xdescribe('getApplicationTiles(applicationId: string): Promise<any>', () => {
+  describe('getApplicationTiles(applicationId: string): Promise<any>', () => {
     it('should return a list of three virtualTiles',
         inject([MockBackend], (mockBackend) => {
 
