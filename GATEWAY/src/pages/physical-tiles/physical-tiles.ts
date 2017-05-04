@@ -28,7 +28,9 @@ export class PhysicalTilesPage {
    * the devices.
    */
   refreshDevices = (refresher): void => {
-    this.bleService.scanForDevices();
+    this.bleService.checkBleEnabled().then(res => {
+      this.bleService.scanBLE();
+    });
     // Makes the refresher run for 1.25 secs
     setTimeout(() => {
       refresher.complete();
@@ -68,5 +70,14 @@ export class PhysicalTilesPage {
         },
       }],
     }).present();
+  }
+
+
+  /**
+   * Called when the page has entered. Updates devices list
+   */
+  ionViewDidEnter = () => {
+    this.devices = this.devicesService.getDevices();
+    this.bleService.checkBleEnabled();
   }
 }

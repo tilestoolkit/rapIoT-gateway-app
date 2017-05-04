@@ -150,7 +150,7 @@ export class MqttClient {
       this.client.subscribe(
         this.getDeviceSpecificTopic(device.tileId, false),
       );
-      console.log('Registered device: ' + device.name + ' (' + device.tileId + ')');
+      // console.log('Registered device: ' + device.name + ' (' + device.tileId + ')');
     }
   }
 
@@ -190,18 +190,6 @@ export class MqttClient {
         },
       );
     }
-  }
-
-  /**
-   * End the connection to a device
-   * @param {string} deviceId - the ID of the device to register
-   * @param event - ??
-   */
-  public endConnection = (deviceId: string, event: any): void => {
-    if (this.client) {
-      this.client.end();
-    }
-    this.stopBackgroundFetch();
   }
 
   /**

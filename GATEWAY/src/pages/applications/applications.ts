@@ -74,10 +74,11 @@ export class ApplicationsPage {
    */
   refreshApplications = (refresher): void => {
     this.setApplications();
+    this.bleService.checkBleEnabled();
     // Makes the refresher symbol run for 1.25 sec
     setTimeout(() => {
       refresher.complete();
-    }, 1250);
+    }, 2000);
   }
 
   /**
@@ -103,7 +104,7 @@ export class ApplicationsPage {
   }
 
   /**
-   * Called when the page has exited. Disconnects from connected devices
+   * Called when the page has entered. Disconnects from connected devices
    * and clears the virtual device list of tilesApi
    */
   ionViewDidEnter = () => {
