@@ -48,12 +48,12 @@ export class BleService {
    */
   public startBLEScanner = (): void => {
     this.checkBleEnabled().then(res => {
-      this.bleScanner = Observable.interval(7500).subscribe(res => {
+      this.bleScanner = Observable.interval(7500).subscribe(scanResult => {
         this.scanBLE();
       });
     }).catch(err => {
       this.errorAlert.present();
-    })
+    });
   }
 
   /**
@@ -104,7 +104,7 @@ export class BleService {
           },
           err => {
             this.devicesService.clearDisconnectedDevices();
-            //this.disconnect(device);
+            // this.disconnect(device);
           });
   }
 

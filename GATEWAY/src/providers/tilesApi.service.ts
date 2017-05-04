@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Headers, Http, Response }    from '@angular/http';
+import { Headers, Http }    from '@angular/http';
 import { Storage } from '@ionic/storage';
 import { Alert, AlertController } from 'ionic-angular';
 import 'rxjs/add/operator/toPromise';
@@ -132,7 +132,7 @@ export class TilesApi {
    * Get all registered applications for all users
    */
   public getAllApplications = (): Promise<any> => {
-    const url = `http://${this.loginData.host}:${this.apiPort}/applications`;
+    const url = `http://${this.loginData.host}:${this.apiPort}/applications/users/${this.loginData.user}`;
     return this.http.get(url)
             .toPromise()
             .then(res => {
@@ -187,21 +187,37 @@ export class TilesApi {
    * @param {string} virtualTileId - The virtual tile
    * @param {string} applicationId - The application the virtual tile is registered to
    */
-  public pairDeviceToVirualTile = (deviceId: string, virtualTileId: string): Promise<Response> => {
+  public pairDeviceToVirualTile = (deviceId: string, virtualTileId: string): Promise<void> => {
     const url = `http://${this.loginData.host}:${this.apiPort}/applications/${this.activeApp._id}/${virtualTileId}`;
     const body = JSON.stringify({ tile: deviceId });
     const headerFields = new Headers({'Content-Type': 'application/json'});
-    console.log('url: ' + url + ' body: ' + body);
+    // console.log('url: ' + url + ' body: ' + body);
     return this.http.post(url, body, {headers: headerFields}).toPromise()
-             .catch(err => {
-                try {
-                  if (err.status === 0) {
-                    this.errorAlert.present();
-                  }
-                } finally {
-                  console.log('Feiled pairing of the physical and virtual tile with error: ' + err);
-                }
-             });
+               .then(res => {
+                 if (res === null) {
+                   this.addTileToDatabase(deviceId).then(addRes => {
+                     if (addRes === true) {
+                       this.pairDeviceToVirualTile(deviceId, virtualTileId);
+                     } else {
+                       this.errorAlert.present();
+                     }
+                   });
+                 }
+               })
+               .catch(err => this.errorAlert.present());
+  }
+
+  /**
+   * Add a tile to the database to make it possible to pair it to a virtual tile
+   * @param {string} deviceId - The physical tile
+   */
+  public addTileToDatabase = (deviceId: string): Promise<boolean> => {
+    const url = `http://${this.loginData.host}:${this.apiPort}/tiles`;
+    const body = JSON.stringify({ tileId: deviceId, userId: this.loginData.user, name: deviceId });
+    const headerFields = new Headers({'Content-Type': 'application/json'});
+    return this.http.post(url, body, {headers: headerFields}).toPromise()
+               .then(res => true)
+               .catch(err => false);
   }
 }
 
