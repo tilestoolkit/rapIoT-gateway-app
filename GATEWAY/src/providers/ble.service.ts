@@ -186,7 +186,7 @@ export class BleService {
             if (virtualTiles.filter(tile => tile.tile !== null)
                             .map(tile => tile.tile.name)
                             .includes(device.tileId)) {
-              this.connect(device).then(res => this.devicesService.newDevice(device));
+              this.connect(device).then(connectedDevice => this.devicesService.newDevice(connectedDevice));
             } else {
               this.devicesService.newDevice(device);
             }
