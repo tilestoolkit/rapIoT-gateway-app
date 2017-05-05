@@ -48,7 +48,7 @@ export class BleService {
    */
   public startBLEScanner = (): void => {
     this.checkBleEnabled().then(res => {
-      this.bleScanner = Observable.interval(7500).subscribe(scanResult => {
+      this.bleScanner = Observable.interval(6000).subscribe(scanResult => {
         this.scanBLE();
       });
     }).catch(err => {
@@ -94,15 +94,13 @@ export class BleService {
    * Connect to a device
    * @param {Device} device - the target device
    */
-  public connect = (device: Device): void => {
-    this.ble.connect(device.id)
-        .subscribe(
-          res => {
+  public connect = (device: Device): Promise<any> => {
+    return this.ble.connect(device.id)
+        .toPromise().then( res => {
             device.connected = true;
             this.startDeviceNotification(device);
             this.mqttClient.registerDevice(device);
-          },
-          err => {
+          }).catch( err => {
             this.devicesService.clearDisconnectedDevices();
             // this.disconnect(device);
           });
@@ -185,14 +183,15 @@ export class BleService {
       bleDevice => {
         if (this.tilesApi.isTilesDevice(bleDevice)) {
           this.devicesService.convertBleDeviceToDevice(bleDevice).then( device => {
-            this.mqttClient.registerDevice(device);
-            this.devicesService.newDevice(device);
             if (virtualTiles.filter(tile => tile.tile !== null)
                             .map(tile => tile.tile.name)
                             .includes(device.tileId)) {
-              this.connect(device);
+              this.connect(device).then(res => this.devicesService.newDevice(device));
+            } else {
+              this.devicesService.newDevice(device);
             }
-          }).catch(err => this.errorAlert.present());
+            this.mqttClient.registerDevice(device);
+          });
         }
       },
       err => {
