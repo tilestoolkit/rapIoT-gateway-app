@@ -50,12 +50,11 @@ export class DevicesService {
    * @param {Device} device - the device to add
    */
   public newDevice = (device: Device) => {
-    alert(device.tileId + ", " + device.connected);
     if (!this.devices.map(storedDevice => storedDevice.tileId).includes(device.tileId)) {
       this.devices.push(device);
     } else {
       this.devices.forEach(storedDevice => {
-        if (storedDevice.tileId = device.tileId){
+        if (storedDevice.tileId === device.tileId){
           storedDevice.connected = device.connected;
         }
       })

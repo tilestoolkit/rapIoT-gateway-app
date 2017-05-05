@@ -94,15 +94,18 @@ export class BleService {
    * Connect to a device
    * @param {Device} device - the target device
    */
-  public connect = (device: Device): Promise<any> => {
-    return this.ble.connect(device.id)
-        .toPromise().then( res => {
+  public connect = (device: Device): void => {
+    this.ble.connect(device.id)
+        .subscribe(
+          res => {
             device.connected = true;
             this.startDeviceNotification(device);
             this.mqttClient.registerDevice(device);
-          }).catch( err => {
+            this.devicesService.newDevice(device);
+          },
+          err => {
             this.devicesService.clearDisconnectedDevices();
-            // this.disconnect(device);
+            this.disconnect(device);
           });
   }
 
@@ -186,10 +189,10 @@ export class BleService {
             if (virtualTiles.filter(tile => tile.tile !== null)
                             .map(tile => tile.tile.name)
                             .includes(device.tileId)) {
-              this.connect(device).then(connectedDevice => this.devicesService.newDevice(connectedDevice));
+              this.connect(device);
             } else {
-              this.devicesService.newDevice(device);
             }
+            this.devicesService.newDevice(device);
             this.mqttClient.registerDevice(device);
           });
         }
