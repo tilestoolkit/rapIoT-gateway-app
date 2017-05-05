@@ -39,13 +39,15 @@ export class ApplicationsPage {
         this.presentLoginModal();
       } else {
         this.storage.get('loginData').then((loginData) => {
-          if (loginData == null ||  loginData === undefined) {
-            this.presentLoginModal();
-          } else {
-            this.tilesApi.setLoginData(loginData);
-            this.mqttClient.connect();
-            this.setApplications();
-          }
+          this.storage.set('loggedIn', true).then(res => {
+            if (loginData == null ||  loginData === undefined) {
+              this.presentLoginModal();
+            } else {
+              this.tilesApi.setLoginData(loginData);
+              this.mqttClient.connect();
+              this.setApplications();
+            }
+          });
         });
       }
     });
