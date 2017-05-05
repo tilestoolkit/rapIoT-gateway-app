@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { BackgroundFetch } from '@ionic-native/background-fetch';
 import { Alert, AlertController, Events } from 'ionic-angular';
 import * as mqtt from 'mqtt';
+import { Observable } from 'rxjs/Observable';
 
 import { TilesApi } from './tilesApi.service';
 import { CommandObject, Device, LoginData } from './utils.service';
@@ -11,9 +12,12 @@ import { CommandObject, Device, LoginData } from './utils.service';
 export class MqttClient {
   public client;
   public mqttConnectionData: LoginData;
+  public eventTransmitter: Observable<any>;
   private publishOpts = { retain: true };
   private connectionTimeout: number = 10000; // 10 seconds
   private errorAlert: Alert;
+  private mqttObserver: any;
+
 
   constructor(private alertCtrl: AlertController,
               public backgroundFetch: BackgroundFetch,
@@ -42,6 +46,20 @@ export class MqttClient {
                 'Make sure the host address and port is correct. \n',
       title: 'Mqtt error',
     });
+    this.mqttObserver = null;
+    this.eventTransmitter = Observable.create(observer => {
+        this.mqttObserver = observer;
+    });
+  }
+
+  /**
+   * Send an event to observers
+   * @param {string} topic - event topic
+   * @param {string} deviceId - the ID of the device to register, optional
+   * @param {CommandObject} event - An event represented as a CommandObject, optional
+   */
+  public publishEvent = (topic: string, deviceId?: string, command?: CommandObject) => {
+      this.mqttObserver.next({topic: 'mqtt:' + topic, deviceId, command});
   }
 
   /**
@@ -73,9 +91,7 @@ export class MqttClient {
    * @param {number} port - the port to send to
    */
   public connect = (): void => {
-    if (this.mqttConnectionData === undefined ||  this.mqttConnectionData === null) {
-      this.mqttConnectionData = this.tilesApi.getLoginData();
-    }
+    this.mqttConnectionData = this.tilesApi.getLoginData();
 
     // Check if a previous server connection exists and end it if it does
     if (this.client) {
@@ -96,31 +112,31 @@ export class MqttClient {
         const command: CommandObject = new CommandObject(response.name, response.properties);
         if (command) {
           const deviceId = topic.split('/')[4];
-          this.events.publish('command', deviceId, command);
+          this.publishEvent('command', deviceId, command);
         }
       } finally {} // tslint:disable-line
     });
 
     this.client.on('offline', () => {
-      this.events.publish('offline');
+      this.publishEvent('offline');
     });
 
     this.client.on('close', () => {
-      this.events.publish('close');
+      this.publishEvent('close');
     });
 
     this.client.on('reconnect', () => {
-      this.events.publish('reconnect');
+      this.publishEvent('reconnect');
     });
 
     this.client.on('error', error => {
-      this.events.publish('error', error);
+      this.publishEvent('error', error);
       this.errorAlert.present();
     });
 
     this.client.on('connect', () => {
       clearTimeout(failedConnectionTimeout);
-      this.events.publish('serverConnected');
+      this.publishEvent('serverConnected');
     });
 
     // Ends the connection attempt if the timeout rus out

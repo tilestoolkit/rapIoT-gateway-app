@@ -1,6 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { Events, NavController, NavParams, Content } from 'ionic-angular';
 
+import { BleService } from '../../providers/ble.service';
 import { MqttClient } from '../../providers/mqttClient';
 import { CommandObject, UtilsService } from '../../providers/utils.service';
 
@@ -13,7 +14,7 @@ export class DevTermPage {
   @ViewChild(Content) content: Content;
   messages = [];
 
-  constructor(private events: Events,
+  constructor(private bleService: BleService,
               public navCtrl: NavController,
               public navParams: NavParams,
               private mqttClient: MqttClient,
@@ -21,31 +22,30 @@ export class DevTermPage {
 
     this.messages = [];
 
-    this.events.subscribe('serverConnected', () => {
-      this.addNewMessage('Connected to MQTT-broker');
+    this.mqttClient.eventTransmitter.subscribe(event => {
+      switch (event.topic) {
+        case 'mqtt:command':
+          const deviceId = event.deviceId ? event.deviceId : null;
+          const command = event.command ? event.command : null;
+          const message = `Got message from cloud to device: ${deviceId} ${this.utils.getCommandObjectAsString(command)}`;
+          this.addNewMessage(message);
+        case 'mqtt:serverConnected':
+          this.addNewMessage('Connected to MQTT-broker');
+        case 'mqtt:offline':
+          this.addNewMessage('MQTT-broker offline');
+        case 'mqtt:close':
+          this.addNewMessage('Closed connection to MQTT-broker');
+        case 'mqtt:reconnect':
+          this.addNewMessage('MQTT-broker reconnecting');
+      }
     });
 
-    this.events.subscribe('offline', () => {
-      this.addNewMessage('MQTT-broker offline');
-    });
-
-    this.events.subscribe('close', () => {
-      this.addNewMessage('Closed connection to MQTT-broker');
-    });
-
-    this.events.subscribe('reconnect', () => {
-      this.addNewMessage('MQTT-broker reconnecting');
-    });
-
-    this.events.subscribe('command', (deviceId: string, command: CommandObject) => {
-      const message = `Got message from cloud to device: ${deviceId} ${this.utils.getCommandObjectAsString(command)}`;
-      this.addNewMessage(message);
-    });
-
-    this.events.subscribe('recievedEvent', (deviceId: string, event: CommandObject) => {
+    this.bleService.eventTransmitter.subscribe(event => {
+      const deviceId = event.deviceId ? event.deviceId : null;
+      const command = event.command ? event.command : null;
       const message = `Recieved event from BLE device: ${deviceId} ${this.utils.getCommandObjectAsString(event)}`;
       this.addNewMessage(message);
-    });
+    })
   }
 
   /**

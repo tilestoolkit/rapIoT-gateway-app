@@ -43,8 +43,8 @@ export class ApplicationsPage {
             this.presentLoginModal();
           } else {
             this.tilesApi.setLoginData(loginData);
-            this.setApplications();
             this.mqttClient.connect();
+            this.setApplications();
           }
         });
       }
