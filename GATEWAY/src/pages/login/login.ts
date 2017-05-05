@@ -11,7 +11,7 @@ import { LoginData, UtilsService } from '../../providers/utils.service';
   templateUrl: 'login.html',
 })
 export class LoginPage {
-  loginInfo = { user: '', host: '', port: '', remember: false };
+  loginInfo = { user: '', host: '178.62.99.218', port: '8080', remember: false };
 
   constructor(private alertCtrl: AlertController,
               private mqttClient: MqttClient,
