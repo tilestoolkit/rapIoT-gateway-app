@@ -16,8 +16,6 @@ import { CommandObject, Device, UtilsService } from './utils.service';
 export class BleService {
   public bleScanner: Subscription;
   public errorAlert: Alert;
-  public eventTransmitter: Observable<any>;
-  private bleObserver: any;
   private rfduino = {
     disconnectCharacteristicUUID: '2223',
     receiveCharacteristicUUID: '2221',
@@ -42,10 +40,6 @@ export class BleService {
       subTitle: 'An error occured when trying to communicate to ' +
                       'the tile via Bluetooth Low Energy.',
       title: 'Bluetooth error',
-    });
-    this.bleObserver = null;
-    this.eventTransmitter = Observable.create(observer => {
-        this.bleObserver = observer;
     });
   }
 
@@ -217,7 +211,7 @@ export class BleService {
             console.log('Couldnt make an object from event: ' + responseString);
           } else {
             this.mqttClient.sendEvent(device.tileId, message);
-            this.publishEvent('recievedEvent', device.tileId, message);
+            this.events.publish('recievedEvent', device.tileId, message);
           }
         },
         err => {
@@ -228,16 +222,6 @@ export class BleService {
           this.devicesService.clearDisconnectedDevices();
           this.mqttClient.unregisterDevice(device);
         });
-  }
-
-  /**
-   * Send an event to observers
-   * @param {string} topic - event topic
-   * @param {string} deviceId - the ID of the device to register, optional
-   * @param {CommandObject} event - An event represented as a CommandObject, optional
-   */
-  public publishEvent = (topic: string, deviceId?: string, command?: CommandObject) => {
-      this.bleObserver.next({topic: 'ble:' + topic, deviceId, command});
   }
 
   private checkLocation = (): void => {
