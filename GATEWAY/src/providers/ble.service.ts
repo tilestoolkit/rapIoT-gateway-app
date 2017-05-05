@@ -118,10 +118,11 @@ export class BleService {
           res => {
             this.sendData(device, 'led,on,red');
             setTimeout(() => {
-              this.sendData(device, 'led,off');
-              if (!device.connected) {
-                this.disconnect(device);
-              }
+              this.sendData(device, 'led,off').then(res => {
+                if (!device.connected) {
+                  this.disconnect(device);
+                }
+              })
             }, 3000);
           },
           err => {
@@ -151,20 +152,24 @@ export class BleService {
    * @param {Device} device - the target device
    * @param {string} dataString - the string of data to send to the device
    */
-  public sendData = (device: Device, dataString: string): void => {
+  public sendData = (device: Device, dataString: string): Promise<any> => {
     try {
       const dataArray = this.utils.convertStringtoBytes(dataString);
       // Attempting to send the array of bytes to the device
-      this.ble.writeWithoutResponse(device.id,
+      return this.ble.writeWithoutResponse(device.id,
                                this.rfduino.serviceUUID,
                                this.rfduino.sendCharacteristicUUID,
                                dataArray.buffer)
-              .then( res => console.log('Success sending the string: ' + dataString))
+              .then( res => true)
               .catch( err => {
                 this.errorAlert.present();
+                return false;
               });
     } catch (err) {
       this.errorAlert.present();
+      return new Promise( (res, err) => {
+        err('error sending');
+      });
     }
   }
 
