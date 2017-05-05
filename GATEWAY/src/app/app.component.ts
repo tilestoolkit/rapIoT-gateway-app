@@ -6,6 +6,7 @@ import { Splashscreen, StatusBar } from 'ionic-native';
 import { TabsPage } from '../pages/tabs/tabs';
 import { BleService } from '../providers/ble.service';
 import { DevicesService } from '../providers/devices.service';
+import { MqttClient } from '../providers/mqttClient';
 import { CommandObject, UtilsService } from '../providers/utils.service';
 
 
@@ -25,6 +26,7 @@ export class Tiles {
               private platform: Platform,
               private bleService: BleService,
               private devicesService: DevicesService,
+              private mqttClient: MqttClient,
               private utils: UtilsService ) {
 
     this.backgroundMode.enable();
@@ -34,21 +36,20 @@ export class Tiles {
       Splashscreen.hide();
     });
 
-    this.events.subscribe('serverConnected', () => {
-      this.bleService.startBLEScanner();
-    });
-
-    this.events.subscribe('offline', () => {
-      this.bleService.stopBLEScanner();
-    });
-
-    this.events.subscribe('command', (deviceId: string, command: CommandObject) => {
-      const devices = this.devicesService.getDevices();
-      for (let device of devices) {
-        if (device.tileId === deviceId) {
-          const commandString = this.utils.getCommandObjectAsString(command);
-          this.bleService.sendData(device, commandString);
-        }
+    this.mqttClient.eventTransmitter.subscribe(event => {
+      switch(event.topic) {
+        case 'mqtt:command':
+          const devices = this.devicesService.getDevices();
+          for (let device of devices) {
+            if (device.tileId === event.deviceId) {
+              const commandString = this.utils.getCommandObjectAsString(event.command);
+              this.bleService.sendData(device, commandString);
+            }
+          }
+        case 'mqtt:serverConnected':
+          this.bleService.startBLEScanner();
+        case 'mqtt:offline':
+          this.bleService.stopBLEScanner();
       }
     });
   }
