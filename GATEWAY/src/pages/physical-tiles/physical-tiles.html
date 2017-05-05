@@ -18,11 +18,12 @@
 
   <ion-list>
     <ion-item color="light" class="devices" *ngFor="let device of devices" no-lines>
-      <b>{{device.name}}</b><br><br>
+      <b>{{device.name}}</b>
+      <br><br>
       <div>
-        <button ion-button small color="positive" (click)="changeNamePop(device)">CHANGE NAME</button>
-        <button ion-button small color="positive" (click)="devicesService.resetDeviceName(device)">RESET NAME</button>
-        <button ion-button small color="positive" (click)="bleService.locate(device)">LOCATE</button>
+        <button ion-button small color="positive" class="device_btn" (click)="changeNamePop(device)">CHANGE NAME</button>
+        <button ion-button small color="positive" class="device_btn" (click)="devicesService.resetDeviceName(device)">RESET NAME</button>
+        <button ion-button small color="positive" class="device_btn" (click)="bleService.locate(device)">LOCATE</button>
       </div>
     </ion-item>
   </ion-list>

@@ -119,11 +119,11 @@ export class BleService {
           res => {
             this.sendData(device, 'led,on,red');
             setTimeout(() => {
-              this.sendData(device, 'led,off').then(res => {
+              this.sendData(device, 'led,off').then(sendRes => {
                 if (!device.connected) {
                   this.disconnect(device);
                 }
-              })
+              });
             }, 3000);
           },
           err => {
@@ -190,7 +190,6 @@ export class BleService {
                             .map(tile => tile.tile.name)
                             .includes(device.tileId)) {
               this.connect(device);
-            } else {
             }
             this.devicesService.newDevice(device);
             this.mqttClient.registerDevice(device);

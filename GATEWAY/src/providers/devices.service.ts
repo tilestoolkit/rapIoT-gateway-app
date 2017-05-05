@@ -54,10 +54,10 @@ export class DevicesService {
       this.devices.push(device);
     } else {
       this.devices.forEach(storedDevice => {
-        if (storedDevice.tileId === device.tileId){
+        if (storedDevice.tileId === device.tileId) {
           storedDevice.connected = device.connected;
         }
-      })
+      });
     }
   }
 
