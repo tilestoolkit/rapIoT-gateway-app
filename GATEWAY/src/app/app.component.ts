@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { BackgroundMode } from '@ionic-native/background-mode';
 import { Events, Platform } from 'ionic-angular';
 import { Splashscreen, StatusBar } from 'ionic-native';
+import { Observable } from 'rxjs/Observable';
 
 import { TabsPage } from '../pages/tabs/tabs';
 import { BleService } from '../providers/ble.service';

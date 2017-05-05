@@ -1,5 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 import { Events, NavController, NavParams, Content } from 'ionic-angular';
+import { Observable } from 'rxjs/Observable';
 
 import { BleService } from '../../providers/ble.service';
 import { MqttClient } from '../../providers/mqttClient';
