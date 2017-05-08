@@ -72,21 +72,19 @@ export class BleService {
     return new Promise((resolve, reject) => {
       this.ble.isEnabled().then( res => {
                 if (!this.platform.is('ios')) {
-                    // Checking if location is turned on will not work for ios
-                    this.checkLocation();
-                  } else {
-                    this.scanBLE();
-                  }
+                  // Checking if location is turned on will not work for ios
+                  this.checkLocation();
+                }
                 resolve();
               }).catch( err => {
                 if (!this.platform.is('ios')) {
                   // Enable will not work for ios
                   this.ble.enable().then( res => {
-                      this.checkLocation();
-                      resolve();
-                    }).catch( errEnable => {
-                      reject('ble failed to enable');
-                    });
+                    this.checkLocation();
+                    resolve();
+                  }).catch( errEnable => {
+                    reject('ble failed to enable');
+                  });
                 } else {
                   reject('ble not enabled');
                 }
