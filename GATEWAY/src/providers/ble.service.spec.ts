@@ -123,7 +123,7 @@ describe('bleService', () => {
 
   });
 
-  describe('chackBleEnabled(): void', () => {
+  describe('checkBleEnabled(): void', () => {
 
     it('should check if BLE is enabled', () => {
       let spyEnabled = spyOn(bleService.ble, 'isEnabled').and.callThrough();
@@ -131,7 +131,7 @@ describe('bleService', () => {
       bleService.checkBleEnabled().then( res => {
         expect(spyEnabled).toHaveBeenCalled();
       }).catch( err => {
-        console.info(err);
+        //console.info(err);
       });
 
     });

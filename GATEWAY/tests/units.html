@@ -13,7 +13,7 @@
         <td colspan="3" title="Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.133 Safari/537.36">Browser: Chrome 57.0.2987 (Windows 10 0.0.0)</td>
       </tr>
       <tr class="overview">
-        <td colspan="3">Timestamp: 2017-05-08 13:20:27</td>
+        <td colspan="3">Timestamp: 2017-05-08 13:34:11</td>
       </tr>
       <tr>
         <td colspan="3">
@@ -21,7 +21,7 @@
           0 errors / 
           0 failures / 
           0 skipped / 
-          runtime: 1.941s
+          runtime: 1.97s
         </td>
       </tr>
       <tr class="header">
@@ -30,122 +30,122 @@
         <td>Suite / Results</td>
       </tr>
       <tr class="pass">
-        <td>Passed in 0.673s</td>
+        <td>Passed in 0.642s</td>
         <td>is created</td>
         <td>App Component</td>
       </tr>
       <tr class="pass">
-        <td>Passed in 0.608s</td>
+        <td>Passed in 0.636s</td>
         <td>initialises with a root page of TabsPage</td>
         <td>App Component</td>
       </tr>
       <tr class="pass">
-        <td>Passed in 0.025s</td>
+        <td>Passed in 0.034s</td>
         <td>should create an instance of the BleService</td>
         <td>bleService</td>
       </tr>
       <tr class="pass">
-        <td>Passed in 0.013s</td>
+        <td>Passed in 0.018s</td>
         <td>should scan for BLE devices, and start a scanner that scans for new BLE devices</td>
         <td>bleService &raquo; startBLEScanner(): void</td>
       </tr>
       <tr class="pass">
-        <td>Passed in 0.01s</td>
+        <td>Passed in 0.015s</td>
         <td>should scan for BLE devices, and start a scanner that scans for new BLE devices</td>
         <td>bleService &raquo; startBLEScanner(): void</td>
       </tr>
       <tr class="pass">
-        <td>Passed in 0.011s</td>
+        <td>Passed in 0.016s</td>
         <td>should unsubscribe bleScanner if defined</td>
         <td>bleService &raquo; stopBLEScanner(): void</td>
       </tr>
       <tr class="pass">
-        <td>Passed in 0.014s</td>
+        <td>Passed in 0.017s</td>
         <td>should check if BLE is enabled</td>
-        <td>bleService &raquo; chackBleEnabled(): void</td>
+        <td>bleService &raquo; checkBleEnabled(): void</td>
       </tr>
       <tr class="pass">
         <td>Passed in 0.014s</td>
         <td>should invoke the method scanBLE() if BLE is enabled</td>
-        <td>bleService &raquo; chackBleEnabled(): void</td>
+        <td>bleService &raquo; checkBleEnabled(): void</td>
       </tr>
       <tr class="pass">
-        <td>Passed in 0.013s</td>
+        <td>Passed in 0.014s</td>
         <td>should try to enable BLE if method isEnabled throws an error</td>
-        <td>bleService &raquo; chackBleEnabled(): void</td>
+        <td>bleService &raquo; checkBleEnabled(): void</td>
       </tr>
       <tr class="pass">
-        <td>Passed in 0.007s</td>
+        <td>Passed in 0.016s</td>
         <td>should invoke method scanBLE() if it successfully enables BLE</td>
-        <td>bleService &raquo; chackBleEnabled(): void</td>
+        <td>bleService &raquo; checkBleEnabled(): void</td>
       </tr>
       <tr class="pass">
-        <td>Passed in 0.008s</td>
+        <td>Passed in 0.012s</td>
         <td>should present the error message if method enable() throws an error</td>
-        <td>bleService &raquo; chackBleEnabled(): void</td>
+        <td>bleService &raquo; checkBleEnabled(): void</td>
       </tr>
       <tr class="pass">
-        <td>Passed in 0.01s</td>
+        <td>Passed in 0.011s</td>
         <td>should run method startDeviceNotification if ble.connect returns no error</td>
         <td>bleService &raquo; connect(device: Device): void</td>
       </tr>
       <tr class="pass">
-        <td>Passed in 0.013s</td>
+        <td>Passed in 0.01s</td>
         <td>should run method devicesService.clearDisconnectedDevices if ble.connect returns an error</td>
         <td>bleService &raquo; connect(device: Device): void</td>
       </tr>
       <tr class="pass">
-        <td>Passed in 0.015s</td>
+        <td>Passed in 0.013s</td>
         <td>should run the method sendData if ble.connect returns no error</td>
         <td>bleService &raquo; locate(device: Device): void</td>
       </tr>
       <tr class="pass">
-        <td>Passed in 0.015s</td>
+        <td>Passed in 0.016s</td>
         <td>should not run the method sendData if ble.connect returns an error</td>
         <td>bleService &raquo; locate(device: Device): void</td>
       </tr>
       <tr class="pass">
-        <td>Passed in 0.013s</td>
+        <td>Passed in 0.011s</td>
         <td>should disconnect from the current device if it is paired</td>
         <td>bleService &raquo; disconnect(device: Device): void</td>
       </tr>
       <tr class="pass">
-        <td>Passed in 0.019s</td>
+        <td>Passed in 0.022s</td>
         <td>should successfully send a dataString to a device using BLE</td>
         <td>bleService &raquo; sendData(device: Device, dataString: string): void</td>
       </tr>
       <tr class="pass">
-        <td>Passed in 0.013s</td>
+        <td>Passed in 0.01s</td>
         <td>should run functions ble.scan and devicesService.convertBleDeviceToDevice</td>
         <td>bleService &raquo; scanBLE(): void</td>
       </tr>
       <tr class="pass">
-        <td>Passed in 0.015s</td>
+        <td>Passed in 0.009s</td>
         <td>should run the method utils.getEventStringAsObject and mqttClient.sendEvent if ble.startNotification returns no error and message is not null</td>
         <td>bleService &raquo; startDeviceNotification(device: Device): void</td>
       </tr>
       <tr class="pass">
-        <td>Passed in 0.011s</td>
+        <td>Passed in 0.007s</td>
         <td>should run the method utils.getEventStringAsObject but not the method mqttClient.sendEvent if ble.startNotification returns no error, but message is null</td>
         <td>bleService &raquo; startDeviceNotification(device: Device): void</td>
       </tr>
       <tr class="pass">
-        <td>Passed in 0.013s</td>
+        <td>Passed in 0.008s</td>
         <td>should not run  method utils.getEventStringAsObject and mqttClient.sendEvent if ble.startNotification returns an error</td>
         <td>bleService &raquo; startDeviceNotification(device: Device): void</td>
       </tr>
       <tr class="pass">
-        <td>Passed in 0.009s</td>
+        <td>Passed in 0.007s</td>
         <td>should create an instance of the DevicesService</td>
         <td>devicesService:</td>
       </tr>
       <tr class="pass">
-        <td>Passed in 0.011s</td>
+        <td>Passed in 0.009s</td>
         <td>should convert a given BLE Device parameter to a Device</td>
         <td>devicesService: &raquo; convertBleDeviceToDevice(bleDevice: any): Promise<Device></td>
       </tr>
       <tr class="pass">
-        <td>Passed in 0.007s</td>
+        <td>Passed in 0.01s</td>
         <td>should convert a given BLE Device parameter to a Device, but use bleDevice.name if an error is thrown</td>
         <td>devicesService: &raquo; convertBleDeviceToDevice(bleDevice: any): Promise<Device></td>
       </tr>
@@ -155,7 +155,7 @@
         <td>devicesService: &raquo; newDevice(device: Device)</td>
       </tr>
       <tr class="pass">
-        <td>Passed in 0.007s</td>
+        <td>Passed in 0.005s</td>
         <td>should not add a device to the devices-list if the list already contains the device parameter</td>
         <td>devicesService: &raquo; newDevice(device: Device)</td>
       </tr>
@@ -165,22 +165,22 @@
         <td>devicesService: &raquo; setCustomDeviceName(device: Device, name: String): void</td>
       </tr>
       <tr class="pass">
-        <td>Passed in 0.009s</td>
+        <td>Passed in 0.005s</td>
         <td>should reset the name of the device parameter to the tileId</td>
         <td>devicesService: &raquo; resetDeviceName(device: Device): void</td>
       </tr>
       <tr class="pass">
-        <td>Passed in 0.007s</td>
+        <td>Passed in 0.006s</td>
         <td>should remove the devices that has not been discovered for the past 60 seconds</td>
         <td>devicesService: &raquo; clearDisconnectedDevices(): void</td>
       </tr>
       <tr class="pass">
-        <td>Passed in 0.017s</td>
+        <td>Passed in 0.018s</td>
         <td>should create an instance of the MqttClient</td>
         <td>mqttClient</td>
       </tr>
       <tr class="pass">
-        <td>Passed in 0.01s</td>
+        <td>Passed in 0.013s</td>
         <td>should return a correct url adress for the specific device</td>
         <td>mqttClient &raquo; getDeviceSpecificTopic(deviceId: string, isEvent: boolean): string</td>
       </tr>
@@ -190,57 +190,57 @@
         <td>mqttClient &raquo; getDeviceSpecificTopic(deviceId: string, isEvent: boolean): string</td>
       </tr>
       <tr class="pass">
-        <td>Passed in 0.007s</td>
+        <td>Passed in 0.006s</td>
         <td>should create a connection to the server</td>
         <td>mqttClient &raquo; connect(user: string, host: string, port: number): void</td>
       </tr>
       <tr class="pass">
-        <td>Passed in 0.012s</td>
+        <td>Passed in 0.007s</td>
         <td>should get connection data from tilesApi if it is undefined or null</td>
         <td>mqttClient &raquo; connect(user: string, host: string, port: number): void</td>
       </tr>
       <tr class="pass">
-        <td>Passed in 0.007s</td>
+        <td>Passed in 0.006s</td>
         <td>should end an old connection if it exists</td>
         <td>mqttClient &raquo; connect(user: string, host: string, port: number): void</td>
       </tr>
       <tr class="pass">
-        <td>Passed in 0.007s</td>
+        <td>Passed in 0.006s</td>
         <td>should call client.on a total of 6 (six) times</td>
         <td>mqttClient &raquo; connect(user: string, host: string, port: number): void</td>
       </tr>
       <tr class="pass">
-        <td>Passed in 0.007s</td>
+        <td>Passed in 0.011s</td>
         <td>should register a device at the server if client is defined</td>
         <td>mqttClient &raquo; registerDevice(device: Device): void</td>
       </tr>
       <tr class="pass">
-        <td>Passed in 0.006s</td>
+        <td>Passed in 0.007s</td>
         <td>should unregister a device at the server if client is defined</td>
         <td>mqttClient &raquo; unregisterDevice(device: Device): void</td>
       </tr>
       <tr class="pass">
-        <td>Passed in 0.006s</td>
+        <td>Passed in 0.007s</td>
         <td>should send an event if client is defined</td>
         <td>mqttClient &raquo; sendEvent(deviceId: string, event: CommandObject): void</td>
       </tr>
       <tr class="pass">
-        <td>Passed in 0.013s</td>
+        <td>Passed in 0.006s</td>
         <td>should start the BackgroundFetch</td>
         <td>mqttClient &raquo; startBackgroundFetch(): void</td>
       </tr>
       <tr class="pass">
-        <td>Passed in 0.008s</td>
+        <td>Passed in 0.007s</td>
         <td>should stop the BackgroundFetch</td>
         <td>mqttClient &raquo; stopBackgroundFetch(): void</td>
       </tr>
       <tr class="pass">
-        <td>Passed in 0.007s</td>
+        <td>Passed in 0.018s</td>
         <td>should create an instance of the TilesApi</td>
         <td>tilesAPI</td>
       </tr>
       <tr class="pass">
-        <td>Passed in 0.006s</td>
+        <td>Passed in 0.019s</td>
         <td>should return true when given a valid device-input</td>
         <td>tilesAPI &raquo; isTilesDevice(device: any): boolean</td>
       </tr>
@@ -255,22 +255,22 @@
         <td>tilesAPI &raquo; setLoginData(loginData: LoginData): void</td>
       </tr>
       <tr class="pass">
-        <td>Passed in 0.01s</td>
+        <td>Passed in 0.006s</td>
         <td>should return the correct login data</td>
         <td>tilesAPI &raquo; getLoginData(): void</td>
       </tr>
       <tr class="pass">
-        <td>Passed in 0.006s</td>
+        <td>Passed in 0.007s</td>
         <td>should get loginData from storage if loginData is undefined</td>
         <td>tilesAPI &raquo; getLoginData(): void</td>
       </tr>
       <tr class="pass">
-        <td>Passed in 0.007s</td>
+        <td>Passed in 0.009s</td>
         <td>should get loginData from storage if loginData is null</td>
         <td>tilesAPI &raquo; getLoginData(): void</td>
       </tr>
       <tr class="pass">
-        <td>Passed in 0.006s</td>
+        <td>Passed in 0.012s</td>
         <td>should set the activeApp equal to the parameter</td>
         <td>tilesAPI &raquo; setActiveApp(activeApp: Application): void</td>
       </tr>
@@ -285,12 +285,12 @@
         <td>tilesAPI &raquo; getActiveApp(): Application</td>
       </tr>
       <tr class="pass">
-        <td>Passed in 0.007s</td>
+        <td>Passed in 0.006s</td>
         <td>should set virtualTiles equal to a list of Virtual Tiles from an application</td>
         <td>tilesAPI &raquo; setVirtualTiles(appId: string): void</td>
       </tr>
       <tr class="pass">
-        <td>Passed in 0.012s</td>
+        <td>Passed in 0.006s</td>
         <td>should return a list of the Virtual Tiles</td>
         <td>tilesAPI &raquo; getVirtualTiles(): VirtualTile[]</td>
       </tr>
@@ -300,17 +300,17 @@
         <td>tilesAPI &raquo; clearVirtualTiles(): void</td>
       </tr>
       <tr class="pass">
-        <td>Passed in 0.008s</td>
+        <td>Passed in 0.012s</td>
         <td>should return true if the userName is registered in the server</td>
         <td>tilesAPI &raquo; isTilesUser(userName: string, host: string): Promise<any></td>
       </tr>
       <tr class="pass">
-        <td>Passed in 0.007s</td>
+        <td>Passed in 0.008s</td>
         <td>should return false if the userName is not registered in the server</td>
         <td>tilesAPI &raquo; isTilesUser(userName: string, host: string): Promise<any></td>
       </tr>
       <tr class="pass">
-        <td>Passed in 0.006s</td>
+        <td>Passed in 0.005s</td>
         <td>should return false if there is an error</td>
         <td>tilesAPI &raquo; isTilesUser(userName: string, host: string): Promise<any></td>
       </tr>
@@ -320,7 +320,7 @@
         <td>tilesAPI &raquo; getAllApplications(): Promise<any></td>
       </tr>
       <tr class="pass">
-        <td>Passed in 0.012s</td>
+        <td>Passed in 0.006s</td>
         <td>should catch if there is an error</td>
         <td>tilesAPI &raquo; getAllApplications(): Promise<any></td>
       </tr>
@@ -330,27 +330,27 @@
         <td>tilesAPI &raquo; getApplicationDetails(applicationId: string): Promise<any></td>
       </tr>
       <tr class="pass">
-        <td>Passed in 0.006s</td>
+        <td>Passed in 0.01s</td>
         <td>should return null if there is an error</td>
         <td>tilesAPI &raquo; getApplicationDetails(applicationId: string): Promise<any></td>
       </tr>
       <tr class="pass">
-        <td>Passed in 0.005s</td>
+        <td>Passed in 0.007s</td>
         <td>should return a list of three virtualTiles</td>
         <td>tilesAPI &raquo; getApplicationTiles(applicationId: string): Promise<any></td>
       </tr>
       <tr class="pass">
-        <td>Passed in 0.008s</td>
+        <td>Passed in 0.007s</td>
         <td>should pair a device to a virtual tile and return status code 201</td>
         <td>tilesAPI &raquo; pairDeviceToVirtualTile(deviceId: string, virtualTileId: string, applicationId: string): void</td>
       </tr>
       <tr class="pass">
-        <td>Passed in 0.009s</td>
+        <td>Passed in 0.007s</td>
         <td>should catch if there is an error</td>
         <td>tilesAPI &raquo; pairDeviceToVirtualTile(deviceId: string, virtualTileId: string, applicationId: string): void</td>
       </tr>
       <tr class="pass">
-        <td>Passed in 0.011s</td>
+        <td>Passed in 0.007s</td>
         <td>should create an instance of the UtilsService</td>
         <td>utilsService</td>
       </tr>
@@ -360,17 +360,17 @@
         <td>utilsService &raquo; convertStringToBytes(str: String): any</td>
       </tr>
       <tr class="pass">
-        <td>Passed in 0.006s</td>
+        <td>Passed in 0.005s</td>
         <td>should return null if the method is not able to convert the string</td>
         <td>utilsService &raquo; convertStringToBytes(str: String): any</td>
       </tr>
       <tr class="pass">
-        <td>Passed in 0.005s</td>
+        <td>Passed in 0.01s</td>
         <td>should return an object conatining the eventName and the properties of the string parameter</td>
         <td>utilsService &raquo; getEventStringAsObject(eventString: string): CommandObject</td>
       </tr>
       <tr class="pass">
-        <td>Passed in 0.005s</td>
+        <td>Passed in 0.006s</td>
         <td>should return ´null´ if the string parameter does not contain any properties</td>
         <td>utilsService &raquo; getEventStringAsObject(eventString: string): CommandObject</td>
       </tr>
@@ -385,23 +385,22 @@
         <td>utilsService &raquo; verifyLoginCredentials(user: string, host: string, port: number): boolean</td>
       </tr>
       <tr class="pass">
-        <td>Passed in 0.011s</td>
+        <td>Passed in 0.007s</td>
         <td>should return false when passing incorrectly formated username parameters</td>
         <td>utilsService &raquo; verifyLoginCredentials(user: string, host: string, port: number): boolean</td>
       </tr>
       <tr class="pass">
-        <td>Passed in 0.005s</td>
+        <td>Passed in 0.006s</td>
         <td>should return false when passing incorrectly formated host parameters</td>
         <td>utilsService &raquo; verifyLoginCredentials(user: string, host: string, port: number): boolean</td>
       </tr>
       <tr class="pass">
-        <td>Passed in 0.006s</td>
+        <td>Passed in 0.01s</td>
         <td>should return a capitalized string</td>
         <td>utilsService &raquo; capitalize(str: string): void</td>
       </tr>
       <tr class="system-out">
         <td colspan="3"><strong>System output:</strong><br />Chrome 57.0.2987 (Windows 10 0.0.0) INFO: 'ble failed to enable'
-<br />Chrome 57.0.2987 (Windows 10 0.0.0) INFO: 'ble failed to enable'
 <br />Chrome 57.0.2987 (Windows 10 0.0.0) INFO: 'ble failed to enable'
 <br />Chrome 57.0.2987 (Windows 10 0.0.0) INFO: 'ble failed to enable'
 <br />Chrome 57.0.2987 (Windows 10 0.0.0) INFO: 'ble failed to enable'
