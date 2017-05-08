@@ -47,6 +47,7 @@ describe('tilesAPI', () => {
     tilesApi = temp;
     tilesApi.loginData = loginData;
     tilesApi.activeApp = activeApp;
+    let spyError = spyOn(tilesApi.errorAlert, "present");
   }));
 
   afterEach(() => {
@@ -94,9 +95,8 @@ describe('tilesAPI', () => {
         };
       });
 
-      let returnedLoginData = (): Promise<any> => { return new Promise( (resolve) => {
-                                  tilesApi.getLoginData();
-                                  resolve(tilesApi.getLoginData());
+      let returnedLoginData = (): Promise<any> => { return new Promise( () => {
+                                  return tilesApi.getLoginData();
                               })};
       returnedLoginData().then( res => {
         expect(tilesApi).toBeDefined();
@@ -114,9 +114,8 @@ describe('tilesAPI', () => {
         };
       });
 
-      let returnedLoginData = (): Promise<any> => { return new Promise( (resolve) => {
-                                  tilesApi.getLoginData();
-                                  resolve(tilesApi.getLoginData());
+      let returnedLoginData = (): Promise<any> => { return new Promise( () => {
+                                  return tilesApi.getLoginData();
                               })};
       returnedLoginData().then( res => {
         expect(spy).toHaveBeenCalled();
@@ -345,12 +344,14 @@ describe('tilesAPI', () => {
 
         connection.mockRespond(new Response(new ResponseOptions({status: 201})));
       });
-
-      tilesApi.pairDeviceToVirualTile('test', '58c120c5497df8602fedfbd3').then(
-        (successResult) => {
-          expect(successResult).toBeDefined();
-          expect(successResult.status).toBe(201);
-        });
+      let returnedStatuscode = (): Promise<any> => { return new Promise( () => {
+                                  let temp = tilesApi.pairDeviceToVirualTile('test', '58c120c5497df8602fedfbd3');
+                                  return temp;
+                              })};
+      returnedStatuscode().then( successResult => {
+        expect(successResult).toBeDefined();
+        expect(successResult.status).toBe(201);
+      });
     }));
 
     it('should catch if there is an error',
