@@ -104,7 +104,7 @@ export class TilesApi {
    * @param {string} username - username to check for
    * @param {host} string - the host ip/url
    */
-  public isTilesUser = (userName: string, host: string): Promise<any> => {
+  public isTilesUser = (userName: string, host: string): Promise<boolean> => {
     const url = `http://${host}:${this.apiPort}/users`;
     return this.http.get(url)
             .toPromise()

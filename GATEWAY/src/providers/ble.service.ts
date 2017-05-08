@@ -48,7 +48,7 @@ export class BleService {
    */
   public startBLEScanner = (): void => {
     this.checkBleEnabled().then(res => {
-      this.bleScanner = Observable.interval(7500).subscribe(scanResult => {
+      this.bleScanner = Observable.interval(6000).subscribe(scanResult => {
         this.scanBLE();
       });
     }).catch(err => {
@@ -111,10 +111,11 @@ export class BleService {
             device.connected = true;
             this.startDeviceNotification(device);
             this.mqttClient.registerDevice(device);
+            this.devicesService.newDevice(device);
           },
           err => {
             this.devicesService.clearDisconnectedDevices();
-            // this.disconnect(device);
+            this.disconnect(device);
           });
   }
 
@@ -128,10 +129,11 @@ export class BleService {
           res => {
             this.sendData(device, 'led,on,red');
             setTimeout(() => {
-              this.sendData(device, 'led,off');
-              if (!device.connected) {
-                this.disconnect(device);
-              }
+              this.sendData(device, 'led,off').then(sendRes => {
+                if (!device.connected) {
+                  this.disconnect(device);
+                }
+              });
             }, 3000);
           },
           err => {
@@ -161,20 +163,24 @@ export class BleService {
    * @param {Device} device - the target device
    * @param {string} dataString - the string of data to send to the device
    */
-  public sendData = (device: Device, dataString: string): void => {
+  public sendData = (device: Device, dataString: string): Promise<any> => {
     try {
       const dataArray = this.utils.convertStringtoBytes(dataString);
       // Attempting to send the array of bytes to the device
-      this.ble.writeWithoutResponse(device.id,
+      return this.ble.writeWithoutResponse(device.id,
                                this.rfduino.serviceUUID,
                                this.rfduino.sendCharacteristicUUID,
                                dataArray.buffer)
-              .then( res => console.log('Success sending the string: ' + dataString))
+              .then( res => true)
               .catch( err => {
                 this.errorAlert.present();
+                return false;
               });
     } catch (err) {
       this.errorAlert.present();
+      return new Promise( (res, err) => {
+        err('error sending');
+      });
     }
   }
 
@@ -190,14 +196,14 @@ export class BleService {
       bleDevice => {
         if (this.tilesApi.isTilesDevice(bleDevice)) {
           this.devicesService.convertBleDeviceToDevice(bleDevice).then( device => {
-            this.mqttClient.registerDevice(device);
-            this.devicesService.newDevice(device);
             if (virtualTiles.filter(tile => tile.tile !== null)
                             .map(tile => tile.tile.name)
                             .includes(device.tileId)) {
               this.connect(device);
             }
-          }).catch(err => this.errorAlert.present());
+            this.devicesService.newDevice(device);
+            this.mqttClient.registerDevice(device);
+          });
         }
       },
       err => {
