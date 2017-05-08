@@ -90,13 +90,13 @@ export class BackgroundFetchMock {
 }
 
 export class BLEMock {
-  public isEnabled(): Promise<any> {
-    return new Promise((resolve: Function) => {
-      resolve();
+  public isEnabled(): any {
+    return new Promise<void>((resolve: Function): void => {
+      resolve(true);
     });
   }
   public enable(): Promise<any> {
-    return new Promise((resolve: Function) => {
+    return new Promise<any>((resolve, reject) => {
       resolve();
     });
   }
@@ -105,7 +105,7 @@ export class BLEMock {
   }
   public catch(args): Promise<any> {
     return new Promise((resolve: Function) => {
-      return resolve();
+      resolve();
     });
   }
   public connect(): Observable<any> {
@@ -116,12 +116,12 @@ export class BLEMock {
   }
   public disconnect(args): Promise<any> {
     return new Promise((resolve: Function) => {
-      return resolve();
+      resolve();
     });
   }
   public writeWithoutResponse(args): Promise<any> {
     return new Promise((resolve: Function) => {
-      return resolve();
+      resolve();
     });
   }
 }

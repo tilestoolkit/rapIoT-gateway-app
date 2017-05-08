@@ -69,25 +69,35 @@ export class BleService {
    * Checking if bluetooth is enabled and enable on android if not
    */
   public checkBleEnabled = (): Promise<boolean> => {
-    return this.ble.isEnabled().then( res => {
-              if (!this.platform.is('ios')) {
-                // Checking if location is turned on will not work for ios
-                this.checkLocation();
-              }
-              return true;
-            }).catch( err => {
-              if (!this.platform.is('ios')) {
-                // Enable will not work for ios
-                this.ble.enable().then( res => {
+    //console.info(this.ble.isEnabled());
+    //console.info(this.ble.enable());
+    return new Promise((resolve, reject) => {
+      this.ble.isEnabled().then( res => {
+                if (!this.platform.is('ios')) {
+                    // Checking if location is turned on will not work for ios
                     this.checkLocation();
-                    return true;
-                  }).catch( errEnable => {
-                    return Promise.reject('ble failed to enable');
-                  });
-              } else {
-                return Promise.reject('ble not enabled');
-              }
-            });
+                  } else {
+                    this.scanBLE();
+                  }
+                  //console.info("Resolve");
+                resolve();
+              }).catch( err => {
+                if (!this.platform.is('ios')) {
+                  // Enable will not work for ios
+                  this.ble.enable().then( res => {
+                      this.checkLocation();
+                  //console.info("Resolve");
+                      resolve();
+                    }).catch( errEnable => {
+                  //console.info(err);
+                  //console.info(errEnable);
+                      reject('ble failed to enable');
+                    });
+                } else {
+                  reject('ble not enabled');
+                }
+              });
+    });
   }
 
   /**

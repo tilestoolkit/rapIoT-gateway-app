@@ -20,6 +20,7 @@ import * as testDevice from '../fixtures/tilesDevice.json';
 describe('bleService', () => {
 
   let bleService: BleService = null;
+  let spyError: jasmine.Spy;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -35,6 +36,10 @@ describe('bleService', () => {
         BleService,
         AlertController,
         {
+          provide: BLE,
+          useClass: BLEMock
+        },
+        {
         provide: Diagnostic,
         useClass: DiagnosticMock
         },
@@ -45,10 +50,6 @@ describe('bleService', () => {
         {
           provide: Storage,
           useClass: StorageMock
-        },
-        {
-          provide: BLE,
-          useClass: BLEMock
         },
         MockBackend,
         BaseRequestOptions,
@@ -65,7 +66,7 @@ describe('bleService', () => {
 
   beforeEach(inject([BleService], (temp: BleService) => {
     bleService = temp;
-    let spyError = spyOn(bleService.errorAlert, "present");
+    spyError = spyOn(bleService.errorAlert, "present");
   }));
 
   afterEach(() => {
@@ -76,20 +77,38 @@ describe('bleService', () => {
     expect(bleService).toBeTruthy;
   });
 
-  xdescribe('startBLEScanner(): void', () => {
+  describe('startBLEScanner(): void', () => {
+
     it('should scan for BLE devices, and start a scanner that scans for new BLE devices', () => {
-      spyOn(bleService, 'scanBLE').and.returnValue(Observable.of(bleReturnValue));
+      let spyScan = spyOn(bleService, 'scanBLE').and.returnValue(Observable.of(bleReturnValue));
 
-      bleService.startBLEScanner();
+      let bleStartBleScanner = (): Promise<any> => { return new Promise( () => {
+                                  bleService.startBLEScanner();
+                              })};
 
-      expect(bleService['scanBLE']).toHaveBeenCalled();
-      expect(bleService.bleScanner).toBeDefined();
+      bleStartBleScanner().then( res => {
+        expect(spyScan).toHaveBeenCalled();
+        expect(bleService.bleScanner).toBeDefined();
+      });
     });
+
+    it('should scan for BLE devices, and start a scanner that scans for new BLE devices', () => {
+      let spyScan = spyOn(bleService, 'scanBLE').and.throwError("Test Error");
+
+      let bleStartBleScanner = (): Promise<any> => { return new Promise( () => {
+                                  bleService.startBLEScanner();
+                              })};
+
+      bleStartBleScanner().then( res => {
+        expect(spyError).toHaveBeenCalled();
+      });
+    });
+
   });
 
-  xdescribe('stopBLEScanner(): void', () => {
+  describe('stopBLEScanner(): void', () => {
     it('should unsubscribe bleScanner if defined', () => {
-      bleService.startBLEScanner();
+      bleService.bleScanner = Observable.of().subscribe();
       spyOn(bleService.bleScanner, 'unsubscribe');
 
       bleService.stopBLEScanner();
@@ -104,26 +123,17 @@ describe('bleService', () => {
 
   });
 
-  xdescribe('scanForDevices(): void', () => {
-
-    //Test funker egentlig ikke. Gir feil om man forsøker med 2 eller flere devices
-    it('should clear disconnected devices before scanning for new ble devices', () => {
-      let tempDevice = new Device('test', 'test', 'test', false, (new Date()).getTime() - 61000);
-      bleService.devicesService.devices = [tempDevice];
-      spyOn(bleService.devicesService, 'clearDisconnectedDevices').and.callThrough();
-
-      bleService.scanForDevices();
-
-      expect(bleService.devicesService['clearDisconnectedDevices']).toHaveBeenCalled();
-      expect(bleService.devicesService.devices.length).toEqual(0);
-    });
+  describe('chackBleEnabled(): void', () => {
 
     it('should check if BLE is enabled', () => {
-      spyOn(bleService.ble, 'isEnabled').and.callThrough();
+      let spyEnabled = spyOn(bleService.ble, 'isEnabled').and.callThrough();
 
-      bleService.scanForDevices();
+      bleService.checkBleEnabled().then( res => {
+        expect(spyEnabled).toHaveBeenCalled();
+      }).catch( err => {
+        console.info(err);
+      });
 
-      expect(bleService.ble['isEnabled']).toHaveBeenCalled();
     });
     
     //TODO: Ferdigstill denne metoden
@@ -131,14 +141,16 @@ describe('bleService', () => {
       let spyEnabled = spyOn(bleService.ble, 'isEnabled').and.callThrough();
       let spyScan = spyOn(bleService, 'scanBLE').and.callThrough();
       //let spyError = spyOn(bleService.errorAlert, "present");
-
+/*
       let bleScanForDevices = (): Promise<any> => { return new Promise( () => {
-                                  bleService.scanForDevices();
                               })};
-
       bleScanForDevices().then( res => {
+*/
+      bleService.checkBleEnabled().then( res => {
         expect(spyEnabled).toHaveBeenCalled();
         expect(spyScan).toHaveBeenCalled();
+      }).catch( err => {
+        console.info(err);
       });
     }));
 
@@ -148,13 +160,16 @@ describe('bleService', () => {
       let spyScan = spyOn(bleService, 'scanBLE').and.throwError("Test Error");
       let spyEnable = spyOn(bleService.ble, 'enable').and.callThrough();
       //let spyError = spyOn(bleService.errorAlert, "present");
-
+/*
       let bleScanForDevices = (): Promise<any> => { return new Promise( () => {
-                                  bleService.scanForDevices();
                               })};
-
       bleScanForDevices().then( res => {
+*/
+
+      bleService.checkBleEnabled().then( res => {
         expect(spyEnable).toHaveBeenCalled();
+      }).catch( err => {
+        console.info(err);
       });
     }));
 
@@ -164,13 +179,15 @@ describe('bleService', () => {
       let spyScan = spyOn(bleService, 'scanBLE').and.throwError("Test Error");
       let spyEnable = spyOn(bleService.ble, 'enable').and.callThrough();
       //let spyError = spyOn(bleService.errorAlert, "present");
-
+/*
       let bleScanForDevices = (): Promise<any> => { return new Promise( () => {
-                                  bleService.scanForDevices();
                               })};
-
       bleScanForDevices().then( res => {
+*/
+      bleService.checkBleEnabled().then( res => {
         expect(spyScan.calls.count()).toEqual(1);
+      }).catch( err => {
+        console.info(err);
       });
     }));
 
@@ -180,13 +197,15 @@ describe('bleService', () => {
       let spyScan = spyOn(bleService, 'scanBLE').and.callThrough();
       let spyEnable = spyOn(bleService.ble, 'enable').and.callThrough();
       //let spyError = spyOn(bleService.errorAlert, "present");
-
+/*
       let bleScanForDevices = (): Promise<any> => { return new Promise( () => {
-                                  bleService.scanForDevices();
                               })};
-
       bleScanForDevices().then( res => {
+*/
+      bleService.checkBleEnabled().then( res => {
         expect(spyError).toHaveBeenCalled();
+      }).catch( err => {
+        console.info(err);
       });
     }));
 
