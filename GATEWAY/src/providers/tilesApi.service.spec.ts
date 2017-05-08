@@ -95,9 +95,8 @@ describe('tilesAPI', () => {
         };
       });
 
-      let returnedLoginData = (): Promise<any> => { return new Promise( (resolve) => {
-                                  tilesApi.getLoginData();
-                                  resolve(tilesApi.getLoginData());
+      let returnedLoginData = (): Promise<any> => { return new Promise( () => {
+                                  return tilesApi.getLoginData();
                               })};
       returnedLoginData().then( res => {
         expect(tilesApi).toBeDefined();
@@ -115,9 +114,8 @@ describe('tilesAPI', () => {
         };
       });
 
-      let returnedLoginData = (): Promise<any> => { return new Promise( (resolve) => {
-                                  tilesApi.getLoginData();
-                                  resolve(tilesApi.getLoginData());
+      let returnedLoginData = (): Promise<any> => { return new Promise( () => {
+                                  return tilesApi.getLoginData();
                               })};
       returnedLoginData().then( res => {
         expect(spy).toHaveBeenCalled();
@@ -338,12 +336,11 @@ describe('tilesAPI', () => {
   });
 
   describe('pairDeviceToVirtualTile(deviceId: string, virtualTileId: string, applicationId: string): void', () => {
-    it('should pair a device to a virtual tile and return status code 201', inject([MockBackend], (mockBackend) => {
+    it('should pair a device to a virtual tile and return status code 201',
+      inject([MockBackend], (mockBackend) => {
 
       mockBackend.connections.subscribe((connection: MockConnection) => {
-        // is it the correct REST type for an insert? (POST)
         expect(connection.request.method).toBe(RequestMethod.Post);
-
         connection.mockRespond(new Response(new ResponseOptions({status: 201})));
       });
       let returnedStatuscode = (): Promise<any> => { return new Promise( () => {
@@ -357,7 +354,8 @@ describe('tilesAPI', () => {
     }));
 
     it('should catch if there is an error',
-    inject([MockBackend], mockBackend => {
+      inject([MockBackend], mockBackend => {
+
       spyOn(tilesApi.http, "post").and.callThrough();
       mockBackend.connections.subscribe((connection) => {
         connection.mockRespond(new Error());
@@ -371,6 +369,38 @@ describe('tilesAPI', () => {
         expect(tilesApi.http.post).toThrowError();
         expect(res).toBeNull();
       });
+    }));
+
+  });
+
+  describe('addTileToDatabase(DeviceId: string): Promise<boolean>', () => {
+
+    it('should return true if the tile gets added to the database',
+      inject([MockBackend], (mockBackend) => {
+      
+      mockBackend.connections.subscribe((connection: MockConnection) => {
+        expect(connection.request.method).toBe(RequestMethod.Post);
+        connection.mockRespond(new Response(new ResponseOptions({status: 201})));
+      });
+
+      tilesApi.addTileToDatabase("test").then( res => {
+        expect(res).toBeTruthy();
+      });
+    }));
+
+    it('should return false if the method throws an error',
+      inject([MockBackend], (mockBackend) => {
+
+      spyOn(tilesApi.http, "post").and.callThrough();
+      mockBackend.connections.subscribe((connection) => {
+        connection.mockRespond(new Error("Test"));
+      });
+
+      tilesApi.addTileToDatabase("test").catch(err => {
+        expect(tilesApi.http.post).toThrowError();
+        expect(err).toBeFalsy();
+      });
+
     }));
 
   });

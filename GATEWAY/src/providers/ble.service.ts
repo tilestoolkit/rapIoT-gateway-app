@@ -69,25 +69,27 @@ export class BleService {
    * Checking if bluetooth is enabled and enable on android if not
    */
   public checkBleEnabled = (): Promise<boolean> => {
-    return this.ble.isEnabled().then( res => {
-              if (!this.platform.is('ios')) {
-                // Checking if location is turned on will not work for ios
-                this.checkLocation();
-              }
-              return true;
-            }).catch( err => {
-              if (!this.platform.is('ios')) {
-                // Enable will not work for ios
-                this.ble.enable().then( res => {
+    return new Promise((resolve, reject) => {
+      this.ble.isEnabled().then( res => {
+                if (!this.platform.is('ios')) {
+                  // Checking if location is turned on will not work for ios
+                  this.checkLocation();
+                }
+                resolve();
+              }).catch( err => {
+                if (!this.platform.is('ios')) {
+                  // Enable will not work for ios
+                  this.ble.enable().then( res => {
                     this.checkLocation();
-                    return true;
+                    resolve();
                   }).catch( errEnable => {
-                    return Promise.reject('ble failed to enable');
+                    reject('ble failed to enable');
                   });
-              } else {
-                return Promise.reject('ble not enabled');
-              }
-            });
+                } else {
+                  reject('ble not enabled');
+                }
+              });
+    });
   }
 
   /**

@@ -7,6 +7,7 @@ module.exports = function (config) {
       require('karma-chrome-launcher'),
       require('karma-remap-istanbul'),
       require('karma-mocha-reporter'),
+      require('karma-htmlfile-reporter'),
       require('angular-cli/plugins/karma')
     ],
     files: [
@@ -24,13 +25,21 @@ module.exports = function (config) {
         lcovonly: './coverage/coverage.lcov'
       }
     },
+    htmlReporter: {
+      outputFile: 'tests/units.html',
+      pageTitle: 'TILES Gateway',
+      subPageTitle: 'Unit test results',
+      groupSuites: true,
+      useCompactStyle: true,
+      useLegacyStyle: true
+    },
     angularCli: {
       config: './angular-cli.json',
       environment: 'dev'
     },
     reporters: config.angularCli && config.angularCli.codeCoverage
-              ? ['mocha', 'karma-remap-istanbul']
-              : ['mocha'],
+              ? ['mocha', 'karma-remap-istanbul', 'html']
+              : ['mocha', 'html'],
     port: 9876,
     colors: true,
     logLevel: config.LOG_INFO,
