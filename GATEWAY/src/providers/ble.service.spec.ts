@@ -150,7 +150,7 @@ describe('bleService', () => {
         expect(spyEnabled).toHaveBeenCalled();
         expect(spyScan).toHaveBeenCalled();
       }).catch( err => {
-        console.info(err);
+        //console.info(err);
       });
     }));
 
@@ -169,7 +169,7 @@ describe('bleService', () => {
       bleService.checkBleEnabled().then( res => {
         expect(spyEnable).toHaveBeenCalled();
       }).catch( err => {
-        console.info(err);
+        //console.info(err);
       });
     }));
 
@@ -187,7 +187,7 @@ describe('bleService', () => {
       bleService.checkBleEnabled().then( res => {
         expect(spyScan.calls.count()).toEqual(1);
       }).catch( err => {
-        console.info(err);
+        //console.info(err);
       });
     }));
 
@@ -205,7 +205,7 @@ describe('bleService', () => {
       bleService.checkBleEnabled().then( res => {
         expect(spyError).toHaveBeenCalled();
       }).catch( err => {
-        console.info(err);
+        //console.info(err);
       });
     }));
 
@@ -279,13 +279,14 @@ describe('bleService', () => {
     });
   });
 
-  describe('sendData(device: Device, dataString: string): void', () => {
+  describe('sendData(device: Device, dataString: string): Promise<any>', () => {
     it('should successfully send a dataString to a device using BLE', () => {
       spyOn(bleService.ble, 'writeWithoutResponse').and.callThrough();
 
       bleService.sendData(testDevice, 'led,on,red');
-
+      
       expect(bleService.ble.writeWithoutResponse).toHaveBeenCalled();
+
     });
   });
 
