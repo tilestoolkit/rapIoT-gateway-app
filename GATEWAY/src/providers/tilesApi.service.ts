@@ -14,6 +14,7 @@ export class TilesApi {
   public virtualTiles: VirtualTile[] = [];
   public loginData: LoginData;
   public errorAlert: Alert;
+  public hostUrl: string;
 
   constructor(private alertCtrl: AlertController,
               public http: Http,
@@ -45,6 +46,7 @@ export class TilesApi {
    */
   public setLoginData = (loginData: LoginData): void => {
     this.loginData = loginData;
+    this.hostUrl = `http://${loginData.host}:${this.apiPort}`;
   }
 
   /**
@@ -104,8 +106,8 @@ export class TilesApi {
    * @param {string} username - username to check for
    * @param {host} string - the host ip/url
    */
-  public isTilesUser = (userName: string, host: string): Promise<boolean> => {
-    const url = `http://${host}:${this.apiPort}/users`;
+  public isTilesUser = (userName: string, host: string): Promise<any> => {
+    const url = `${this.hostUrl}/users`;
     return this.http.get(url)
             .toPromise()
             .then(res => {
@@ -129,7 +131,7 @@ export class TilesApi {
    * Get all registered applications for all users
    */
   public getAllApplications = (): Promise<any> => {
-    const url = `http://${this.loginData.host}:${this.apiPort}/applications/user/${this.loginData.user}`;
+    const url = `${this.hostUrl}/applications/user/${this.loginData.user}`;
     return this.http.get(url)
             .toPromise()
             .then(res => {
@@ -151,7 +153,7 @@ export class TilesApi {
    * @param {string} applicationId - The application ID
    */
   public getApplicationDetails = (): Promise<any> => {
-    const url = `http://${this.loginData.host}:${this.apiPort}/applications/${this.activeApp._id}`;
+    const url = `${this.hostUrl}/applications/${this.activeApp._id}`;
     return this.http.get(url)
             .toPromise()
             .then(res => {
@@ -184,7 +186,7 @@ export class TilesApi {
    * @param {string} applicationId - The application the virtual tile is registered to
    */
   public pairDeviceToVirualTile = (deviceId: string, virtualTileId: string): Promise<void> => {
-    const url = `http://${this.loginData.host}:${this.apiPort}/applications/${this.activeApp._id}/${virtualTileId}`;
+    const url = `${this.hostUrl}/applications/${this.activeApp._id}/${virtualTileId}`;
     const body = JSON.stringify({ tile: deviceId });
     const headerFields = new Headers({'Content-Type': 'application/json'});
     // console.log('url: ' + url + ' body: ' + body);
@@ -208,7 +210,7 @@ export class TilesApi {
    * @param {string} deviceId - The physical tile
    */
   public addTileToDatabase = (deviceId: string): Promise<boolean> => {
-    const url = `http://${this.loginData.host}:${this.apiPort}/tiles`;
+    const url = `${this.hostUrl}/tiles`;
     const body = JSON.stringify({ tileId: deviceId, userId: this.loginData.user, name: deviceId });
     const headerFields = new Headers({'Content-Type': 'application/json'});
     return this.http.post(url, body, {headers: headerFields}).toPromise()
