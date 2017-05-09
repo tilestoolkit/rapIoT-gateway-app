@@ -14,6 +14,7 @@ export class TilesApi {
   public virtualTiles: VirtualTile[] = [];
   public loginData: LoginData;
   public errorAlert: Alert;
+  // TODO: public hostUrl: string;
 
   constructor(private alertCtrl: AlertController,
               public http: Http,
@@ -215,5 +216,20 @@ export class TilesApi {
                .then(res => true)
                .catch(err => false);
   }
-}
 
+  /**
+   * Toggle the appOnline for the application on/off. Return the application with
+   * changes if get call was successfull, otherwise the application as was.
+   * @param {Application} application - The application
+   */
+  public toggleAppOnline = (application: Application): Promise<Application> => {
+    const url = `http://${this.loginData.host}:${this.apiPort}/applications/${application._id}/host/app`;
+    const headerFields = new Headers({'Content-Type': 'application/json'});
+    return this.http.get(url, {headers: headerFields}).toPromise()
+               .then(res => {
+                 application.appOnline = res.json().appOnline
+                 return application
+               })
+               .catch(err => application);
+  }
+}

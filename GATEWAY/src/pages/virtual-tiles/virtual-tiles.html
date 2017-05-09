@@ -23,6 +23,8 @@
     </ion-refresher-content>
   </ion-refresher>
 
+  <button ion-button (click)="toggleAppOnline()">{{appOnlineBtnText}}</button>
+
   <ion-title left style="padding-left: 0;">UNPAIRED TILES</ion-title>
   <div *ngFor="let tile of virtualTiles">
     <ion-item class="devices" color="light"  *ngIf="tile.tile == null">
