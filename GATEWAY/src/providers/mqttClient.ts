@@ -73,7 +73,7 @@ export class MqttClient {
    * @param {number} port - the port to send to
    */
   public connect = (): void => {
-    if (this.mqttConnectionData === undefined ||  this.mqttConnectionData === null) {
+    if (this.mqttConnectionData === undefined ||  this.mqttConnectionData === null) {
       this.mqttConnectionData = this.tilesApi.getLoginData();
     }
 
