@@ -82,6 +82,7 @@ export class BleService {
                   this.ble.enable().then( res => {
                     this.checkLocation();
                     resolve();
+                    console.log(err);
                   }).catch( errEnable => {
                     reject('ble failed to enable');
                   });
@@ -232,7 +233,7 @@ export class BleService {
         });
   }
 
-  private checkLocation = (): void => {
+  public checkLocation = (): void => {
     this.diagnostic.isLocationEnabled().then(diagnosticRes => {
         if (diagnosticRes) {
           this.scanBLE();

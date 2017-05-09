@@ -76,9 +76,9 @@ export class StorageMock {
 }
 
 export class BackgroundFetchMock {
-  public configure(): Promise<any> {
+  public configure(args): Promise<any> {
     return new Promise((resolve: Function) => {
-      resolve();
+      Promise.resolve();
     });
   }
   public start() {
@@ -87,17 +87,20 @@ export class BackgroundFetchMock {
   public stop() {
     return true;
   }
+  public finish() {
+    return true;
+  }
 }
 
 export class BLEMock {
   public isEnabled(): any {
     return new Promise<void>((resolve: Function): void => {
-      resolve(true);
+      Promise.resolve();
     });
   }
   public enable(): Promise<any> {
     return new Promise<any>((resolve, reject) => {
-      resolve();
+      Promise.resolve();
     });
   }
   public scan(): Observable<any> {
@@ -105,7 +108,7 @@ export class BLEMock {
   }
   public catch(args): Promise<any> {
     return new Promise((resolve: Function) => {
-      resolve();
+      Promise.resolve();
     });
   }
   public connect(): Observable<any> {
@@ -121,7 +124,7 @@ export class BLEMock {
   }
   public writeWithoutResponse(args): Promise<any> {
     return new Promise((resolve: Function) => {
-      resolve();
+      Promise.resolve();
     });
   }
 }
@@ -150,7 +153,7 @@ export class MqttMock {
 export class BackgroundModeMock {
   public configure(): Promise<any> {
     return new Promise((resolve: Function) => {
-      resolve();
+      Promise.resolve();
     });
   }
   public enable() {
