@@ -150,6 +150,14 @@ export class MqttMock {
   }
 }
 
+export class NavParamsMock {
+
+}
+
+export class ViewControllerMock {
+
+}
+
 export class BackgroundModeMock {
   public configure(): Promise<any> {
     return new Promise((resolve: Function) => {
