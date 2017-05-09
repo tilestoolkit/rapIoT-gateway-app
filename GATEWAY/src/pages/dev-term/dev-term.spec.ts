@@ -2,7 +2,6 @@ import { Tiles } from '../../app/app.component';
 import { TestBed, ComponentFixture, async } from '@angular/core/testing';
 import { IonicModule, NavController, NavParams } from 'ionic-angular';
 import { UtilsService }from '../../providers/utils.service';
-import { StorageMock } from '../../mocks';
 import { DevTermPage } from './dev-term';
 import { MqttClient } from '../../providers/mqttClient';
 import { TilesApi } from '../../providers/tilesApi.service';

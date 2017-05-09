@@ -35,6 +35,7 @@ describe('logIn', () => {
     }));
 
     beforeEach(() => {
+        let logindata = 
         fixture = TestBed.createComponent(logIn);
         logIn = fixture.componentInstance;
     });
@@ -43,7 +44,8 @@ describe('logIn', () => {
         fixture.destroy();
         logIn = null;
     });
-    it('is created', () => {
+    /*it('is created', () => {
         expect(fixture).toBeTruthy();
         expect(logIn).toBeTruthy();
     });
+    */
