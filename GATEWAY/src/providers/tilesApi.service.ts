@@ -227,8 +227,8 @@ export class TilesApi {
     const headerFields = new Headers({'Content-Type': 'application/json'});
     return this.http.get(url, {headers: headerFields}).toPromise()
                .then(res => {
-                 application.appOnline = res.json().appOnline
-                 return application
+                 application.appOnline = res.json().appOnline;
+                 return application;
                })
                .catch(err => application);
   }
