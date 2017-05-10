@@ -11,7 +11,7 @@ import { Storage } from '@ionic/storage';
 
 
 let devTerminal: DevTermPage;
-let fixture: ComponentFixture<devTerminal>;
+let fixture: ComponentFixture<DevTermPage>;
 
 describe('dev-terminal', () => {
 

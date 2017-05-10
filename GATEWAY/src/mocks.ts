@@ -1,4 +1,5 @@
 import { Observable } from 'rxjs';
+import * as application from './fixtures/applications.json';
 
 export class ConfigMock {
 
@@ -151,11 +152,38 @@ export class MqttMock {
 }
 
 export class NavParamsMock {
-
+  public get(args) {
+    return application[0];
+  }
 }
 
 export class ViewControllerMock {
+  readReady = {
+    subscribe(){
 
+    }
+  };
+  writeReady = {
+    subscribe(){
+
+    }
+  };
+
+  dismiss(){
+    console.log('View Controller Dismiss Called');
+  }
+  _setHeader(){
+
+  }
+  _setNavbar(){
+
+  }
+  _setIONContent(){
+
+  }
+  _setIONContentRef(){
+
+  }
 }
 
 export class BackgroundModeMock {
