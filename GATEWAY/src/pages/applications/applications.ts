@@ -34,19 +34,13 @@ export class ApplicationsPage {
    * the user is not logged in
    */
   ionViewDidLoad = (): void => {
-    this.storage.get('loggedIn').then((val) => {
-      if (val == null || val === false) {
+    this.storage.get('loginData').then((loginData) => {
+      if (loginData === null ||  loginData === undefined || loginData.remember === false) {
         this.presentLoginModal();
       } else {
-        this.storage.get('loginData').then((loginData) => {
-          if (loginData == null ||  loginData === undefined) {
-            this.presentLoginModal();
-          } else {
-            this.tilesApi.setLoginData(loginData);
-            this.setApplications();
-            this.mqttClient.connect();
-          }
-        });
+        this.tilesApi.setLoginData(loginData);
+        this.setApplications();
+        this.mqttClient.connect();
       }
     });
   }
@@ -84,7 +78,7 @@ export class ApplicationsPage {
   /**
    *  Pushes the modal on the viewStack.
    */
-  presentLoginModal() {
+  presentLoginModal = (): void => {
     const modal = this.modalCtrl.create(LoginPage);
     modal.onDidDismiss(data => this.setApplications());
     modal.present();

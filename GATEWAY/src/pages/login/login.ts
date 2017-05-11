@@ -28,7 +28,7 @@ export class LoginPage {
    * @param {boolean} remember - if the login credentials should be remembered
    */
   connectToServer = (user: string, host: string, port: number, remember: boolean): void => {
-    if (this.utils.verifyLoginCredentials(user, host, port)) {
+    if (this.utils.verifyLoginCredentials(user, host)) {
       this.tilesApi.isTilesUser(user, host).then(data => {
         if (data) {
           const loginData = new LoginData(user, host, port, remember);
@@ -36,11 +36,12 @@ export class LoginPage {
             this.tilesApi.setLoginData(loginData);
             this.mqttClient.connect();
           });
-          this.storage.set('loggedIn', loginData.remember);
+          this.storage.set('loggedIn', loginData.remember); // TODO: not needed, but test after removing
           this.viewCtrl.dismiss('logged_in');
         } else {
           this.alertCtrl.create({
-            title: 'Invalid login credentials',
+            // The username was not registered on the provided host server
+            title: 'User not registered on host server',
             subTitle: 'Please try again.',
             buttons: [{
               text: 'Dismiss',
@@ -48,6 +49,15 @@ export class LoginPage {
           }).present();
         }
       });
+    } else {
+      // Logindata was formatted wrong
+      this.alertCtrl.create({
+        title: 'Invalid login credentials',
+        subTitle: 'Please try again.',
+        buttons: [{
+          text: 'Dismiss',
+        }]
+      }).present();
     }
   }
 
@@ -57,11 +67,4 @@ export class LoginPage {
   loginForm = (): void => {
     this.connectToServer(this.loginInfo.user.trim(), this.loginInfo.host.trim(), parseInt(this.loginInfo.port.trim(), 10), this.loginInfo.remember);
   }
-
-  /**
-   * Login with these fixed values.
-   */
-  // autoLogin() {
-  //   this.connectToServer('Testuser', '178.62.99.218', 3000, true);
-  // }
 }
