@@ -178,8 +178,7 @@ describe('mqttClient', () => {
       mqttClient.sendEvent('test', comparisonCmdObj);
 
       expect(publishSpy.calls.count()).toEqual(1);
-      //getDeviceSpecificTopic returns 2 calls as it is also used in a console.log
-      expect(topicSpy.calls.count()).toEqual(2);
+      expect(topicSpy.calls.count()).toEqual(1);
     });
 
   });

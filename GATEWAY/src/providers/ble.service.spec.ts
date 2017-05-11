@@ -229,14 +229,12 @@ describe('bleService', () => {
     it('should run method devicesService.clearDisconnectedDevices if ble.connect returns an error', () => {
       spyOn(bleService.ble, 'connect').and.returnValue(Observable.throw(new Error()));
       spyOn(bleService, 'startDeviceNotification');
-      spyOn(bleService.devicesService, 'clearDisconnectedDevices');
       let tempDevice = new Device('test', 'test', 'test', false, (new Date()).getTime() - 61000);
 
       bleService.connect(tempDevice);
 
       expect(bleService.ble.connect).toHaveBeenCalled();
       expect(bleService.startDeviceNotification).not.toHaveBeenCalled();
-      expect(bleService.devicesService.clearDisconnectedDevices).toHaveBeenCalled();
     });
 
   });
