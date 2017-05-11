@@ -110,7 +110,7 @@ export class TilesApi {
    * @param {host} string - the host ip/url
    */
   public isTilesUser = (userName: string, host: string): Promise<any> => {
-    const url = `${this.hostUrl}/users`;
+    const url = `http://${host}:${this.apiPort}/users`;
     return this.http.get(url)
             .toPromise()
             .then(res => {
@@ -121,7 +121,6 @@ export class TilesApi {
               }
             })
             .catch(err => {
-              this.errorAlert.present();
               return false;
             });
   }

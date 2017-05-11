@@ -138,14 +138,14 @@ export class BleService {
   public disconnect = (device: Device): void => {
     this.ble.disconnect(device.id)
             .then( res => {
-              device.connected = false;
-              this.mqttClient.unregisterDevice(device);
-              this.devicesService.removeDevice(device);
               console.log('diconnected from device: ' + device.name);
             })
             .catch( err => {
               console.log('Failed to disconnect');
             });
+    device.connected = false;
+    this.mqttClient.unregisterDevice(device);
+    this.devicesService.removeDevice(device);
   }
 
   /**
