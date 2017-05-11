@@ -62,46 +62,46 @@ describe('virtual-tiles', () => {
     TestBed.resetTestingModule();
   }));
 
-    beforeEach(async(() => {
-        TestBed.configureTestingModule({
-            declarations: [
-                Tiles,
-                VirtualTilesPage,
-            ],
-            providers: [
-              AlertController,
-              BLE,
-              BleService,
-              DevicesService,
-              Diagnostic,
-              Events,
-              MqttClient,
-              UtilsService,
-              { provide: TilesApi, useValue: tilesApi },
-              { provide: BackgroundFetch, useClass: BackgroundFetchMock },
-              { provide: Storage, useClass: StorageMock },
-              { provide: NavParams, useClass: NavParamsMock },
-              { provide: NavController, useClass: NavMock},
-            ],
-            imports: [
-                IonicModule.forRoot(Tiles),
-            ],
-        }).compileComponents();
-    }));
+  beforeEach(async(() => {
+      TestBed.configureTestingModule({
+          declarations: [
+              Tiles,
+              VirtualTilesPage,
+          ],
+          providers: [
+            AlertController,
+            BLE,
+            BleService,
+            DevicesService,
+            Diagnostic,
+            Events,
+            MqttClient,
+            UtilsService,
+            { provide: TilesApi, useValue: tilesApi },
+            { provide: BackgroundFetch, useClass: BackgroundFetchMock },
+            { provide: Storage, useClass: StorageMock },
+            { provide: NavParams, useClass: NavParamsMock },
+            { provide: NavController, useClass: NavMock},
+          ],
+          imports: [
+              IonicModule.forRoot(Tiles),
+          ],
+      }).compileComponents();
+  }));
 
-    beforeEach( () => {
-        fixture = TestBed.createComponent(VirtualTilesPage);
-        virtualTiles = fixture.componentInstance;
-    });
+  beforeEach( () => {
+      fixture = TestBed.createComponent(VirtualTilesPage);
+      virtualTiles = fixture.componentInstance;
+  });
 
-    afterEach(() => {
-        fixture.destroy();
-        virtualTiles = null;
-    });
+  afterEach(() => {
+      fixture.destroy();
+      virtualTiles = null;
+  });
 
-    it('is created', () => {
-        expect(fixture).toBeTruthy();
-        expect(virtualTiles).toBeTruthy();
-    });
+  it('is created', () => {
+      expect(fixture).toBeTruthy();
+      expect(virtualTiles).toBeTruthy();
+  });
 
 });
