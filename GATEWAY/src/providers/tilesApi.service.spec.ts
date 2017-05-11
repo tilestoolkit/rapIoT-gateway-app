@@ -17,6 +17,7 @@ describe('tilesAPI', () => {
   let loginData: LoginData = new LoginData('Test', '172.68.99.218', 8080, false);
   let activeApp: Application = new Application('test3', '', '', false, false, 8080, []);
   let virtualTile: VirtualTile = new VirtualTile();
+  let spyError: jasmine.Spy;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -47,7 +48,7 @@ describe('tilesAPI', () => {
     tilesApi = temp;
     tilesApi.loginData = loginData;
     tilesApi.activeApp = activeApp;
-    let spyError = spyOn(tilesApi.errorAlert, "present");
+    spyError = spyOn(tilesApi.errorAlert, "present");
   }));
 
   afterEach(() => {
@@ -377,7 +378,7 @@ describe('tilesAPI', () => {
 
     it('should return true if the tile gets added to the database',
       inject([MockBackend], (mockBackend) => {
-      
+
       mockBackend.connections.subscribe((connection: MockConnection) => {
         expect(connection.request.method).toBe(RequestMethod.Post);
         connection.mockRespond(new Response(new ResponseOptions({status: 201})));
