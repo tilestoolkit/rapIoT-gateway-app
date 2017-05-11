@@ -81,9 +81,10 @@ export class TilesApi {
   /**
    * Set the virtual tiles equal to the ones stored for the app
    */
-  public setVirtualTiles = (): void => {
-    this.getApplicationTiles().then(res => {
+  public setVirtualTiles = (): Promise<any> => {
+    return this.getApplicationTiles().then(res => {
       this.virtualTiles = res;
+      return res;
     });
   }
 
@@ -118,11 +119,7 @@ export class TilesApi {
               }
             })
             .catch(err => {
-              try {
-                if (err.status === 0) {
-                  this.errorAlert.present();
-                }
-              } finally {} // tslint:disable-line
+              this.errorAlert.present();
               return false;
             });
   }
@@ -137,15 +134,7 @@ export class TilesApi {
             .then(res => {
               return res.json();
             })
-            .catch(err => {
-              try {
-                if (err.status === 0) {
-                  this.errorAlert.present();
-                }
-              } finally {
-                console.log('failed getting applications with error: ' + err);
-              }
-            });
+            .catch(err => this.errorAlert.present());
   }
 
   /**
@@ -159,16 +148,7 @@ export class TilesApi {
             .then(res => {
               return res.json();
             })
-            .catch(err => {
-              try {
-                if (err.status === 0) {
-                  this.errorAlert.present();
-                }
-              } finally {
-                console.log('failed getting applications with error: ' + err);
-                console.log('url ' + url);
-              }
-            });
+            .catch(err => this.errorAlert.present());
   }
 
   /**

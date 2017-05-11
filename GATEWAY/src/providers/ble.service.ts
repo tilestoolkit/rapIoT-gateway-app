@@ -44,7 +44,7 @@ export class BleService {
   }
 
   /**
-   * Start the BLE scanner making it scan every 7,5s
+   * Start the BLE scanner making it scan every 6s
    */
   public startBLEScanner = (): void => {
     this.checkBleEnabled().then(res => {
@@ -66,16 +66,16 @@ export class BleService {
   }
 
   /**
-   * Checking if bluetooth is enabled and enable on android if not
+   * Checking if bluetooth is enabled and enable (android only) if not
    */
-  public checkBleEnabled = (): Promise<boolean> => {
+  public checkBleEnabled = (): Promise<any> => {
     return new Promise((resolve, reject) => {
       this.ble.isEnabled().then( res => {
                 if (!this.platform.is('ios')) {
-                  // Checking if location is turned on will not work for ios
+                  // Checking if location is turned on is unnescessary for ios
                   this.checkLocation();
                 }
-                resolve();
+                resolve(true);
               }).catch( err => {
                 if (!this.platform.is('ios')) {
                   // Enable will not work for ios
@@ -102,11 +102,9 @@ export class BleService {
           res => {
             device.connected = true;
             this.startDeviceNotification(device);
-            this.mqttClient.registerDevice(device);
-            this.devicesService.newDevice(device);
+            this.devicesService.newDevice(device); //TODO: see if this can be removed.
           },
           err => {
-            this.devicesService.clearDisconnectedDevices();
             this.disconnect(device);
           });
   }
@@ -142,7 +140,7 @@ export class BleService {
             .then( res => {
               device.connected = false;
               this.mqttClient.unregisterDevice(device);
-              this.devicesService.clearDisconnectedDevices();
+              this.devicesService.removeDevice(device);
               console.log('diconnected from device: ' + device.name);
             })
             .catch( err => {
@@ -160,9 +158,9 @@ export class BleService {
       const dataArray = this.utils.convertStringtoBytes(dataString);
       // Attempting to send the array of bytes to the device
       return this.ble.writeWithoutResponse(device.id,
-                               this.rfduino.serviceUUID,
-                               this.rfduino.sendCharacteristicUUID,
-                               dataArray.buffer)
+                              this.rfduino.serviceUUID,
+                              this.rfduino.sendCharacteristicUUID,
+                              dataArray.buffer)
               .then( res => true)
               .catch( err => {
                 this.errorAlert.present();
@@ -227,11 +225,16 @@ export class BleService {
         },
         () => { // called when the device disconnects
           device.connected = false;
-          this.devicesService.clearDisconnectedDevices();
           this.mqttClient.unregisterDevice(device);
+          this.devicesService.removeDevice(device);
+          // TODO: Replace all with this.disconnect?
         });
   }
 
+  /**
+   * Checking to see if the location on android phoone is turned on. BLE
+   * will not work unless it is turned on.
+   */
   private checkLocation = (): void => {
     this.diagnostic.isLocationEnabled().then(diagnosticRes => {
         if (diagnosticRes) {

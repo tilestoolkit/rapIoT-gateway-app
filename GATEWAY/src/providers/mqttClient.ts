@@ -132,7 +132,7 @@ export class MqttClient {
   }
 
   /**
-   * Register a device at the server
+   * Register a device as active at the server
    * @param {Device} device - the device to register
    */
   public registerDevice = (device: Device): void => {
@@ -150,7 +150,6 @@ export class MqttClient {
       this.client.subscribe(
         this.getDeviceSpecificTopic(device.tileId, false),
       );
-      // console.log('Registered device: ' + device.name + ' (' + device.tileId + ')');
     }
   }
 
@@ -177,7 +176,6 @@ export class MqttClient {
    * @param {CommandObject} event - An event represented as a CommandObject (name, params...)
    */
   public sendEvent = (deviceId: string, event: CommandObject): void => {
-    console.log('Sending mqtt event: ' + JSON.stringify(event) + ' To topic: ' + this.getDeviceSpecificTopic(deviceId, true));
     if (this.client) {
       this.client.publish(
         this.getDeviceSpecificTopic(deviceId, true),

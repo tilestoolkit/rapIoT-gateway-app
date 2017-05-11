@@ -17,7 +17,6 @@ export class PhysicalTilesPage {
               private events: Events,
               private bleService: BleService,
               private devicesService: DevicesService) {
-    this.devices = this.devicesService.getDevices();
     this.events.subscribe('updateDevices', () => {
       this.devices = this.devicesService.getDevices();
     });
@@ -35,16 +34,6 @@ export class PhysicalTilesPage {
     setTimeout(() => {
       refresher.complete();
     }, 1250);
-    this.devices = this.devicesService.getDevices();
-  }
-
-  /**
-   * Triggers a tile to light red for 3 seconds to identify which tile is which
-   * @param {Device} device - A tile
-   */
-  identifyDevice = (device: Device): void => {
-    this.bleService.sendData(device, 'led,on,red');
-    setTimeout(() => (this.bleService.sendData(device, 'led,off')), 3000);
   }
 
   /**
