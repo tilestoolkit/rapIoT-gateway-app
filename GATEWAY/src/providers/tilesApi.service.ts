@@ -183,7 +183,7 @@ export class TilesApi {
    * @param {string} virtualTileId - The virtual tile
    * @param {string} applicationId - The application the virtual tile is registered to
    */
-  public pairDeviceToVirualTile = (deviceId: string, virtualTileId: string): Promise<void> => {
+  public pairDeviceToVirtualTile = (deviceId: string, virtualTileId: string): Promise<void> => {
     const url = `http://${this.loginData.host}:${this.apiPort}/applications/${this.activeApp._id}/${virtualTileId}`;
     const body = JSON.stringify({ tile: deviceId });
     const headerFields = new Headers({'Content-Type': 'application/json'});
@@ -193,7 +193,7 @@ export class TilesApi {
                  if (res === null) {
                    this.addTileToDatabase(deviceId).then(addRes => {
                      if (addRes === true) {
-                       this.pairDeviceToVirualTile(deviceId, virtualTileId);
+                       this.pairDeviceToVirtualTile(deviceId, virtualTileId);
                      } else {
                        this.errorAlert.present();
                      }

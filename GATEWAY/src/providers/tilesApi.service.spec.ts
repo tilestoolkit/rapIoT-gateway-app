@@ -344,7 +344,7 @@ describe('tilesAPI', () => {
         connection.mockRespond(new Response(new ResponseOptions({status: 201})));
       });
       let returnedStatuscode = (): Promise<any> => { return new Promise( () => {
-                                  let temp = tilesApi.pairDeviceToVirualTile('test', '58c120c5497df8602fedfbd3');
+                                  let temp = tilesApi.pairDeviceToVirtualTile('test', '58c120c5497df8602fedfbd3');
                                   return temp;
                               })};
       returnedStatuscode().then( successResult => {
@@ -362,7 +362,7 @@ describe('tilesAPI', () => {
       });
 
       let returnedStatuscode = (): Promise<any> => { return new Promise( () => {
-                                  let temp = tilesApi.pairDeviceToVirualTile('test', '58c120c5497df8602fedfbd3');
+                                  let temp = tilesApi.pairDeviceToVirtualTile('test', '58c120c5497df8602fedfbd3');
                                   return temp;
                               })};
       returnedStatuscode().then( res => {

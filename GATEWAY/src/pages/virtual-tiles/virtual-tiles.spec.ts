@@ -1,33 +1,51 @@
 import { TestBed, ComponentFixture, async, inject } from '@angular/core/testing';
-import { Component, forwardRef } from '@angular/core';
 import { Storage } from '@ionic/storage';
 import { BLE } from '@ionic-native/ble';
 import { BackgroundFetch } from '@ionic-native/background-fetch';
 import { Diagnostic } from '@ionic-native/diagnostic';
-import { BackgroundMode } from '@ionic-native/background-mode';
-import { IonicModule, AlertController, Events, NavController, NavParams } from 'ionic-angular';
+import { IonicModule, AlertController, AlertOptions, Alert, Events, NavController, NavParams } from 'ionic-angular';
 import { Tiles } from '../../app/app.component';
 import { NavParamsMock, NavMock, StorageMock, BackgroundFetchMock } from "../../mocks";
 import { BleService } from '../../providers/ble.service';
 import { DevicesService } from '../../providers/devices.service';
 import { TilesApi } from '../../providers/tilesApi.service';
 import { MqttClient } from '../../providers/mqttClient';
-import { Application, LoginData, VirtualTile, UtilsService } from '../../providers/utils.service';
+import { Application, Device, LoginData, VirtualTile, UtilsService } from '../../providers/utils.service';
 import { VirtualTilesPage } from "../../pages/virtual-tiles/virtual-tiles";
 
 import { App, Config, Platform } from 'ionic-angular';
 import { MockBackend, MockConnection } from '@angular/http/testing';
 import { Http, Response, ResponseOptions, BaseRequestOptions, RequestMethod } from '@angular/http';
 
-let virtualTiles: VirtualTilesPage;
+let virtualTilesPage: VirtualTilesPage;
 let fixture: ComponentFixture<VirtualTilesPage>;
 let spyError: jasmine.Spy;
+let alertPair: AlertOptions = {
+        title: 'Pair to physical tile',
+        inputs: [{type: 'radio', name: 'deviceId', value: 'Tile_9e', label: 'Tile_9e'}],
+        buttons: [{
+          text: 'Cancel',
+          role: 'cancel',
+          },
+          {
+            text: 'Pair',
+            handler: data => {
+              this.tilesApi.pairDeviceToVirualTile(data, 'Tile').then(
+                res => this.setVirtualTiles()
+              );
+            },
+        }],
+        enableBackdropDismiss: true,
+      };
+let alertDismiss: AlertOptions = {
+        title: 'Pair to physical tile',
+        message: 'No physical tiles nearby.',
+        buttons: ['Dismiss']};
 
 describe('virtual-tiles', () => {
   let tilesApi: TilesApi = null;
   let loginData: LoginData = new LoginData('Test', '172.68.99.218', 8080, false);
   let activeApp: Application = new Application('test3', '', '', false, false, 8080, []);
-  let virtualTile: VirtualTile = new VirtualTile();
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -91,17 +109,145 @@ describe('virtual-tiles', () => {
 
   beforeEach( () => {
       fixture = TestBed.createComponent(VirtualTilesPage);
-      virtualTiles = fixture.componentInstance;
+      virtualTilesPage = fixture.componentInstance;
   });
 
   afterEach(() => {
       fixture.destroy();
-      virtualTiles = null;
+      virtualTilesPage = null;
   });
 
   it('is created', () => {
       expect(fixture).toBeTruthy();
-      expect(virtualTiles).toBeTruthy();
+      expect(virtualTilesPage).toBeTruthy();
+  });
+
+  describe('setVirtualTile(): void', () => {
+
+    it('should get the virtual tiles of an app', async( () =>  {
+      
+      let virtualTile: VirtualTile[];
+      let getAppSpy = spyOn(virtualTilesPage.tilesApi, 'getApplicationTiles').and.callFake( () => {
+        return new Promise( (resolve) => {
+          Promise.resolve(virtualTile);
+        });
+      });
+
+      virtualTilesPage.setVirtualTiles().then( () => {
+        expect(virtualTilesPage.virtualTiles).toEqual(virtualTile);
+      });
+
+    }));
+
+  });
+
+  describe('refreshVirtualTiles(refresher): void', () => {
+
+    it('should get devices from devicesService', () => {
+      let devices: Device[];
+      let refresher: any;
+      let setAppSpy = spyOn(virtualTilesPage, 'setVirtualTiles');
+      let checkBleSpy = spyOn(virtualTilesPage.bleService, 'checkBleEnabled');
+      let getDevicesSpy = spyOn(virtualTilesPage.devicesService, 'getDevices').and.callFake( () => {
+        return devices;
+      });
+      spyOn(window, 'setTimeout');
+
+      virtualTilesPage.refreshVirtualTiles(refresher);
+
+      expect(virtualTilesPage.devices).toEqual(devices);
+
+    });
+
+    it('should invoke methods setVirtualTiles and bleService.checkBleEnabled', () => {
+      let refresher: any;
+      let setAppSpy = spyOn(virtualTilesPage, 'setVirtualTiles');
+      let checkBleSpy = spyOn(virtualTilesPage.bleService, 'checkBleEnabled');
+      let getDevicesSpy = spyOn(virtualTilesPage.devicesService, 'getDevices');
+      spyOn(window, 'setTimeout');
+
+      virtualTilesPage.refreshVirtualTiles(refresher);
+
+      expect(setAppSpy).toHaveBeenCalled();
+      expect(checkBleSpy).toHaveBeenCalled();
+    });
+
+  });
+
+  describe('pairTilePopUp(virtualTile: VirtualTile): void', () => {
+
+    describe('if devices.length > 0', () => {
+
+      it('should create an alert with radiobuttons for devices', () => {
+        virtualTilesPage.devices = [new Device('01:23:45:67:89:AB', 'Tile_9e', 'Tile_9e', false)];
+        let virtualTile = new VirtualTile();
+        virtualTile._id = "Tile";
+        let alertSpy = spyOn(virtualTilesPage.alertCtrl, 'create').and.callThrough();
+        spyOn(Alert.prototype, 'present');
+
+        virtualTilesPage.pairTilePopUp(virtualTile);
+
+        expect(alertSpy).toHaveBeenCalled();
+      });
+    });
+    describe('else', () => {
+
+      it('should create an alert with radiobuttons for devices', () => {
+        virtualTilesPage.devices = [];
+        let virtualTile = new VirtualTile();
+        virtualTile._id = "Tile";
+        let alertSpy = spyOn(virtualTilesPage.alertCtrl, 'create').and.callThrough();
+        spyOn(Alert.prototype, 'present');
+
+        virtualTilesPage.pairTilePopUp(virtualTile);
+
+        expect(alertSpy).toHaveBeenCalled();
+      });
+    });
+  });
+
+  describe('unpairTile(virtualTile: VirtualTile): void', () => {
+
+    it('should "pair" the virtual tile with null and refresh list of virtual tiles', () => {
+      let setAppSpy = spyOn(virtualTilesPage, 'setVirtualTiles');
+      let pairSpy = spyOn(virtualTilesPage.tilesApi, 'pairDeviceToVirtualTile');
+        let virtualTile = new VirtualTile();
+        virtualTile._id = "Tile";
+      
+      virtualTilesPage.unpairTile(virtualTile);
+
+      expect(setAppSpy).toHaveBeenCalled();
+      expect(pairSpy).toHaveBeenCalledWith(null, "Tile");
+    });
+  });
+
+  describe('ionViewDidEnter()', () => {
+
+    it('should get devices from devicesService', () => {
+      let devices: Device[];
+      let setAppSpy = spyOn(virtualTilesPage, 'setVirtualTiles');
+      let checkBleSpy = spyOn(virtualTilesPage.bleService, 'checkBleEnabled');
+      let getDevicesSpy = spyOn(virtualTilesPage.devicesService, 'getDevices').and.callFake( () => {
+        return devices;
+      });
+
+      virtualTilesPage.ionViewDidEnter();
+
+      expect(virtualTilesPage.devices).toEqual(devices);
+
+    });
+
+    it('should invoke methods setVirtualTiles and bleService.checkBleEnabled', () => {
+      let setAppSpy = spyOn(virtualTilesPage, 'setVirtualTiles');
+      let checkBleSpy = spyOn(virtualTilesPage.bleService, 'checkBleEnabled');
+      let getDevicesSpy = spyOn(virtualTilesPage.devicesService, 'getDevices');
+
+      virtualTilesPage.ionViewDidEnter();
+
+      expect(setAppSpy).toHaveBeenCalled();
+      expect(checkBleSpy).toHaveBeenCalled();
+    });
+
   });
 
 });

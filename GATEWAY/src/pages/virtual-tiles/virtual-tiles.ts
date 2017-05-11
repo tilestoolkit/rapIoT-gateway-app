@@ -26,10 +26,10 @@ export class VirtualTilesPage {
               public events: Events,
               public navCtrl: NavController,
               public navParams: NavParams,
-              private bleService: BleService,
-              private devicesService: DevicesService,
-              private utils: UtilsService,
-              private tilesApi: TilesApi) {
+              public bleService: BleService,
+              public devicesService: DevicesService,
+              public utils: UtilsService,
+              public tilesApi: TilesApi) {
     // A id variable is stored in the navParams, and .get set this value to the local variable id
     this.activeApp = navParams.get('app');
     this.tilesApi.setActiveApp(navParams.get('app'));
@@ -48,10 +48,11 @@ export class VirtualTilesPage {
   /**
    * Set the virtual tiles equal to the ones stores for the app
    */
-  setVirtualTiles = (): void => {
+  setVirtualTiles = (): Promise<void> => {
     this.tilesApi.getApplicationTiles().then(res => {
       this.virtualTiles = res;
     });
+    return Promise.resolve(undefined);
   }
 
   /**
@@ -79,21 +80,21 @@ export class VirtualTilesPage {
     });
     if (this.devices.length > 0) {
       this.alertCtrl.create({
-      title: 'Pair to physical tile',
-      inputs: deviceRadioButtons,
-      buttons: [{
-        text: 'Cancel',
-        role: 'cancel',
-        },
-        {
-          text: 'Pair',
-          handler: data => {
-            this.tilesApi.pairDeviceToVirualTile(data, virtualTile._id).then(
-              res => this.setVirtualTiles()
-            );
+        title: 'Pair to physical tile',
+        inputs: deviceRadioButtons,
+        buttons: [{
+          text: 'Cancel',
+          role: 'cancel',
           },
-      }],
-    }).present();
+          {
+            text: 'Pair',
+            handler: data => {
+              this.tilesApi.pairDeviceToVirtualTile(data, virtualTile._id).then(
+                res => this.setVirtualTiles()
+              );
+            },
+        }],
+      }).present();
     } else {
       this.alertCtrl.create({
         title: 'Pair to physical tile',
@@ -108,7 +109,7 @@ export class VirtualTilesPage {
    * @param {VirtualTile} virtualTile - the target device
    */
   unpairTile = (virtualTile: VirtualTile): void => {
-     this.tilesApi.pairDeviceToVirualTile(null, virtualTile._id);
+     this.tilesApi.pairDeviceToVirtualTile(null, virtualTile._id);
      // Refreshes the lists of paired and unpaired virtual tiles
      this.setVirtualTiles();
   }
