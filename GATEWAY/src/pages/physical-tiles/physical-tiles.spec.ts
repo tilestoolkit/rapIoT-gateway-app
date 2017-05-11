@@ -5,7 +5,7 @@ import { BackgroundFetch } from '@ionic-native/background-fetch';
 import { Diagnostic } from '@ionic-native/diagnostic';
 import { BackgroundMode } from '@ionic-native/background-mode';
 import { Injectable } from "@angular/core";
-import { IonicModule, Events, NavController, AlertController  } from 'ionic-angular';
+import { IonicModule, Events, NavController, AlertController, Alert  } from 'ionic-angular';
 import { Tiles } from '../../app/app.component';
 import { BleService } from '../../providers/ble.service';
 import { DevicesService } from '../../providers/devices.service';
@@ -65,5 +65,77 @@ describe('physical-tiles', () => {
     it('is created', () => {
         expect(fixture).toBeTruthy();
         expect(physicalTiles).toBeTruthy();
+    });
+
+    describe('refreshDevices(refresher): void', () => {
+
+        it('should refresh list of devices after checking if ble is enabled', () => {
+            let devices: Device[];
+            let refresher: any;
+            let checkBleSpy = spyOn(physicalTiles.bleService, 'checkBleEnabled');
+            let getDevicesSpy = spyOn(physicalTiles.devicesService, 'getDevices').and.callFake( () => {
+                return devices;
+            });
+            spyOn(window, 'setTimeout');
+
+            physicalTiles.ionViewDidEnter();
+
+            expect(physicalTiles.devices).toEqual(devices);
+            expect(checkBleSpy).toHaveBeenCalled();
+        });
+
+    });
+
+    describe('identifyDevice(device: Device): void', () => {
+
+        it('should have device turn on led and turn of after 3000ms', () => {
+            let device = new Device('01:23:45:67:89:AB', 'Tile_9e', 'Tile_9e', false);
+            let bleSpy = spyOn(physicalTiles.bleService, 'sendData');
+            spyOn(window, 'setTimeout');
+
+            physicalTiles.identifyDevice(device);
+
+            expect(bleSpy).toHaveBeenCalledWith(device, 'led,on,red');
+        });
+
+    });
+
+    describe('changeNamePop(device: Device): void', () => {
+
+        it('should create an alert to change name of a device', () => {
+            let device = new Device('01:23:45:67:89:AB', 'Tile_9e', 'Tile_9e', false);
+            let alertSpy = spyOn(physicalTiles.alertCtrl, 'create').and.callThrough();
+            spyOn(Alert.prototype, 'present');
+
+            physicalTiles.changeNamePop(device);
+
+            expect(alertSpy).toHaveBeenCalled();
+        });
+
+    });
+
+    describe('ionViewDidEnter()', () => {
+
+        it('should get devices from devicesService', () => {
+            let devices: Device[];
+            let checkBleSpy = spyOn(physicalTiles.bleService, 'checkBleEnabled');
+            let getDevicesSpy = spyOn(physicalTiles.devicesService, 'getDevices').and.callFake( () => {
+                return devices;
+            });
+
+            physicalTiles.ionViewDidEnter();
+
+            expect(physicalTiles.devices).toEqual(devices);
+
+        });
+
+        it('should invoke methods setVirtualTiles and bleService.checkBleEnabled', () => {
+            let checkBleSpy = spyOn(physicalTiles.bleService, 'checkBleEnabled');
+            let getDevicesSpy = spyOn(physicalTiles.devicesService, 'getDevices');
+
+            physicalTiles.ionViewDidEnter();
+
+            expect(checkBleSpy).toHaveBeenCalled();
+        });
     });
 });

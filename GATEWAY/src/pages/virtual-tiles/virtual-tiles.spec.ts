@@ -20,6 +20,7 @@ import { Http, Response, ResponseOptions, BaseRequestOptions, RequestMethod } fr
 let virtualTilesPage: VirtualTilesPage;
 let fixture: ComponentFixture<VirtualTilesPage>;
 let spyError: jasmine.Spy;
+/*
 let alertPair: AlertOptions = {
         title: 'Pair to physical tile',
         inputs: [{type: 'radio', name: 'deviceId', value: 'Tile_9e', label: 'Tile_9e'}],
@@ -41,7 +42,7 @@ let alertDismiss: AlertOptions = {
         title: 'Pair to physical tile',
         message: 'No physical tiles nearby.',
         buttons: ['Dismiss']};
-
+*/
 describe('virtual-tiles', () => {
   let tilesApi: TilesApi = null;
   let loginData: LoginData = new LoginData('Test', '172.68.99.218', 8080, false);
@@ -176,33 +177,28 @@ describe('virtual-tiles', () => {
 
   describe('pairTilePopUp(virtualTile: VirtualTile): void', () => {
 
-    describe('if devices.length > 0', () => {
+    it('should create an alert with radiobuttons for devices if devices.length > 0', () => {
+      virtualTilesPage.devices = [new Device('01:23:45:67:89:AB', 'Tile_9e', 'Tile_9e', false)];
+      let virtualTile = new VirtualTile();
+      virtualTile._id = "Tile";
+      let alertSpy = spyOn(virtualTilesPage.alertCtrl, 'create').and.callThrough();
+      spyOn(Alert.prototype, 'present');
 
-      it('should create an alert with radiobuttons for devices', () => {
-        virtualTilesPage.devices = [new Device('01:23:45:67:89:AB', 'Tile_9e', 'Tile_9e', false)];
-        let virtualTile = new VirtualTile();
-        virtualTile._id = "Tile";
-        let alertSpy = spyOn(virtualTilesPage.alertCtrl, 'create').and.callThrough();
-        spyOn(Alert.prototype, 'present');
+      virtualTilesPage.pairTilePopUp(virtualTile);
 
-        virtualTilesPage.pairTilePopUp(virtualTile);
-
-        expect(alertSpy).toHaveBeenCalled();
-      });
+      expect(alertSpy).toHaveBeenCalled();
     });
-    describe('else', () => {
 
-      it('should create an alert with radiobuttons for devices', () => {
-        virtualTilesPage.devices = [];
-        let virtualTile = new VirtualTile();
-        virtualTile._id = "Tile";
-        let alertSpy = spyOn(virtualTilesPage.alertCtrl, 'create').and.callThrough();
-        spyOn(Alert.prototype, 'present');
+    it('should create an alert with radiobuttons for devices if devices.length = 0', () => {
+      virtualTilesPage.devices = [];
+      let virtualTile = new VirtualTile();
+      virtualTile._id = "Tile";
+      let alertSpy = spyOn(virtualTilesPage.alertCtrl, 'create').and.callThrough();
+      spyOn(Alert.prototype, 'present');
 
-        virtualTilesPage.pairTilePopUp(virtualTile);
+      virtualTilesPage.pairTilePopUp(virtualTile);
 
-        expect(alertSpy).toHaveBeenCalled();
-      });
+      expect(alertSpy).toHaveBeenCalled();
     });
   });
 
