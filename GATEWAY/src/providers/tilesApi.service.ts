@@ -15,10 +15,12 @@ export class TilesApi {
   public loginData: LoginData;
   public errorAlert: Alert;
   public hostUrl: string;
+  private headerFields: Headers;
 
   constructor(private alertCtrl: AlertController,
               public http: Http,
               public storage: Storage) {
+    this.headerFields = new Headers({'Content-Type': 'application/json'});
     this.errorAlert = this.alertCtrl.create({
       buttons: [{
         text: 'Dismiss',
@@ -168,9 +170,7 @@ export class TilesApi {
   public pairDeviceToVirualTile = (deviceId: string, virtualTileId: string): Promise<void> => {
     const url = `${this.hostUrl}/applications/${this.activeApp._id}/${virtualTileId}`;
     const body = JSON.stringify({ tile: deviceId });
-    const headerFields = new Headers({'Content-Type': 'application/json'});
-    // console.log('url: ' + url + ' body: ' + body);
-    return this.http.post(url, body, {headers: headerFields}).toPromise()
+    return this.http.post(url, body, {headers: this.headerFields}).toPromise()
                .then(res => {
                  if (res === null) {
                    this.addTileToDatabase(deviceId).then(addRes => {
@@ -192,10 +192,8 @@ export class TilesApi {
   public addTileToDatabase = (deviceId: string): Promise<boolean> => {
     const url = `${this.hostUrl}/tiles`;
     const body = JSON.stringify({ tileId: deviceId, userId: this.loginData.user, name: deviceId });
-    const headerFields = new Headers({'Content-Type': 'application/json'});
-    return this.http.post(url, body, {headers: headerFields}).toPromise()
+    return this.http.post(url, body, {headers: this.headerFields}).toPromise()
                .then(res => true)
                .catch(err => false);
   }
 }
-

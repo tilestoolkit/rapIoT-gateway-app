@@ -82,6 +82,14 @@ export class DevicesService {
   }
 
   /**
+   * Remove a device from the list
+   * @param {Device} device - a tile device
+   */
+  public removeDevice = (device: Device): void => {
+    this.devices.filter(storedDevice => storedDevice.tileId !== device.tileId);
+  }
+
+  /**
    * Go through the list of registered devices and keep only those connected
    */
   public clearDisconnectedDevices = (): void => { // TODO: Change name?

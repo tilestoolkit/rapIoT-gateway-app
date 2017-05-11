@@ -147,9 +147,8 @@ export class UtilsService {
    * Verify that input of user login is valid
    * @param {string} user - username
    * @param {string} host - api host address
-   * @param {number} port - mqtt port number
    */
-  public verifyLoginCredentials = (user: string, host: string, port: number): boolean => {
+  public verifyLoginCredentials = (user: string = null, host: string = null): boolean => {
     const validUsername = user.match(/^[a-zA-Z0-9\_\-\.]+$/);
     const validHost = host.match(/^([0-9]{1,3}.){3}[0-9]{1,3}/) || host.match(/^[a-zA-Z0-9\_\-\.]+$/);
     return validUsername !== null && validHost !== null;
