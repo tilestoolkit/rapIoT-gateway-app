@@ -65,7 +65,7 @@ export class PhysicalTilesPage {
   /**
    * Called when the page has entered. Updates devices list
    */
-  ionViewDidEnter = () => {
+  ionViewWillEnter = () => {
     this.devices = this.devicesService.getDevices();
     this.bleService.checkBleEnabled();
   }

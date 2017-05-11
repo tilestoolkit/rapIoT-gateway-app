@@ -29,6 +29,10 @@ export class DevTermPage {
       this.addNewMessage('MQTT-broker offline');
     });
 
+    this.events.subscribe('error', () => {
+      this.addNewMessage('MQTT-error occured');
+    });
+
     this.events.subscribe('close', () => {
       this.addNewMessage('Closed connection to MQTT-broker');
     });

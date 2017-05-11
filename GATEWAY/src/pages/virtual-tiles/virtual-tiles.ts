@@ -30,15 +30,6 @@ export class VirtualTilesPage {
               private devicesService: DevicesService,
               private utils: UtilsService,
               private tilesApi: TilesApi) {
-    // A id variable is stored in the navParams, and .get set this value to the local variable id
-    this.activeApp = navParams.get('app');
-    this.tilesApi.setActiveApp(navParams.get('app'));
-    // Sets the title of the page (found in virtual-tiles.html) to id, capitalized.
-    this.applicationTitle = utils.capitalize(this.activeApp._id);
-    this.devices = this.devicesService.getDevices();
-    this.tilesApi.setVirtualTiles();
-    this.setVirtualTiles();
-
     this.events.subscribe('updateDevices', () => {
       this.devices = this.devicesService.getDevices();
       this.setVirtualTiles();
@@ -109,15 +100,19 @@ export class VirtualTilesPage {
    * @param {VirtualTile} virtualTile - the target device
    */
   unpairTile = (virtualTile: VirtualTile): void => {
-     this.tilesApi.pairDeviceToVirualTile(null, virtualTile._id);
-     // Refreshes the lists of paired and unpaired virtual tiles
-     this.setVirtualTiles();
+    this.tilesApi.pairDeviceToVirualTile(null, virtualTile._id).then(
+      res => this.setVirtualTiles()
+    );
   }
 
   /**
    * Called when the page has entered. Updates devices lists
    */
-  ionViewDidEnter = () => {
+  ionViewWillEnter = () => {    // A id variable is stored in the navParams, and .get set this value to the local variable id
+    this.activeApp = this.navParams.get('app');
+    this.tilesApi.setActiveApp(this.navParams.get('app'));
+    // Sets the title of the page (found in virtual-tiles.html) to id, capitalized.
+    this.applicationTitle = this.utils.capitalize(this.activeApp._id);
     this.devices = this.devicesService.getDevices();
     this.setVirtualTiles();
     this.bleService.checkBleEnabled();
