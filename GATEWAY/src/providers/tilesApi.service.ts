@@ -87,7 +87,7 @@ export class TilesApi {
     return this.getApplicationTiles().then(res => {
       this.virtualTiles = res;
       return res;
-    });
+    }).catch(err => err);
   }
 
   /**
@@ -120,9 +120,7 @@ export class TilesApi {
                 }
               }
             })
-            .catch(err => {
-              return false;
-            });
+            .catch(err => false);
   }
 
   /**

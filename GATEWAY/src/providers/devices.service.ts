@@ -53,10 +53,12 @@ export class DevicesService {
     if (!this.devices.map(storedDevice => storedDevice.tileId).includes(device.tileId)) {
       this.devices.push(device);
     } else {
-      this.devices.forEach(storedDevice => {
+      // In case any property of the device has changed we replace the old device with the new
+      this.devices = this.devices.map(storedDevice => {
         if (storedDevice.tileId === device.tileId) {
-          storedDevice.connected = device.connected;
+          return device;
         }
+        return storedDevice;
       });
     }
   }
@@ -68,8 +70,12 @@ export class DevicesService {
    */
   public setCustomDeviceName = (device: Device, name: string): void => {
     this.storage.set(device.tileId, name);
-    this.devices.map(storedDevice => storedDevice.name = storedDevice.tileId === device.tileId
-                                                       ? name : storedDevice.name);
+    this.devices = this.devices.map(storedDevice => {
+      storedDevice.name = storedDevice.tileId === device.tileId
+                        ? name
+                        : storedDevice.name;
+      return storedDevice;
+    });
     this.events.publish('updateDevices');
   }
 
@@ -86,7 +92,34 @@ export class DevicesService {
    * @param {Device} device - a tile device
    */
   public removeDevice = (device: Device): void => {
-    this.devices.filter(storedDevice => storedDevice.tileId !== device.tileId);
+    this.devices = this.devices.filter(storedDevice => storedDevice.tileId !== device.tileId);
+  }
+
+  /**
+   * set the connection status of a device
+   * @param {Device} device - a tile device
+   * @param {boolean} status - the new connection status
+   */
+  public setDeviceConnectionStatus = (device: Device, status: boolean): void => {
+    this.devices = this.devices.map(storedDevice => {
+      if (storedDevice.tileId !== device.tileId) {
+        storedDevice.connected = status;
+      }
+      return storedDevice;
+    });
+  }
+
+  /**
+   * Reset the last time a device was discovered
+   * @param {Device} device - a tile device
+   */
+  public deviceDiscovered = (device: Device): void => {
+    this.devices = this.devices.map(storedDevice => {
+      if (storedDevice.tileId !== device.tileId) {
+        storedDevice.lastDiscovered = (new Date()).getTime();
+      }
+      return storedDevice;
+    });
   }
 
   /**

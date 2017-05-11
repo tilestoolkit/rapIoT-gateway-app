@@ -100,9 +100,9 @@ export class BleService {
     this.ble.connect(device.id)
         .subscribe(
           res => {
-            device.connected = true;
+            this.devicesService.setDeviceConnectionStatus(device, true);
+            this.devicesService.deviceDiscovered(device);
             this.startDeviceNotification(device);
-            this.devicesService.newDevice(device); //TODO: see if this can be removed.
           },
           err => {
             this.disconnect(device);
@@ -143,7 +143,7 @@ export class BleService {
             .catch( err => {
               console.log('Failed to disconnect');
             });
-    device.connected = false;
+    this.devicesService.setDeviceConnectionStatus(device, false);
     this.mqttClient.unregisterDevice(device);
     this.devicesService.removeDevice(device);
   }
@@ -192,6 +192,7 @@ export class BleService {
               this.connect(device);
             }
             this.devicesService.newDevice(device);
+            this.devicesService.deviceDiscovered(device);
             this.mqttClient.registerDevice(device);
           });
         }
@@ -209,8 +210,8 @@ export class BleService {
     this.ble.startNotification(device.id, this.rfduino.serviceUUID, this.rfduino.receiveCharacteristicUUID)
       .subscribe(
         res => {
-          device.connected = true;
-          device.lastDiscovered = (new Date()).getTime();
+          this.devicesService.setDeviceConnectionStatus(device, true);
+          this.devicesService.deviceDiscovered(device);
           const responseString = ((String.fromCharCode.apply(null, new Uint8Array(res))).slice(0, -1)).trim();
           const message: CommandObject = this.utils.getEventStringAsObject(responseString);
           if (message === null) {
@@ -224,10 +225,7 @@ export class BleService {
           this.errorAlert.present();
         },
         () => { // called when the device disconnects
-          device.connected = false;
-          this.mqttClient.unregisterDevice(device);
-          this.devicesService.removeDevice(device);
-          // TODO: Replace all with this.disconnect?
+          this.disconnect(device);
         });
   }
 

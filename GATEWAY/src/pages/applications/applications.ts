@@ -102,6 +102,7 @@ export class ApplicationsPage {
    * and clears the virtual device list of tilesApi
    */
   ionViewDidEnter = () => {
+    this.tilesApi.setActiveApp(null);
     this.tilesApi.clearVirtualTiles();
     for (let device of this.devicesService.getDevices()) {
       this.bleService.disconnect(device);
