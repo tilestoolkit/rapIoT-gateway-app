@@ -21,6 +21,7 @@ export class VirtualTilesPage {
   applicationTitle: string;
   virtualTiles: VirtualTile[];
   activeApp: Application;
+  appOnlineBtnText: string;
 
   constructor(public alertCtrl: AlertController,
               public events: Events,
@@ -33,6 +34,7 @@ export class VirtualTilesPage {
     // A id variable is stored in the navParams, and .get set this value to the local variable id
     this.activeApp = navParams.get('app');
     this.tilesApi.setActiveApp(navParams.get('app'));
+    this.appOnlineBtnText = this.activeApp.appOnline ? 'Stop app' : 'Start app';
     // Sets the title of the page (found in virtual-tiles.html) to id, capitalized.
     this.applicationTitle = utils.capitalize(this.activeApp._id);
     this.devices = this.devicesService.getDevices();
@@ -111,6 +113,16 @@ export class VirtualTilesPage {
      this.tilesApi.pairDeviceToVirualTile(null, virtualTile._id);
      // Refreshes the lists of paired and unpaired virtual tiles
      this.setVirtualTiles();
+  }
+
+  /**
+   * Toggle the appOnline for the application on/off. change the text on the
+   * button.
+   */
+  public toggleAppOnline = (): void => {
+    this.tilesApi.toggleAppOnline(this.activeApp).then(res => {
+      this.appOnlineBtnText = res.appOnline ? 'Stop app' : 'Start app';
+    });
   }
 
   /**
