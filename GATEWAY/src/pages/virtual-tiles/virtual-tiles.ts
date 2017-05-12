@@ -34,7 +34,7 @@ export class VirtualTilesPage {
     // A id variable is stored in the navParams, and .get set this value to the local variable id
     this.activeApp = navParams.get('app');
     this.tilesApi.setActiveApp(navParams.get('app'));
-    this.appOnlineBtnText = this.activeApp.appOnline ? 'Stop application' : 'Start application';
+    this.appOnlineBtnText = this.activeApp.appOnline ? 'STOP APPLICATION' : 'START APPLICATION';
     // Sets the title of the page (found in virtual-tiles.html) to id, capitalized.
     this.applicationTitle = utils.capitalize(this.activeApp._id);
     this.devices = this.devicesService.getDevices();
@@ -121,7 +121,7 @@ export class VirtualTilesPage {
    */
   public toggleAppOnline = (): void => {
     this.tilesApi.toggleAppOnline(this.activeApp).then(res => {
-      this.appOnlineBtnText = res.appOnline ? 'Stop application' : 'Start application';
+      this.appOnlineBtnText = res.appOnline ? 'STOP APPLICATION' : 'START APPLICATION';
     });
   }
 
