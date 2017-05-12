@@ -15,7 +15,7 @@ describe('tilesAPI', () => {
 
   let tilesApi: TilesApi = null;
   let loginData: LoginData = new LoginData('Test', '172.68.99.218', 8080, false);
-  let activeApp: Application = new Application('test3', '', '', false, false, 8080, []);
+  let activeApp: Application = new Application('', '', '', false, false, 8080, []);
   let virtualTile: VirtualTile = new VirtualTile();
   let spyError: jasmine.Spy;
 
@@ -164,7 +164,7 @@ describe('tilesAPI', () => {
     it('should set virtualTiles equal to a list of Virtual Tiles from an application', () => {
       spyOn(tilesApi, 'getApplicationTiles').and.callFake( () => {
         return {
-          then: (callback) => {return callback(mockTilesApplicationDetailsResponse.virtualTiles);}
+          then: (callback) => callback(mockTilesApplicationDetailsResponse.virtualTiles)
         };
       });
 

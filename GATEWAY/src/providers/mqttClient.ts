@@ -48,8 +48,7 @@ export class MqttClient {
   }
 
   /**
-   * For testing purposes. Need the ability to set LoginData whitout being
-   * dependent on the TilesApi-class
+   * Set the connection information
    * @param {LoginData} mqttConnectionData - the login credentials
    */
   public setConnectionData = (mqttConnectionData: LoginData = null): void => {
@@ -59,7 +58,7 @@ export class MqttClient {
   }
 
   /**
-   * Returns a url for the specific device
+   * Returns a subscription topic for the specific device
    * @param {string} deviceId - the ID of the device
    * @param {boolean} isEvent - true if we are sending an event
    */
@@ -79,10 +78,12 @@ export class MqttClient {
     if (this.mqttConnectionData === undefined ||  this.mqttConnectionData === null) {
       this.setConnectionData();
     }
+
     // Check if a previous server connection exists and end it if it does
     if (this.client) {
       this.client.end();
     }
+
     // Instantiate a mqtt-client from the host and port
     this.client = mqtt.connect({
       host: this.mqttConnectionData.host,
@@ -90,7 +91,7 @@ export class MqttClient {
       keepalive: 0, // tslint:disable-line
     });
 
-    // Handle events being sent from the broker
+    // Handle events being sent from the broker on topics the client is subscribed to
     this.client.on('message', (topic, message) => {
       try {
         const response = JSON.parse(message);
@@ -101,23 +102,21 @@ export class MqttClient {
         }
       } finally {} // tslint:disable-line
     });
-    this.client.on('offline', () => {
-      this.events.publish('offline');
-    });
-    this.client.on('close', () => {
-      this.events.publish('close');
-    });
-    this.client.on('reconnect', () => {
-      this.events.publish('reconnect');
-    });
+
     this.client.on('error', error => {
       this.events.publish('error', error);
       this.errorAlert.present();
     });
+
     this.client.on('connect', () => {
       clearTimeout(failedConnectionTimeout);
       this.events.publish('serverConnected');
     });
+
+    this.client.on('offline',   () => this.events.publish('offline'));
+    this.client.on('close',     () => this.events.publish('close'));
+    this.client.on('reconnect', () => this.events.publish('reconnect'));
+
     // Ends the connection attempt if the timeout rus out
     const failedConnectionTimeout = setTimeout(() => {
       if (this.client) {
@@ -127,7 +126,8 @@ export class MqttClient {
   }
 
   /**
-   * Register a device as active at the server
+   * Register a device as active at the server and subscribe to messages
+   * for the device topic
    * @param {Device} device - the device to register
    */
   public registerDevice = (device: Device): void => {
@@ -139,7 +139,7 @@ export class MqttClient {
       );
       this.client.publish(
         this.getDeviceSpecificTopic(device.tileId, true) + '/name',
-        device.name,
+        device.tileId,
         this.publishOpts,
       );
       this.client.subscribe(
@@ -149,8 +149,9 @@ export class MqttClient {
   }
 
   /**
-   * Unregister a device at the server
-   * @param {Device} device - the device to register
+   * Set the device to inctive at the server and unsubscribe to messages
+   * from the device
+   * @param {Device} device - the device to unregister
    */
   public unregisterDevice = (device: Device): void => {
     if (this.client) {
@@ -172,6 +173,7 @@ export class MqttClient {
    */
   public sendEvent = (deviceId: string, event: CommandObject): void => {
     if (this.client) {
+      // publish the event to the device topic which is listened to by the server-application
       this.client.publish(
         this.getDeviceSpecificTopic(deviceId, true),
         JSON.stringify(event),
@@ -179,7 +181,7 @@ export class MqttClient {
         err => {
           if (err !== undefined) {
             this.errorAlert.present();
-          }; // tslint:disable-line
+          }
         },
       );
     } else {

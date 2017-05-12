@@ -11,31 +11,26 @@ export class Logger {
               private utils: UtilsService) {
     this.log = [];
 
+    // Listen to various events in the application and store them in the log
     this.events.subscribe('serverConnected', () => {
       this.addToLog('Connected to MQTT-broker');
     });
-
     this.events.subscribe('offline', () => {
       this.addToLog('MQTT-broker offline');
     });
-
     this.events.subscribe('error', () => {
       this.addToLog('MQTT-error occured');
     });
-
     this.events.subscribe('close', () => {
       this.addToLog('Closed connection to MQTT-broker');
     });
-
     this.events.subscribe('reconnect', () => {
       this.addToLog('MQTT-broker reconnecting');
     });
-
     this.events.subscribe('command', (deviceId: string, command: CommandObject) => {
       const message = `Got message from cloud to device: ${deviceId} \n ${this.utils.getCommandObjectAsString(command)}`;
       this.addToLog(message);
     });
-
     this.events.subscribe('recievedEvent', (deviceId: string, event: CommandObject) => {
       const message = `Recieved event from BLE device: ${deviceId} : ${this.utils.getCommandObjectAsString(event)}`;
       this.addToLog(message);
@@ -43,36 +38,30 @@ export class Logger {
   }
 
   /**
-   * getThe current time in the format HH:MM:SS
+   * Add a message to the log with timestamp
+   * @param {logEntry} logEntry - a string to add to the log
    */
-  public currentTime = (): string => {
-    var date = new Date();
-    var datetime = date.getHours() + ':' +
-                   date.getMinutes() + ':' +
-                   date.getSeconds();
-    return datetime;
+  public addToLog = (message: string): void => {
+    const date = new Date();
+    const timestamp = date.getHours() + ':' +
+                    date.getMinutes() + ':' +
+                    date.getSeconds();
+    this.log.push(new LogEntry(message, timestamp));
+    // Notify the rest of the app of the new log entry
+    this.events.publish('logUpdate');
   }
 
   /**
-   * Add to the log
-   * @param {logEntry} logEntry - a string to add to the log
+   * Return the entire log from it was last cleared
    */
-   public addToLog = (message: string): void => {
-     this.log.push(new LogEntry(message, this.currentTime()));
-     this.events.publish('logUpdate');
-   }
-
-  /**
-   * Get the entire log
-   */
-   public getLog = (): LogEntry[] => {
-     return this.log;
-   }
+  public getLog = (): LogEntry[] => {
+    return this.log;
+  }
 
   /**
    * Remove all messages in the log
    */
-   public clearLog = (): void => {
-     this.log = [];
-   }
+  public clearLog = (): void => {
+    this.log = [];
+  }
 }
