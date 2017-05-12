@@ -91,11 +91,22 @@ export class VirtualTile {
   public __v: number;
 }
 
+/**
+ * Class to describe the structure of a log entry
+ */
+export class LogEntry {
+  public message: string;
+  public datetime: string;
+  constructor(message: string, datetime: string) {
+    this.message = message;
+    this.datetime = datetime;
+  }
+}
 
 @Injectable()
 export class UtilsService {
   constructor(public storage: Storage,
-              public events: Events) {}
+              public events: Events) { }
   /**
    * Convert a string to an attay of bytes
    */
@@ -130,17 +141,6 @@ export class UtilsService {
    */
   public getCommandObjectAsString = (cmdObj: CommandObject): string => {
     return `${cmdObj.name},${cmdObj.properties.toString()}`;
-  }
-
-  /**
-   * getThe current time in the format HH:MM:SS
-   */
-  public currentTime = () => {
-    var date = new Date();
-    var datetime = date.getHours() + ':' +
-                   date.getMinutes() + ':' +
-                   date.getSeconds();
-    return datetime;
   }
 
   /**
