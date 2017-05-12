@@ -56,11 +56,13 @@ export class DevicesService {
       // In case any property of the device has changed we replace the old device with the new
       this.devices = this.devices.map(storedDevice => {
         if (storedDevice.tileId === device.tileId) {
+          device.lastDiscovered = (new Date()).getTime();
           return device;
         }
         return storedDevice;
       });
     }
+    this.events.publish('updateDevices');
   }
 
   /**
@@ -85,6 +87,7 @@ export class DevicesService {
    */
   public resetDeviceName = (device: Device): void => {
     this.setCustomDeviceName(device, device.tileId);
+    this.events.publish('updateDevices');
   }
 
   /**
@@ -93,6 +96,7 @@ export class DevicesService {
    */
   public removeDevice = (device: Device): void => {
     this.devices = this.devices.filter(storedDevice => storedDevice.tileId !== device.tileId);
+    this.events.publish('updateDevices');
   }
 
   /**
@@ -107,6 +111,7 @@ export class DevicesService {
       }
       return storedDevice;
     });
+    this.events.publish('updateDevices');
   }
 
   /**
@@ -120,6 +125,7 @@ export class DevicesService {
       }
       return storedDevice;
     });
+    this.events.publish('updateDevices');
   }
 
   /**

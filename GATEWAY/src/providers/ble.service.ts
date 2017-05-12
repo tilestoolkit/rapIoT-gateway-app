@@ -101,7 +101,6 @@ export class BleService {
         .subscribe(
           res => {
             this.devicesService.setDeviceConnectionStatus(device, true);
-            this.devicesService.deviceDiscovered(device);
             this.startDeviceNotification(device);
           },
           err => {
@@ -124,7 +123,7 @@ export class BleService {
                   this.disconnect(device);
                 }
               });
-            }, 3000);
+            }, 2000);
           },
           err => {
             this.errorAlert.present();
@@ -145,7 +144,6 @@ export class BleService {
             });
     this.devicesService.setDeviceConnectionStatus(device, false);
     this.mqttClient.unregisterDevice(device);
-    this.devicesService.removeDevice(device);
   }
 
   /**
@@ -186,14 +184,14 @@ export class BleService {
       bleDevice => {
         if (this.tilesApi.isTilesDevice(bleDevice)) {
           this.devicesService.convertBleDeviceToDevice(bleDevice).then( device => {
+            this.devicesService.newDevice(device);
+            this.devicesService.deviceDiscovered(device);
+            this.mqttClient.registerDevice(device);
             if (virtualTiles.filter(tile => tile.tile !== null)
                             .map(tile => tile.tile.name)
                             .includes(device.tileId)) {
               this.connect(device);
             }
-            this.devicesService.newDevice(device);
-            this.devicesService.deviceDiscovered(device);
-            this.mqttClient.registerDevice(device);
           });
         }
       },
@@ -210,7 +208,9 @@ export class BleService {
     this.ble.startNotification(device.id, this.rfduino.serviceUUID, this.rfduino.receiveCharacteristicUUID)
       .subscribe(
         res => {
-          this.devicesService.setDeviceConnectionStatus(device, true);
+          if (device.connected === false) {
+            this.devicesService.setDeviceConnectionStatus(device, true);
+          }
           this.devicesService.deviceDiscovered(device);
           const responseString = ((String.fromCharCode.apply(null, new Uint8Array(res))).slice(0, -1)).trim();
           const message: CommandObject = this.utils.getEventStringAsObject(responseString);
