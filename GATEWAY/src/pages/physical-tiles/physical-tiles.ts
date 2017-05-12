@@ -10,7 +10,7 @@ import { Device } from '../../providers/utils.service';
   templateUrl: 'physical-tiles.html',
 })
 export class PhysicalTilesPage {
-  devices: Device[];
+  public devices: Device[];
 
   constructor(public navCtrl: NavController,
               public alertCtrl: AlertController,
@@ -26,7 +26,7 @@ export class PhysicalTilesPage {
    * Called when the refresher is triggered by pulling down on the view of
    * the devices.
    */
-  refreshDevices = (refresher): void => {
+  public refreshDevices = (refresher: any): void => {
     this.bleService.checkBleEnabled().then(res => {
       this.bleService.scanBLE();
     });
@@ -41,31 +41,30 @@ export class PhysicalTilesPage {
    * the devices.
    * @param {Device} device - the target device
    */
-  changeNamePop = (device: Device): void => {
+  public changeNamePop = (device: Device): void => {
     this.alertCtrl.create({
-      title: 'Change tile name',
-      inputs: [{
+      title: 'Change tile name', // tslint:disable-line
+      inputs: [{ // tslint:disable-line
         name: 'newName',
         placeholder: 'New name',
       }],
       buttons: [{
-        text: 'Cancel',
         role: 'cancel',
+        text: 'Cancel',
       },
       {
-        text: 'Rename',
-        handler: data => {
+        text: 'Rename', // tslint:disable-line
+        handler: data => { // tslint:disable-line
           this.devicesService.setCustomDeviceName(device, data.newName);
         },
       }],
     }).present();
   }
 
-
   /**
    * Called when the page has entered. Updates devices list
    */
-  ionViewWillEnter = () => {
+  public ionViewWillEnter = () => {
     this.devices = this.devicesService.getDevices();
     this.bleService.checkBleEnabled();
   }

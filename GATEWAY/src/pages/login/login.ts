@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
 import { Storage } from '@ionic/storage';
-import { ViewController, AlertController } from 'ionic-angular';
+import { AlertController, ViewController } from 'ionic-angular';
 
-import { TilesApi } from '../../providers/tilesApi.service';
 import { MqttClient } from '../../providers/mqttClient';
+import { TilesApi } from '../../providers/tilesApi.service';
 import { LoginData, UtilsService } from '../../providers/utils.service';
 
 @Component({
@@ -11,7 +11,7 @@ import { LoginData, UtilsService } from '../../providers/utils.service';
   templateUrl: 'login.html',
 })
 export class LoginPage {
-  loginInfo = { user: '', host: '178.62.99.218', port: '8080', remember: false };
+  public loginInfo = { user: '', host: '178.62.99.218', port: '8080', remember: false };
 
   constructor(private alertCtrl: AlertController,
               private mqttClient: MqttClient,
@@ -27,7 +27,7 @@ export class LoginPage {
    * @param {number} port - mqtt port number
    * @param {boolean} remember - if the login credentials should be remembered
    */
-  connectToServer = (user: string, host: string, port: number, remember: boolean): void => {
+  public connectToServer = (user: string, host: string, port: number, remember: boolean): void => {
     if (this.utils.verifyLoginCredentials(user, host)) {
       this.tilesApi.isTilesUser(user, host).then(data => {
         if (data) {
@@ -42,10 +42,10 @@ export class LoginPage {
           this.alertCtrl.create({
             // The username was not registered on the provided host server
             title: 'User not registered on host server',
-            subTitle: 'Please try again.',
-            buttons: [{
+            subTitle: 'Please try again.', // tslint:disable-line
+            buttons: [{ // tslint:disable-line
               text: 'Dismiss',
-            }]
+            }],
           }).present();
         }
       });
@@ -53,10 +53,10 @@ export class LoginPage {
       // Logindata was formatted wrong
       this.alertCtrl.create({
         title: 'Invalid login credentials',
-        subTitle: 'Please try again.',
-        buttons: [{
+        subTitle: 'Please try again.', // tslint:disable-line
+        buttons: [{ // tslint:disable-line
           text: 'Dismiss',
-        }]
+        }],
       }).present();
     }
   }
@@ -64,7 +64,7 @@ export class LoginPage {
   /**
    * Passes the login credidentials from the login form to the connectToServer function.
    */
-  loginForm = (): void => {
+  public loginForm = (): void => {
     this.connectToServer(this.loginInfo.user.trim(), this.loginInfo.host.trim(), parseInt(this.loginInfo.port.trim(), 10), this.loginInfo.remember);
   }
 }

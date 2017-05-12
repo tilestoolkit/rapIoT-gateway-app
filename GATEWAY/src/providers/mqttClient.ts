@@ -19,7 +19,9 @@ export class MqttClient {
               public backgroundFetch: BackgroundFetch,
               private events: Events,
               public tilesApi: TilesApi) {
-    this.mqttConnectionData = this.tilesApi.getLoginData();
+    this.setConnectionData();
+    // Configure background check for IOS, we are not sure if this plugin
+    // is working as we haven't been able to test it.
     this.backgroundFetch.configure({ stopOnTerminate: false })
         .then(() => {
           if (this.mqttConnectionData.user !== undefined ||
@@ -32,6 +34,7 @@ export class MqttClient {
         .catch(err => {
           console.log('Error initializing background fetch', err);
         });
+    // Create a standard error-alert to show when something goes wrong
     this.errorAlert = this.alertCtrl.create({
      buttons: [{
         text: 'Dismiss',
@@ -74,14 +77,12 @@ export class MqttClient {
    */
   public connect = (): void => {
     if (this.mqttConnectionData === undefined ||  this.mqttConnectionData === null) {
-      this.mqttConnectionData = this.tilesApi.getLoginData();
+      this.setConnectionData();
     }
-
     // Check if a previous server connection exists and end it if it does
     if (this.client) {
       this.client.end();
     }
-
     // Instantiate a mqtt-client from the host and port
     this.client = mqtt.connect({
       host: this.mqttConnectionData.host,
@@ -89,7 +90,7 @@ export class MqttClient {
       keepalive: 0, // tslint:disable-line
     });
 
-    // Handle events from the broker
+    // Handle events being sent from the broker
     this.client.on('message', (topic, message) => {
       try {
         const response = JSON.parse(message);
@@ -100,29 +101,23 @@ export class MqttClient {
         }
       } finally {} // tslint:disable-line
     });
-
     this.client.on('offline', () => {
       this.events.publish('offline');
     });
-
     this.client.on('close', () => {
       this.events.publish('close');
     });
-
     this.client.on('reconnect', () => {
       this.events.publish('reconnect');
     });
-
     this.client.on('error', error => {
       this.events.publish('error', error);
       this.errorAlert.present();
     });
-
     this.client.on('connect', () => {
       clearTimeout(failedConnectionTimeout);
       this.events.publish('serverConnected');
     });
-
     // Ends the connection attempt if the timeout rus out
     const failedConnectionTimeout = setTimeout(() => {
       if (this.client) {
@@ -187,6 +182,8 @@ export class MqttClient {
           }; // tslint:disable-line
         },
       );
+    } else {
+      this.errorAlert.present();
     }
   }
 

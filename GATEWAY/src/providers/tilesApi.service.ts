@@ -77,7 +77,10 @@ export class TilesApi {
    * Gets the active app
    */
   public getActiveApp = (): Application => {
-    return this.activeApp !== undefined ? this.activeApp : new Application('test3', '', '', false, false, 8080, []);
+    if (this.activeApp === undefined || this.activeApp === null) {
+      return new Application('', '', '', false, false, 8080, []);
+    }
+    return this.activeApp;
   }
 
   /**

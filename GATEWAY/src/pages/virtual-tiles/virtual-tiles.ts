@@ -14,13 +14,13 @@ import { Application, Device, UtilsService, VirtualTile } from '../../providers/
 
 @Component({
   selector: 'page-virtual-tiles',
-  templateUrl: 'virtual-tiles.html'
+  templateUrl: 'virtual-tiles.html',
 })
 export class VirtualTilesPage {
-  devices: Device[];
-  applicationTitle: string;
-  virtualTiles: VirtualTile[];
-  activeApp: Application;
+  public applicationTitle: string;
+  public virtualTiles: VirtualTile[];
+  public activeApp: Application;
+  private devices: Device[];
 
   constructor(public alertCtrl: AlertController,
               public events: Events,
@@ -37,20 +37,10 @@ export class VirtualTilesPage {
   }
 
   /**
-   * Set the virtual tiles equal to the ones stores for the app
+   * Called when the refresher is triggered by pulling down on the view of
+   * virtualTiles
    */
-  setVirtualTiles = (): void => {
-    // We want to set the virtual tiles before getting as the database (ex pairing) might have changed
-    this.tilesApi.setVirtualTiles().then(res => {
-      this.virtualTiles = this.tilesApi.getVirtualTiles();
-    });
-  }
-
-  /**
-  * Called when the refresher is triggered by pulling down on the view of
-  * virtualTiles
-  */
-  refreshVirtualTiles = (refresher): void => {
+  public refreshVirtualTiles = (refresher: any): void => {
     this.devices = this.devicesService.getDevices();
     this.setVirtualTiles();
     this.bleService.checkBleEnabled();
@@ -65,32 +55,31 @@ export class VirtualTilesPage {
    * the virtual tiles.
    * @param {VirtualTile} virtualTile - the target device
    */
-  pairTilePopUp = (virtualTile: VirtualTile): void => {
+  public pairTilePopUp = (virtualTile: VirtualTile): void => {
     const deviceRadioButtons = this.devices.map(device => {
       return {type: 'radio', name: 'deviceId', value: device.tileId, label: device.name};
     });
     if (this.devices.length > 0) {
       this.alertCtrl.create({
       title: 'Pair to physical tile',
-      inputs: deviceRadioButtons,
-      buttons: [{
+      inputs: deviceRadioButtons, // tslint:disable-line
+      buttons: [{ // tslint:disable-line
         text: 'Cancel',
-        role: 'cancel',
+        role: 'cancel', // tslint:disable-line
         },
         {
           text: 'Pair',
-          handler: data => {
-            this.tilesApi.pairDeviceToVirualTile(data, virtualTile._id).then(
-              res => this.setVirtualTiles()
-            );
+          handler: data => { // tslint:disable-line
+            this.tilesApi.pairDeviceToVirualTile(data, virtualTile._id)
+                                    .then(res => this.setVirtualTiles());
           },
       }],
     }).present();
     } else {
       this.alertCtrl.create({
-        title: 'Pair to physical tile',
+        buttons: ['Dismiss'],
         message: 'No physical tiles nearby.',
-        buttons: ['Dismiss']}).present();
+        title: 'Pair to physical tile' }).present();
     }
   }
 
@@ -99,16 +88,15 @@ export class VirtualTilesPage {
    * virtual tiles view.
    * @param {VirtualTile} virtualTile - the target device
    */
-  unpairTile = (virtualTile: VirtualTile): void => {
-    this.tilesApi.pairDeviceToVirualTile(null, virtualTile._id).then(
-      res => this.setVirtualTiles()
-    );
+  public unpairTile = (virtualTile: VirtualTile): void => {
+    this.tilesApi.pairDeviceToVirualTile(null, virtualTile._id)
+                           .then(res => this.setVirtualTiles());
   }
 
   /**
    * Called when the page has entered. Updates devices lists
    */
-  ionViewWillEnter = () => {    // A id variable is stored in the navParams, and .get set this value to the local variable id
+  public ionViewWillEnter = () => {    // A id variable is stored in the navParams, and .get set this value to the local variable id
     this.activeApp = this.navParams.get('app');
     this.tilesApi.setActiveApp(this.navParams.get('app'));
     // Sets the title of the page (found in virtual-tiles.html) to id, capitalized.
@@ -116,5 +104,15 @@ export class VirtualTilesPage {
     this.devices = this.devicesService.getDevices();
     this.setVirtualTiles();
     this.bleService.checkBleEnabled();
+  }
+
+  /**
+   * Set the virtual tiles equal to the ones stores for the app
+   */
+  private setVirtualTiles = (): void => {
+    // We want to set the virtual tiles before getting as the database (ex pairing) might have changed
+    this.tilesApi.setVirtualTiles().then(res => {
+      this.virtualTiles = this.tilesApi.getVirtualTiles();
+    });
   }
 }
