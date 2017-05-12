@@ -23,7 +23,7 @@
     </ion-refresher-content>
   </ion-refresher>
 
-  <button ion-button (click)="toggleAppOnline()">{{appOnlineBtnText}}</button>
+  <button ion-button (click)="toggleAppOnline()" full style="margin-bottom: 1em;">{{appOnlineBtnText}}</button>
 
   <ion-title left style="padding-left: 0;">UNPAIRED TILES</ion-title>
   <div *ngFor="let tile of virtualTiles">
