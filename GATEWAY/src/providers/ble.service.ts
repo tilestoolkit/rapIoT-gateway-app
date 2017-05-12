@@ -7,6 +7,7 @@ import { Observable, Subscription } from 'rxjs';
 import 'rxjs/add/operator/toPromise';
 
 import { DevicesService }from './devices.service';
+import { Logger }from './logger.service';
 import { MqttClient } from './mqttClient';
 import { TilesApi  } from './tilesApi.service';
 import { CommandObject, Device, UtilsService } from './utils.service';
@@ -29,6 +30,7 @@ export class BleService {
               private platform: Platform,
               public ble: BLE,
               public devicesService: DevicesService,
+              public logger: Logger,
               public mqttClient: MqttClient,
               public tilesApi: TilesApi,
               public utils: UtilsService) {
@@ -218,7 +220,8 @@ export class BleService {
             console.log('Couldnt make an object from event: ' + responseString);
           } else {
             this.mqttClient.sendEvent(device.tileId, message);
-            this.events.publish('recievedEvent', device.tileId, message);
+            const logEntry = `Recieved event from BLE device: ${device.tileId} : ${this.utils.getCommandObjectAsString(message)}`;
+            this.logger.addToLog(logEntry);
           }
         },
         err => {

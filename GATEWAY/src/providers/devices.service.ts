@@ -28,6 +28,7 @@ export class DevicesService {
       });
       return new Device(bleDevice.id, bleDevice.name, deviceName, false);
     }).catch(err => {
+      alert(err);
       this.devices.forEach(device => {
         if (bleDevice.name === device.tileId) {
           device.lastDiscovered = (new Date()).getTime();
@@ -106,8 +107,9 @@ export class DevicesService {
    */
   public setDeviceConnectionStatus = (device: Device, status: boolean): void => {
     this.devices = this.devices.map(storedDevice => {
-      if (storedDevice.tileId !== device.tileId) {
+      if (storedDevice.tileId === device.tileId) {
         storedDevice.connected = status;
+        alert(JSON.stringify(storedDevice));
       }
       return storedDevice;
     });

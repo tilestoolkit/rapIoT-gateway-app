@@ -3,8 +3,9 @@ import { BackgroundFetch } from '@ionic-native/background-fetch';
 import { Alert, AlertController, Events } from 'ionic-angular';
 import * as mqtt from 'mqtt';
 
+import { Logger } from './logger.service';
 import { TilesApi } from './tilesApi.service';
-import { CommandObject, Device, LoginData } from './utils.service';
+import { CommandObject, Device, LoginData, UtilsService } from './utils.service';
 
 
 @Injectable()
@@ -18,7 +19,9 @@ export class MqttClient {
   constructor(private alertCtrl: AlertController,
               public backgroundFetch: BackgroundFetch,
               private events: Events,
-              public tilesApi: TilesApi) {
+              public logger: Logger,
+              public tilesApi: TilesApi,
+              public utils: UtilsService) {
     this.setConnectionData();
     // Configure background check for IOS, we are not sure if this plugin
     // is working as we haven't been able to test it.
@@ -98,24 +101,26 @@ export class MqttClient {
         const command: CommandObject = new CommandObject(response.name, response.properties);
         if (command) {
           const deviceId = topic.split('/')[4];
-          this.events.publish('command', deviceId, command);
+          const message = `Got message from cloud to device: ${deviceId} ${this.utils.getCommandObjectAsString(command)}`;
+          this.logger.addToLog(message);
         }
       } finally {} // tslint:disable-line
     });
 
     this.client.on('error', error => {
-      this.events.publish('error', error);
+      this.logger.addToLog('MQTT-error occured');
       this.errorAlert.present();
     });
 
     this.client.on('connect', () => {
       clearTimeout(failedConnectionTimeout);
       this.events.publish('serverConnected');
+      this.logger.addToLog('Connected to MQTT-broker');
     });
 
-    this.client.on('offline',   () => this.events.publish('offline'));
-    this.client.on('close',     () => this.events.publish('close'));
-    this.client.on('reconnect', () => this.events.publish('reconnect'));
+    this.client.on('offline',   () => this.logger.addToLog('MQTT-broker offline'));
+    this.client.on('close',     () => this.logger.addToLog('Closed connection to MQTT-broker'));
+    this.client.on('reconnect', () => this.logger.addToLog('MQTT-broker reconnecting'));
 
     // Ends the connection attempt if the timeout rus out
     const failedConnectionTimeout = setTimeout(() => {

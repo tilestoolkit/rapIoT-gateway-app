@@ -10,31 +10,6 @@ export class Logger {
   constructor(public events: Events,
               private utils: UtilsService) {
     this.log = [];
-
-    // Listen to various events in the application and store them in the log
-    this.events.subscribe('serverConnected', () => {
-      this.addToLog('Connected to MQTT-broker');
-    });
-    this.events.subscribe('offline', () => {
-      this.addToLog('MQTT-broker offline');
-    });
-    this.events.subscribe('error', () => {
-      this.addToLog('MQTT-error occured');
-    });
-    this.events.subscribe('close', () => {
-      this.addToLog('Closed connection to MQTT-broker');
-    });
-    this.events.subscribe('reconnect', () => {
-      this.addToLog('MQTT-broker reconnecting');
-    });
-    this.events.subscribe('command', (deviceId: string, command: CommandObject) => {
-      const message = `Got message from cloud to device: ${deviceId} \n ${this.utils.getCommandObjectAsString(command)}`;
-      this.addToLog(message);
-    });
-    this.events.subscribe('recievedEvent', (deviceId: string, event: CommandObject) => {
-      const message = `Recieved event from BLE device: ${deviceId} : ${this.utils.getCommandObjectAsString(event)}`;
-      this.addToLog(message);
-    });
   }
 
   /**
