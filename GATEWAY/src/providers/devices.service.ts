@@ -110,7 +110,6 @@ export class DevicesService {
       if (storedDevice.tileId === device.tileId) {
         storedDevice.connected = status;
         storedDevice.lastDiscovered = (new Date()).getTime();
-        alert(JSON.stringify(storedDevice));
       }
       return storedDevice;
     });

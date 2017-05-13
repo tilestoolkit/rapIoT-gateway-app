@@ -10,6 +10,7 @@ import { Observable, Subscription } from 'rxjs';
 import { BleService } from './ble.service';
 import { DevicesService }from './devices.service';
 import { StorageMock, BackgroundFetchMock, BLEMock, DiagnosticMock } from '../mocks';
+import { Logger }from './logger.service';
 import { MqttClient } from './mqttClient';
 import { TilesApi } from './tilesApi.service';
 import { UtilsService, Device, CommandObject }from './utils.service';
@@ -31,6 +32,7 @@ describe('bleService', () => {
         Events,
         DevicesService,
         UtilsService,
+        Logger,
         TilesApi,
         MqttClient,
         BleService,
@@ -135,7 +137,7 @@ describe('bleService', () => {
       });
 
     });
-    
+
     //TODO: Ferdigstill denne metoden
     it('should invoke the method scanBLE() if BLE is enabled', (() => {
       let spyEnabled = spyOn(bleService.ble, 'isEnabled').and.callThrough();
@@ -282,7 +284,7 @@ describe('bleService', () => {
       spyOn(bleService.ble, 'writeWithoutResponse').and.callThrough();
 
       bleService.sendData(testDevice, 'led,on,red');
-      
+
       expect(bleService.ble.writeWithoutResponse).toHaveBeenCalled();
 
     });

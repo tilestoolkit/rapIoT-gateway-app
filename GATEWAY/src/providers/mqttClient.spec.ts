@@ -4,9 +4,10 @@ import { MockBackend } from '@angular/http/testing';
 import { BackgroundFetch } from '@ionic-native/background-fetch';
 import { Storage } from '@ionic/storage';
 import { AlertController, App, Config, Events, Platform } from 'ionic-angular';
+import { Logger }from './logger.service';
 import { TilesApi } from './tilesApi.service';
 import { MqttClient } from './mqttClient';
-import { LoginData, Device, CommandObject } from './utils.service';
+import { LoginData, Device, CommandObject, UtilsService } from './utils.service';
 import { StorageMock, BackgroundFetchMock, MqttMock } from '../mocks';
 import * as mqtt from 'mqtt';
 
@@ -22,9 +23,11 @@ describe('mqttClient', () => {
         Config,
         AlertController,
         Platform,
+        Logger,
         TilesApi,
         MqttClient,
         Events,
+        UtilsService,
         MockBackend,
         BaseRequestOptions,
         {

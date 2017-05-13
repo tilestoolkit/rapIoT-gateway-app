@@ -141,7 +141,6 @@ export class TilesApi {
 
   /**
    * Get the details of an application
-   * @param {string} applicationId - The application ID
    */
   public getApplicationDetails = (): Promise<any> => {
     const url = `${this.hostUrl}/applications/${this.activeApp._id}`;
@@ -155,7 +154,6 @@ export class TilesApi {
 
   /**
    * Get the tiles belonging to an application
-   * @param {string} applicationId - The application ID
    */
   public getApplicationTiles = (): Promise<any> => {
     return this.getApplicationDetails().then(res => res.virtualTiles);
@@ -195,5 +193,21 @@ export class TilesApi {
     return this.http.post(url, body, {headers: this.headerFields}).toPromise()
                .then(res => true)
                .catch(err => false);
+  }
+
+  /**
+   * Toggle the appOnline for the application on/off. Return the application with
+   * changes if get call was successfull, otherwise the application as was.
+   * @param {Application} application - The application
+   */
+  public toggleAppOnline = (application: Application): Promise<Application> => {
+    const url = `http://${this.loginData.host}:${this.apiPort}/applications/${application._id}/host/app`;
+    const headerFields = new Headers({'Content-Type': 'application/json'});
+    return this.http.get(url, {headers: headerFields}).toPromise()
+               .then(res => {
+                 application.appOnline = res.json().appOnline;
+                 return application;
+               })
+               .catch(err => application);
   }
 }

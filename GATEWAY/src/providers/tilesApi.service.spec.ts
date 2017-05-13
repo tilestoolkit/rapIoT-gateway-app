@@ -160,7 +160,7 @@ describe('tilesAPI', () => {
 
   });
 
-  describe('setVirtualTiles(appId: string): void', () => {
+  xdescribe('setVirtualTiles(appId: string): void', () => {
     it('should set virtualTiles equal to a list of Virtual Tiles from an application', () => {
       spyOn(tilesApi, 'getApplicationTiles').and.callFake( () => {
         return {

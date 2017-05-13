@@ -20,6 +20,7 @@ export class VirtualTilesPage {
   public applicationTitle: string;
   public virtualTiles: VirtualTile[];
   public activeApp: Application;
+  public appOnlineBtnText: string;
   private devices: Device[];
 
   constructor(public alertCtrl: AlertController,
@@ -30,6 +31,7 @@ export class VirtualTilesPage {
               private devicesService: DevicesService,
               private utils: UtilsService,
               private tilesApi: TilesApi) {
+    this.appOnlineBtnText = this.activeApp.appOnline ? 'STOP APPLICATION' : 'START APPLICATION';
     this.events.subscribe('updateDevices', () => {
       this.devices = this.devicesService.getDevices();
       this.setVirtualTiles();
@@ -91,6 +93,16 @@ export class VirtualTilesPage {
   public unpairTile = (virtualTile: VirtualTile): void => {
     this.tilesApi.pairDeviceToVirualTile(null, virtualTile._id)
                            .then(res => this.setVirtualTiles());
+  }
+
+  /**
+   * Toggle the appOnline for the application on/off. change the text on the
+   * button.
+   */
+  public toggleAppOnline = (): void => {
+    this.tilesApi.toggleAppOnline(this.activeApp).then(res => {
+      this.appOnlineBtnText = res.appOnline ? 'STOP APPLICATION' : 'START APPLICATION';
+    });
   }
 
   /**

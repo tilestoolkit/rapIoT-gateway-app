@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Events } from 'ionic-angular';
-import { CommandObject, LogEntry, UtilsService } from './utils.service';
+import { LogEntry, UtilsService } from './utils.service';
 
 
 @Injectable()
