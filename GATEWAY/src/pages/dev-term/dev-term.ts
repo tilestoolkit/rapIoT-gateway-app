@@ -1,5 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 import { Content, Events, NavController, NavParams } from 'ionic-angular';
+import { Observable, Subscription } from 'rxjs';
 
 import { Logger } from '../../providers/logger.service';
 import { LogEntry } from '../../providers/utils.service';
@@ -12,6 +13,8 @@ import { LogEntry } from '../../providers/utils.service';
 export class DevTermPage {
   @ViewChild(Content) content: Content; // tslint:disable-line
   private messages: LogEntry[];
+  private logUpdate: Subscription;
+
 
   constructor(public events: Events,
               public navCtrl: NavController,
@@ -47,6 +50,18 @@ export class DevTermPage {
   public ionViewDidEnter = (): void => {
     this.scrollBottomOfList();
     this.messages = this.logger.getLog();
+    this.logUpdate = Observable.interval(500).subscribe(res => {
+      this.updateLog();
+    });
+  }
+
+  /**
+   * called when the view enters
+   */
+  public ionViewWillLeave = (): void => {
+    this.scrollBottomOfList();
+    this.messages = this.logger.getLog();
+    this.logUpdate = null;
   }
 
   /**

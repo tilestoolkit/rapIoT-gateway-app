@@ -31,7 +31,6 @@ export class VirtualTilesPage {
               private devicesService: DevicesService,
               private utils: UtilsService,
               private tilesApi: TilesApi) {
-    this.appOnlineBtnText = this.activeApp.appOnline ? 'STOP APPLICATION' : 'START APPLICATION';
     this.events.subscribe('updateDevices', () => {
       this.devices = this.devicesService.getDevices();
       this.setVirtualTiles();
@@ -111,6 +110,7 @@ export class VirtualTilesPage {
   public ionViewWillEnter = () => {    // A id variable is stored in the navParams, and .get set this value to the local variable id
     this.activeApp = this.navParams.get('app');
     this.tilesApi.setActiveApp(this.navParams.get('app'));
+    this.appOnlineBtnText = this.activeApp.appOnline ? 'STOP APPLICATION' : 'START APPLICATION';
     // Sets the title of the page (found in virtual-tiles.html) to id, capitalized.
     this.applicationTitle = this.utils.capitalize(this.activeApp._id);
     this.devices = this.devicesService.getDevices();
