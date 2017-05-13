@@ -109,6 +109,7 @@ export class DevicesService {
     this.devices = this.devices.map(storedDevice => {
       if (storedDevice.tileId === device.tileId) {
         storedDevice.connected = status;
+        storedDevice.lastDiscovered = (new Date()).getTime();
         alert(JSON.stringify(storedDevice));
       }
       return storedDevice;
