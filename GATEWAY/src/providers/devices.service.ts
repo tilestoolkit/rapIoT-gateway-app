@@ -7,7 +7,6 @@ import { Device } from './utils.service';
 @Injectable()
 export class DevicesService {
   public devices: Device[];
-
   constructor(public storage: Storage,
               public events: Events) {
     this.devices = [];
@@ -136,7 +135,8 @@ export class DevicesService {
   public clearDisconnectedDevices = (): void => { // TODO: Change name?
     const currentTime = (new Date()).getTime();
     this.devices = this.devices.filter(device => {
-      return currentTime - device.lastDiscovered < 15000 || device.connected;
+      // devices not connected and not discovered in the past 10 seconds will be removed
+      return currentTime - device.lastDiscovered < 10000 || device.connected;
     });
     this.events.publish('updateDevices');
   }

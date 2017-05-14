@@ -23,7 +23,6 @@ export class BleService {
     sendCharacteristicUUID: '2222',
     serviceUUID: '2220',
   };
-
   constructor(private alertCtrl: AlertController,
               private diagnostic: Diagnostic,
               private events: Events,
@@ -46,11 +45,12 @@ export class BleService {
   }
 
   /**
-   * Start the BLE scanner making it scan every 6s
+   * Start the BLE scanner subscription to subscribe to an observable
+   * running the scanBLE function every 5 seconds
    */
   public startBLEScanner = (): void => {
     this.checkBleEnabled().then(res => {
-      this.bleScanner = Observable.interval(6000).subscribe(scanResult => {
+      this.bleScanner = Observable.interval(5000).subscribe(scanResult => {
         this.scanBLE();
       });
     }).catch(err => {
@@ -95,7 +95,7 @@ export class BleService {
   }
 
   /**
-   * Connect to a device
+   * Connect to a device and start getting messages from it
    * @param {Device} device - the target device
    */
   public connect = (device: Device): void => {
@@ -111,7 +111,7 @@ export class BleService {
   }
 
   /**
-   * Connect and rename a device
+   * Make the led lighth of the device shine red for 2 seconds to locate it
    * @param {Device} device - the target device
    */
   public locate = (device: Device): void => {
@@ -121,6 +121,7 @@ export class BleService {
             this.sendData(device, 'led,on,red');
             setTimeout(() => {
               this.sendData(device, 'led,off').then(sendRes => {
+                // If the device was not previously connected we want to disconnect
                 if (!device.connected) {
                   this.disconnect(device);
                 }
@@ -149,7 +150,7 @@ export class BleService {
   }
 
   /**
-   * Send data to a device using BLE
+   * Send a command to a device using BLE
    * @param {Device} device - the target device
    * @param {string} dataString - the string of data to send to the device
    */
@@ -189,6 +190,8 @@ export class BleService {
             this.devicesService.newDevice(device);
             this.devicesService.deviceDiscovered(device);
             this.mqttClient.registerDevice(device);
+            // If the device is one  of the virtual tiles belonging to the current
+            // application we want to connect
             if (virtualTiles.filter(tile => tile.tile !== null)
                             .map(tile => tile.tile.name)
                             .includes(device.tileId)) {
@@ -210,7 +213,7 @@ export class BleService {
     this.ble.startNotification(device.id, this.rfduino.serviceUUID, this.rfduino.receiveCharacteristicUUID)
       .subscribe(
         res => {
-          if (device.connected === false) {
+          if (device.connected !== true) {
             this.devicesService.setDeviceConnectionStatus(device, true);
           }
           this.devicesService.deviceDiscovered(device);
