@@ -39,7 +39,7 @@ export class DevTermPage {
   public scrollBottomOfList = (jump: boolean): void => {
     // Check if scrolled to bottom of list, or the jump button was pressed
     // otherwise we want the view to stay where it is
-    if (this.getListLocation() === 0 || jump) {
+    if (this.getListLocation() === 0 || jump) {
       // Need a delay so the list can update before scrolling down
       setTimeout(() => {
         this.content.scrollToBottom(50);
