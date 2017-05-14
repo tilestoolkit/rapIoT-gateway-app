@@ -10,6 +10,7 @@ import { Observable, Subscription } from 'rxjs';
 import { BleService } from './ble.service';
 import { DevicesService }from './devices.service';
 import { StorageMock, BackgroundFetchMock, BLEMock, DiagnosticMock } from '../mocks';
+import { Logger }from './logger.service';
 import { MqttClient } from './mqttClient';
 import { TilesApi } from './tilesApi.service';
 import { UtilsService, Device, CommandObject }from './utils.service';
@@ -31,6 +32,7 @@ describe('bleService', () => {
         Events,
         DevicesService,
         UtilsService,
+        Logger,
         TilesApi,
         MqttClient,
         BleService,
@@ -135,7 +137,7 @@ describe('bleService', () => {
       });
 
     });
-    
+
     //TODO: Ferdigstill denne metoden
     it('should invoke the method scanBLE() if BLE is enabled', (() => {
       let spyEnabled = spyOn(bleService.ble, 'isEnabled').and.callThrough();
@@ -229,14 +231,12 @@ describe('bleService', () => {
     it('should run method devicesService.clearDisconnectedDevices if ble.connect returns an error', () => {
       spyOn(bleService.ble, 'connect').and.returnValue(Observable.throw(new Error()));
       spyOn(bleService, 'startDeviceNotification');
-      spyOn(bleService.devicesService, 'clearDisconnectedDevices');
       let tempDevice = new Device('test', 'test', 'test', false, (new Date()).getTime() - 61000);
 
       bleService.connect(tempDevice);
 
       expect(bleService.ble.connect).toHaveBeenCalled();
       expect(bleService.startDeviceNotification).not.toHaveBeenCalled();
-      expect(bleService.devicesService.clearDisconnectedDevices).toHaveBeenCalled();
     });
 
   });
@@ -284,7 +284,7 @@ describe('bleService', () => {
       spyOn(bleService.ble, 'writeWithoutResponse').and.callThrough();
 
       bleService.sendData(testDevice, 'led,on,red');
-      
+
       expect(bleService.ble.writeWithoutResponse).toHaveBeenCalled();
 
     });

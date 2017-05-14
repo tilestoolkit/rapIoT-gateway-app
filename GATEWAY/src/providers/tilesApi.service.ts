@@ -14,11 +14,13 @@ export class TilesApi {
   public virtualTiles: VirtualTile[] = [];
   public loginData: LoginData;
   public errorAlert: Alert;
-  // TODO: public hostUrl: string;
+  public hostUrl: string;
+  private headerFields: Headers;
 
   constructor(private alertCtrl: AlertController,
               public http: Http,
               public storage: Storage) {
+    this.headerFields = new Headers({'Content-Type': 'application/json'});
     this.errorAlert = this.alertCtrl.create({
       buttons: [{
         text: 'Dismiss',
@@ -46,6 +48,7 @@ export class TilesApi {
    */
   public setLoginData = (loginData: LoginData): void => {
     this.loginData = loginData;
+    this.hostUrl = `http://${loginData.host}:${this.apiPort}`;
   }
 
   /**
@@ -74,16 +77,20 @@ export class TilesApi {
    * Gets the active app
    */
   public getActiveApp = (): Application => {
-    return this.activeApp !== undefined ? this.activeApp : new Application('test3', '', '', false, false, 8080, []);
+    if (this.activeApp === undefined || this.activeApp === null) {
+      return new Application('', '', '', false, false, 8080, []);
+    }
+    return this.activeApp;
   }
 
   /**
    * Set the virtual tiles equal to the ones stored for the app
    */
-  public setVirtualTiles = (): void => {
-    this.getApplicationTiles().then(res => {
+  public setVirtualTiles = (): Promise<any> => {
+    return this.getApplicationTiles().then(res => {
       this.virtualTiles = res;
-    });
+      return res;
+    }).catch(err => err);
   }
 
   /**
@@ -105,7 +112,7 @@ export class TilesApi {
    * @param {string} username - username to check for
    * @param {host} string - the host ip/url
    */
-  public isTilesUser = (userName: string, host: string): Promise<boolean> => {
+  public isTilesUser = (userName: string, host: string): Promise<any> => {
     const url = `http://${host}:${this.apiPort}/users`;
     return this.http.get(url)
             .toPromise()
@@ -116,63 +123,37 @@ export class TilesApi {
                 }
               }
             })
-            .catch(err => {
-              try {
-                if (err.status === 0) {
-                  this.errorAlert.present();
-                }
-              } finally {} // tslint:disable-line
-              return false;
-            });
+            .catch(err => false);
   }
 
   /**
    * Get all registered applications for all users
    */
   public getAllApplications = (): Promise<any> => {
-    const url = `http://${this.loginData.host}:${this.apiPort}/applications/user/${this.loginData.user}`;
+    const url = `${this.hostUrl}/applications/user/${this.loginData.user}`;
     return this.http.get(url)
             .toPromise()
             .then(res => {
               return res.json();
             })
-            .catch(err => {
-              try {
-                if (err.status === 0) {
-                  this.errorAlert.present();
-                }
-              } finally {
-                console.log('failed getting applications with error: ' + err);
-              }
-            });
+            .catch(err => this.errorAlert.present());
   }
 
   /**
    * Get the details of an application
-   * @param {string} applicationId - The application ID
    */
   public getApplicationDetails = (): Promise<any> => {
-    const url = `http://${this.loginData.host}:${this.apiPort}/applications/${this.activeApp._id}`;
+    const url = `${this.hostUrl}/applications/${this.activeApp._id}`;
     return this.http.get(url)
             .toPromise()
             .then(res => {
               return res.json();
             })
-            .catch(err => {
-              try {
-                if (err.status === 0) {
-                  this.errorAlert.present();
-                }
-              } finally {
-                console.log('failed getting applications with error: ' + err);
-                console.log('url ' + url);
-              }
-            });
+            .catch(err => this.errorAlert.present());
   }
 
   /**
    * Get the tiles belonging to an application
-   * @param {string} applicationId - The application ID
    */
   public getApplicationTiles = (): Promise<any> => {
     return this.getApplicationDetails().then(res => res.virtualTiles);
@@ -185,11 +166,9 @@ export class TilesApi {
    * @param {string} applicationId - The application the virtual tile is registered to
    */
   public pairDeviceToVirualTile = (deviceId: string, virtualTileId: string): Promise<void> => {
-    const url = `http://${this.loginData.host}:${this.apiPort}/applications/${this.activeApp._id}/${virtualTileId}`;
+    const url = `${this.hostUrl}/applications/${this.activeApp._id}/${virtualTileId}`;
     const body = JSON.stringify({ tile: deviceId });
-    const headerFields = new Headers({'Content-Type': 'application/json'});
-    // console.log('url: ' + url + ' body: ' + body);
-    return this.http.post(url, body, {headers: headerFields}).toPromise()
+    return this.http.post(url, body, {headers: this.headerFields}).toPromise()
                .then(res => {
                  if (res === null) {
                    this.addTileToDatabase(deviceId).then(addRes => {
@@ -209,10 +188,9 @@ export class TilesApi {
    * @param {string} deviceId - The physical tile
    */
   public addTileToDatabase = (deviceId: string): Promise<boolean> => {
-    const url = `http://${this.loginData.host}:${this.apiPort}/tiles`;
+    const url = `${this.hostUrl}/tiles`;
     const body = JSON.stringify({ tileId: deviceId, userId: this.loginData.user, name: deviceId });
-    const headerFields = new Headers({'Content-Type': 'application/json'});
-    return this.http.post(url, body, {headers: headerFields}).toPromise()
+    return this.http.post(url, body, {headers: this.headerFields}).toPromise()
                .then(res => true)
                .catch(err => false);
   }

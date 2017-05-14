@@ -27,5 +27,5 @@
       </div>
     </ion-item>
   </ion-list>
-  <ion-item *ngIf="applications === undefined" style="text-align: center;">Pull down to refresh list</ion-item>
+  <ion-item *ngIf="applications === undefined || applications.length === 0" style="text-align: center;">Pull down to refresh list</ion-item>
 </ion-content>

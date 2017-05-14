@@ -10,14 +10,13 @@ import { Device } from '../../providers/utils.service';
   templateUrl: 'physical-tiles.html',
 })
 export class PhysicalTilesPage {
-  devices: Device[];
+  public devices: Device[];
 
   constructor(public navCtrl: NavController,
               public alertCtrl: AlertController,
               private events: Events,
               private bleService: BleService,
               private devicesService: DevicesService) {
-    this.devices = this.devicesService.getDevices();
     this.events.subscribe('updateDevices', () => {
       this.devices = this.devicesService.getDevices();
     });
@@ -27,7 +26,7 @@ export class PhysicalTilesPage {
    * Called when the refresher is triggered by pulling down on the view of
    * the devices.
    */
-  refreshDevices = (refresher): void => {
+  public refreshDevices = (refresher: any): void => {
     this.bleService.checkBleEnabled().then(res => {
       this.bleService.scanBLE();
     });
@@ -35,16 +34,6 @@ export class PhysicalTilesPage {
     setTimeout(() => {
       refresher.complete();
     }, 1250);
-    this.devices = this.devicesService.getDevices();
-  }
-
-  /**
-   * Triggers a tile to light red for 3 seconds to identify which tile is which
-   * @param {Device} device - A tile
-   */
-  identifyDevice = (device: Device): void => {
-    this.bleService.sendData(device, 'led,on,red');
-    setTimeout(() => (this.bleService.sendData(device, 'led,off')), 3000);
   }
 
   /**
@@ -52,31 +41,30 @@ export class PhysicalTilesPage {
    * the devices.
    * @param {Device} device - the target device
    */
-  changeNamePop = (device: Device): void => {
+  public changeNamePop = (device: Device): void => {
     this.alertCtrl.create({
-      title: 'Change tile name',
-      inputs: [{
+      title: 'Change tile name', // tslint:disable-line
+      inputs: [{ // tslint:disable-line
         name: 'newName',
         placeholder: 'New name',
       }],
       buttons: [{
-        text: 'Cancel',
         role: 'cancel',
+        text: 'Cancel',
       },
       {
-        text: 'Rename',
-        handler: data => {
+        text: 'Rename', // tslint:disable-line
+        handler: data => { // tslint:disable-line
           this.devicesService.setCustomDeviceName(device, data.newName);
         },
       }],
     }).present();
   }
 
-
   /**
    * Called when the page has entered. Updates devices list
    */
-  ionViewDidEnter = () => {
+  public ionViewWillEnter = () => {
     this.devices = this.devicesService.getDevices();
     this.bleService.checkBleEnabled();
   }

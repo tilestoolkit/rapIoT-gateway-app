@@ -5,9 +5,11 @@ import { BLE } from '@ionic-native/ble';
 import { BackgroundFetch } from '@ionic-native/background-fetch';
 import { Diagnostic } from '@ionic-native/diagnostic';
 import { BackgroundMode } from '@ionic-native/background-mode';
+import { Logger }from '../providers/logger.service';
 import { Tiles } from './app.component';
 import { TabsPage } from '../pages/tabs/tabs';
 import { MqttClient } from '../providers/mqttClient';
+import { UtilsService } from '../providers/utils.service';
 import { TilesApi } from '../providers/tilesApi.service';
 import { StorageMock, BackgroundFetchMock, BackgroundModeMock } from '../mocks';
 
@@ -24,7 +26,9 @@ describe('App Component', () => {
             ],
             providers: [
                 BLE,
+                Logger,
                 MqttClient,
+                UtilsService,
                 TilesApi,
                 Diagnostic,
                 {

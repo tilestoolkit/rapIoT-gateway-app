@@ -10,7 +10,7 @@
   </ion-navbar>
     <div style="background-color: #f8f8f8; border-bottom: thin solid #cccccc; padding-bottom: 1px; margin-top: 0;">
     <!-- This is alot. TODO add to scss -->
-        <button style="margin-left: 14px; width: 40%; max-height: 29px;" ion-button (click)="scrollBottomOfList()">SCROLL BOTTOM</button>
+        <button style="margin-left: 14px; width: 40%; max-height: 29px;" ion-button (click)="scrollBottomOfList(true)">SCROLL BOTTOM</button>
         <button style="float: right; margin-right: 14px; width: 40%; max-height: 29px;" ion-button (click)="clearTerminal()">CLEAR</button>
     </div>
 </ion-header>
@@ -20,7 +20,7 @@
       <ion-item class="devices" *ngFor="let message of messages;" no-margin text-wrap>
         <div>
           <span style="font-size: 12px">{{message.datetime}}</span><br>
-          <span>{{message.text}}</span>
+          <span>{{message.message}}</span>
         </div>
       </ion-item>
     </ion-list>

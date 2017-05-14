@@ -1,81 +1,45 @@
 import { Component, ViewChild } from '@angular/core';
-import { Events, NavController, NavParams, Content } from 'ionic-angular';
+import { Content, Events, NavController, NavParams } from 'ionic-angular';
+import { Observable, Subscription } from 'rxjs';
 
-import { MqttClient } from '../../providers/mqttClient';
-import { CommandObject, UtilsService } from '../../providers/utils.service';
+import { Logger } from '../../providers/logger.service';
+import { LogEntry } from '../../providers/utils.service';
 
 
 @Component({
   selector: 'page-dev-term',
-  templateUrl: 'dev-term.html'
+  templateUrl: 'dev-term.html',
 })
 export class DevTermPage {
-  @ViewChild(Content) content: Content;
-  messages = [];
+  @ViewChild(Content) content: Content; // tslint:disable-line
+  private messages: LogEntry[];
+  private logUpdate: Subscription;
 
-  constructor(private events: Events,
+
+  constructor(public events: Events,
               public navCtrl: NavController,
               public navParams: NavParams,
-              private mqttClient: MqttClient,
-              private utils: UtilsService) {
-
-    this.messages = [];
-
-    this.events.subscribe('serverConnected', () => {
-      this.addNewMessage('Connected to MQTT-broker');
-    });
-
-    this.events.subscribe('offline', () => {
-      this.addNewMessage('MQTT-broker offline');
-    });
-
-    this.events.subscribe('close', () => {
-      this.addNewMessage('Closed connection to MQTT-broker');
-    });
-
-    this.events.subscribe('reconnect', () => {
-      this.addNewMessage('MQTT-broker reconnecting');
-    });
-
-    this.events.subscribe('command', (deviceId: string, command: CommandObject) => {
-      const message = `Got message from cloud to device: ${deviceId} \n ${this.utils.getCommandObjectAsString(command)}`;
-      this.addNewMessage(message);
-    });
-
-    this.events.subscribe('recievedEvent', (deviceId: string, event: CommandObject) => {
-      const message = `Recieved event from BLE device: ${deviceId} : ${this.utils.getCommandObjectAsString(event)}`;
-      this.addNewMessage(message);
-    });
-  }
-
-  /**
-   * called when the view enters
-   */
-  ionViewDidEnter() {
-    this.scrollBottomOfList();
-  }
-
-  /**
-   * add a new message to the list
-   */
-  addNewMessage = (message) => {
-    this.messages.push({'text': message, 'datetime': this.utils.currentTime()});
-    this.scrollBottomOfList();
+              private logger: Logger) {
+    this.events.subscribe('logUpdate', () => this.updateLog());
   }
 
   /**
    * Clear the terminal messages
    */
-  clearTerminal = () => {
+  public clearTerminal = (): void => {
     this.messages = [];
+    this.logger.clearLog();
   }
 
   /**
-   * scroll to the bottom of the list
+   * Scroll to the bottom of the list
+   * @param {boolean} jump - True if we want to scroll even though the view is not at
+   * the bottom
    */
-  scrollBottomOfList = () => {
-    // Check if scrolled to bottom of list
-    if (this.getListLocation() === 0) {
+  public scrollBottomOfList = (jump: boolean): void => {
+    // Check if scrolled to bottom of list, or the jump button was pressed
+    // otherwise we want the view to stay where it is
+    if (this.getListLocation() === 0 || jump) {
       // Need a delay so the list can update before scrolling down
       setTimeout(() => {
         this.content.scrollToBottom(50);
@@ -83,12 +47,43 @@ export class DevTermPage {
     }
   }
 
+
+  /**
+   * called when the view enters
+   */
+  public ionViewDidEnter = (): void => {
+    this.scrollBottomOfList(false);
+    this.messages = this.logger.getLog();
+    // Created a subscription to an observable which updates the log
+    // every 0.5 seconds
+    this.logUpdate = Observable.interval(500).subscribe(res => {
+      this.updateLog();
+    });
+  }
+
+  /**
+   * called when the view enters
+   */
+  public ionViewWillLeave = (): void => {
+    this.scrollBottomOfList(false);
+    this.messages = this.logger.getLog();
+    this.logUpdate = null;
+  }
+
+  /**
+   * add a new message to the list
+   */
+  private updateLog = (): void => {
+    this.messages = this.logger.getLog();
+    this.scrollBottomOfList(false);
+  }
+
   /**
    * Get the current list location
    */
-  getListLocation = () => {
-    let dim = this.content.getContentDimensions();
-    let distanceToBottom = dim.scrollHeight - (dim.contentHeight + dim.scrollTop);
+  private getListLocation = (): number => {
+    const dim = this.content.getContentDimensions();
+    const distanceToBottom = dim.scrollHeight - (dim.contentHeight + dim.scrollTop);
     return distanceToBottom;
   }
 }
