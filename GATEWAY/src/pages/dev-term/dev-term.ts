@@ -32,11 +32,14 @@ export class DevTermPage {
   }
 
   /**
-   * scroll to the bottom of the list
+   * Scroll to the bottom of the list
+   * @param {boolean} jump - True if we want to scroll even though the view is not at
+   * the bottom
    */
-  public scrollBottomOfList = (): void => {
-    // Check if scrolled to bottom of list
-    if (this.getListLocation() === 0) {
+  public scrollBottomOfList = (jump: boolean): void => {
+    // Check if scrolled to bottom of list, or the jump button was pressed
+    // otherwise we want the view to stay where it is
+    if (this.getListLocation() === 0 || jump) {
       // Need a delay so the list can update before scrolling down
       setTimeout(() => {
         this.content.scrollToBottom(50);
@@ -44,12 +47,15 @@ export class DevTermPage {
     }
   }
 
+
   /**
    * called when the view enters
    */
   public ionViewDidEnter = (): void => {
-    this.scrollBottomOfList();
+    this.scrollBottomOfList(false);
     this.messages = this.logger.getLog();
+    // Created a subscription to an observable which updates the log
+    // every 0.5 seconds
     this.logUpdate = Observable.interval(500).subscribe(res => {
       this.updateLog();
     });
@@ -59,7 +65,7 @@ export class DevTermPage {
    * called when the view enters
    */
   public ionViewWillLeave = (): void => {
-    this.scrollBottomOfList();
+    this.scrollBottomOfList(false);
     this.messages = this.logger.getLog();
     this.logUpdate = null;
   }
@@ -69,15 +75,15 @@ export class DevTermPage {
    */
   private updateLog = (): void => {
     this.messages = this.logger.getLog();
-    this.scrollBottomOfList();
+    this.scrollBottomOfList(false);
   }
 
   /**
    * Get the current list location
    */
   private getListLocation = (): number => {
-    let dim = this.content.getContentDimensions();
-    let distanceToBottom = dim.scrollHeight - (dim.contentHeight + dim.scrollTop);
+    const dim = this.content.getContentDimensions();
+    const distanceToBottom = dim.scrollHeight - (dim.contentHeight + dim.scrollTop);
     return distanceToBottom;
   }
 }
