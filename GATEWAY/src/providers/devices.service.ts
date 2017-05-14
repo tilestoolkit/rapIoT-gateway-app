@@ -19,21 +19,8 @@ export class DevicesService {
   public convertBleDeviceToDevice = (bleDevice: any): Promise<Device>  => {
     return this.storage.get(bleDevice.name).then( name => {
       const deviceName = (name !== null && name !== undefined) ? name : bleDevice.name;
-      this.devices.forEach(device => {
-        if (bleDevice.name === device.tileId) {
-          device.lastDiscovered = (new Date()).getTime();
-          return device;
-        }
-      });
       return new Device(bleDevice.id, bleDevice.name, deviceName, false);
     }).catch(err => {
-      alert(err);
-      this.devices.forEach(device => {
-        if (bleDevice.name === device.tileId) {
-          device.lastDiscovered = (new Date()).getTime();
-          return device;
-        }
-      });
       return new Device(bleDevice.id, bleDevice.name, bleDevice.name, false);
     });
   }
@@ -52,17 +39,8 @@ export class DevicesService {
   public newDevice = (device: Device) => {
     if (!this.devices.map(storedDevice => storedDevice.tileId).includes(device.tileId)) {
       this.devices.push(device);
-    } else {
-      // In case any property of the device has changed we replace the old device with the new
-      this.devices = this.devices.map(storedDevice => {
-        if (storedDevice.tileId === device.tileId) {
-          device.lastDiscovered = (new Date()).getTime();
-          return device;
-        }
-        return storedDevice;
-      });
+      this.events.publish('updateDevices');
     }
-    this.events.publish('updateDevices');
   }
 
   /**

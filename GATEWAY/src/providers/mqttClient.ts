@@ -102,6 +102,7 @@ export class MqttClient {
           const deviceId = topic.split('/')[4];
           const logEntry = `Got message from cloud to device: ${deviceId} ${this.utils.getCommandObjectAsString(command)}`;
           this.logger.addToLog(logEntry);
+          this.events.publish('command', deviceId, command);
         }
       } finally {} // tslint:disable-line
     });
