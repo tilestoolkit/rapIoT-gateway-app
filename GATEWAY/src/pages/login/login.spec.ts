@@ -7,6 +7,7 @@ import { IonicModule, ViewController, AlertController } from 'ionic-angular';
 import { LoginPage } from './login';
 import { UtilsService, LoginData  }from '../../providers/utils.service';
 import { MqttClient } from '../../providers/mqttClient';
+import { Logger } from '../../providers/logger.service';
 import { TilesApi } from '../../providers/tilesApi.service';
 import { StorageMock, ViewControllerMock, BackgroundFetchMock } from '../../mocks';
 
@@ -23,6 +24,7 @@ describe('logIn', () => {
                 LoginPage,
             ],
             providers: [
+                Logger,
                 UtilsService,
                 MqttClient,
                 TilesApi,

@@ -12,6 +12,7 @@ import { DevicesService } from '../../providers/devices.service';
 import { TilesApi } from '../../providers/tilesApi.service';
 import { MqttClient } from '../../providers/mqttClient';
 import { UtilsService, Device } from '../../providers/utils.service';
+//import { Logger } from '../../providers/logger.service';
 import { PhysicalTilesPage } from "./physical-tiles";
 import { StorageMock, BackgroundFetchMock } from '../../mocks';
 
@@ -27,6 +28,7 @@ describe('physical-tiles', () => {
                 PhysicalTilesPage,
             ],
             providers: [
+              //Logger,
               NavController,
               AlertController,
               Events,

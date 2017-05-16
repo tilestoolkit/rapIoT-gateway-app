@@ -10,6 +10,7 @@ import { BleService } from '../../providers/ble.service';
 import { DevicesService } from '../../providers/devices.service';
 import { TilesApi } from '../../providers/tilesApi.service';
 import { MqttClient } from '../../providers/mqttClient';
+import { Logger } from '../../providers/logger.service';
 import { Application, Device, LoginData, VirtualTile, UtilsService } from '../../providers/utils.service';
 import { VirtualTilesPage } from "../../pages/virtual-tiles/virtual-tiles";
 
@@ -53,6 +54,7 @@ describe('virtual-tiles', () => {
       providers: [
         App,
         Config,
+        Logger,
         AlertController,
         MockBackend,
         BaseRequestOptions,
@@ -88,6 +90,7 @@ describe('virtual-tiles', () => {
               VirtualTilesPage,
           ],
           providers: [
+            Logger,
             AlertController,
             BLE,
             BleService,
@@ -126,7 +129,7 @@ describe('virtual-tiles', () => {
   describe('setVirtualTile(): void', () => {
 
     it('should get the virtual tiles of an app', async( () =>  {
-      
+
       let virtualTile: VirtualTile[];
       let getAppSpy = spyOn(virtualTilesPage.tilesApi, 'getApplicationTiles').and.callFake( () => {
         return new Promise( (resolve) => {
@@ -209,7 +212,7 @@ describe('virtual-tiles', () => {
       let pairSpy = spyOn(virtualTilesPage.tilesApi, 'pairDeviceToVirtualTile');
         let virtualTile = new VirtualTile();
         virtualTile._id = "Tile";
-      
+
       virtualTilesPage.unpairTile(virtualTile);
 
       expect(setAppSpy).toHaveBeenCalled();

@@ -5,6 +5,7 @@ import { UtilsService }from '../../providers/utils.service';
 import { DevTermPage } from './dev-term';
 import { MqttClient } from '../../providers/mqttClient';
 import { TilesApi } from '../../providers/tilesApi.service';
+import { Logger } from "../../providers/logger.service";
 import { NavParamsMock, BackgroundFetchMock, StorageMock } from '../../mocks';
 import { BackgroundFetch } from '@ionic-native/background-fetch';
 import { Storage } from '@ionic/storage';
@@ -22,6 +23,7 @@ describe('dev-terminal', () => {
                 DevTermPage,
             ],
             providers: [
+                Logger,
                 NavController,
                 UtilsService,
                 MqttClient,
