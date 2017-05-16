@@ -17,6 +17,7 @@ import { Tiles } from './app.component';
 
 import { BleService } from '../providers/ble.service';
 import { DevicesService } from '../providers/devices.service';
+import { Logger } from '../providers/logger.service';
 import { MqttClient } from '../providers/mqttClient';
 import { TilesApi } from '../providers/tilesApi.service';
 import { UtilsService } from '../providers/utils.service';
@@ -56,6 +57,7 @@ import { AppProviders } from './app.providers';
     BleService,
     DevicesService,
     Diagnostic,
+    Logger,
     MqttClient,
     TilesApi,
     UtilsService,

@@ -4,9 +4,10 @@ import { MockBackend } from '@angular/http/testing';
 import { BackgroundFetch } from '@ionic-native/background-fetch';
 import { Storage } from '@ionic/storage';
 import { AlertController, App, Config, Events, Platform } from 'ionic-angular';
+import { Logger }from './logger.service';
 import { TilesApi } from './tilesApi.service';
 import { MqttClient } from './mqttClient';
-import { LoginData, Device, CommandObject } from './utils.service';
+import { LoginData, Device, CommandObject, UtilsService } from './utils.service';
 import { StorageMock, BackgroundFetchMock, MqttMock } from '../mocks';
 import * as mqtt from 'mqtt';
 
@@ -22,9 +23,11 @@ describe('mqttClient', () => {
         Config,
         AlertController,
         Platform,
+        Logger,
         TilesApi,
         MqttClient,
         Events,
+        UtilsService,
         MockBackend,
         BaseRequestOptions,
         {
@@ -63,13 +66,13 @@ describe('mqttClient', () => {
     it('should return a correct url adress for the specific device', () => {
       let testID: string = 'testEvent';
       let testEventBool: boolean = true;
-      expect(mqttClient.getDeviceSpecificTopic(testID, testEventBool)).toEqual('tiles/evt/TestUser/test3/testEvent');
+      expect(mqttClient.getDeviceSpecificTopic(testID, testEventBool)).toEqual('tiles/evt/TestUser//testEvent');
     });
 
     it('should return a correct url adress for the specific device when no event is passed as an argument', () => {
       let testID: string = 'testEvent';
       let testEventBool: boolean = false;
-      expect(mqttClient.getDeviceSpecificTopic(testID, testEventBool)).toEqual('tiles/cmd/TestUser/test3/testEvent');
+      expect(mqttClient.getDeviceSpecificTopic(testID, testEventBool)).toEqual('tiles/cmd/TestUser//testEvent');
     });
   });
 
@@ -178,8 +181,7 @@ describe('mqttClient', () => {
       mqttClient.sendEvent('test', comparisonCmdObj);
 
       expect(publishSpy.calls.count()).toEqual(1);
-      //getDeviceSpecificTopic returns 2 calls as it is also used in a console.log
-      expect(topicSpy.calls.count()).toEqual(2);
+      expect(topicSpy.calls.count()).toEqual(1);
     });
 
   });

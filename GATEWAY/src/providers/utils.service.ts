@@ -91,11 +91,22 @@ export class VirtualTile {
   public __v: number;
 }
 
+/**
+ * Class to describe the structure of a log entry
+ */
+export class LogEntry {
+  public message: string;
+  public datetime: string;
+  constructor(message: string, datetime: string) {
+    this.message = message;
+    this.datetime = datetime;
+  }
+}
 
 @Injectable()
 export class UtilsService {
   constructor(public storage: Storage,
-              public events: Events) {}
+              public events: Events) { }
   /**
    * Convert a string to an attay of bytes
    */
@@ -133,23 +144,11 @@ export class UtilsService {
   }
 
   /**
-   * getThe current time in the format HH:MM:SS
-   */
-  public currentTime = () => {
-    var date = new Date();
-    var datetime = date.getHours() + ':' +
-                   date.getMinutes() + ':' +
-                   date.getSeconds();
-    return datetime;
-  }
-
-  /**
    * Verify that input of user login is valid
    * @param {string} user - username
    * @param {string} host - api host address
-   * @param {number} port - mqtt port number
    */
-  public verifyLoginCredentials = (user: string, host: string, port: number): boolean => {
+  public verifyLoginCredentials = (user: string = null, host: string = null): boolean => {
     const validUsername = user.match(/^[a-zA-Z0-9\_\-\.]+$/);
     const validHost = host.match(/^([0-9]{1,3}.){3}[0-9]{1,3}/) || host.match(/^[a-zA-Z0-9\_\-\.]+$/);
     return validUsername !== null && validHost !== null;
