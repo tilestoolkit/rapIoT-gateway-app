@@ -71,7 +71,7 @@ export class VirtualTilesPage {
         {
           text: 'Pair',
           handler: data => { // tslint:disable-line
-            this.tilesApi.pairDeviceToVirualTile(data, virtualTile._id)
+            this.tilesApi.pairDeviceToVirtualTile(data, virtualTile._id)
                                     .then(res => this.setVirtualTiles());
           },
           {
@@ -97,7 +97,7 @@ export class VirtualTilesPage {
    * @param {VirtualTile} virtualTile - the target device
    */
   public unpairTile = (virtualTile: VirtualTile): void => {
-    this.tilesApi.pairDeviceToVirualTile(null, virtualTile._id)
+    this.tilesApi.pairDeviceToVirtualTile(null, virtualTile._id)
                            .then(res => this.setVirtualTiles());
   }
 
