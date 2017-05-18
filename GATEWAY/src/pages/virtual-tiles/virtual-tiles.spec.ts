@@ -207,12 +207,13 @@ describe('virtual-tiles', () => {
   describe('unpairTile(virtualTile: VirtualTile): void', () => {
 
     it('should "pair" the virtual tile with null and refresh list of virtual tiles', () => {
-      let pairSpy = spyOn(virtualTilesPage.tilesApi, 'pairDeviceToVirualTile');
-      let setAppSpy = spyOn(virtualTilesPage, 'setVirtualTiles').and.callFake( () => {
+      let pairSpy = spyOn(virtualTilesPage.tilesApi, 'pairDeviceToVirualTile').and.callFake( () => {
         return new Promise( (resolve) => {
-          Promise.resolve(virtualTile);
+          Promise.resolve();
         });
       });
+      let setAppSpy = spyOn(virtualTilesPage, 'setVirtualTiles');
+      
         let virtualTile = new VirtualTile();
         virtualTile._id = "Tile";
 
