@@ -13,6 +13,7 @@ import { Storage } from '@ionic/storage';
 
 let devTerminal: DevTermPage;
 let fixture: ComponentFixture<DevTermPage>;
+let logger: Logger;
 
 describe('dev-terminal', () => {
 
@@ -52,19 +53,6 @@ describe('dev-terminal', () => {
         expect(fixture).toBeTruthy();
         expect(devTerminal).toBeTruthy();
     });
-
-    describe('addNewMessage(message)', () => {
-
-      it('should add a new message to the messages list', () => {
-        let exampleMessage: string = 'This is a test';
-
-        devTerminal.addNewMessage(exampleMessage);
-
-        expect(devTerminal.messages[0].text).toEqual(exampleMessage);
-      });
-
-    });
-
     describe('clearTerminal(): void', () => {
 
       it('should clear messages from the terminal window', () => {

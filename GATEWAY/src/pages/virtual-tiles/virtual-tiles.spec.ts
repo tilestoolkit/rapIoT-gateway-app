@@ -131,15 +131,14 @@ describe('virtual-tiles', () => {
     it('should get the virtual tiles of an app', async( () =>  {
 
       let virtualTile: VirtualTile[];
-      let getAppSpy = spyOn(virtualTilesPage.tilesApi, 'getApplicationTiles').and.callFake( () => {
+      let getAppSpy = spyOn(virtualTilesPage.tilesApi, 'getVirtualTiles').and.callFake( () => {
         return new Promise( (resolve) => {
           Promise.resolve(virtualTile);
         });
       });
 
-      virtualTilesPage.setVirtualTiles().then( () => {
-        expect(virtualTilesPage.virtualTiles).toEqual(virtualTile);
-      });
+      virtualTilesPage.setVirtualTiles();
+      expect(virtualTilesPage.virtualTiles).toEqual(virtualTile);
 
     }));
 
@@ -208,8 +207,12 @@ describe('virtual-tiles', () => {
   describe('unpairTile(virtualTile: VirtualTile): void', () => {
 
     it('should "pair" the virtual tile with null and refresh list of virtual tiles', () => {
-      let setAppSpy = spyOn(virtualTilesPage, 'setVirtualTiles');
-      let pairSpy = spyOn(virtualTilesPage.tilesApi, 'pairDeviceToVirtualTile');
+      let pairSpy = spyOn(virtualTilesPage.tilesApi, 'pairDeviceToVirualTile');
+      let setAppSpy = spyOn(virtualTilesPage, 'setVirtualTiles').and.callFake( () => {
+        return new Promise( (resolve) => {
+          Promise.resolve(virtualTile);
+        });
+      });
         let virtualTile = new VirtualTile();
         virtualTile._id = "Tile";
 
@@ -220,7 +223,7 @@ describe('virtual-tiles', () => {
     });
   });
 
-  describe('ionViewDidEnter()', () => {
+  describe('ionViewWillEnter()', () => {
 
     it('should get devices from devicesService', () => {
       let devices: Device[];
@@ -230,7 +233,7 @@ describe('virtual-tiles', () => {
         return devices;
       });
 
-      virtualTilesPage.ionViewDidEnter();
+      virtualTilesPage.ionViewWillEnter();
 
       expect(virtualTilesPage.devices).toEqual(devices);
 
@@ -241,7 +244,7 @@ describe('virtual-tiles', () => {
       let checkBleSpy = spyOn(virtualTilesPage.bleService, 'checkBleEnabled');
       let getDevicesSpy = spyOn(virtualTilesPage.devicesService, 'getDevices');
 
-      virtualTilesPage.ionViewDidEnter();
+      virtualTilesPage.ionViewWillEnter();
 
       expect(setAppSpy).toHaveBeenCalled();
       expect(checkBleSpy).toHaveBeenCalled();
