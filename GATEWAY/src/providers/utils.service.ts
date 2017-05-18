@@ -118,7 +118,6 @@ export class UtilsService {
       }
       return dataArray;
     }  catch (err) {
-      console.log('Converting string of data to bytes unsuccessful!');
       return null;
     }
   }
@@ -136,7 +135,7 @@ export class UtilsService {
   }
 
   /**
-   * Returns a string from the given commandObject
+   * Returns a string representing the given commandObject
    * @param {CommansObject} cmdObj - the command to turn into a string
    */
   public getCommandObjectAsString = (cmdObj: CommandObject): string => {
@@ -144,7 +143,7 @@ export class UtilsService {
   }
 
   /**
-   * Verify that input of user login is valid
+   * Verify the input of user login making sure it is only valid characters
    * @param {string} user - username
    * @param {string} host - api host address
    */

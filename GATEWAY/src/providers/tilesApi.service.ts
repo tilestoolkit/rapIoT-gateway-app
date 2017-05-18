@@ -35,7 +35,7 @@ export class TilesApi {
   }
 
   /**
-   * Tests if a device is a tile
+   * Test if a device is a tile
    * @param {any} device - the device to test
    */
   public isTilesDevice = (device: any): boolean => {
@@ -43,7 +43,7 @@ export class TilesApi {
   }
 
   /**
-   * Sets login data for the user
+   * Set login information for the user
    * @param {LoginData} loginData - the loginData
    */
   public setLoginData = (loginData: LoginData): void => {
@@ -52,7 +52,7 @@ export class TilesApi {
   }
 
   /**
-   * Gets login data for the user
+   * Get login data for the user
    */
   public getLoginData = (): LoginData => {
     if (this.loginData === undefined || this.loginData === null) {
@@ -66,7 +66,7 @@ export class TilesApi {
   }
 
   /**
-   * Sets the active app
+   * Set the active app
    * @param {activeApp} activeApp - the active application
    */
   public setActiveApp = (activeApp: Application): void => {
@@ -74,7 +74,7 @@ export class TilesApi {
   }
 
   /**
-   * Gets the active app
+   * Get the active app
    */
   public getActiveApp = (): Application => {
     if (this.activeApp === undefined || this.activeApp === null) {
@@ -84,7 +84,7 @@ export class TilesApi {
   }
 
   /**
-   * Set the virtual tiles equal to the ones stored for the app
+   * Set the virtual tiles equal to the ones stored for the current application
    */
   public setVirtualTiles = (): Promise<any> => {
     return this.getApplicationTiles().then(res => {
@@ -108,8 +108,8 @@ export class TilesApi {
   }
 
   /**
-   * Checks if the user is registered on the hose server
-   * @param {string} username - username to check for
+   * Check if the user is registered on the host server
+   * @param {string} username - username
    * @param {host} string - the host ip/url
    */
   public isTilesUser = (userName: string, host: string): Promise<any> => {
@@ -127,7 +127,7 @@ export class TilesApi {
   }
 
   /**
-   * Get all registered applications for all users
+   * Get all registered applications for the current
    */
   public getAllApplications = (): Promise<any> => {
     const url = `${this.hostUrl}/applications/user/${this.loginData.user}`;
@@ -140,7 +140,7 @@ export class TilesApi {
   }
 
   /**
-   * Get the details of an application
+   * Get the entire json object representing the active application
    */
   public getApplicationDetails = (): Promise<any> => {
     const url = `${this.hostUrl}/applications/${this.activeApp._id}`;
@@ -153,14 +153,14 @@ export class TilesApi {
   }
 
   /**
-   * Get the tiles belonging to an application
+   * Get all the virtual tiles belonging to an application
    */
   public getApplicationTiles = (): Promise<any> => {
     return this.getApplicationDetails().then(res => res.virtualTiles);
   }
 
   /**
-   * Pair a physical tile with a virtual tile registered on the app
+   * Pair a physical tile to a virtual tile registered on the app
    * @param {string} deviceId - The physical tile
    * @param {string} virtualTileId - The virtual tile
    * @param {string} applicationId - The application the virtual tile is registered to
@@ -170,6 +170,8 @@ export class TilesApi {
     const body = JSON.stringify({ tile: deviceId });
     return this.http.post(url, body, {headers: this.headerFields}).toPromise()
                .then(res => {
+                 // The server will return null if the tile is not stored in the database. If so
+                 // we need to add it to the database and try again to pair it.
                  if (res === null) {
                    this.addTileToDatabase(deviceId).then(addRes => {
                      if (addRes === true) {
