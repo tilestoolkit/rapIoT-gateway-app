@@ -4,16 +4,21 @@
   See http://ionicframework.com/docs/v2/components/#navigation for more info on
   Ionic pages and navigation.
 -->
+
 <ion-header>
-
-  <ion-navbar>
-    <ion-title>{{applicationTitle}}</ion-title>
-  </ion-navbar>
-
+	<ion-navbar> 
+		<ion-title>
+			{{applicationTitle}}
+		</ion-title>
+		<ion-buttons end>
+		<button (click)="showApplicationInfo()">
+			<ion-icon name="ios-settings-outline" style="font-size: 2.85rem;"></ion-icon>
+		</button>
+		</ion-buttons>
+	</ion-navbar>
 </ion-header>
 
-
-<ion-content padding>
+<ion-content padding style="background-color: #f1f1f1;">
   <ion-refresher (ionRefresh)="refreshVirtualTiles($event)">
     <ion-refresher-content
       pullingIcon="arrow-dropdown"
@@ -23,11 +28,9 @@
     </ion-refresher-content>
   </ion-refresher>
 
-  <button ion-button (click)="toggleAppOnline()" full style="margin-bottom: 1em;">{{appOnlineBtnText}}</button>
-
-  <ion-title left style="padding-left: 0;">UNPAIRED TILES</ion-title>
+  <span left style="size: 14px; padding-left: 5px; padding-bottom: 10px;">Unpaired TILES</span>
   <div *ngFor="let tile of virtualTiles">
-    <ion-item class="devices" color="light"  *ngIf="tile.tile == null">
+    <ion-item class="devices" style="background-color: #ffffff; border-radius: 3px; box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);"  *ngIf="tile.tile == null">
       <div class="row row-center">
         <div id="devName" class="col col-75">
           <div style="float: left; top: 0;">
@@ -35,16 +38,17 @@
             <span style="size: 14;">{{tile.virtualName}}</span>
           </div>
           <div>
-            <button class="bttn" style="float: right; top: 0;" ion-button small color="positive" (click)="pairTilePopUp(tile)">PAIR</button>
+            <button class="bttn" style="float: right; top: 0; width: " ion-button small color="positive" (click)="pairTilePopUp(tile)">Pair</button>
           </div>
         </div>
       </div>
     </ion-item>
   </div>
+  
 
-  <ion-title left style="padding-left: 0;">PAIRED TILES</ion-title>
+  <span left style="size: 12px; padding-left: 5px; padding-bottom: 10px;">Paired TILES</span>
   <div *ngFor="let tile of virtualTiles">
-    <ion-item  class="devices" color="light" *ngIf="tile.tile != null">
+    <ion-item  class="devices" style="background-color: #ffffff; border-radius: 3px; box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);" *ngIf="tile.tile != null">
       <div class="row row-center">
         <div id="devName" class="col col-75">
           <div style="float: left; top: 0;">
@@ -57,9 +61,10 @@
           </div>
         </div>
         <div style="width: 100%;">
-          <button style="float: right;" class="bttn" ion-button small color="positive" (click)="unpairTile(tile)">UNPAIR</button>
+          <button style="float: right;" class="bttn" ion-button small color="positive" (click)="unpairTile(tile)">Unpair</button>
         </div>
       </div>
     </ion-item>
   </div>
+<div *ngIf="virtualTiles === undefined ||virtualTiles.length === 0" style="margin: 0 auto; padding: 5px;border-radius: 3px; background-color: white; text-align: center;"><span style="font-size: 16px;">No virtual tiles were found, please register new virtual tiles on WEBPAGE</span></div>
 </ion-content>
