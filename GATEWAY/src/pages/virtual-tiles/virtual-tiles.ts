@@ -131,36 +131,41 @@ export class VirtualTilesPage {
     });
   }
 
-public showApplicationInfo = () => {
-  let actionSheet = this.actionSheetCtrl.create({
-      title: 'Start/stop running current application',
-      buttons: [
-        {
-          text: this.appOnlineStatusMsg,
-          role: 'destructive',
-          handler: () => {
-            // Calls function to start/stop application
-            this.toggleAppOnline();
-            
-            // Display toast verifying action is completed
-            let toastApplicationMsg = this.activeApp.appOnline ? 'Stopped runnning application ' : 'Started runnning application ';
-            toastApplicationMsg += this.applicationTitle;
-            let toast = this.toastCtrl.create({
-              message: toastApplicationMsg,
-              duration: 3000
-            });
-            toast.present();
+  /**
+   * Opens a actionSheet showing application info
+   * Now only allows to start/stop the application
+   * Also displays a toast when completed. 
+  */
+  public showApplicationInfo = () => {
+    let actionSheet = this.actionSheetCtrl.create({
+        title: 'Start/stop running current application',
+        buttons: [
+          {
+            text: this.appOnlineStatusMsg,
+            role: 'destructive',
+            handler: () => {
+              // Calls function to start/stop application
+              this.toggleAppOnline();
+              
+              // Display toast verifying action is completed
+              let toastApplicationMsg = this.activeApp.appOnline ? 'Stopped runnning application ' : 'Started runnning application ';
+              toastApplicationMsg += this.applicationTitle;
+              let toast = this.toastCtrl.create({
+                message: toastApplicationMsg,
+                duration: 3000
+              });
+              toast.present();
+            }
+          },{
+            text: 'Cancel',
+            role: 'cancel',
+            handler: () => {
+              console.log('Cancel clicked');
+            }
           }
-        },{
-          text: 'Cancel',
-          role: 'cancel',
-          handler: () => {
-            console.log('Cancel clicked');
-          }
-        }
-      ]
-    });
-    actionSheet.present();
+        ]
+      });
+      actionSheet.present();
+    }
   }
-}
 
