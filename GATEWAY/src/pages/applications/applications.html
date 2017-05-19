@@ -1,13 +1,13 @@
 <ion-header>
 
   <ion-navbar>
-    <button right class="titleBttn" ion-button small color="positive" (click)="logout()">LOGOUT</button>
+    <button right class="titleBttn" ion-button small color="positive" (click)="logout()">Logout</button>
     <ion-title style="padding-top: 0.5em;">Applications</ion-title>
   </ion-navbar>
 
 </ion-header>
 
-<ion-content padding>
+<ion-content padding style="background-color: #ffffff;">
   <ion-refresher (ionRefresh)="refreshApplications($event)">
     <ion-refresher-content
       pullingIcon="arrow-dropdown"
@@ -18,11 +18,17 @@
   </ion-refresher>
 
   <ion-list>
-    <ion-item class="devices" color="light" *ngFor="let app of applications">
-      <div class="row row-center">
-        <div id="devName" class="col col-75">
-          <b>{{app._id}}</b>
-          <button right class="bttn" ion-button small color="positive" (click)="viewApplication(app)">VIEW APP</button>
+    <ion-item class="devices" style="background-color: #3980f1; border-radius: 3px;" *ngFor="let app of applications">
+      <div class="row row-center" (click)="viewApplication(app)">
+        <div id="devName" class="col col-75" style="margin: -15px 0px -5px 0px;">
+          <b style="color: white;">{{app._id}}</b>
+          <p style="color: white;">Number of virtual TILES: {{app.virtualTiles.length}}</p>
+          <p style="color: white;">Environment: {{app.devEnvironment}}</p>
+          <!-- <button right class="bttn" ion-button small color="positive" (click)="viewApplication(app)">View App</button> -->
+        </div>
+
+        <div class="col col-25">
+          <img src="assets/images/ic_navigate_next.svg" style="width: 42px; height: 42px; float: right;">
         </div>
       </div>
     </ion-item>
