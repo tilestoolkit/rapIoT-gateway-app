@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { AlertController, Events, NavController, NavParams } from 'ionic-angular';
+import { AlertController, Events, NavController, NavParams, ActionSheetController, ToastController } from 'ionic-angular';
 
 import { BleService } from '../../providers/ble.service';
 import { DevicesService } from '../../providers/devices.service';
@@ -20,7 +20,8 @@ export class VirtualTilesPage {
   public applicationTitle: string;
   public virtualTiles: VirtualTile[];
   public activeApp: Application;
-  public appOnlineBtnText: string;
+  public appOnlineStatusMsg: string;
+  private toastApplicationMsg: string;
   private devices: Device[];
 
   constructor(public alertCtrl: AlertController,
@@ -30,7 +31,9 @@ export class VirtualTilesPage {
               private bleService: BleService,
               private devicesService: DevicesService,
               private utils: UtilsService,
-              private tilesApi: TilesApi) {
+              private tilesApi: TilesApi,
+              private actionSheetCtrl: ActionSheetController,
+              private toastCtrl: ToastController) {
     this.events.subscribe('updateDevices', () => {
       this.devices = this.devicesService.getDevices();
       this.setVirtualTiles();
@@ -100,7 +103,7 @@ export class VirtualTilesPage {
    */
   public toggleAppOnline = (): void => {
     this.tilesApi.toggleAppOnline(this.activeApp).then(res => {
-      this.appOnlineBtnText = res.appOnline ? 'STOP APPLICATION' : 'START APPLICATION';
+      this.appOnlineStatusMsg = res.appOnline ? 'Stop application' : 'Start application';
     });
   }
 
@@ -110,7 +113,7 @@ export class VirtualTilesPage {
   public ionViewWillEnter = () => {    // A id variable is stored in the navParams, and .get set this value to the local variable id
     this.activeApp = this.navParams.get('app');
     this.tilesApi.setActiveApp(this.navParams.get('app'));
-    this.appOnlineBtnText = this.activeApp.appOnline ? 'STOP APPLICATION' : 'START APPLICATION';
+    this.appOnlineStatusMsg = this.activeApp.appOnline ? 'Stop application' : 'Start application';
     // Sets the title of the page (found in virtual-tiles.html) to id, capitalized.
     this.applicationTitle = this.utils.capitalize(this.activeApp._id);
     this.devices = this.devicesService.getDevices();
@@ -127,4 +130,37 @@ export class VirtualTilesPage {
       this.virtualTiles = this.tilesApi.getVirtualTiles();
     });
   }
+
+public showApplicationInfo = () => {
+  let actionSheet = this.actionSheetCtrl.create({
+      title: 'Start/stop running current application',
+      buttons: [
+        {
+          text: this.appOnlineStatusMsg,
+          role: 'destructive',
+          handler: () => {
+            // Calls function to start/stop application
+            this.toggleAppOnline();
+            
+            // Display toast verifying action is completed
+            let toastApplicationMsg = this.activeApp.appOnline ? 'Stopped runnning application ' : 'Started runnning application ';
+            toastApplicationMsg += this.applicationTitle;
+            let toast = this.toastCtrl.create({
+              message: toastApplicationMsg,
+              duration: 3000
+            });
+            toast.present();
+          }
+        },{
+          text: 'Cancel',
+          role: 'cancel',
+          handler: () => {
+            console.log('Cancel clicked');
+          }
+        }
+      ]
+    });
+    actionSheet.present();
+  }
 }
+
