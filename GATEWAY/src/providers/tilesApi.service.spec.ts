@@ -165,8 +165,8 @@ describe('tilesAPI', () => {
     it('should set virtualTiles equal to a list of Virtual Tiles from an application', () => {
 
     let getAppSpy = spyOn(tilesApi, 'getApplicationTiles').and.callFake( () => {
-         return new Promise( (callback) => {
-          Promise.callback(mockTilesApplicationDetailsResponse.virtualTiles);
+         return new Promise( (resolve) => {
+          Promise.resolve(mockTilesApplicationDetailsResponse.virtualTiles);
         });
         /*{
           then: (callback) => callback(mockTilesApplicationDetailsResponse.virtualTiles)
