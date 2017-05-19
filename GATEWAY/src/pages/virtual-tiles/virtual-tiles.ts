@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { AlertController, Events, NavController, NavParams, ActionSheetController, ToastController } from 'ionic-angular';
+import { ActionSheetController, AlertController, Events, NavController, NavParams, ToastController } from 'ionic-angular';
 
 import { BleService } from '../../providers/ble.service';
 import { DevicesService } from '../../providers/devices.service';
@@ -21,7 +21,6 @@ export class VirtualTilesPage {
   public virtualTiles: VirtualTile[];
   public activeApp: Application;
   public appOnlineStatusMsg: string;
-  private toastApplicationMsg: string;
   private devices: Device[];
 
   constructor(public alertCtrl: AlertController,
@@ -122,6 +121,44 @@ export class VirtualTilesPage {
   }
 
   /**
+   * Opens a actionSheet showing application info
+   * Now only allows to start/stop the application
+   * Also displays a toast when completed.
+   */
+  public showApplicationInfo = () => {
+    let actionSheet = this.actionSheetCtrl.create({
+        buttons: [
+          {
+            handler: () => {
+              // Calls function to start/stop application
+              this.toggleAppOnline();
+
+              // Display toast verifying action is completed
+              let toastApplicationMsg = this.activeApp.appOnline ? 'Stopped runnning application ' : 'Started runnning application ';
+              toastApplicationMsg += this.applicationTitle;
+              let toast = this.toastCtrl.create({
+                duration: 3000,
+                message: toastApplicationMsg,
+              });
+              toast.present();
+            },
+            role: 'destructive',
+            text: this.appOnlineStatusMsg,
+        title: 'Start/stop running current application',
+          },
+          {
+            handler: () => {
+              console.log('Cancel clicked');
+            },
+            role: 'cancel',
+            text: 'Cancel',
+          },
+        ],
+      });
+    actionSheet.present();
+  }
+
+  /**
    * Set the virtual tiles equal to the ones stores for the app
    */
   private setVirtualTiles = (): void => {
@@ -131,41 +168,5 @@ export class VirtualTilesPage {
     });
   }
 
-  /**
-   * Opens a actionSheet showing application info
-   * Now only allows to start/stop the application
-   * Also displays a toast when completed. 
-  */
-  public showApplicationInfo = () => {
-    let actionSheet = this.actionSheetCtrl.create({
-        title: 'Start/stop running current application',
-        buttons: [
-          {
-            text: this.appOnlineStatusMsg,
-            role: 'destructive',
-            handler: () => {
-              // Calls function to start/stop application
-              this.toggleAppOnline();
-              
-              // Display toast verifying action is completed
-              let toastApplicationMsg = this.activeApp.appOnline ? 'Stopped runnning application ' : 'Started runnning application ';
-              toastApplicationMsg += this.applicationTitle;
-              let toast = this.toastCtrl.create({
-                message: toastApplicationMsg,
-                duration: 3000
-              });
-              toast.present();
-            }
-          },{
-            text: 'Cancel',
-            role: 'cancel',
-            handler: () => {
-              console.log('Cancel clicked');
-            }
-          }
-        ]
-      });
-      actionSheet.present();
-    }
-  }
+}
 
