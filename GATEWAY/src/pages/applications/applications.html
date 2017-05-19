@@ -7,7 +7,7 @@
 
 </ion-header>
 
-<ion-content padding style="background-color: #ffffff;">
+<ion-content padding style="background-color: #f1f1f1;">
   <ion-refresher (ionRefresh)="refreshApplications($event)">
     <ion-refresher-content
       pullingIcon="arrow-dropdown"
@@ -17,7 +17,7 @@
     </ion-refresher-content>
   </ion-refresher>
 
-  <ion-list>
+  <ion-list >
     <ion-item class="devices" style="background-color: #3980f1; border-radius: 3px;" *ngFor="let app of applications">
       <div class="row row-center" (click)="viewApplication(app)">
         <div id="devName" class="col col-75" style="margin: -15px 0px -5px 0px;">
