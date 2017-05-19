@@ -6,7 +6,7 @@
 
 </ion-header>
 
-<ion-content padding>
+<ion-content padding style="background-color: #f1f1f1;">
   <ion-refresher (ionRefresh)="refreshDevices($event)">
     <ion-refresher-content
       pullingIcon="arrow-dropdown"
@@ -17,13 +17,13 @@
   </ion-refresher>
 
   <ion-list>
-    <ion-item color="light" class="devices" *ngFor="let device of devices" no-lines>
+    <ion-item color="light" class="devices" *ngFor="let device of devices" no-lines style="background-color: #ffffff; border-radius: 3px; box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);">
       <b>{{device.name}}</b>
       <br><br>
       <div>
-        <button ion-button small color="positive" class="device_btn" (click)="changeNamePop(device)">CHANGE NAME</button>
-        <button ion-button small color="positive" class="device_btn" (click)="devicesService.resetDeviceName(device)">RESET NAME</button>
-        <button ion-button small color="positive" class="device_btn" (click)="bleService.locate(device)">LOCATE</button>
+        <button ion-button small color="positive" class="device_btn" (click)="changeNamePop(device)">Change Name</button>
+        <button ion-button small color="positive" class="device_btn" (click)="devicesService.resetDeviceName(device)">Reset Name</button>
+        <button ion-button small color="positive" class="device_btn" (click)="bleService.locate(device)">Locate</button>
       </div>
     </ion-item>
   </ion-list>
