@@ -127,7 +127,8 @@ export class VirtualTilesPage {
    */
   public showApplicationInfo = () => {
     let actionSheet = this.actionSheetCtrl.create({
-        buttons: [
+        title: "Start or stop running the application: '" + this.applicationTitle + "' in TILES Cloud environment.", // tslint:disable-line
+        buttons: [ // tslint:disable-line
           {
             handler: () => {
               // Calls function to start/stop application
@@ -144,7 +145,6 @@ export class VirtualTilesPage {
             },
             role: 'destructive',
             text: this.appOnlineStatusMsg,
-        title: 'Start/stop running current application',
           },
           {
             handler: () => {
