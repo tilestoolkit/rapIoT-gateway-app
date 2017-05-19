@@ -88,20 +88,6 @@ describe('physical-tiles', () => {
 
     });
 
-    describe('identifyDevice(device: Device): void', () => {
-
-        xit('should have device turn on led and turn of after 3000ms', () => {
-            let device = new Device('01:23:45:67:89:AB', 'Tile_9e', 'Tile_9e', false);
-            let bleSpy = spyOn(physicalTiles.bleService, 'sendData');
-            spyOn(window, 'setTimeout');
-
-            physicalTiles.identifyDevice(device);
-
-            expect(bleSpy).toHaveBeenCalledWith(device, 'led,on,red');
-        });
-
-    });
-
     describe('changeNamePop(device: Device): void', () => {
 
         it('should create an alert to change name of a device', () => {

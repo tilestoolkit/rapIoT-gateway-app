@@ -7,6 +7,7 @@ import { App, Config, AlertController, Platform } from 'ionic-angular';
 import { TilesApi } from './tilesApi.service';
 import { StorageMock } from '../mocks';
 
+
 import * as mockTilesApplicationDetailsResponse from '../fixtures/applicationDetails.json';
 import * as mockTilesApplicationsResponse from '../fixtures/applications.json';
 import * as mockUsersResponse from '../fixtures/users.json';
@@ -160,19 +161,23 @@ describe('tilesAPI', () => {
 
   });
 
-  xdescribe('setVirtualTiles(appId: string): void', () => {
+  describe('setVirtualTiles(): Promise<any>', () => {
     it('should set virtualTiles equal to a list of Virtual Tiles from an application', () => {
-      spyOn(tilesApi, 'getApplicationTiles').and.callFake( () => {
-        return {
+
+    let getAppSpy = spyOn(tilesApi, 'getApplicationTiles').and.callFake( () => {
+         return new Promise( (callback) => {
+          Promise.callback(mockTilesApplicationDetailsResponse.virtualTiles);
+        });
+        /*{
           then: (callback) => callback(mockTilesApplicationDetailsResponse.virtualTiles)
-        };
+        };*/
       });
 
       tilesApi.setVirtualTiles();
 
-      expect(tilesApi['getApplicationTiles']).toHaveBeenCalled();
+      expect(getAppSpy).toHaveBeenCalled();
       expect(tilesApi.getVirtualTiles()).toEqual(mockTilesApplicationDetailsResponse.virtualTiles);
-    })
+    });
   });
 
   describe('getVirtualTiles(): VirtualTile[]', () => {
