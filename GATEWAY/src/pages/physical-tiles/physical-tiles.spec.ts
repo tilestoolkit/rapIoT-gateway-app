@@ -64,7 +64,7 @@ describe('physical-tiles', () => {
         physicalTiles = null;
     });
 
-    xit('is created', () => {
+    it('is created', () => {
         expect(fixture).toBeTruthy();
         expect(physicalTiles).toBeTruthy();
     });
