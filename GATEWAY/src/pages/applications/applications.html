@@ -1,7 +1,7 @@
 <ion-header>
 
   <ion-navbar>
-    <button right class="titleBttn" ion-button small color="positive" (click)="logout()">Logout</button>
+    <button right class="titleBttn" ion-button small color="positive" (click)="logout()">Sign out</button>
     <ion-title style="padding-top: 0.5em;">Applications</ion-title>
   </ion-navbar>
 
@@ -18,16 +18,16 @@
   </ion-refresher>
 
   <ion-list >
-    <ion-item class="devices" style="background-color: #3980f1; border-radius: 3px;" *ngFor="let app of applications">
+    <ion-item class="devices" style="background-color: #ffffff; border-radius: 3px; box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);" *ngFor="let app of applications">
       <div class="row row-center" (click)="viewApplication(app)">
         <div id="devName" class="col col-75" style="margin: -15px 0px -5px 0px;">
-          <b style="color: white;">{{app._id}}</b>
-          <p style="color: white;">Number of virtual TILES: {{app.virtualTiles.length}}</p>
-          <p style="color: white;">Environment: {{app.devEnvironment}}</p>
+          <b>{{app._id}}</b>
+          <p>Number of virtual TILES: {{app.virtualTiles.length}}</p>
+          <p>Environment: {{app.devEnvironment}}</p>
         </div>
 
         <div class="col col-25">
-          <ion-icon name="arrow-forward" style="float: right; font-size: 4rem; color: white;"></ion-icon>
+          <ion-icon name="arrow-forward" style="float: right; font-size: 4rem;"></ion-icon>
         </div>
       </div>
     </ion-item>
