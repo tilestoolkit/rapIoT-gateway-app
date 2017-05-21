@@ -10,11 +10,6 @@
 		<ion-title>
 			{{applicationTitle}}
 		</ion-title>
-		<ion-buttons end>
-		<button (click)="showApplicationInfo()">
-			<ion-icon name="ios-settings-outline" style="font-size: 3rem;"></ion-icon>
-		</button>
-		</ion-buttons>
 	</ion-navbar>
 </ion-header>
 
@@ -27,6 +22,9 @@
       refreshingText="Refreshing...">
     </ion-refresher-content>
   </ion-refresher>
+
+  <button (click)="toggleAppOnline()" style="margin-bottom: 1em; background-color: #488aff; border-radius: 3px; width: 100%; text-align: center; padding-top: 8px; padding-bottom: 8px; font-size: 1.2em; color: white;">{{appOnlineStatusMsg}}</button>
+  <br>
 
   <span left style="size: 14px; padding-left: 5px; padding-bottom: 10px;">Unpaired TILES</span>
   <div *ngFor="let tile of virtualTiles">
@@ -66,5 +64,7 @@
       </div>
     </ion-item>
   </div>
-<div *ngIf="virtualTiles === undefined ||virtualTiles.length === 0" style="margin: 0 auto; padding: 5px;border-radius: 3px; background-color: white; text-align: center;"><span style="font-size: 16px;">No virtual tiles were found, please register new virtual tiles on TILES Cloud</span></div>
+<div *ngIf="virtualTiles === undefined ||virtualTiles.length === 0" style="margin: auto auto; padding: 5px; border-radius: 3px; background-color: white; text-align: center; margin-top: 100px;">
+		<span style="font-size: 16px;">No virtual tiles were found, please register new virtual tiles on TILES Cloud</span>
+</div>
 </ion-content>
