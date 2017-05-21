@@ -101,7 +101,7 @@ export class VirtualTilesPage {
   public toggleAppOnline = (): void => {
     let descriptionMsg = 'Are you sure you wish to ' + (this.activeApp.appOnline ? 'stop the currently running ' : 'start the currently stopped ') + 'application?';
     let confirm = this.alertCtrl.create({
-      title: 'Toggle application?',
+      title: this.activeApp.appOnline ? 'Stop Application?' : 'Start Application?',
       message: descriptionMsg, // tslint:disable-line
       buttons: [
         {
