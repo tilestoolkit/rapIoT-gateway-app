@@ -4,15 +4,15 @@
   See http://ionicframework.com/docs/v2/components/#navigation for more info on
   Ionic pages and navigation.
 -->
-
 <ion-header>
-  <ion-navbar>
-    <ion-title style="padding-bottom: 0; margin-bottom: 0;">Developer Terminal</ion-title>
+  <ion-navbar> 
+    <ion-title>
+      Developer Terminal
+    </ion-title>
+    <ion-buttons end>
+    <button (click)="promptClearTerminal()" style="padding: 8px 14px 6px 14px; text-align: center; color: #488aff; font-size: 1.2em;">Clear</button>
+    </ion-buttons>
   </ion-navbar>
-    <div style="background-color: #f8f8f8; border-bottom: thin solid #cccccc; padding-bottom: 1px; margin-top: 0;">
-        <button style="margin-left: 14px; width: 40%; max-height: 29px;" ion-button (click)="scrollBottomOfList(true)">Scroll Bottom</button>
-        <button style="float: right; margin-right: 14px; width: 40%; max-height: 29px;" ion-button (click)="clearTerminal()">Clear</button>
-    </div>
 </ion-header>
 
 <div (click)="scrollBottomOfList(true)" style="position:absolute; bottom: 0; right: 0; margin-bottom: 65px; margin-right: 15px; z-index: 10;">
