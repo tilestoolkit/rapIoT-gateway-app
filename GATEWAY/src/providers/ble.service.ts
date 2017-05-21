@@ -239,7 +239,7 @@ export class BleService {
    * Checking to see if the location on android phoone is turned on. BLE
    * will not work unless it is turned on.
    */
-  private checkLocation = (): void => {
+  public checkLocation = (): void => {
     this.diagnostic.isLocationEnabled().then(diagnosticRes => {
         if (diagnosticRes) {
           this.scanBLE();

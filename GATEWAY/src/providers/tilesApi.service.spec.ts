@@ -7,6 +7,7 @@ import { App, Config, AlertController, Platform } from 'ionic-angular';
 import { TilesApi } from './tilesApi.service';
 import { StorageMock } from '../mocks';
 
+
 import * as mockTilesApplicationDetailsResponse from '../fixtures/applicationDetails.json';
 import * as mockTilesApplicationsResponse from '../fixtures/applications.json';
 import * as mockUsersResponse from '../fixtures/users.json';
@@ -160,19 +161,19 @@ describe('tilesAPI', () => {
 
   });
 
-  xdescribe('setVirtualTiles(appId: string): void', () => {
+  describe('setVirtualTiles(): Promise<any>', () => {
     it('should set virtualTiles equal to a list of Virtual Tiles from an application', () => {
-      spyOn(tilesApi, 'getApplicationTiles').and.callFake( () => {
-        return {
-          then: (callback) => callback(mockTilesApplicationDetailsResponse.virtualTiles)
-        };
+
+    let testTile: VirtualTile[];
+    let getAppSpy = spyOn(tilesApi, 'getApplicationDetails').and.callFake( () => {
+      return new Promise( (resolve) => {
+          Promise.resolve(testTile);
+        });
       });
 
       tilesApi.setVirtualTiles();
-
-      expect(tilesApi['getApplicationTiles']).toHaveBeenCalled();
-      expect(tilesApi.getVirtualTiles()).toEqual(mockTilesApplicationDetailsResponse.virtualTiles);
-    })
+      expect(tilesApi.getVirtualTiles()).toEqual([]);
+    });
   });
 
   describe('getVirtualTiles(): VirtualTile[]', () => {
@@ -345,7 +346,7 @@ describe('tilesAPI', () => {
         connection.mockRespond(new Response(new ResponseOptions({status: 201})));
       });
       let returnedStatuscode = (): Promise<any> => { return new Promise( () => {
-                                  let temp = tilesApi.pairDeviceToVirualTile('test', '58c120c5497df8602fedfbd3');
+                                  let temp = tilesApi.pairDeviceToVirtualTile('test', '58c120c5497df8602fedfbd3');
                                   return temp;
                               })};
       returnedStatuscode().then( successResult => {
@@ -363,7 +364,7 @@ describe('tilesAPI', () => {
       });
 
       let returnedStatuscode = (): Promise<any> => { return new Promise( () => {
-                                  let temp = tilesApi.pairDeviceToVirualTile('test', '58c120c5497df8602fedfbd3');
+                                  let temp = tilesApi.pairDeviceToVirtualTile('test', '58c120c5497df8602fedfbd3');
                                   return temp;
                               })};
       returnedStatuscode().then( res => {

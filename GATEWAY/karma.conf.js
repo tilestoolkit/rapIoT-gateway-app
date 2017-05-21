@@ -52,5 +52,6 @@ module.exports = function (config) {
       }
     },
     singleRun: false,
+    browserNoActivityTimeout: 60000,
   });
 };

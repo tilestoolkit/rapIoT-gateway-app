@@ -132,8 +132,9 @@ describe('bleService', () => {
 
       bleService.checkBleEnabled().then( res => {
         expect(spyEnabled).toHaveBeenCalled();
+        console.info(res);
       }).catch( err => {
-        //console.info(err);
+        expect(0).toEqual(1);
       });
 
     });
@@ -159,7 +160,7 @@ describe('bleService', () => {
     //TODO: Ferdigstill denne metoden
     it('should try to enable BLE if method isEnabled throws an error', (() => {
       let spyIsEnabled = spyOn(bleService.ble, 'isEnabled').and.callThrough();
-      let spyScan = spyOn(bleService, 'scanBLE').and.throwError("Test Error");
+      let spyScan = spyOn(bleService, 'checkLocation').and.throwError("Test Error");
       let spyEnable = spyOn(bleService.ble, 'enable').and.callThrough();
       //let spyError = spyOn(bleService.errorAlert, "present");
 /*
@@ -189,7 +190,7 @@ describe('bleService', () => {
       bleService.checkBleEnabled().then( res => {
         expect(spyScan.calls.count()).toEqual(1);
       }).catch( err => {
-        //console.info(err);
+        console.info(err);
       });
     }));
 
@@ -308,8 +309,8 @@ describe('bleService', () => {
 
     it('should run the method utils.getEventStringAsObject and mqttClient.sendEvent if ble.startNotification returns no error and message is not null', () => {
       spyOn(bleService.ble, 'startNotification').and.returnValue(Observable.of('led,on,red'));
-      spyOn(bleService.utils, 'getEventStringAsObject').and.callFake( () => {
-        let comparisonCmdObj = new CommandObject('led', ['on', 'red']);
+      spyOn(bleService.utils, 'getEventStringAsObject').and.callFake( ():CommandObject => {
+        let comparisonCmdObj: CommandObject = new CommandObject('led', ['on', 'red']);
         return comparisonCmdObj;
       });
       spyOn(bleService.mqttClient, 'sendEvent');

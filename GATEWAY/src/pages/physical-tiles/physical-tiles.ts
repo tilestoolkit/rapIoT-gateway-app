@@ -15,8 +15,8 @@ export class PhysicalTilesPage {
   constructor(public navCtrl: NavController,
               public alertCtrl: AlertController,
               private events: Events,
-              private bleService: BleService,
-              private devicesService: DevicesService) {
+              public bleService: BleService,
+              public devicesService: DevicesService) {
     this.events.subscribe('updateDevices', () => {
       this.devices = this.devicesService.getDevices();
     });
