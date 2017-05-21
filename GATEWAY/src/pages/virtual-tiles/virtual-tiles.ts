@@ -74,13 +74,6 @@ export class VirtualTilesPage {
             this.tilesApi.pairDeviceToVirtualTile(data, virtualTile._id)
                                     .then(res => this.setVirtualTiles());
           },
-          {
-            text: 'Pair',
-            handler: data => {
-              this.tilesApi.pairDeviceToVirtualTile(data, virtualTile._id).then(
-                res => this.setVirtualTiles()
-              );
-            },
         }],
       }).present();
     } else {

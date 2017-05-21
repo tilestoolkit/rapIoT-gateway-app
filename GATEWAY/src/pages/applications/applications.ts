@@ -1,15 +1,16 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams, ModalController } from 'ionic-angular';
-import { LoginPage } from '../login/login';
-import { VirtualTilesPage } from '../virtual-tiles/virtual-tiles';
+import { Storage } from '@ionic/storage';
+import { ModalController, NavController, NavParams } from 'ionic-angular';
 
 import { BleService } from '../../providers/ble.service';
 import { DevicesService } from '../../providers/devices.service';
-import { MqttClient } from '../../providers/mqttClient';
+import { LoginPage } from '../login/login';
+import { MqttClient } from '../../providers/mqttClient'; // tslint:disable-line
 import { TilesApi } from '../../providers/tilesApi.service';
 import { Application } from '../../providers/utils.service';
 
-import { Storage } from '@ionic/storage';
+import { VirtualTilesPage } from '../virtual-tiles/virtual-tiles';
+
 
 
 @Component({
