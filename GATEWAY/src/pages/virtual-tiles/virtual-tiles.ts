@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ActionSheetController, AlertController, Events, NavController, NavParams, ToastController } from 'ionic-angular';
+import { AlertController, Events, NavController, NavParams } from 'ionic-angular';
 
 import { BleService } from '../../providers/ble.service';
 import { DevicesService } from '../../providers/devices.service';
@@ -30,9 +30,7 @@ export class VirtualTilesPage {
               private bleService: BleService,
               private devicesService: DevicesService,
               private utils: UtilsService,
-              private tilesApi: TilesApi,
-              private actionSheetCtrl: ActionSheetController,
-              private toastCtrl: ToastController) {
+              private tilesApi: TilesApi) {
     this.events.subscribe('updateDevices', () => {
       this.devices = this.devicesService.getDevices();
       this.setVirtualTiles();
@@ -97,13 +95,32 @@ export class VirtualTilesPage {
   }
 
   /**
-   * Toggle the appOnline for the application on/off. change the text on the
-   * button.
+   * Toggle the appOnline for the application on/off. Prompts for info
+   * about action and also changes the text on the button.
    */
   public toggleAppOnline = (): void => {
-    this.tilesApi.toggleAppOnline(this.activeApp).then(res => {
-      this.appOnlineStatusMsg = res.appOnline ? 'Stop application' : 'Start application';
+    let descriptionMsg = 'Are you sure you wish to ' + (this.activeApp.appOnline ? 'stop currently running ' : 'start currently stopped ') + 'application?';
+    let confirm = this.alertCtrl.create({
+      title: 'Toggle application?',
+      message: descriptionMsg, // tslint:disable-line
+      buttons: [
+        {
+          text: 'Cancel',
+          handler: () => { // tslint:disable-line
+            console.log('Cancel clicked');
+          },
+        },
+        {
+          text: this.activeApp.appOnline ? 'Stop' : 'Start',
+          handler: () => { // tslint:disable-line
+            this.tilesApi.toggleAppOnline(this.activeApp).then(res => {
+              this.appOnlineStatusMsg = res.appOnline ? 'Stop Application' : 'Start Application';
+            });
+          },
+        },
+      ],
     });
+    confirm.present();
   }
 
   /**
@@ -118,44 +135,6 @@ export class VirtualTilesPage {
     this.devices = this.devicesService.getDevices();
     this.setVirtualTiles();
     this.bleService.checkBleEnabled();
-  }
-
-  /**
-   * Opens a actionSheet showing application info
-   * Now only allows to start/stop the application
-   * Also displays a toast when completed.
-   */
-  public showApplicationInfo = () => {
-    let actionSheet = this.actionSheetCtrl.create({
-        title: "Start or stop running the application: '" + this.applicationTitle + "' in TILES Cloud environment.", // tslint:disable-line
-        buttons: [ // tslint:disable-line
-          {
-            handler: () => {
-              // Calls function to start/stop application
-              this.toggleAppOnline();
-
-              // Display toast verifying action is completed
-              let toastApplicationMsg = this.activeApp.appOnline ? 'Stopped runnning application ' : 'Started runnning application ';
-              toastApplicationMsg += this.applicationTitle;
-              let toast = this.toastCtrl.create({
-                duration: 3000,
-                message: toastApplicationMsg,
-              });
-              toast.present();
-            },
-            role: 'destructive',
-            text: this.appOnlineStatusMsg,
-          },
-          {
-            handler: () => {
-              console.log('Cancel clicked');
-            },
-            role: 'cancel',
-            text: 'Cancel',
-          },
-        ],
-      });
-    actionSheet.present();
   }
 
   /**
