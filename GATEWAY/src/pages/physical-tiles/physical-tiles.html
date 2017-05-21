@@ -19,11 +19,22 @@
   <ion-list>
     <ion-item color="light" class="devices" *ngFor="let device of devices" no-lines style="background-color: #ffffff; border-radius: 3px; box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);">
       <b>{{device.name}}</b>
-      <br><br>
-      <div>
-        <button ion-button small color="positive" class="device_btn" (click)="changeNamePop(device)">Change Name</button>
-        <button ion-button small color="positive" class="device_btn" (click)="devicesService.resetDeviceName(device)">Reset Name</button>
-        <button ion-button small color="positive" class="device_btn" (click)="bleService.locate(device)">Locate</button>
+      <div class = "row">
+        <div class = "col">
+          <button style="background-color: #488aff; border-radius: 3px; width: 100%; text-align: center; padding-top: 6px; padding-bottom: 6px; font-size: 0.70em; color: white;">
+          Change name
+          </button>
+        </div>
+        <div class = "col">
+          <button style="background-color: #488aff; border-radius: 3px; width: 100%; text-align: center; padding-top: 6px; padding-bottom: 6px; font-size: 0.70em; color: white;">
+          Reset name
+          </button>
+        </div>
+        <div class = "col">
+          <button style="background-color: #488aff; border-radius: 3px; width: 100%; text-align: center; padding-top: 6px; padding-bottom: 6px; font-size: 0.70em; color: white;">
+          Locate
+          </button>
+        </div>
       </div>
     </ion-item>
   </ion-list>
