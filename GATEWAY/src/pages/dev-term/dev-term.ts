@@ -30,22 +30,22 @@ export class DevTermPage {
   public clearTerminal = (): void => {
     let confirm = this.alertCtrl.create({
       title: 'Clear terminal output?',
-      message: 'Are you sure you want to clear the terminal output?',
+      message: 'Are you sure you want to clear the terminal output?', // tslint:disable-line
       buttons: [
         {
           text: 'Cancel',
-          handler: () => {
+          handler: () => { // tslint:disable-line
             console.log('Cancel clicked');
-          }
+          },
         },
         {
           text: 'Clear',
-          handler: () => {
+          handler: () => { // tslint:disable-line
             this.messages = [];
             this.logger.clearLog();
-          }
-        }
-      ]
+          },
+        },
+      ],
     });
     confirm.present();
   }
