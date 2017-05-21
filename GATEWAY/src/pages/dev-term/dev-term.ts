@@ -1,5 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
-import { Content, Events, NavController, NavParams } from 'ionic-angular';
+import { AlertController, Content, Events, NavController, NavParams } from 'ionic-angular';
 import { Observable, Subscription } from 'rxjs';
 
 import { Logger } from '../../providers/logger.service';
@@ -19,7 +19,8 @@ export class DevTermPage {
   constructor(public events: Events,
               public navCtrl: NavController,
               public navParams: NavParams,
-              private logger: Logger) {
+              private logger: Logger,
+              private alertCtrl: AlertController) {
     this.events.subscribe('logUpdate', () => this.updateLog());
   }
 
@@ -27,8 +28,26 @@ export class DevTermPage {
    * Clear the terminal messages
    */
   public clearTerminal = (): void => {
-    this.messages = [];
-    this.logger.clearLog();
+    let confirm = this.alertCtrl.create({
+      title: 'Clear terminal output?',
+      message: 'Are you sure you want to clear the terminal output?',
+      buttons: [
+        {
+          text: 'Cancel',
+          handler: () => {
+            console.log('Cancel clicked');
+          }
+        },
+        {
+          text: 'Clear',
+          handler: () => {
+            this.messages = [];
+            this.logger.clearLog();
+          }
+        }
+      ]
+    });
+    confirm.present();
   }
 
   /**
