@@ -20,7 +20,7 @@ export class VirtualTilesPage {
   public applicationTitle: string;
   public virtualTiles: VirtualTile[];
   public activeApp: Application;
-  public appOnlineBtnText: string;
+  public appOnlineStatusMsg: string;
   private devices: Device[];
 
   constructor(public alertCtrl: AlertController,
@@ -95,13 +95,32 @@ export class VirtualTilesPage {
   }
 
   /**
-   * Toggle the appOnline for the application on/off. change the text on the
-   * button.
+   * Toggle the appOnline for the application on/off. Prompts for info
+   * about action and also changes the text on the button.
    */
   public toggleAppOnline = (): void => {
-    this.tilesApi.toggleAppOnline(this.activeApp).then(res => {
-      this.appOnlineBtnText = res.appOnline ? 'STOP APPLICATION' : 'START APPLICATION';
+    let descriptionMsg = 'Are you sure you wish to ' + (this.activeApp.appOnline ? 'stop the currently running ' : 'start the currently stopped ') + 'application?';
+    let confirm = this.alertCtrl.create({
+      title: this.activeApp.appOnline ? 'Stop Application?' : 'Start Application?',
+      message: descriptionMsg, // tslint:disable-line
+      buttons: [
+        {
+          text: 'Cancel',
+          handler: () => { // tslint:disable-line
+            console.log('Cancel clicked');
+          },
+        },
+        {
+          text: this.activeApp.appOnline ? 'Stop' : 'Start',
+          handler: () => { // tslint:disable-line
+            this.tilesApi.toggleAppOnline(this.activeApp).then(res => {
+              this.appOnlineStatusMsg = res.appOnline ? 'Stop Application' : 'Start Application';
+            });
+          },
+        },
+      ],
     });
+    confirm.present();
   }
 
   /**
@@ -110,7 +129,7 @@ export class VirtualTilesPage {
   public ionViewWillEnter = () => {    // A id variable is stored in the navParams, and .get set this value to the local variable id
     this.activeApp = this.navParams.get('app');
     this.tilesApi.setActiveApp(this.navParams.get('app'));
-    this.appOnlineBtnText = this.activeApp.appOnline ? 'STOP APPLICATION' : 'START APPLICATION';
+    this.appOnlineStatusMsg = this.activeApp.appOnline ? 'Stop application' : 'Start application';
     // Sets the title of the page (found in virtual-tiles.html) to id, capitalized.
     this.applicationTitle = this.utils.capitalize(this.activeApp._id);
     this.devices = this.devicesService.getDevices();
@@ -127,4 +146,6 @@ export class VirtualTilesPage {
       this.virtualTiles = this.tilesApi.getVirtualTiles();
     });
   }
+
 }
+
