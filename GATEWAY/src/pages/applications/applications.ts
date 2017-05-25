@@ -1,3 +1,7 @@
+/*
+  This file contains the superficial logic for the applications page
+*/
+
 import { Component } from '@angular/core';
 import { Storage } from '@ionic/storage';
 import { ModalController, NavController, NavParams } from 'ionic-angular';
