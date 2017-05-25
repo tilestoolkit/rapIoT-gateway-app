@@ -186,6 +186,22 @@ export class TilesApi {
   }
 
   /**
+   * Get the virtual tiles connected to a physical tile
+   * @param {string} deviceId - The physical tile
+   */
+  public getConnectedVirtualTiles = (deviceId: string): VirtualTile[] => {
+    return this.virtualTiles.filter(tile => tile.tile._id === deviceId);
+  }
+
+  /**
+   * Get the physical tiles connected to a virual tile
+   * @param {string} virtualTileName - The physical tile
+   */
+  public getConnectedPhysicalTiles = (virtualTileName: string): string[] => {
+    return this.virtualTiles.filter(tile => tile.virtualName === virtualTileName).map(tile => tile.tile._id);
+  }
+
+  /**
    * Add a tile to the database to make it possible to pair it to a virtual tile
    * @param {string} deviceId - The physical tile
    */
