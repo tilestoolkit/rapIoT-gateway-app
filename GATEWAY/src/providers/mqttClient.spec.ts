@@ -131,7 +131,7 @@ describe('mqttClient', () => {
 
   });
 
-  describe('registerDevice(device: Device): void', () => {
+  xdescribe('registerDevice(device: Device): void', () => {
 
     it('should register a device at the server if client is defined', () => {
       let spyClient = new MqttMock;
@@ -150,7 +150,7 @@ describe('mqttClient', () => {
 
   });
 
-  describe('unregisterDevice(device: Device): void', () => {
+  xdescribe('unregisterDevice(device: Device): void', () => {
 
     it('should unregister a device at the server if client is defined', () => {
       let spyClient = new MqttMock;
@@ -169,7 +169,7 @@ describe('mqttClient', () => {
 
   });
 
-  describe('sendEvent(deviceId: string, event: CommandObject): void', () => {
+  xdescribe('sendEvent(deviceId: string, event: CommandObject): void', () => {
 
     it('should send an event if client is defined', () => {
       let spyClient = new MqttMock;
