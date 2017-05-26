@@ -1,3 +1,8 @@
+/*
+  This file contains a provider for communication with the tiles api.
+  It controls all the http communication with the server.
+*/
+
 import { Injectable } from '@angular/core';
 import { Headers, Http }    from '@angular/http';
 import { Storage } from '@ionic/storage';

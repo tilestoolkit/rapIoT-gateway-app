@@ -1,3 +1,7 @@
+/*
+  This file contains the superficial logic for the physical tiles page
+*/
+
 import { Component } from '@angular/core';
 import { AlertController, Events, NavController } from 'ionic-angular';
 import { BleService } from '../../providers/ble.service';

@@ -1,3 +1,10 @@
+/*
+  This file contains a provider for controlling the physical tiles
+  devices. It keeps a list of the currently available devices and
+  several ways to manipulate this by adding or removing tiles as well
+  as manipulating the tiles alreasy in the list.
+*/
+
 import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage';
 import { Events } from 'ionic-angular';

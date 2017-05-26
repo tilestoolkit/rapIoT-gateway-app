@@ -1,3 +1,7 @@
+/*
+  This file contains the superficial logic for the developer terminal page
+*/
+
 import { Component, ViewChild } from '@angular/core';
 import { AlertController, Content, Events, NavController, NavParams } from 'ionic-angular';
 import { Observable, Subscription } from 'rxjs';

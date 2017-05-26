@@ -1,3 +1,7 @@
+/*
+  This file contains the superficial logic for the virtual tiles page
+*/
+
 import { Component } from '@angular/core';
 import { AlertController, Events, NavController, NavParams } from 'ionic-angular';
 

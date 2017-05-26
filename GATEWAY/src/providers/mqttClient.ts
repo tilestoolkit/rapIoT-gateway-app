@@ -1,3 +1,9 @@
+/*
+  This file contains a provider to handle the mqtt connection. Mainly it is a
+  client that will send and recieve messages to the server broker which is read
+  by the cloud app.
+*/
+
 import { Injectable } from '@angular/core';
 import { BackgroundFetch } from '@ionic-native/background-fetch';
 import { Alert, AlertController, Events } from 'ionic-angular';
