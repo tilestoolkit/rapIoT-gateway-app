@@ -177,7 +177,7 @@ export class TilesApi {
                .then(res => {
                  // The server will return null if the tile is not stored in the database. If so
                  // we need to add it to the database and try again to pair it.
-                 if (JSON.parse(JSON.stringify(res))._body === "null") {
+                 if (JSON.parse(JSON.stringify(res))._body === 'null') {
                    this.addTileToDatabase(deviceId).then(addRes => {
                      if (addRes === true) {
                        this.pairDeviceToVirtualTile(deviceId, virtualTileId);
