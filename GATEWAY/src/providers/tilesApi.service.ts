@@ -196,7 +196,7 @@ export class TilesApi {
    */
   public getConnectedVirtualTiles = (deviceId: string): VirtualTile[] => {
     if (this.virtualTiles !== undefined || this.virtualTiles !== null) {
-      return this.virtualTiles.filter(tile => tile.tile._id === deviceId);
+      return this.virtualTiles.filter(tile => tile.tile !== null ? tile.tile._id === deviceId : false);
     }
     return [];
   }
