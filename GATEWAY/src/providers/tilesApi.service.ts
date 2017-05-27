@@ -195,7 +195,7 @@ export class TilesApi {
    * @param {string} deviceId - The physical tile
    */
   public getConnectedVirtualTiles = (deviceId: string): VirtualTile[] => {
-    if(this.virtualTiles !== undefined || this.virtualTiles !== null) {
+    if (this.virtualTiles !== undefined || this.virtualTiles !== null) {
       return this.virtualTiles.filter(tile => tile.tile._id === deviceId);
     }
     return [];
@@ -206,7 +206,7 @@ export class TilesApi {
    * @param {string} virtualTileName - The physical tile
    */
   public getConnectedPhysicalTiles = (virtualTileName: string): string[] => {
-    if(this.virtualTiles !== undefined || this.virtualTiles !== null) {
+    if (this.virtualTiles !== undefined || this.virtualTiles !== null) {
       return this.virtualTiles.filter(tile => tile.virtualName === virtualTileName).map(tile => tile.tile._id);
     }
     return [];
