@@ -131,6 +131,9 @@ describe('mqttClient', () => {
 
   });
 
+  // Due to a rewrite at the final stages of the project this test started failing
+  // this is because we now register the device for each of the virtual tiles paired
+  // to it. It can be fixed by pairing the tempDevice to a set number of virtual tiles
   xdescribe('registerDevice(device: Device): void', () => {
 
     it('should register a device at the server if client is defined', () => {
@@ -150,7 +153,7 @@ describe('mqttClient', () => {
 
   });
 
-  xdescribe('unregisterDevice(device: Device): void', () => {
+  describe('unregisterDevice(device: Device): void', () => {
 
     it('should unregister a device at the server if client is defined', () => {
       let spyClient = new MqttMock;
@@ -169,6 +172,9 @@ describe('mqttClient', () => {
 
   });
 
+  // Due to a rewrite at the final stages of the project this test started failing
+  // this is because we now send the device for each of the virtual tiles paired
+  // to it. It can be fixed by pairing the tempDevice to a set number of virtual tiles
   xdescribe('sendEvent(deviceId: string, event: CommandObject): void', () => {
 
     it('should send an event if client is defined', () => {
@@ -183,7 +189,6 @@ describe('mqttClient', () => {
       expect(publishSpy.calls.count()).toEqual(1);
       expect(topicSpy.calls.count()).toEqual(1);
     });
-
   });
 
   describe('startBackgroundFetch(): void', () => {

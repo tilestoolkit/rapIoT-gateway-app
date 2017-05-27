@@ -177,7 +177,7 @@ export class TilesApi {
                .then(res => {
                  // The server will return null if the tile is not stored in the database. If so
                  // we need to add it to the database and try again to pair it.
-                 if (res === null) {
+                 if (JSON.parse(JSON.stringify(res))._body === 'null') {
                    this.addTileToDatabase(deviceId).then(addRes => {
                      if (addRes === true) {
                        this.pairDeviceToVirtualTile(deviceId, virtualTileId);
@@ -195,7 +195,10 @@ export class TilesApi {
    * @param {string} deviceId - The physical tile
    */
   public getConnectedVirtualTiles = (deviceId: string): VirtualTile[] => {
-    return this.virtualTiles.filter(tile => tile.tile._id === deviceId);
+    if (this.virtualTiles !== undefined || this.virtualTiles !== null) {
+      return this.virtualTiles.filter(tile => tile.tile !== null ? tile.tile._id === deviceId : false);
+    }
+    return [];
   }
 
   /**
@@ -203,7 +206,10 @@ export class TilesApi {
    * @param {string} virtualTileName - The physical tile
    */
   public getConnectedPhysicalTiles = (virtualTileName: string): string[] => {
-    return this.virtualTiles.filter(tile => tile.virtualName === virtualTileName).map(tile => tile.tile._id);
+    if (this.virtualTiles !== undefined || this.virtualTiles !== null) {
+      return this.virtualTiles.filter(tile => tile.virtualName === virtualTileName).map(tile => tile.tile._id);
+    }
+    return [];
   }
 
   /**
