@@ -146,17 +146,17 @@ export class MqttClient {
       const virtualTiles = this.tilesApi.getConnectedVirtualTiles(device.tileId);
       virtualTiles.forEach(tile => {
         this.client.publish(
-          this.getDeviceSpecificTopic(tile.virtualName, true) + '/active',
+          this.getDeviceSpecificTopic(device.tileId, true) + '/active',
           'true',
           this.publishOpts,
         );
         this.client.publish(
-          this.getDeviceSpecificTopic(tile.virtualName, true) + '/name',
+          this.getDeviceSpecificTopic(device.tileId, true) + '/name',
           tile.virtualName,
           this.publishOpts,
         );
         this.client.subscribe(
-          this.getDeviceSpecificTopic(tile.virtualName, false),
+          this.getDeviceSpecificTopic(device.tileId, false),
         );
       });
     }
@@ -169,17 +169,14 @@ export class MqttClient {
    */
   public unregisterDevice = (device: Device): void => {
     if (this.client) {
-      const virtualTiles = this.tilesApi.getConnectedVirtualTiles(device.tileId);
-      virtualTiles.forEach(tile => {
-        this.client.publish(
-          this.getDeviceSpecificTopic(device.tileId, true) + '/active',
-          'false',
-          this.publishOpts,
-        );
-        this.client.unsubscribe(
-          this.getDeviceSpecificTopic(device.tileId, false),
-        );
-      });
+      this.client.publish(
+        this.getDeviceSpecificTopic(device.tileId, true) + '/active',
+        'false',
+        this.publishOpts,
+      );
+      this.client.unsubscribe(
+        this.getDeviceSpecificTopic(device.tileId, false),
+      );
     }
   }
 
@@ -195,7 +192,7 @@ export class MqttClient {
       virtualTiles.forEach(tile => {
         event.name = tile.virtualName;
         this.client.publish(
-          this.getDeviceSpecificTopic(tile.virtualName, true),
+          this.getDeviceSpecificTopic(deviceId, true),
           JSON.stringify(event),
           this.publishOpts,
           err => {
