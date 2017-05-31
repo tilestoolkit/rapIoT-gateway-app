@@ -1,6 +1,7 @@
 /* tslint:disable:max-classes-per-file */
 import { ErrorHandler } from '@angular/core';
 import { BLE } from '@ionic-native/ble';
+import { Diagnostic } from '@ionic-native/diagnostic';
 import { Storage } from '@ionic/storage';
 import { Events, IonicErrorHandler } from 'ionic-angular';
 import { Observable } from 'rxjs';
@@ -13,12 +14,41 @@ import { UtilsService } from '../providers/utils.service';
  * This contains all BLE methods that we are using and mock responses to give
  * data to our app.
  */
+class DiagnosticMock extends Diagnostic {
+  public isLocationEnabled() {
+    return new Promise<boolean>((resolve, reject) => {
+      if (1 === 1){
+        resolve(true);
+      } else {
+        reject(false);
+      }
+    });
+  }
+}
+
+/**
+ * This is a class to mock the native BLE module for browser development.
+ * This contains all BLE methods that we are using and mock responses to give
+ * data to our app.
+ */
 class BLEMock extends BLE {
   public isEnabled() {
-    return new Promise<void>(resolve => resolve());
+    return new Promise<void>((resolve, reject) => {
+      if (1 === 1){
+        resolve();
+      } else {
+        reject();
+      }
+    });
   }
   public enable() {
-    return new Promise<void>(resolve => resolve());
+    return new Promise<void>((resolve, reject) => {
+      if (1 === 1){
+        resolve();
+      } else {
+        reject();
+      }
+    });
   }
   public scan(services, seconds) {
     const mockBle = [
@@ -48,10 +78,22 @@ class BLEMock extends BLE {
     });
   }
   public disconnect(device) {
-    return new Promise<void>(resolve => resolve());
+    return new Promise<void>((resolve, reject) => {
+      if (1 === 1){
+        resolve();
+      } else {
+        reject();
+      }
+    });
   }
   public writeWithoutResponse(deviceId, serviceUUID, characteristicUUID, value) {
-    return new Promise<void>(resolve => resolve());
+    return new Promise<void>((resolve, reject) => {
+      if (1 === 1){
+        resolve();
+      } else {
+        reject();
+      }
+    });
   }
 }
 
@@ -65,12 +107,14 @@ export class AppProviders {
       // Use browser providers
       providers = [
         {provide: BLE, useClass: BLEMock},
+        {provide: Diagnostic, useClass: DiagnosticMock},
         {provide: ErrorHandler, useClass: IonicErrorHandler},
       ];
     } else {
       // Use the standard platform providers
       providers = [
         BLE,
+        Diagnostic,
         {provide: ErrorHandler, useClass: IonicErrorHandler},
       ];
     }

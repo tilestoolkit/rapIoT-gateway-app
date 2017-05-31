@@ -198,7 +198,7 @@ export class BleService {
             // If the device is one  of the virtual tiles belonging to the current
             // application we want to connect
             if (virtualTiles.filter(tile => tile.tile !== null)
-                            .map(tile => tile.tile.name)
+                            .map(tile => tile.tile._id)
                             .includes(device.tileId)) {
               this.connect(device);
             }
