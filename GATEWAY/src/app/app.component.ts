@@ -47,12 +47,13 @@ export class Tiles {
     this.events.subscribe('command', (virtualTileName: string, command: CommandObject) => {
       const devices = this.devicesService.getDevices();
       const physicalTargetDevices = this.tilesApi.getConnectedPhysicalTiles(virtualTileName);
-      for (let device of devices) {
+
+      devices.forEach(device => {
         if (physicalTargetDevices.includes(device.tileId)) {
           const commandString = this.utils.getCommandObjectAsString(command);
           this.bleService.sendData(device, commandString);
         }
-      }
+      });
     });
   }
 }
