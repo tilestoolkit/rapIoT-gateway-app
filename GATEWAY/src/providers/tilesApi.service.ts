@@ -205,11 +205,12 @@ export class TilesApi {
    * Get the physical tiles connected to a virual tile
    * @param {string} virtualTileName - The physical tile
    */
-  public getConnectedPhysicalTiles = (virtualTileName: string): string[] => {
+  public getConnectedPhysicalTileId = (virtualTileName: string): string => {
     if (this.virtualTiles !== undefined && this.virtualTiles !== null) {
-      return this.virtualTiles.filter(tile => tile.tile !== null && tile.tile._id === virtualTileName).map(tile => tile.tile._id);
+      const deviceId = this.virtualTiles.find(tile => tile.tile !== null && tile.tile._id === virtualTileName);
+      return deviceId !== undefined ? deviceId.tile._id : '';
     }
-    return [];
+    return '';
   }
 
   /**

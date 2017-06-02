@@ -17,7 +17,7 @@ import { UtilsService } from '../providers/utils.service';
 class DiagnosticMock extends Diagnostic {
   public isLocationEnabled() {
     return new Promise<boolean>((resolve, reject) => {
-      if (1 === 1){
+      if (1 === 1) {
         resolve(true);
       } else {
         reject(false);
@@ -34,7 +34,7 @@ class DiagnosticMock extends Diagnostic {
 class BLEMock extends BLE {
   public isEnabled() {
     return new Promise<void>((resolve, reject) => {
-      if (1 === 1){
+      if (1 === 1) {
         resolve();
       } else {
         reject();
@@ -43,7 +43,7 @@ class BLEMock extends BLE {
   }
   public enable() {
     return new Promise<void>((resolve, reject) => {
-      if (1 === 1){
+      if (1 === 1) {
         resolve();
       } else {
         reject();
@@ -79,7 +79,7 @@ class BLEMock extends BLE {
   }
   public disconnect(device) {
     return new Promise<void>((resolve, reject) => {
-      if (1 === 1){
+      if (1 === 1) {
         resolve();
       } else {
         reject();
@@ -88,7 +88,7 @@ class BLEMock extends BLE {
   }
   public writeWithoutResponse(deviceId, serviceUUID, characteristicUUID, value) {
     return new Promise<void>((resolve, reject) => {
-      if (1 === 1){
+      if (1 === 1) {
         resolve();
       } else {
         reject();
