@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/nornes/tiles-rapIoT.svg?branch=master)](https://travis-ci.org/nornes/tiles-rapIoT)
 # RapIoT Toolkit (Partial description)
 
 RapIoT is a software platform for simple programming of ecologies of IoT devices and services. It builds on top of IoT-enabling technologies such as MQTT, CoAP and BTLE.

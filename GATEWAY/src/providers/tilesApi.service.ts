@@ -1,3 +1,8 @@
+/*
+  This file contains a provider for communication with the tiles api.
+  It controls all the http communication with the server.
+*/
+
 import { Injectable } from '@angular/core';
 import { Headers, Http }    from '@angular/http';
 import { Storage } from '@ionic/storage';
@@ -172,7 +177,7 @@ export class TilesApi {
                .then(res => {
                  // The server will return null if the tile is not stored in the database. If so
                  // we need to add it to the database and try again to pair it.
-                 if (res === null) {
+                 if (JSON.parse(JSON.stringify(res))._body === 'null') {
                    this.addTileToDatabase(deviceId).then(addRes => {
                      if (addRes === true) {
                        this.pairDeviceToVirtualTile(deviceId, virtualTileId);
@@ -183,6 +188,29 @@ export class TilesApi {
                  }
                })
                .catch(err => this.errorAlert.present());
+  }
+
+  /**
+   * Get the virtual tiles connected to a physical tile
+   * @param {string} deviceId - The physical tile
+   */
+  public getConnectedVirtualTiles = (deviceId: string): VirtualTile[] => {
+    if (this.virtualTiles !== undefined && this.virtualTiles !== null) {
+      return this.virtualTiles.filter(tile => tile.tile !== null ? tile.tile._id === deviceId : false);
+    }
+    return [];
+  }
+
+  /**
+   * Get the physical tiles connected to a virual tile
+   * @param {string} virtualTileName - The physical tile
+   */
+  public getConnectedPhysicalTileId = (virtualTileName: string): string => {
+    if (this.virtualTiles !== undefined && this.virtualTiles !== null) {
+      const deviceId = this.virtualTiles.find(tile => tile.tile !== null && tile.tile._id === virtualTileName);
+      return deviceId !== undefined ? deviceId.tile._id : '';
+    }
+    return '';
   }
 
   /**

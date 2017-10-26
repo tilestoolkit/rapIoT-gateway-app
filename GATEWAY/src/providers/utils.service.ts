@@ -1,3 +1,9 @@
+/*
+  This file contains classes to describe the structure of different
+  objects used in the application. It also contains a utils service
+  which holds different functions that are useful for other files.
+*/
+
 /* tslint:disable:max-classes-per-file */
 import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage';

@@ -1,3 +1,7 @@
+/*
+  This file contains the superficial logic for the login page
+*/
+
 import { Component } from '@angular/core';
 import { Storage } from '@ionic/storage';
 import { AlertController, ViewController } from 'ionic-angular';

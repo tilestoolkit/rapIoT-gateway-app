@@ -56,7 +56,6 @@ import { AppProviders } from './app.providers';
     Storage,
     BleService,
     DevicesService,
-    Diagnostic,
     Logger,
     MqttClient,
     TilesApi,

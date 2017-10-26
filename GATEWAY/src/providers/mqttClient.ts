@@ -1,3 +1,9 @@
+/*
+  This file contains a provider to handle the mqtt connection. Mainly it is a
+  client that will send and recieve messages to the server broker which is read
+  by the cloud app.
+*/
+
 import { Injectable } from '@angular/core';
 import { BackgroundFetch } from '@ionic-native/background-fetch';
 import { Alert, AlertController, Events } from 'ionic-angular';
@@ -99,10 +105,10 @@ export class MqttClient {
         const response = JSON.parse(message);
         const command: CommandObject = new CommandObject(response.name, response.properties);
         if (command) {
-          const deviceId = topic.split('/')[4];
-          const logEntry = `Got message from cloud to device: ${deviceId} ${this.utils.getCommandObjectAsString(command)}`;
+          const virtualTileName = topic.split('/')[4];
+          const logEntry = `Got message from cloud to device: ${virtualTileName} ${this.utils.getCommandObjectAsString(command)}`;
           this.logger.addToLog(logEntry);
-          this.events.publish('command', deviceId, command);
+          this.events.publish('command', virtualTileName, command);
         }
       } finally {} // tslint:disable-line
     });
@@ -137,19 +143,22 @@ export class MqttClient {
    */
   public registerDevice = (device: Device): void => {
     if (this.client) {
-      this.client.publish(
-        this.getDeviceSpecificTopic(device.tileId, true) + '/active',
-        'true',
-        this.publishOpts,
-      );
-      this.client.publish(
-        this.getDeviceSpecificTopic(device.tileId, true) + '/name',
-        device.tileId,
-        this.publishOpts,
-      );
-      this.client.subscribe(
-        this.getDeviceSpecificTopic(device.tileId, false),
-      );
+      const virtualTiles = this.tilesApi.getConnectedVirtualTiles(device.tileId);
+      virtualTiles.forEach(tile => {
+        this.client.publish(
+          this.getDeviceSpecificTopic(device.tileId, true) + '/active',
+          'true',
+          this.publishOpts,
+        );
+        this.client.publish(
+          this.getDeviceSpecificTopic(device.tileId, true) + '/name',
+          tile.virtualName,
+          this.publishOpts,
+        );
+        this.client.subscribe(
+          this.getDeviceSpecificTopic(device.tileId, false),
+        );
+      });
     }
   }
 
@@ -178,17 +187,21 @@ export class MqttClient {
    */
   public sendEvent = (deviceId: string, event: CommandObject): void => {
     if (this.client) {
+      const virtualTiles = this.tilesApi.getConnectedVirtualTiles(deviceId);
       // publish the event to the device topic which is listened to by the server-application
-      this.client.publish(
-        this.getDeviceSpecificTopic(deviceId, true),
-        JSON.stringify(event),
-        this.publishOpts,
-        err => {
-          if (err !== undefined) {
-            this.errorAlert.present();
-          }
-        },
-      );
+      virtualTiles.forEach(tile => {
+        event.name = tile.virtualName;
+        this.client.publish(
+          this.getDeviceSpecificTopic(deviceId, true),
+          JSON.stringify(event),
+          this.publishOpts,
+          err => {
+            if (err !== undefined) {
+              this.errorAlert.present();
+            }
+          },
+        );
+      });
     } else {
       this.errorAlert.present();
     }

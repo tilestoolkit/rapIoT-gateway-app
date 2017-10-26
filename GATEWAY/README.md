@@ -31,6 +31,8 @@ NB! Note that apple is strict when it comes to accessing the native components o
 ### Problems
 When using `$ ionic serve` or `$ ionic run <platform> -l` you might run into troubles with the API not working. This is because of CORS and can be solved by using only `$ ionic run <platform>` without the live reloading for running it on a simulator/mobile or by downloading the chrome extension [Allow-Control-Allow-Origin: *](https://chrome.google.com/webstore/detail/allow-control-allow-origi/nlfbmbojpeacfghkpbjhddihlkkiljbi) for the browser.
 
+## Building an andoid apk
+To create a version of the application, use `$ ionic build android`. This will create a debug apk, which will work with all the same functionality of a production app, but takes a bit more space than a production app. 
 
 ## Before making a pull request
 We are using travis as a tool for CI to make sure the contributing code does not break any tests and is linted according to the linting rules. Before making a pull request check that these are ok by running the commands:

@@ -6,6 +6,7 @@ import { Splashscreen, StatusBar } from 'ionic-native';
 import { TabsPage } from '../pages/tabs/tabs';
 import { BleService } from '../providers/ble.service';
 import { DevicesService } from '../providers/devices.service';
+import { TilesApi } from '../providers/tilesApi.service';
 import { CommandObject, UtilsService } from '../providers/utils.service';
 
 
@@ -25,6 +26,7 @@ export class Tiles {
               private platform: Platform,
               private bleService: BleService,
               private devicesService: DevicesService,
+              private tilesApi: TilesApi,
               private utils: UtilsService ) {
 
     this.backgroundMode.enable();
@@ -42,14 +44,16 @@ export class Tiles {
       this.bleService.stopBLEScanner();
     });
 
-    this.events.subscribe('command', (deviceId: string, command: CommandObject) => {
+    this.events.subscribe('command', (virtualTileName: string, command: CommandObject) => {
       const devices = this.devicesService.getDevices();
-      for (let device of devices) {
-        if (device.tileId === deviceId) {
+      const physicalDeviceId = this.tilesApi.getConnectedPhysicalTileId(virtualTileName);
+
+      devices.forEach(device => {
+        if (physicalDeviceId === device.tileId) {
           const commandString = this.utils.getCommandObjectAsString(command);
           this.bleService.sendData(device, commandString);
         }
-      }
+      });
     });
   }
 }

@@ -1,3 +1,8 @@
+/*
+  This file contains a provider for a simple logger that keeps
+  trach of events in the app.
+*/
+
 import { Injectable } from '@angular/core';
 import { Events } from 'ionic-angular';
 import { LogEntry, UtilsService } from './utils.service';

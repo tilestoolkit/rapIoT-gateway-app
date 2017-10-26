@@ -1,6 +1,5 @@
 {
   "name": "tilesGateway",
-  "app_id": "412d1239",
-  "v2": true,
-  "typescript": true
+  "app_id": "56b401d2",
+  "type": "ionic-angular"
 }

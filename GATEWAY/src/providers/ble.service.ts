@@ -1,3 +1,8 @@
+/*
+  This file contains a provider for the BLE communication with the physical
+  devices. It controlls all the BLE communcation to and from the tiles and
+  passes the information on to where it is needed.
+*/
 
 import { Injectable } from '@angular/core';
 import { BLE } from '@ionic-native/ble';
@@ -193,7 +198,7 @@ export class BleService {
             // If the device is one  of the virtual tiles belonging to the current
             // application we want to connect
             if (virtualTiles.filter(tile => tile.tile !== null)
-                            .map(tile => tile.tile.name)
+                            .map(tile => tile.tile._id)
                             .includes(device.tileId)) {
               this.connect(device);
             }
